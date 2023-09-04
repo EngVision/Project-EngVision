@@ -1,0 +1,9 @@
+# Stage 1: Build stage
+FROM node:18 as build-stage
+
+WORKDIR /frontend
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+COPY . .
+CMD ["yarn", "dev"]
+EXPOSE 3000
