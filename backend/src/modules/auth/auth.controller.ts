@@ -75,7 +75,7 @@ export class AuthController {
   }
 
   /** Single Sign-On **/
-  @Post('google/login')
+  @Get('google/login')
   @UseGuards(AuthGuard('google'))
   async googleLogin(@Req() req, @Res() res: Response) {
     const { tokens, user } = await this.authService.singleSignOn(req);

@@ -22,7 +22,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ type: String, description: 'Last name' })
-  lastName: string;
+  lastName?: string;
 
   @IsNotEmpty()
   @IsEmail()

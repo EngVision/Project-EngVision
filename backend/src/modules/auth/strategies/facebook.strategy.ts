@@ -11,7 +11,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     super({
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: 'http://localhost:5000/api/auth/facebook/login',
+      callbackURL: `${process.env.APP_URL}/api/auth/facebook/login`,
       scope: 'email',
       profileFields: ['id', 'displayName', 'photos', 'email'],
       passReqToCallback: true,
@@ -27,8 +27,6 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     const { name, emails, photos } = profile;
 
     const emailWithoutDomain = emails[0].value?.split('@')[0] || profile.id;
-
-    console.log(profile);
 
     const user: User & Tokens = {
       email: emailWithoutDomain + '@facebook.com',
