@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
-  IsDate,
   IsEmail,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsStrongPassword,
+  Length,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -15,50 +16,54 @@ import { Role } from '../enums';
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ type: String, description: 'first_name' })
+  @ApiProperty({ type: String, description: 'First name' })
   firstName: string;
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ type: String, description: 'last_name' })
+  @ApiProperty({ type: String, description: 'Last name' })
   lastName: string;
 
   @IsNotEmpty()
   @IsEmail()
-  @ApiProperty({ type: String, description: 'email' })
+  @ApiProperty({ type: String, description: 'Email' })
   email: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(6)
-  @MaxLength(16)
-  @ApiProperty({ type: String, description: 'password' })
+  @MinLength(8)
+  @MaxLength(24)
+  @IsStrongPassword()
+  @ApiProperty({ type: String, description: 'Password' })
   password: string;
 
   @IsOptional()
   @IsString()
-  @ApiProperty({ type: String, description: 'avatar' })
+  @ApiProperty({ type: String, format: 'binary', description: 'Avatar' })
   avatar?: string;
 
   @IsOptional()
   @IsString()
-  @ApiProperty({ type: String, description: 'gender' })
+  @ApiProperty({ type: String, description: 'Gender' })
   gender?: string;
 
   @IsOptional()
   @IsString()
-  @MaxLength(10)
-  @ApiProperty({ type: String, description: 'phone' })
+  @Length(10)
+  @ApiProperty({ type: String, description: 'Phone' })
   phone?: string;
 
   @IsOptional()
-  @IsDate()
-  @ApiProperty({ type: Date, description: 'DOB' })
-  DOB?: Date;
+  @IsString()
+  @ApiProperty({ type: String, description: 'About' })
+  about?: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ type: String, description: 'Country' })
+  country?: string;
 
   @IsEnum(Role)
   @IsNotEmpty()
-  @ApiProperty({ type: String, description: 'role' })
+  @ApiProperty({ type: String, description: 'Role' })
   role: string;
 
   @IsOptional()

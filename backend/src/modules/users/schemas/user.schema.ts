@@ -1,3 +1,4 @@
+import { Gender } from './../enums/index';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Exclude, Expose, Transform } from 'class-transformer';
@@ -29,23 +30,23 @@ export class User {
   @Exclude()
   password?: string;
 
-  @Prop({
-    enum: Role,
-    required: true,
-  })
+  @Prop({ enum: Role, required: true })
   role: string;
 
   @Prop({ required: true })
   avatar: string;
 
-  @Prop({ default: null })
+  @Prop({ enum: Gender, default: Gender.Male })
   gender?: string;
 
   @Prop({ default: null })
   phone?: string;
 
-  @Prop({ default: null })
-  DOB?: Date;
+  @Prop({ default: '' })
+  about?: string;
+
+  @Prop({ default: 'Vietnam' })
+  country?: string;
 
   @Prop({ default: null })
   @Exclude()
@@ -64,13 +65,16 @@ export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.methods.validatePassword = async function (
   password: string,
 ): Promise<boolean> {
-  return await bcrypt.compare(password, this.password);
+  return this.password && (await bcrypt.compare(password, this.password));
 };
 
 UserSchema.methods.validateRefreshToken = async function (
   refreshToken: string,
 ): Promise<boolean> {
-  return await bcrypt.compare(refreshToken.slice(-25), this.refreshToken);
+  return (
+    this.refreshToken &&
+    (await bcrypt.compare(refreshToken.slice(-25), this.refreshToken))
+  );
 };
 
 /* Hooks */
@@ -89,5 +93,9 @@ UserSchema.methods.preUpdate = async function (updatedUser: User) {
     updatedUser.refreshToken = await hashString(
       updatedUser.refreshToken.slice(-25),
     );
+  }
+
+  if (updatedUser?.avatar) {
+    updatedUser.avatar = `${process.env.APP_URL}/file/avatar/${updatedUser.avatar}`;
   }
 };

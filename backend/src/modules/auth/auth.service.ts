@@ -32,7 +32,7 @@ export class AuthService {
 
     const userDocument = await this.validateUser(email, password);
     if (!userDocument)
-      throw new UnauthorizedException('Wrong email or password');
+      throw new UnauthorizedException('Email or password is incorrect');
 
     const user = plainToClass(User, userDocument.toObject());
 
@@ -84,10 +84,8 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<UserDocument> {
     const user = await this.usersService.getByEmail(email);
 
-    if (user && user.password) {
-      if (await bcrypt.compare(password, user.password)) {
-        return user;
-      }
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return user;
     }
 
     return null;
@@ -99,10 +97,8 @@ export class AuthService {
   ): Promise<UserDocument> {
     const user = await this.usersService.getById(id);
 
-    if (user && user.refreshToken) {
-      if (await user.validateRefreshToken(refreshToken)) {
-        return user;
-      }
+    if (user && (await user.validateRefreshToken(refreshToken))) {
+      return user;
     }
 
     return null;

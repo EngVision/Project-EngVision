@@ -30,7 +30,11 @@ async function bootstrap() {
   );
 
   //setup pipes
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+    }),
+  );
 
   //setup swagger
   const config = new DocumentBuilder()
@@ -46,7 +50,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document, swaggerOptions);
 
-  await app.listen(port, () => console.log(`Server running on port ${port}`));
+  await app.listen(port);
+  console.log(`Server running on: ${await app.getUrl()}`);
 }
 
 bootstrap();

@@ -9,12 +9,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
+import { CurrentUser } from 'src/common/decorators';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload, JwtPayloadWithRt } from './types';
-import { CreateUserDto } from '../users/dto/create-user.dto';
 
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -26,11 +29,11 @@ export class AuthController {
 
     this.authService.attachTokensCookie(res, tokens);
 
-    return res.status(HttpStatus.ACCEPTED).send(user);
+    return res.status(HttpStatus.OK).send(user);
   }
 
   @Post('logout')
-  @UseGuards(AuthGuard('fwt'))
+  @UseGuards(AuthGuard('jwt'))
   async logout(
     @Req() req: Request & { user: JwtPayload },
     @Res() res: Response,
@@ -40,7 +43,7 @@ export class AuthController {
 
     await this.authService.logout(req.user.sub);
 
-    return res.status(HttpStatus.ACCEPTED).send('User logged out');
+    return res.status(HttpStatus.OK).send('User logged out');
   }
 
   @Post('register')
@@ -52,23 +55,23 @@ export class AuthController {
 
     this.authService.attachTokensCookie(res, tokens);
 
-    return res.status(HttpStatus.ACCEPTED).send(user);
+    return res.status(HttpStatus.CREATED).send(user);
   }
 
   @Get('refresh')
   @UseGuards(AuthGuard('jwt-refresh'))
   async refreshTokens(
-    @Req() req: Request & { user: JwtPayloadWithRt },
+    @CurrentUser() user: JwtPayloadWithRt,
     @Res() res: Response,
   ) {
     const tokens = await this.authService.refreshTokens(
-      req.user.sub,
-      req.user.refreshToken,
+      user.sub,
+      user.refreshToken,
     );
 
     this.authService.attachTokensCookie(res, tokens);
 
-    return res.status(HttpStatus.ACCEPTED).send(tokens);
+    return res.status(HttpStatus.OK).send(tokens);
   }
 
   /** Single Sign-On **/
@@ -79,7 +82,7 @@ export class AuthController {
 
     this.authService.attachTokensCookie(res, tokens);
 
-    return res.status(200).send(user);
+    return res.status(HttpStatus.CREATED).send(user);
   }
 
   @Get('facebook/login')
@@ -89,12 +92,6 @@ export class AuthController {
 
     this.authService.attachTokensCookie(res, tokens);
 
-    return res.status(200).send(user);
-  }
-
-  @Get('info')
-  @UseGuards(AuthGuard('jwt'))
-  getInfo(): string {
-    return 'Information';
+    return res.status(HttpStatus.CREATED).send(user);
   }
 }
