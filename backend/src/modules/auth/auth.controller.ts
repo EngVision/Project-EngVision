@@ -1,49 +1,100 @@
-import { Controller, Body, Post } from "@nestjs/common";
-import { ApiResponse, ApiTags } from "@nestjs/swagger";
-import { AuthService, ITokenReturnBody } from "./auth.service";
-import { LoginPayload } from "./payload/login.payload";
-import { RegisterPayload } from "./payload/register.payload";
-import { ProfileService } from "../profile/profile.service";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Request, Response } from 'express';
+import { AuthService } from './auth.service';
+import { LoginDto } from './dto/login.dto';
+import { JwtPayload, JwtPayloadWithRt } from './types';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 
-/**
- * Authentication Controller
- */
-@Controller("api/auth")
-@ApiTags("authentication")
+@Controller('auth')
 export class AuthController {
-  /**
-   * Constructor
-   * @param {AuthService} authService authentication service
-   * @param {ProfileService} profileService profile service
-   */
-  constructor(
-    private readonly authService: AuthService,
-    private readonly profileService: ProfileService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
-  /**
-   * Login route to validate and create tokens for users
-   * @param {LoginPayload} payload the login dto
-   */
-  @Post("login")
-  @ApiResponse({ status: 201, description: "Login Completed" })
-  @ApiResponse({ status: 400, description: "Bad Request" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
-  async login(@Body() payload: LoginPayload): Promise<ITokenReturnBody> {
-    const user = await this.authService.validateUser(payload);
-    return await this.authService.createToken(user);
+  /** Login, register with email and password **/
+  @Post('login')
+  async login(@Body() loginDto: LoginDto, @Res() res: Response) {
+    const { tokens, user } = await this.authService.login(loginDto);
+
+    this.authService.attachTokensCookie(res, tokens);
+
+    return res.status(HttpStatus.ACCEPTED).send(user);
   }
 
-  /**
-   * Registration route to create and generate tokens for users
-   * @param {RegisterPayload} payload the registration dto
-   */
-  @Post("register")
-  @ApiResponse({ status: 201, description: "Registration Completed" })
-  @ApiResponse({ status: 400, description: "Bad Request" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
-  async register(@Body() payload: RegisterPayload): Promise<ITokenReturnBody> {
-    const user = await this.profileService.create(payload);
-    return await this.authService.createToken(user);
+  @Post('logout')
+  @UseGuards(AuthGuard('fwt'))
+  async logout(
+    @Req() req: Request & { user: JwtPayload },
+    @Res() res: Response,
+  ) {
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+
+    await this.authService.logout(req.user.sub);
+
+    return res.status(HttpStatus.ACCEPTED).send('User logged out');
+  }
+
+  @Post('register')
+  async registerUser(
+    @Body() createUserDto: CreateUserDto,
+    @Res() res: Response,
+  ) {
+    const { tokens, user } = await this.authService.register(createUserDto);
+
+    this.authService.attachTokensCookie(res, tokens);
+
+    return res.status(HttpStatus.ACCEPTED).send(user);
+  }
+
+  @Get('refresh')
+  @UseGuards(AuthGuard('jwt-refresh'))
+  async refreshTokens(
+    @Req() req: Request & { user: JwtPayloadWithRt },
+    @Res() res: Response,
+  ) {
+    const tokens = await this.authService.refreshTokens(
+      req.user.sub,
+      req.user.refreshToken,
+    );
+
+    this.authService.attachTokensCookie(res, tokens);
+
+    return res.status(HttpStatus.ACCEPTED).send(tokens);
+  }
+
+  /** Single Sign-On **/
+  @Post('google/login')
+  @UseGuards(AuthGuard('google'))
+  async googleLogin(@Req() req, @Res() res: Response) {
+    const { tokens, user } = await this.authService.singleSignOn(req);
+
+    this.authService.attachTokensCookie(res, tokens);
+
+    return res.status(200).send(user);
+  }
+
+  @Get('facebook/login')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookLogin(@Req() req, @Res() res: Response) {
+    const { tokens, user } = await this.authService.singleSignOn(req);
+
+    this.authService.attachTokensCookie(res, tokens);
+
+    return res.status(200).send(user);
+  }
+
+  @Get('info')
+  @UseGuards(AuthGuard('jwt'))
+  getInfo(): string {
+    return 'Information';
   }
 }

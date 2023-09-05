@@ -1,52 +1,52 @@
-import { NestFactory } from "@nestjs/core";
+import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import {
+  DocumentBuilder,
+  SwaggerCustomOptions,
+  SwaggerModule,
+} from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
+import { AppModule } from './app.module';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import { AppModule } from "./modules/app/app.module";
-import { ValidationPipe } from "@nestjs/common";
-import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 
-/**
- * The url endpoint for open api ui
- * @type {string}
- */
-export const SWAGGER_API_ROOT = "api/docs";
-/**
- * The name of the api
- * @type {string}
- */
-export const SWAGGER_API_NAME = "API";
-/**
- * A short description of the api
- * @type {string}
- */
-export const SWAGGER_API_DESCRIPTION = "API Description";
-/**
- * Current version of the api
- * @type {string}
- */
-export const SWAGGER_API_CURRENT_VERSION = "1.0";
+async function bootstrap() {
+  const port = process.env.PORT || 5000;
 
-(async () => {
-  const app = await NestFactory.create(AppModule, {
-    logger: console,
-  });
-  const options = new DocumentBuilder()
-    .setTitle(SWAGGER_API_NAME)
-    .setDescription(SWAGGER_API_DESCRIPTION)
-    .setVersion(SWAGGER_API_CURRENT_VERSION)
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup(SWAGGER_API_ROOT, app, document);
+  const app = await NestFactory.create(AppModule);
+
+  //app config
+  app.setGlobalPrefix('api');
   app.enableCors();
+
+  //setup middleware
+  app.use(cookieParser());
   app.use(helmet());
   app.use(
     rateLimit({
       windowMs: 60 * 1000, // 1 minute in milliseconds
       max: 100, // limit each IP to 100 requests per minute
-    })
-  );  
+    }),
+  );
+
+  //setup pipes
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(9000, "0.0.0.0");
-})();
+  //setup swagger
+  const config = new DocumentBuilder()
+    .setTitle('EngVision API')
+    .setDescription('Click Try it out to see the API in action')
+    .setVersion('1.0')
+    .build();
+  const swaggerOptions: SwaggerCustomOptions = {
+    swaggerOptions: {
+      withCredentials: true,
+    },
+  };
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document, swaggerOptions);
+
+  await app.listen(port, () => console.log(`Server running on port ${port}`));
+}
+
+bootstrap();
