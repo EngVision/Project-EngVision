@@ -52,6 +52,9 @@ export class User {
   @Exclude()
   refreshToken?: string;
 
+  @Prop({ default: null })
+  randomString: string;
+
   @Prop({ default: false })
   isSSO?: boolean;
 

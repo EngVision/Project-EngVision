@@ -11,12 +11,25 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { unlink } from 'fs';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import randomStringGenerator = require('randomstring');
+import * as nodemailer from 'nodemailer';
+import { emailContent } from './template/email.content';
 
 @Injectable()
 export class UsersService {
+  private transporter;
+
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  ) {}
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>
+  ) {
+    this.transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'engvision.dev@gmail.com',
+        pass: process.env.MAIL_PASSWORD,
+      },
+    });
+  }
 
   /* Create new user */
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
@@ -89,6 +102,78 @@ export class UsersService {
       unlink(`upload/avatar/${fileName}`, err => {
         if (err) throw new InternalServerErrorException(err);
       });
+    }
+  }
+
+  async updateRandomString(user: UpdateUserDto, randomString: string) {
+    try {
+      return await this.userModel.findByIdAndUpdate(user._id, {
+        randomString: randomString,
+      });
+    } catch (error) {
+      console.log('update user service error', error);
+    }
+  }
+
+  async sendMail(filter: any, clientSide: any) {
+    const email = filter.email;
+    const userFindedByEmail = await this.userModel.findOne({ email });
+    const resetPasswordCode = randomStringGenerator.generate();
+    if (!userFindedByEmail) return false;
+    await this.updateRandomString(userFindedByEmail, resetPasswordCode);
+    const mailOptions = {
+      from: 'engvision.dev@gmail.com',
+      to: email,
+      subject: 'The reset password link for Engvision',
+      text: 'This is text property',
+      html: emailContent(
+        userFindedByEmail,
+        filter,
+        clientSide,
+        resetPasswordCode,
+      ),
+    };
+    await this.transporter.sendMail(mailOptions);
+    return true;
+  }
+
+  async validateResetPasswordLink(email: string, randomString: string) {
+    if (email === null) return false;
+    try {
+      const userFindedByEmailAndRandomString = await this.userModel.findOne({
+        email: email,
+        randomString: randomString,
+      });
+      if (userFindedByEmailAndRandomString === null) {
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async resetForgottenPassword(
+    email: string,
+    randomString: string,
+    newPassword: string,
+  ) {
+    if (email === null) return false;
+    try {
+      const userFindedByEmailAndRandomString = await this.userModel.findOne({
+        email: email,
+        randomString: randomString,
+      });
+      if (userFindedByEmailAndRandomString === null) {
+        return false;
+      }
+      userFindedByEmailAndRandomString.password = newPassword;
+      userFindedByEmailAndRandomString.randomString =
+        randomStringGenerator.generate();
+      await userFindedByEmailAndRandomString.save();
+      return true;
+    } catch (error) {
+      console.log('reset forgotten password fail with error: ', error);
     }
   }
 }

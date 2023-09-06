@@ -37,6 +37,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       role: req.body['role'],
       accessToken,
       refreshToken,
+      randomString: '',
     };
 
     done(null, user);
