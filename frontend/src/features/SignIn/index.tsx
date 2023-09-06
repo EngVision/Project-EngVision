@@ -1,16 +1,13 @@
 import { Button, Form, Input } from 'antd'
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
+import authApi from '../../api/authApi/authApi'
+import type { SignInParams } from '../../api/authApi/types'
 import appleIcon from '../../assets/images/apple.png'
 import facebookIcon from '../../assets/images/facebook.png'
 import googleIcon from '../../assets/images/google.png'
 import AuthLayout from '../../layouts/AuthLayout'
-
-type FieldType = {
-  username: string
-  password: string
-}
 
 const signInOptions = [
   {
@@ -28,8 +25,18 @@ const signInOptions = [
 ]
 
 const SignIn: React.FC = () => {
-  const onFinish = (values: FieldType) => {
+  const [error, setError] = useState<string>('')
+  const navigate = useNavigate()
+
+  const onFinish = async (values: SignInParams) => {
     console.log('values:', values)
+    try {
+      await authApi.signUp(values)
+      navigate('/')
+    } catch (error) {
+      console.log('error:', error.response.data)
+      setError(error.response.data.message)
+    }
   }
 
   return (
@@ -52,12 +59,7 @@ const SignIn: React.FC = () => {
             onFinish={onFinish}
             autoComplete="off"
           >
-            <Form.Item<FieldType>
-              name="username"
-              rules={[
-                { message: 'Please input your username!', required: true },
-              ]}
-            >
+            <Form.Item<SignInParams> name="email">
               <Input
                 placeholder="Email"
                 size="middle"
@@ -65,18 +67,15 @@ const SignIn: React.FC = () => {
               />
             </Form.Item>
 
-            <Form.Item<FieldType>
-              name="password"
-              rules={[
-                { message: 'Please input your password!', required: true },
-              ]}
-            >
+            <Form.Item<SignInParams> name="password">
               <Input.Password
                 placeholder="Password"
                 size="large"
                 className="rounded-[8px] h-[48px]"
               />
             </Form.Item>
+
+            {error && <p className="text-red-500">{error}</p>}
 
             <p className="text-[#CECED6] text-center my-[16px]">
               or continue with
