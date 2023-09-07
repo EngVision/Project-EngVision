@@ -11,16 +11,17 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { unlink } from 'fs';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import randomStringGenerator = require('randomstring');
-import * as nodemailer from 'nodemailer';
 import { emailContent } from './template/email.content';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import * as randomstring from 'randomstring';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class UsersService {
   private transporter;
 
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {
     this.transporter = nodemailer.createTransport({
       service: 'Gmail',
@@ -105,75 +106,61 @@ export class UsersService {
     }
   }
 
-  async updateRandomString(user: UpdateUserDto, randomString: string) {
+  async updateResetPasswordCode(
+    user: UpdateUserDto,
+    resetPasswordCode: string,
+  ) {
     try {
-      return await this.userModel.findByIdAndUpdate(user._id, {
-        randomString: randomString,
+      return await this.userModel.findByIdAndUpdate(user.id, {
+        resetPasswordCode: resetPasswordCode,
       });
     } catch (error) {
-      console.log('update user service error', error);
+      throw new InternalServerErrorException(error);
     }
   }
 
-  async sendMail(filter: any, clientSide: any) {
-    const email = filter.email;
-    const userFindedByEmail = await this.userModel.findOne({ email });
-    const resetPasswordCode = randomStringGenerator.generate();
-    if (!userFindedByEmail) return false;
-    await this.updateRandomString(userFindedByEmail, resetPasswordCode);
+  async sendMailResetPassword(email: string, referer: string) {
+    const user = await this.userModel.findOne({ email });
+    if (!user) return false;
+    const resetPasswordCode = randomstring.generate(10);
+    await this.updateResetPasswordCode(user, resetPasswordCode);
     const mailOptions = {
       from: 'engvision.dev@gmail.com',
       to: email,
       subject: 'The reset password link for Engvision',
       text: 'This is text property',
-      html: emailContent(
-        userFindedByEmail,
-        filter,
-        clientSide,
-        resetPasswordCode,
-      ),
+      html: emailContent(user, referer, resetPasswordCode),
     };
     await this.transporter.sendMail(mailOptions);
     return true;
   }
 
-  async validateResetPasswordLink(email: string, randomString: string) {
-    if (email === null) return false;
+  async validateResetPasswordUrl(resetPasswordCode: string) {
     try {
-      const userFindedByEmailAndRandomString = await this.userModel.findOne({
-        email: email,
-        randomString: randomString,
+      const user = await this.userModel.findOne({
+        resetPasswordCode: resetPasswordCode,
       });
-      if (userFindedByEmailAndRandomString === null) {
-        return false;
-      }
-      return true;
+      return !!user;
     } catch (error) {
-      console.log(error);
+      throw new InternalServerErrorException(error);
     }
   }
 
-  async resetForgottenPassword(
-    email: string,
-    randomString: string,
-    newPassword: string,
-  ) {
-    if (email === null) return false;
+  async resetForgottenPassword(resetPassword: ResetPasswordDto) {
     try {
-      const userFindedByEmailAndRandomString = await this.userModel.findOne({
-        email: email,
-        randomString: randomString,
+      const user = await this.userModel.findOne({
+        resetPasswordCode: resetPassword.resetPasswordCode,
       });
-      if (userFindedByEmailAndRandomString === null) {
-        return false;
-      }
-      userFindedByEmailAndRandomString.password = newPassword;
-      userFindedByEmailAndRandomString.randomString =
-        randomStringGenerator.generate();
-      await userFindedByEmailAndRandomString.save();
+
+      if (!user) return false;
+
+      user.password = resetPassword.newPassword;
+      user.resetPasswordCode = null;
+      await user.save();
+
       return true;
     } catch (error) {
-      console.log('reset forgotten password fail with error: ', error);
+      throw new InternalServerErrorException(error);
     }
   }
 }

@@ -8,5 +8,8 @@ export class UpdateUserDto extends PartialType(
   @IsOptional()
   @IsString()
   refreshToken?: string;
-  _id?: string;
+
+  @IsOptional()
+  @IsString()
+  id?: string;
 }

@@ -5,6 +5,7 @@ import { Exclude, Expose, Transform } from 'class-transformer';
 import { Document } from 'mongoose';
 import { hashString } from 'src/common/utils';
 import { Role } from '../enums';
+import { IsOptional } from 'class-validator';
 
 export type UserDocument = User & Document;
 
@@ -52,8 +53,9 @@ export class User {
   @Exclude()
   refreshToken?: string;
 
+  @IsOptional()
   @Prop({ default: null })
-  randomString: string;
+  resetPasswordCode?: string;
 
   @Prop({ default: false })
   isSSO?: boolean;

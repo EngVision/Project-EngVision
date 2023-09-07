@@ -144,7 +144,6 @@ export class AuthService {
         avatar: req.user.avatar,
         role: req.user.role || Role.STUDENT,
         isSSO: true,
-        randomString: '',
       });
       const newUser = plainToClass(User, newUserDocument.toObject());
 

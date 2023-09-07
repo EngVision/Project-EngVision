@@ -9,8 +9,7 @@ import {
   Res,
   HttpStatus,
   Post,
-  Req,
-  Get,
+  Headers,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -23,11 +22,11 @@ import { UsersService } from './users.service';
 import { Response } from 'express';
 import { User } from './schemas/user.schema';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { ApiBody } from '@nestjs/swagger';
 import { ValidateResetPasswordPageDto } from './dto/validate-reset-password-page.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { EmailDto } from './dto/email.dto';
 
-@ApiTags('User profile')
+@ApiTags('Account')
 @Controller('account')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -66,34 +65,44 @@ export class UsersController {
     return res.status(HttpStatus.OK).send('The user password was changed');
   }
 
-  @Get('sendmail')
-  async sendMail(@Req() req, @Res() res: Response) {
-    const rawHeaders = req.rawHeaders;
-    const clientSide = rawHeaders[rawHeaders.indexOf('Referer') + 1];
-    const filter = req.query;
-    if (!filter) return res.status(200).send(false);
-    const result = await this.usersService.sendMail(filter, clientSide);
-    return res.status(200).send(result);
-  }
-
-  @Post('validateEmailAndRandomString')
-  @ApiBody({ type: ValidateResetPasswordPageDto })
-  async validateResetPasswordUrl(
-    @Body() linkInfo: ValidateResetPasswordPageDto,
+  @Post('forgot-password')
+  async forgotPassword(
+    @Headers('referer') referer: string,
+    @Body() body: EmailDto,
+    @Res() res: Response,
   ) {
-    return await this.usersService.validateResetPasswordLink(
-      linkInfo.email,
-      linkInfo.randomString,
+    const result = await this.usersService.sendMailResetPassword(
+      body.email,
+      referer,
+    );
+    if (!result)
+      res.status(HttpStatus.NOT_FOUND).send({ message: 'Email not found' });
+    return res
+      .status(HttpStatus.OK)
+      .send({ message: 'We have just sent you an email' });
+  }
+
+  @Post('validate-reset-password-url')
+  async validateResetPasswordUrl(@Body() body: ValidateResetPasswordPageDto) {
+    return await this.usersService.validateResetPasswordUrl(
+      body.resetPasswordCode,
     );
   }
 
-  @Post('resetForgottenPassword')
-  @ApiBody({ type: ResetPasswordDto })
-  resetForgottenPassword(@Body() resetPassword: ResetPasswordDto) {
-    return this.usersService.resetForgottenPassword(
-      resetPassword.email,
-      resetPassword.randomString,
-      resetPassword.newPassword,
+  @Post('reset-forgotten-password')
+  async resetForgottenPassword(
+    @Body() resetPassword: ResetPasswordDto,
+    @Res() res: Response,
+  ) {
+    const result = await this.usersService.resetForgottenPassword(
+      resetPassword,
     );
+    if (!result)
+      res
+        .status(HttpStatus.NOT_FOUND)
+        .send({ message: 'Reset password code not found' });
+    return res
+      .status(HttpStatus.OK)
+      .send({ message: 'New password have been updated' });
   }
 }

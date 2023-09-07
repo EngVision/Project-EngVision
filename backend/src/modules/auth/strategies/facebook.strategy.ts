@@ -36,7 +36,6 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
       role: req.body['role'],
       accessToken,
       refreshToken,
-      randomString: '',
     };
 
     done(null, user);
