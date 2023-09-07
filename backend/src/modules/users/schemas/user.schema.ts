@@ -53,7 +53,6 @@ export class User {
   @Exclude()
   refreshToken?: string;
 
-  @IsOptional()
   @Prop({ default: null })
   resetPasswordCode?: string;
 

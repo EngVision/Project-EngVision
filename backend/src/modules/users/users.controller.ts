@@ -9,7 +9,6 @@ import {
   Res,
   HttpStatus,
   Post,
-  Headers,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -66,15 +65,8 @@ export class UsersController {
   }
 
   @Post('forgot-password')
-  async forgotPassword(
-    @Headers('referer') referer: string,
-    @Body() body: EmailDto,
-    @Res() res: Response,
-  ) {
-    const result = await this.usersService.sendMailResetPassword(
-      body.email,
-      referer,
-    );
+  async forgotPassword(@Body() body: EmailDto, @Res() res: Response) {
+    const result = await this.usersService.sendMailResetPassword(body.email);
     if (!result)
       res.status(HttpStatus.NOT_FOUND).send({ message: 'Email not found' });
     return res

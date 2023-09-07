@@ -106,12 +106,9 @@ export class UsersService {
     }
   }
 
-  async updateResetPasswordCode(
-    user: UpdateUserDto,
-    resetPasswordCode: string,
-  ) {
+  async updateResetPasswordCode(id: string, resetPasswordCode: string) {
     try {
-      return await this.userModel.findByIdAndUpdate(user.id, {
+      return await this.userModel.findByIdAndUpdate(id, {
         resetPasswordCode: resetPasswordCode,
       });
     } catch (error) {
@@ -119,17 +116,17 @@ export class UsersService {
     }
   }
 
-  async sendMailResetPassword(email: string, referer: string) {
+  async sendMailResetPassword(email: string) {
     const user = await this.userModel.findOne({ email });
     if (!user) return false;
     const resetPasswordCode = randomstring.generate(10);
-    await this.updateResetPasswordCode(user, resetPasswordCode);
+    await this.updateResetPasswordCode(user.id, resetPasswordCode);
     const mailOptions = {
       from: 'engvision.dev@gmail.com',
       to: email,
       subject: 'The reset password link for Engvision',
       text: 'This is text property',
-      html: emailContent(user, referer, resetPasswordCode),
+      html: emailContent(user, resetPasswordCode),
     };
     await this.transporter.sendMail(mailOptions);
     return true;
