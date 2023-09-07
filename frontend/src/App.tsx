@@ -1,27 +1,53 @@
-import React from 'react'
-import { Provider as ReduxStoreProvider } from 'react-redux'
-import { Routes, Route } from 'react-router-dom'
-import { HistoryRouter } from 'redux-first-history/rr6'
+import React, { useEffect } from 'react'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 
-import './features/Counter/index.module.css'
-import Counter from './features/Counter/index'
-import DocumentList from './features/DocumentList'
-import SignIn from './features/SignIn'
-import SignUp from './features/SignUp'
-import { history, store } from './store'
+import { useAppSelector } from './hooks/redux'
+import DefaultLayout from './layouts/DefaultLayout'
+import NoLayout from './layouts/NoLayout'
+import { setUserAccountId } from './redux/app/slice'
+import { publicRoutes } from './routes'
+import { ROUTES } from './utils/constants'
 
 const App: React.FC = () => {
+  const userAccountId = useAppSelector((state) => state.app.userAccountId)
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!userAccountId) {
+      const id = localStorage.getItem('userAccountId')
+      if (id) {
+        setUserAccountId(id)
+      } else {
+        navigate(ROUTES.signIn)
+      }
+    }
+  }, [])
+
   return (
-    <ReduxStoreProvider store={store}>
-      <HistoryRouter history={history}>
-        <Routes>
-          <Route path="/" element={<Counter />} />
-          <Route path="/doclist" element={<DocumentList />} />
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />} />
-        </Routes>
-      </HistoryRouter>
-    </ReduxStoreProvider>
+    <Routes>
+      {publicRoutes.map((route) => {
+        const Comp = route.element
+        let Layout = DefaultLayout
+
+        if (route.layout === null) {
+          Layout = NoLayout
+        } else if (route.layout) {
+          Layout = route.layout
+        }
+        return (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={
+              <Layout>
+                <Comp />
+              </Layout>
+            }
+          />
+        )
+      })}
+    </Routes>
   )
 }
 

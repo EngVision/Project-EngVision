@@ -1,10 +1,8 @@
 import React from 'react'
 
-type Props = {
-  children: React.ReactNode
-}
+import type { LayoutProps } from './types'
 
-const AuthLayout = ({ children }: Props) => {
+const AuthLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="w-[100vw] h-[100vh] flex items-center justify-center bg-slate-300">
       {children}
