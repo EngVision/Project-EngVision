@@ -30,8 +30,8 @@ export class User {
   @Exclude()
   password?: string;
 
-  @Prop({ enum: Role, required: true })
-  role: string;
+  @Prop({ enum: Role, required: true, default: Role.Student })
+  role: Role;
 
   @Prop({ required: true })
   avatar: string;

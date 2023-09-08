@@ -72,9 +72,11 @@ export class UsersService {
     const user = await this.getById(id);
 
     if (user && (await user.validatePassword(updatePasswordDto.oldPassword))) {
-      return await this.userModel.findByIdAndUpdate(id, {
-        password: updatePasswordDto.password,
-      });
+      user.password = updatePasswordDto.password;
+
+      await user.save();
+
+      return user;
     }
 
     throw new BadRequestException('Old password is incorrect');

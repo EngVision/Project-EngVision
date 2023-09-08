@@ -1,34 +1,36 @@
-import { plainToClass } from 'class-transformer';
 import {
   Body,
   Controller,
+  ForbiddenException,
+  HttpStatus,
+  Param,
   Patch,
+  Post,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
-  Res,
-  HttpStatus,
-  Post,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { plainToClass } from 'class-transformer';
+import { Response } from 'express';
 import { multerOptions } from 'src/common/config';
 import { CurrentUser } from 'src/common/decorators';
+import { AtGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UsersService } from './users.service';
-import { Response } from 'express';
-import { User } from './schemas/user.schema';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './schemas/user.schema';
+import { UsersService } from './users.service';
 
 @ApiTags('User profile')
 @Controller('account')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Patch('update-profile')
-  @UseGuards(AuthGuard('jwt'))
+  @Patch('profile')
+  @UseGuards(AtGuard)
   @UseInterceptors(FileInterceptor('avatar', multerOptions('avatar', 'image')))
   @ApiConsumes('multipart/form-data')
   async updateProfile(
@@ -49,8 +51,8 @@ export class UsersController {
       .send(plainToClass(User, updatedUser.toObject()));
   }
 
-  @Post('change-password')
-  @UseGuards(AuthGuard('jwt'))
+  @Post('password')
+  @UseGuards(AtGuard)
   async updatePassword(
     @CurrentUser() user: JwtPayload,
     @Body() updatePasswordDto: UpdatePasswordDto,

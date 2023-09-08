@@ -63,7 +63,7 @@ export class CreateUserDto {
 
   @IsEnum(Role)
   @IsNotEmpty()
-  @ApiProperty({ type: String, description: 'Role' })
+  @ApiProperty({ enum: Role, description: 'Role' })
   role: string;
 
   @IsOptional()

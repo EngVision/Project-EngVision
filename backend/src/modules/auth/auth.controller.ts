@@ -8,14 +8,21 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { CurrentUser } from 'src/common/decorators';
+import {
+  AtGuard,
+  FacebookGuard,
+  GoogleGuard,
+  RoleGuard,
+  RtGuard,
+} from 'src/common/guards';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload, JwtPayloadWithRt } from './types';
+import { Role } from '../users/enums';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -33,7 +40,7 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AtGuard)
   async logout(
     @Req() req: Request & { user: JwtPayload },
     @Res() res: Response,
@@ -59,7 +66,7 @@ export class AuthController {
   }
 
   @Get('refresh')
-  @UseGuards(AuthGuard('jwt-refresh'))
+  @UseGuards(RtGuard)
   async refreshTokens(
     @CurrentUser() user: JwtPayloadWithRt,
     @Res() res: Response,
@@ -76,7 +83,7 @@ export class AuthController {
 
   /** Single Sign-On **/
   @Get('google/login')
-  @UseGuards(AuthGuard('google'))
+  @UseGuards(GoogleGuard)
   async googleLogin(@Req() req, @Res() res: Response) {
     const { tokens, user } = await this.authService.singleSignOn(req);
 
@@ -86,12 +93,31 @@ export class AuthController {
   }
 
   @Get('facebook/login')
-  @UseGuards(AuthGuard('facebook'))
+  @UseGuards(FacebookGuard)
   async facebookLogin(@Req() req, @Res() res: Response) {
     const { tokens, user } = await this.authService.singleSignOn(req);
 
     this.authService.attachTokensCookie(res, tokens);
 
     return res.status(HttpStatus.CREATED).send(user);
+  }
+
+  /*RoleGuard Testing*/
+  @Get('admin')
+  @UseGuards(AtGuard, RoleGuard(Role.Admin))
+  getAdmin() {
+    return 'Admin';
+  }
+
+  @Get('teacher')
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  getTeacher() {
+    return 'Admin, Teacher';
+  }
+
+  @Get('student')
+  @UseGuards(AtGuard, RoleGuard(Role.Student))
+  getStudent() {
+    return 'Admin, Student';
   }
 }
