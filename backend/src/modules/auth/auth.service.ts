@@ -36,7 +36,7 @@ export class AuthService {
 
     const user = plainToClass(User, userDocument.toObject());
 
-    const tokens = await this.getTokens(user.id, user.email);
+    const tokens = await this.getTokens(user);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return { tokens, user };
@@ -64,7 +64,7 @@ export class AuthService {
 
     const user = plainToClass(User, userDocument.toObject());
 
-    const tokens = await this.getTokens(user.id, user.email);
+    const tokens = await this.getTokens(user);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return { tokens, user };
@@ -75,7 +75,7 @@ export class AuthService {
 
     if (!user) throw new ForbiddenException('Access denied');
 
-    const tokens = await this.getTokens(id, user.email);
+    const tokens = await this.getTokens(user);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
@@ -104,13 +104,22 @@ export class AuthService {
     return null;
   }
 
-  async getTokens(userId: string, email: string): Promise<Tokens> {
-    const payload: JwtPayload = {
-      sub: userId,
-      email: email,
+  async getTokens(user: User): Promise<Tokens> {
+    const { id, email, role } = user;
+
+    const roles = {
+      [Role.Admin]: [Role.Admin, Role.Student, Role.Teacher],
+      [Role.Teacher]: [Role.Teacher],
+      [Role.Student]: [Role.Student],
     };
 
-    const [access_token, refresh_token] = await Promise.all([
+    const payload: JwtPayload = {
+      sub: id,
+      email,
+      roles: roles[role],
+    };
+
+    const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: process.env.AT_SECRET,
         expiresIn: process.env.AT_EXPIRATION_TIME,
@@ -122,8 +131,8 @@ export class AuthService {
     ]);
 
     return {
-      accessToken: access_token,
-      refreshToken: refresh_token,
+      accessToken,
+      refreshToken,
     };
   }
 
@@ -142,19 +151,19 @@ export class AuthService {
         firstName: req.user.firstName,
         lastName: req.user.lastName,
         avatar: req.user.avatar,
-        role: req.user.role || Role.STUDENT,
+        role: req.user.role || Role.Student,
         isSSO: true,
       });
       const newUser = plainToClass(User, newUserDocument.toObject());
 
-      const tokens = await this.getTokens(newUser.id, newUser.email);
+      const tokens = await this.getTokens(newUser);
       await this.updateRefreshToken(newUser.id, tokens.refreshToken);
       return { tokens, user: newUser };
     }
 
     const user = plainToClass(User, userDocument.toObject());
 
-    const tokens = await this.getTokens(user.id, user.email);
+    const tokens = await this.getTokens(user);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return { tokens, user };

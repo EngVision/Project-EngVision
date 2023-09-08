@@ -24,13 +24,10 @@ export class CreateUserDto {
   @ApiProperty({ type: String, description: 'Last name' })
   lastName?: string;
 
-  @IsNotEmpty()
   @IsEmail()
   @ApiProperty({ type: String, description: 'Email' })
   email: string;
 
-  @MinLength(8)
-  @MaxLength(24)
   @IsStrongPassword()
   @ApiProperty({ type: String, description: 'Password' })
   password: string;
@@ -63,7 +60,7 @@ export class CreateUserDto {
 
   @IsEnum(Role)
   @IsNotEmpty()
-  @ApiProperty({ type: String, description: 'Role' })
+  @ApiProperty({ enum: Role, description: 'Role' })
   role: string;
 
   @IsOptional()

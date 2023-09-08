@@ -1,15 +1,14 @@
-import { Gender } from './../enums/index';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Exclude, Expose, Transform } from 'class-transformer';
 import { Document } from 'mongoose';
 import { hashString } from 'src/common/utils';
 import { Role } from '../enums';
-import { IsOptional } from 'class-validator';
+import { Gender } from './../enums/index';
 
 export type UserDocument = User & Document;
 
-@Schema({ versionKey: false })
+@Schema({ versionKey: false, timestamps: true })
 export class User {
   @Expose({ name: '_id' })
   @Transform(value => value.obj._id.toString())
@@ -31,8 +30,8 @@ export class User {
   @Exclude()
   password?: string;
 
-  @Prop({ enum: Role, required: true })
-  role: string;
+  @Prop({ enum: Role, required: true, default: Role.Student })
+  role: Role;
 
   @Prop({ required: true })
   avatar: string;
@@ -43,7 +42,7 @@ export class User {
   @Prop({ default: null })
   phone?: string;
 
-  @Prop({ default: '' })
+  @Prop({ default: null })
   about?: string;
 
   @Prop({ default: 'Vietnam' })
@@ -54,6 +53,7 @@ export class User {
   refreshToken?: string;
 
   @Prop({ default: null })
+  @Exclude()
   resetPasswordCode?: string;
 
   @Prop({ default: false })

@@ -1,20 +1,20 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
-  BadRequestException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { unlink } from 'fs';
 import * as gravatar from 'gravatar';
 import { Model } from 'mongoose';
+import * as nodemailer from 'nodemailer';
+import * as randomstring from 'randomstring';
 import { CreateUserDto } from './dto/create-user.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './schemas/user.schema';
-import { unlink } from 'fs';
-import { UpdatePasswordDto } from './dto/update-password.dto';
 import { emailContent } from './template/email.content';
-import { ResetPasswordDto } from './dto/reset-password.dto';
-import * as randomstring from 'randomstring';
-import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class UsersService {
@@ -86,9 +86,11 @@ export class UsersService {
     const user = await this.getById(id);
 
     if (user && (await user.validatePassword(updatePasswordDto.oldPassword))) {
-      return await this.userModel.findByIdAndUpdate(id, {
-        password: updatePasswordDto.password,
-      });
+      user.password = updatePasswordDto.password;
+
+      await user.save();
+
+      return user;
     }
 
     throw new BadRequestException('Old password is incorrect');
