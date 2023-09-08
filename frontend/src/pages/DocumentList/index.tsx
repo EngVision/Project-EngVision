@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import Spinner from '../../compoments/Spinner'
-import { useGetDocsListQuery } from '../../services/docs'
+import { useGetDocsListQuery } from '../../services/docsApi'
 
 import styles from './index.module.css'
 
@@ -19,7 +19,7 @@ const DocumentList: React.FC = () => {
   return (
     <main className={styles.container}>
       <Link to="/" className={styles.link}>
-        &gt; Counter
+        &gt; Home
       </Link>
       <header className={styles.header}>
         <h1>Document List</h1>

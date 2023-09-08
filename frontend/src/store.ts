@@ -4,8 +4,9 @@ import { createBrowserHistory } from 'history'
 import { combineReducers } from 'redux'
 import { createReduxHistoryContext } from 'redux-first-history'
 
-import counterReducer from './features/Counter/counterSlice'
-import { docsApi } from './services/docs'
+import appReducer from './redux/app/slice'
+import counterReducer from './redux/counter/slice'
+import { docsApi } from './services/docsApi'
 
 // Setup redux-first-history
 const { createReduxHistory, routerMiddleware, routerReducer } =
@@ -15,6 +16,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([docsApi.middleware, routerMiddleware]),
   reducer: combineReducers({
+    app: appReducer,
     counter: counterReducer,
     router: routerReducer,
     [docsApi.reducerPath]: docsApi.reducer,
