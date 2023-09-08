@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 
 import { useAppSelector } from './hooks/redux'
 import DefaultLayout from './layouts/DefaultLayout'
@@ -13,12 +13,16 @@ const App: React.FC = () => {
 
   const navigate = useNavigate()
 
+  const location = useLocation()
+
   useEffect(() => {
     if (!userAccountId) {
       const id = localStorage.getItem('userAccountId')
       if (id) {
         setUserAccountId(id)
-      } else {
+      } else if (
+        !publicRoutes.find((route) => route.path === location.pathname)
+      ) {
         navigate(ROUTES.signIn)
       }
     }

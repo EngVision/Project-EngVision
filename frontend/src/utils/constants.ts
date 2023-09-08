@@ -4,8 +4,8 @@ import googleIcon from '../assets/images/google.png'
 export const ROUTES = {
   docList: '/doclist',
   home: '/',
-  signIn: 'sign-in',
-  signUp: 'sign-up',
+  signIn: '/sign-in',
+  signUp: '/sign-up',
 }
 
 export const SIGN_IN_VENDORS = [
