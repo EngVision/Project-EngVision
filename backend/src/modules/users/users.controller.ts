@@ -1,9 +1,7 @@
 import {
   Body,
   Controller,
-  ForbiddenException,
   HttpStatus,
-  Param,
   Patch,
   Post,
   Res,
@@ -19,12 +17,15 @@ import { multerOptions } from 'src/common/config';
 import { CurrentUser } from 'src/common/decorators';
 import { AtGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
+import { EmailDto } from './dto/email.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ValidateResetPasswordPageDto } from './dto/validate-reset-password-page.dto';
 import { User } from './schemas/user.schema';
 import { UsersService } from './users.service';
 
-@ApiTags('User profile')
+@ApiTags('Account')
 @Controller('account')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -61,5 +62,39 @@ export class UsersController {
     await this.usersService.updatePassword(user.sub, updatePasswordDto);
 
     return res.status(HttpStatus.OK).send('The user password was changed');
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() body: EmailDto, @Res() res: Response) {
+    const result = await this.usersService.sendMailResetPassword(body.email);
+    if (!result)
+      res.status(HttpStatus.NOT_FOUND).send({ message: 'Email not found' });
+    return res
+      .status(HttpStatus.OK)
+      .send({ message: 'We have just sent you an email' });
+  }
+
+  @Post('validate-reset-password-url')
+  async validateResetPasswordUrl(@Body() body: ValidateResetPasswordPageDto) {
+    return await this.usersService.validateResetPasswordUrl(
+      body.resetPasswordCode,
+    );
+  }
+
+  @Post('reset-forgotten-password')
+  async resetForgottenPassword(
+    @Body() resetPassword: ResetPasswordDto,
+    @Res() res: Response,
+  ) {
+    const result = await this.usersService.resetForgottenPassword(
+      resetPassword,
+    );
+    if (!result)
+      res
+        .status(HttpStatus.NOT_FOUND)
+        .send({ message: 'Reset password code not found' });
+    return res
+      .status(HttpStatus.OK)
+      .send({ message: 'New password have been updated' });
   }
 }
