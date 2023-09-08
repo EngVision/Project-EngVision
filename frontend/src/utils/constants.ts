@@ -18,3 +18,18 @@ export const SIGN_IN_VENDORS = [
     name: 'Facebook',
   },
 ]
+
+export const ROLES = {
+  admin: {
+    label: 'Admin',
+    value: 'Admin',
+  },
+  student: {
+    label: 'Student',
+    value: 'Student',
+  },
+  teacher: {
+    label: 'Teacher',
+    value: 'Teacher',
+  },
+}

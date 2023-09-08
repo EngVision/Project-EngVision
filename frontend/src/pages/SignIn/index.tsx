@@ -2,21 +2,24 @@ import { Button, Form, Input } from 'antd'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
+import { useAppDispatch } from '../../hooks/redux'
 import { setUserAccountId } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
 import { SIGN_IN_VENDORS } from '../../utils/constants'
 
 const SignIn: React.FC = () => {
-  const [error, setError] = useState<string>('')
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+
+  const [error, setError] = useState<string>('')
 
   const onFinish = async (values: SignInParams) => {
     try {
       const {
         data: { id },
       } = await authApi.signIn(values)
-      setUserAccountId(id)
+      dispatch(setUserAccountId(id))
       localStorage.setItem('userAccountId', JSON.stringify(id))
       navigate('/')
     } catch (error) {
@@ -40,6 +43,7 @@ const SignIn: React.FC = () => {
           initialValues={{ remember: true }}
           onFinish={onFinish}
           autoComplete="off"
+          onChange={() => setError('')}
         >
           <Form.Item<SignInParams>
             name="email"
@@ -49,7 +53,6 @@ const SignIn: React.FC = () => {
               placeholder="Email"
               size="middle"
               className="rounded-[8px] h-[44px]"
-              onChange={() => setError('')}
             />
           </Form.Item>
 
@@ -61,7 +64,6 @@ const SignIn: React.FC = () => {
               placeholder="Password"
               size="large"
               className="rounded-[8px] h-[44px]"
-              onChange={() => setError('')}
             />
           </Form.Item>
 

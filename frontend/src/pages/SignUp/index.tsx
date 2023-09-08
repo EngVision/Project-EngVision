@@ -1,20 +1,30 @@
-import { Button, Form, Checkbox, Input } from 'antd'
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { Button, Form, Checkbox, Input, Select } from 'antd'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
-type FieldType = {
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  confirmPassword: string
-  accepted: boolean
-}
+import { useAppDispatch } from '../../hooks/redux'
+import { setUserAccountId } from '../../redux/app/slice'
+import authApi from '../../services/authApi'
+import type { SignUpParams } from '../../services/authApi/types'
+import { ROLES } from '../../utils/constants'
 
 const SignUp: React.FC = () => {
-  const onFinish = (values: FieldType) => {
-    // TODO: implement sign up
-    console.log('values:', values)
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+
+  const [error, setError] = useState<string>('')
+
+  const onFinish = async (values: SignUpParams) => {
+    try {
+      const {
+        data: { id },
+      } = await authApi.signUp(values)
+      dispatch(setUserAccountId(id))
+      localStorage.setItem('userAccountId', JSON.stringify(id))
+      navigate('/')
+    } catch (error) {
+      setError(error.response.data.message)
+    }
   }
 
   return (
@@ -32,11 +42,12 @@ const SignUp: React.FC = () => {
         <Form
           name="basic"
           style={{ maxWidth: 600 }}
-          initialValues={{ remember: true }}
+          initialValues={{ accepted: false }}
           onFinish={onFinish}
           autoComplete="off"
+          onChange={() => setError('')}
         >
-          <Form.Item<FieldType>
+          <Form.Item<SignUpParams>
             name="firstName"
             rules={[
               { message: 'Please input your first name!', required: true },
@@ -48,7 +59,8 @@ const SignUp: React.FC = () => {
               className="rounded-[8px] h-[44px]"
             />
           </Form.Item>
-          <Form.Item<FieldType>
+
+          <Form.Item<SignUpParams>
             name="lastName"
             rules={[
               { message: 'Please input your last name!', required: true },
@@ -60,7 +72,8 @@ const SignUp: React.FC = () => {
               className="rounded-[8px] h-[44px]"
             />
           </Form.Item>
-          <Form.Item<FieldType>
+
+          <Form.Item<SignUpParams>
             name="email"
             rules={[{ message: 'Please input your email!', required: true }]}
           >
@@ -70,7 +83,8 @@ const SignUp: React.FC = () => {
               className="rounded-[8px] h-[44px]"
             />
           </Form.Item>
-          <Form.Item<FieldType>
+
+          <Form.Item<SignUpParams>
             name="password"
             rules={[{ message: 'Please input your password!', required: true }]}
           >
@@ -80,7 +94,8 @@ const SignUp: React.FC = () => {
               className="rounded-[8px] h-[44px]"
             />
           </Form.Item>
-          <Form.Item<FieldType>
+
+          <Form.Item<SignUpParams>
             name="confirmPassword"
             rules={[
               {
@@ -95,7 +110,37 @@ const SignUp: React.FC = () => {
               className="rounded-[8px] h-[44px]"
             />
           </Form.Item>
-          <Form.Item<FieldType> name="accepted" valuePropName="checked">
+
+          <Form.Item<SignUpParams>
+            name="phoneNumber"
+            rules={[
+              { message: 'Please input your phone number!', required: true },
+            ]}
+          >
+            <Input
+              placeholder="Phone Number"
+              className="rounded-[8px] h-[44px]"
+            />
+          </Form.Item>
+
+          <Form.Item<SignUpParams>
+            name="role"
+            rules={[{ message: 'Please choose your role!', required: true }]}
+          >
+            <Select
+              onChange={(value) => {
+                console.log(value)
+              }}
+              placeholder="Role"
+              options={Object.values(ROLES)}
+              className="[& *]:h-44"
+              size="large"
+            />
+          </Form.Item>
+
+          {error && <p className="text-red-500">{error}</p>}
+
+          <Form.Item<SignUpParams> name="accepted" valuePropName="checked">
             <Checkbox>
               I accept
               <Link
@@ -106,6 +151,7 @@ const SignUp: React.FC = () => {
               </Link>
             </Checkbox>
           </Form.Item>
+
           <Form.Item className="text-center">
             <Button
               type="primary"
@@ -116,6 +162,7 @@ const SignUp: React.FC = () => {
               Sign Up
             </Button>
           </Form.Item>
+
           <p className="text-center text-[#9D9DAD]">
             Have an account?
             <Link to="/sign-in" className="font-semibold text-[#0073EA] pl-2">
