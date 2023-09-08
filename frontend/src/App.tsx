@@ -21,7 +21,8 @@ const App: React.FC = () => {
       if (id) {
         setUserAccountId(id)
       } else if (
-        !publicRoutes.find((route) => route.path === location.pathname)
+        !publicRoutes.find((route) => route.path === location.pathname) &&
+        !location.pathname.includes('reset-password')
       ) {
         navigate(ROUTES.signIn)
       }
