@@ -22,7 +22,6 @@ const SignIn: React.FC = () => {
         data: { id },
       } = await authApi.signIn(values)
       dispatch(setUserAccountId(id))
-      localStorage.setItem('userAccountId', JSON.stringify(id))
       navigate(ROUTES.home)
     } catch (error) {
       setError(error.response.data.message)
@@ -33,7 +32,6 @@ const SignIn: React.FC = () => {
     try {
       const { data } = await authApi.fetchAuthUser()
 
-      localStorage.setItem('userAccountId', JSON.stringify(data.id))
       dispatch(setUserAccountId(data.id))
       navigate(ROUTES.home)
       clearInterval(timer)

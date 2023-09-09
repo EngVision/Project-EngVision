@@ -20,7 +20,6 @@ const SignUp: React.FC = () => {
         data: { id },
       } = await authApi.signUp(values)
       dispatch(setUserAccountId(id))
-      localStorage.setItem('userAccountId', JSON.stringify(id))
       navigate(ROUTES.home)
     } catch (error) {
       setError(error.response.data.message)
