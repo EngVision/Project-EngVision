@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Email } from '../../services/accountApi/types'
 import accountApi from '../../services/accountApi'
+import { toast } from 'react-toastify'
+import { ROUTES } from '../../utils/constants'
 
 const SendMailResetPassword: React.FC = () => {
   const [error, setError] = useState<string>('');
@@ -48,8 +50,9 @@ const SendMailResetPassword: React.FC = () => {
     try {
       const rs = await accountApi.sendMailForgotPassword(values);
       if(rs.status === 200) {
-        alert(rs.data.message);
+        toast.success(rs.data.message);
       }
+      else toast.error('Send mail failed');
     } catch (error) {
       setSentMail(false);
       setError(error.response.data.message);
@@ -79,7 +82,7 @@ const SendMailResetPassword: React.FC = () => {
             name="email"
             className="mb-[0px]"
             rules={[{ 
-              validator(rule, value) {
+              validator(_, value) {
                 return new Promise((resolve, reject) => {
                   if(validateEmail(value)) {
                     resolve('');
@@ -111,7 +114,10 @@ const SendMailResetPassword: React.FC = () => {
             </Button>
           </Form.Item>
 
-          <p className="text-[#0073EA] text-[22px] font-semibold text-center cursor-pointer my-[28px]" onClick={() => navigate('/sign-in')}>
+          <p
+            className="text-[#0073EA] text-[22px] font-semibold text-center cursor-pointer my-[28px]"
+            onClick={() => navigate(ROUTES.signIn)}
+          >
             Return to Sign In?
           </p>
 

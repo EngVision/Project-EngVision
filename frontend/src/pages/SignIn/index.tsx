@@ -6,7 +6,7 @@ import { useAppDispatch } from '../../hooks/redux'
 import { setUserAccountId } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
-import { SIGN_IN_VENDORS } from '../../utils/constants'
+import { SIGN_IN_VENDORS, ROUTES } from '../../utils/constants'
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate()
@@ -90,7 +90,7 @@ const SignIn: React.FC = () => {
 
           <p
             className="text-[#0073EA] font-semibold text-right cursor-pointer my-[28px]"
-            onClick={() => navigate('/forgot-password')}
+            onClick={() => navigate(ROUTES.sendMailResetPassword)}
           >
             Forgot password?
           </p>
