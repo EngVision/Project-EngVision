@@ -6,7 +6,7 @@ import { useAppDispatch } from '../../hooks/redux'
 import { setUserAccountId } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignUpParams } from '../../services/authApi/types'
-import { ROLES } from '../../utils/constants'
+import { ROLES, ROUTES } from '../../utils/constants'
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate()
@@ -21,7 +21,7 @@ const SignUp: React.FC = () => {
       } = await authApi.signUp(values)
       dispatch(setUserAccountId(id))
       localStorage.setItem('userAccountId', JSON.stringify(id))
-      navigate('/')
+      navigate(ROUTES.home)
     } catch (error) {
       setError(error.response.data.message)
     }
@@ -33,7 +33,7 @@ const SignUp: React.FC = () => {
         <h4 className="text-center font-semibold text-[40px] mb-[40px]">
           Welcome to EngVision!
         </h4>
-        <p className="text-[#9D9DAD] my-[20px]">
+        <p className="text-textSubtle my-[20px]">
           Create an account and start learning!
         </p>
       </div>
@@ -157,15 +157,18 @@ const SignUp: React.FC = () => {
               type="primary"
               shape="round"
               htmlType="submit"
-              className="h-[40px] min-w-[200px] font-semibold bg-[#0073EA]"
+              className="h-[40px] min-w-[200px] font-semibold"
             >
               Sign Up
             </Button>
           </Form.Item>
 
-          <p className="text-center text-[#9D9DAD]">
+          <p className="text-center text-textSubtle">
             Have an account?
-            <Link to="/sign-in" className="font-semibold text-[#0073EA] pl-2">
+            <Link
+              to={ROUTES.signIn}
+              className="font-semibold text-primary pl-2"
+            >
               Sign In
             </Link>
           </p>

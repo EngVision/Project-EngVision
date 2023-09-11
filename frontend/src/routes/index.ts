@@ -10,10 +10,6 @@ import type { RouteElement } from './types'
 
 const publicRoutes: RouteElement[] = [
   {
-    element: Home,
-    path: ROUTES.home,
-  },
-  {
     element: DocumentList,
     path: ROUTES.docList,
   },
@@ -33,6 +29,11 @@ const publicRoutes: RouteElement[] = [
   },
 ]
 
-const privateRoutes: any[] = []
+const privateRoutes: RouteElement[] = [
+  {
+    element: Home,
+    path: ROUTES.home,
+  },
+]
 
 export { publicRoutes, privateRoutes }

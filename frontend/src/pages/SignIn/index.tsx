@@ -6,7 +6,7 @@ import { useAppDispatch } from '../../hooks/redux'
 import { setUserAccountId } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
-import { SIGN_IN_VENDORS } from '../../utils/constants'
+import { ROUTES, SIGN_IN_VENDORS } from '../../utils/constants'
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate()
@@ -21,7 +21,7 @@ const SignIn: React.FC = () => {
       } = await authApi.signIn(values)
       dispatch(setUserAccountId(id))
       localStorage.setItem('userAccountId', JSON.stringify(id))
-      navigate('/')
+      navigate(ROUTES.home)
     } catch (error) {
       setError(error.response.data.message)
     }
@@ -33,7 +33,7 @@ const SignIn: React.FC = () => {
         <h4 className="text-center font-semibold text-[40px] mb-[32px]">
           Welcome to EngVision!
         </h4>
-        <p className=" text-[#9D9DAD] my-[20px]">Start learning right now!</p>
+        <p className=" text-textSubtle my-[20px]">Start learning right now!</p>
       </div>
 
       <div>
@@ -88,7 +88,7 @@ const SignIn: React.FC = () => {
             ))}
           </div>
 
-          <p className="text-[#0073EA] font-semibold text-right cursor-pointer my-[28px]">
+          <p className="text-primary font-semibold text-right cursor-pointer my-[28px]">
             Forgot password?
           </p>
 
@@ -103,9 +103,9 @@ const SignIn: React.FC = () => {
             </Button>
           </Form.Item>
 
-          <p className="text-center text-[#9D9DAD] ">
+          <p className="text-center text-textSubtle ">
             Didn't have an account?
-            <Link to="/sign-up" className="font-semibold text-[#0073EA] pl-2">
+            <Link to="/sign-up" className="font-semibold text-primary pl-2">
               Sign Up
             </Link>
           </p>

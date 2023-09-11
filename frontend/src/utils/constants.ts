@@ -2,11 +2,14 @@ import facebookIcon from '../assets/images/facebook.png'
 import googleIcon from '../assets/images/google.png'
 
 export const ROUTES = {
+  UpdateProfile: '/update-profile',
+  courses: '/courses',
   docList: '/doclist',
   home: '/',
+  settings: '/settings',
   signIn: '/sign-in',
   signUp: '/sign-up',
-  UpdateProfile: '/update-profile',
+  statistics: '/statistics',
 }
 
 export const SIGN_IN_VENDORS = [
