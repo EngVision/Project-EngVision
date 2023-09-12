@@ -6,6 +6,7 @@ export const ROUTES = {
   home: '/',
   signIn: '/sign-in',
   signUp: '/sign-up',
+  UpdateProfile: '/update-profile',
 }
 
 export const SIGN_IN_VENDORS = [
