@@ -47,7 +47,7 @@ export class UsersService {
     return newUser;
   }
 
-  async createWithSSO(user: User) {
+  async createWithSSO(user: User): Promise<UserDocument> {
     const newUser = new this.userModel(user);
     await newUser.save();
 
@@ -82,7 +82,10 @@ export class UsersService {
     return updatedUser;
   }
 
-  async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
+  async updatePassword(
+    id: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<UserDocument> {
     const user = await this.getById(id);
 
     if (user && (await user.validatePassword(updatePasswordDto.oldPassword))) {
@@ -108,7 +111,10 @@ export class UsersService {
     }
   }
 
-  async updateResetPasswordCode(id: string, resetPasswordCode: string) {
+  async updateResetPasswordCode(
+    id: string,
+    resetPasswordCode: string,
+  ): Promise<UserDocument> {
     try {
       return await this.userModel.findByIdAndUpdate(id, {
         resetPasswordCode: resetPasswordCode,
@@ -118,7 +124,7 @@ export class UsersService {
     }
   }
 
-  async sendMailResetPassword(email: string) {
+  async sendMailResetPassword(email: string): Promise<boolean> {
     const user = await this.userModel.findOne({ email });
     if (!user) return false;
     const resetPasswordCode = randomstring.generate(10);
@@ -134,7 +140,7 @@ export class UsersService {
     return true;
   }
 
-  async validateResetPasswordUrl(resetPasswordCode: string) {
+  async validateResetPasswordUrl(resetPasswordCode: string): Promise<boolean> {
     try {
       const user = await this.userModel.findOne({
         resetPasswordCode: resetPasswordCode,
@@ -145,12 +151,13 @@ export class UsersService {
     }
   }
 
-  async resetForgottenPassword(resetPassword: ResetPasswordDto) {
+  async resetForgottenPassword(
+    resetPassword: ResetPasswordDto,
+  ): Promise<boolean> {
     try {
       const user = await this.userModel.findOne({
         resetPasswordCode: resetPassword.resetPasswordCode,
       });
-
       if (!user) return false;
 
       user.password = resetPassword.newPassword;
