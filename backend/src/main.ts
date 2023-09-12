@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   DocumentBuilder,
@@ -9,6 +9,7 @@ import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { ValidationError } from 'class-validator';
 
 async function bootstrap() {
   const port = process.env.PORT || 5000;
@@ -16,7 +17,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   //app config
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api', { exclude: ['*'] });
   app.enableCors({
     origin: ['http://localhost:3000'],
     credentials: true,
@@ -50,9 +51,10 @@ async function bootstrap() {
     swaggerOptions: {
       withCredentials: true,
     },
+    useGlobalPrefix: true,
   };
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document, swaggerOptions);
+  SwaggerModule.setup('docs', app, document, swaggerOptions);
 
   await app.listen(port);
   console.log(`Server running on: ${await app.getUrl()}`);

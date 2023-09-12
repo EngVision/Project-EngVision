@@ -23,11 +23,17 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload, JwtPayloadWithRt } from './types';
 import { Role } from '../users/enums';
+import { plainToClass } from 'class-transformer';
+import { User } from '../users/schemas/user.schema';
+import { UsersService } from '../users/users.service';
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   /** Login, register with email and password **/
   @Post('login')
@@ -85,21 +91,29 @@ export class AuthController {
   @Get('google/login')
   @UseGuards(GoogleGuard)
   async googleLogin(@Req() req, @Res() res: Response) {
-    const { tokens, user } = await this.authService.singleSignOn(req);
+    const { tokens } = await this.authService.singleSignOn(req);
 
     this.authService.attachTokensCookie(res, tokens);
 
-    return res.status(HttpStatus.CREATED).send(user);
+    return res.redirect(`${process.env.CLIENT_URL}/sso-success`);
   }
 
   @Get('facebook/login')
   @UseGuards(FacebookGuard)
   async facebookLogin(@Req() req, @Res() res: Response) {
-    const { tokens, user } = await this.authService.singleSignOn(req);
+    const { tokens } = await this.authService.singleSignOn(req);
 
     this.authService.attachTokensCookie(res, tokens);
 
-    return res.status(HttpStatus.CREATED).send(user);
+    return res.redirect(`${process.env.CLIENT_URL}/sso-success`);
+  }
+
+  @Get('me')
+  @UseGuards(AtGuard)
+  async getMe(@CurrentUser() currentUser: JwtPayload, @Res() res: Response) {
+    const user = await this.usersService.getById(currentUser.sub);
+
+    return res.status(HttpStatus.OK).send(plainToClass(User, user.toObject()));
   }
 
   /*RoleGuard Testing*/
