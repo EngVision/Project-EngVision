@@ -8,9 +8,7 @@ export const UpdateProfile = () => {
   const onFinish = async (values: ProfileParams) => {
     console.log('Success:', values)
     try {
-      const {
-        data: { firstName, lastName, email, about, gender, phone, contry },
-      } = await accountApi.update(values)
+      await accountApi.update(values)
     } catch (error) {
       throw error
     }

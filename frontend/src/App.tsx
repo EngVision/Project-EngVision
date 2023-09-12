@@ -7,7 +7,6 @@ import NoLayout from './layouts/NoLayout'
 import { setUserAccountId } from './redux/app/slice'
 import { publicRoutes } from './routes'
 import { ROUTES } from './utils/constants'
-import { UpdateProfile } from './pages/UpdateProfile/UpdateProfile'
 
 const App: React.FC = () => {
   const userAccountId = useAppSelector((state) => state.app.userAccountId)
@@ -30,32 +29,29 @@ const App: React.FC = () => {
   }, [])
 
   return (
-    <div>
-      <UpdateProfile />
-    </div>
-    // <Routes>
-    //   {publicRoutes.map((route) => {
-    //     const Comp = route.element
-    //     let Layout = DefaultLayout
+    <Routes>
+      {publicRoutes.map((route) => {
+        const Comp = route.element
+        let Layout = DefaultLayout
 
-    //     if (route.layout === null) {
-    //       Layout = NoLayout
-    //     } else if (route.layout) {
-    //       Layout = route.layout
-    //     }
-    //     return (
-    //       <Route
-    //         key={route.path}
-    //         path={route.path}
-    //         element={
-    //           <Layout>
-    //             <Comp />
-    //           </Layout>
-    //         }
-    //       />
-    //     )
-    //   })}
-    // </Routes>
+        if (route.layout === null) {
+          Layout = NoLayout
+        } else if (route.layout) {
+          Layout = route.layout
+        }
+        return (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={
+              <Layout>
+                <Comp />
+              </Layout>
+            }
+          />
+        )
+      })}
+    </Routes>
   )
 }
 
