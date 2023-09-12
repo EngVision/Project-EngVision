@@ -7,6 +7,7 @@ import { HistoryRouter } from 'redux-first-history/rr6'
 
 import App from './App'
 import { history, store } from './store'
+import './theme/locales/i18n'
 
 const ClientRenderer = () =>
   ReactDOM.createRoot(document.getElementById('root')!).render(

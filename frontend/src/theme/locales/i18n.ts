@@ -1,21 +1,17 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import i18n from 'i18next'
+import { initReactI18next } from 'react-i18next'
 
 import EN from './EN/en.json'
 import VN from './VN/vn.json'
 
 const resources = {
   en: {
-    translation: {
-        Home: EN.Home.doclist, 
-    },
+    translation: EN,
   },
   vi: {
-    translation: {
-        Home: VN.Home.doclist,
-    },
+    translation: VN,
   },
-};
+}
 
 i18n.use(initReactI18next).init({
   resources,
@@ -24,6 +20,6 @@ i18n.use(initReactI18next).init({
   interpolation: {
     escapeValue: false,
   },
-});
+})
 
-export default i18n;
+export default i18n
