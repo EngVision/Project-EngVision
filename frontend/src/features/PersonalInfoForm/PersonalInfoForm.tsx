@@ -1,23 +1,28 @@
 import { Button, Form, Input, Space, Divider } from 'antd'
-import accountApi from '../../services/accountApi'
-import { ProfileParams } from '../../services/accountApi/types'
+import Axios from 'axios'
 
-export const UpdateProfile = () => {
+export const PersonalInfoForm = () => {
   const { TextArea } = Input
 
-  const onFinish = async (values: ProfileParams) => {
+  const onFinish = (values: any) => {
+    const apiURL = 'http://[::1]:5000/api/account/update-profile'
+
+    let promise = Axios({
+      url: apiURL,
+      method: 'PATCH',
+    })
+    promise.then((res) => {
+      alert(res.data.message)
+    })
+    promise.catch((err) => {
+      alert(err.response.data)
+    })
     console.log('Success:', values)
-    try {
-      await accountApi.update(values)
-    } catch (error) {
-      throw error
-    }
   }
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }
-
   return (
     <div className="m-12 max-w-2xl ">
       <div className="m-6">
@@ -36,17 +41,17 @@ export const UpdateProfile = () => {
           <p className="font-medium text-xl my-6">Profile</p>
 
           <Space className="flex justify-between">
-            <Form.Item<ProfileParams> name="firstName" label="First Name">
+            <Form.Item name="firstName" label="First Name">
               <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
             </Form.Item>
-            <Form.Item<ProfileParams> name="lastName" label="Last Name">
+            <Form.Item name="lastName" label="Last Name">
               <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
             </Form.Item>
           </Space>
-          <Form.Item<ProfileParams> name="email" label="Email">
+          <Form.Item name="email" label="Email">
             <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
           </Form.Item>
-          <Form.Item<ProfileParams> name="about" label="About">
+          <Form.Item name="about" label="About">
             <TextArea
               style={{ height: 80, resize: 'none' }}
               className="border-slate-300 hover:border-slate-40 rounded-md"
@@ -57,15 +62,15 @@ export const UpdateProfile = () => {
         <div className="m-6">
           <p className="font-medium text-xl mt-12 mb-6">Personal Information</p>
           <Space className="flex justify-between">
-            <Form.Item<ProfileParams> name="gender" label="Gender">
+            <Form.Item name="gender" label="Gender">
               <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
             </Form.Item>
-            <Form.Item<ProfileParams> name="phone" label="Phone Number">
+            <Form.Item name="phoneNumber" label="Phone Number">
               <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
             </Form.Item>
           </Space>
           <Space className="flex justify-between">
-            <Form.Item<ProfileParams> name="country" label="Country">
+            <Form.Item name="country" label="Country">
               <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
             </Form.Item>
             <Form.Item name="preferLanguage" label="Prefer Language">
