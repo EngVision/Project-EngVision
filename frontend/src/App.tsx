@@ -9,7 +9,7 @@ import { privateRoutes, publicRoutes } from './routes'
 import { ROUTES } from './utils/constants'
 
 const App: React.FC = () => {
-  const userAccountId = useAppSelector((state) => state.app.userAccountId)
+  const userAccountId = useAppSelector((state) => state.app.app.userAccountId)
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
