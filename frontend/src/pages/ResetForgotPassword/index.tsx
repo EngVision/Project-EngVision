@@ -3,11 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import accountApi from '../../services/accountApi';
 import classNames from 'classnames';
-import { ROUTES } from '../../utils/constants';
-import { toast } from 'react-toastify';
 
 const ResetForgotPassword: React.FC = () => {
   const { resetPasswordCode } = useParams();
+  const [inputPassword, setInputPassword] = useState<string>('');
   const [isValidatedUrl, setValidatedUrl] = useState<boolean>(false)
   const navigate = useNavigate()
 
@@ -19,7 +18,7 @@ const ResetForgotPassword: React.FC = () => {
     const res = await accountApi.validateUrlResetPassword({
       resetPasswordCode: String(resetPasswordCode),
     })
-    if (!res.data) navigate(ROUTES.sendMailResetPassword)
+    if(!res.data) navigate('/forgot-password');
     setValidatedUrl(res.data);
   }
 
@@ -36,13 +35,10 @@ const ResetForgotPassword: React.FC = () => {
         newPassword: values.password,
       });
       if(rs.status === 200) {
-        toast.success(rs.data.message);
-        setTimeout(() => {
-          navigate(ROUTES.signIn)
-        }, 2000);
+        alert(rs.data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message)
+      console.log(error);
     }
   }
 
@@ -70,7 +66,7 @@ const ResetForgotPassword: React.FC = () => {
           <Form.Item
             name="password"
             rules={[{ 
-              validator(_, value) {
+              validator(rule, value) {
                 return new Promise((resolve, reject) => {
                   if(validatePassword(value)) {
                     resolve("");
@@ -84,24 +80,21 @@ const ResetForgotPassword: React.FC = () => {
               placeholder="New password!"
               size="large"
               className="rounded-[8px] h-[44px]"
+              onChange={(e) => {setInputPassword(e.target.value)}}
             />
           </Form.Item>
+          
           <Form.Item
-            name="confirm"
-            rules={[
-              {
-                required: true,
-                message: 'Please confirm your password!',
-              },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue('password') === value) {
-                    return Promise.resolve();
+            rules={[{ 
+              validator(rule, value) {
+                return new Promise((resolve, reject) => {
+                  if(value === inputPassword) {
+                    resolve("");
                   }
-                  return Promise.reject(new Error("The retype password not match"));
-                },
-              }),
-            ]}
+                  else reject("The retype password not match");
+                })
+              }
+            }]}
           >
             <Input.Password
               placeholder="Retype new password!"
@@ -123,7 +116,7 @@ const ResetForgotPassword: React.FC = () => {
 
           <p
             className="text-[#0073EA] text-[22px] font-semibold text-center cursor-pointer my-[28px]"
-            onClick={() => navigate(ROUTES.signIn)}
+            onClick={() => navigate('/sign-in')}
           >
             Return to Sign In?
           </p>
