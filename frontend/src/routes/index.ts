@@ -5,6 +5,7 @@ import ResetForgotPassword from '../pages/ResetForgotPassword'
 import SendMailResetPassword from '../pages/SendMailResetPassword'
 import SignIn from '../pages/SignIn'
 import SignUp from '../pages/SignUp'
+import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
 
 import type { RouteElement } from './types'
@@ -37,6 +38,10 @@ const publicRoutes: RouteElement[] = [
     element: ResetForgotPassword,
     layout: AuthLayout,
     path: ROUTES.resetForgotPassword,
+  },
+  {
+    element: UpdateProfile,
+    path: ROUTES.UpdateProfile,
   },
 ]
 

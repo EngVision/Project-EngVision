@@ -8,6 +8,7 @@ export const ROUTES = {
   signUp: '/sign-up',
   sendMailResetPassword: '/forgot-password',
   resetForgotPassword: '/reset-password/:resetPasswordCode',
+  UpdateProfile: '/update-profile',
 }
 
 export const SIGN_IN_VENDORS = [
