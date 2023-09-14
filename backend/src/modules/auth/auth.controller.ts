@@ -7,9 +7,9 @@ import {
   Req,
   Res,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { plainToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import { CurrentUser } from 'src/common/decorators';
 import {
@@ -20,12 +20,19 @@ import {
   RtGuard,
 } from 'src/common/guards';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { AuthService } from './auth.service';
+import { JwtPayload, JwtPayloadWithRt } from './types';
 import { Role } from '../users/enums';
+import { plainToClass } from 'class-transformer';
 import { User } from '../users/schemas/user.schema';
 import { UsersService } from '../users/users.service';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { JwtPayload, JwtPayloadWithRt } from './types';
+import {
+  EmailDto,
+  LoginDto,
+  ResetPasswordCodeDto,
+  ResetPasswordDto,
+} from './dto';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -120,6 +127,50 @@ export class AuthController {
     const user = await this.usersService.getById(currentUser.sub);
 
     return res.status(HttpStatus.OK).send(plainToClass(User, user.toObject()));
+  }
+
+  /* Forgot password */
+  @Post('forgot-password')
+  @Throttle({ default: { limit: 1, ttl: 60000 } })
+  async forgotPassword(@Body() body: EmailDto, @Res() res: Response) {
+    const result = await this.usersService.sendMailResetPassword(body.email);
+
+    if (!result) {
+      throw new BadRequestException('Email not found');
+    }
+
+    return res
+      .status(HttpStatus.OK)
+      .send({ message: 'We have just sent you an email' });
+  }
+
+  @Post('validate-reset-password-code')
+  async validateResetPasswordCode(
+    @Body() body: ResetPasswordCodeDto,
+    @Res() res: Response,
+  ) {
+    await this.usersService.validateResetPasswordUrl(body.resetPasswordCode);
+
+    return res.status(HttpStatus.OK).send({ message: 'Validation successful' });
+  }
+
+  @Post('reset-password')
+  async resetForgottenPassword(
+    @Body() resetPassword: ResetPasswordDto,
+    @Res() res: Response,
+  ) {
+    const result = await this.usersService.resetForgottenPassword(
+      resetPassword.resetPasswordCode,
+      resetPassword.newPassword,
+    );
+
+    if (!result) {
+      throw new BadRequestException('invalid reset password code');
+    }
+
+    return res
+      .status(HttpStatus.OK)
+      .send({ message: 'New password have been updated' });
   }
 
   /* RoleGuard Testing */
