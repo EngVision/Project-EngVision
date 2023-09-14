@@ -5,10 +5,10 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
-import { ExercisesModule } from './modules/exercises/exercises.module';
-import { FilesModule } from './modules/files/files.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { CoursesModule } from './modules/courses/courses.module';
+import { ReviewsModule } from './modules/reviews/reviews.module';
 
 @Module({
   imports: [
@@ -30,8 +30,8 @@ import { APP_GUARD } from '@nestjs/core';
     //App modules
     AuthModule,
     UsersModule,
-    ExercisesModule,
-    FilesModule,
+    CoursesModule,
+    ReviewsModule,
   ],
   providers: [
     {
