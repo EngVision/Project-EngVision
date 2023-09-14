@@ -14,6 +14,7 @@ const ClientRenderer = () =>
     <ConfigProvider
       theme={{
         token: {
+          colorText: '#313134',
           fontFamily: 'Poppins, sans-serif',
         },
       }}

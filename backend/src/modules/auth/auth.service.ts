@@ -42,7 +42,10 @@ export class AuthService {
     return { tokens, user };
   }
 
-  async logout(userId: string): Promise<void> {
+  async logout(userId: string, res: Response): Promise<void> {
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+
     await this.updateRefreshToken(userId, null);
   }
 
@@ -152,7 +155,6 @@ export class AuthService {
         lastName: req.user.lastName,
         avatar: req.user.avatar,
         role: req.user.role || Role.Student,
-        isSSO: true,
       });
       const newUser = plainToClass(User, newUserDocument.toObject());
 

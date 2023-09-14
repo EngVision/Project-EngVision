@@ -2,11 +2,13 @@ import { Button, Form, Input } from 'antd'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
+import facebookIcon from '../../assets/images/facebook.png'
+import googleIcon from '../../assets/images/google.png'
 import { useAppDispatch } from '../../hooks/redux'
 import { setUserAccountId } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
-import { SIGN_IN_VENDORS } from '../../utils/constants'
+import { ROUTES } from '../../utils/constants'
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate()
@@ -21,11 +23,73 @@ const SignIn: React.FC = () => {
       } = await authApi.signIn(values)
       dispatch(setUserAccountId(id))
       localStorage.setItem('userAccountId', JSON.stringify(id))
-      navigate('/')
+      navigate(ROUTES.home)
     } catch (error) {
       setError(error.response.data.message)
     }
   }
+
+  const fetchAuthUser = async (timer: ReturnType<typeof setInterval>) => {
+    try {
+      const { data } = await authApi.fetchAuthUser()
+
+      localStorage.setItem('userAccountId', JSON.stringify(data.id))
+      dispatch(setUserAccountId(data.id))
+      navigate(ROUTES.home)
+      clearInterval(timer)
+    } catch (error) {
+      console.log('error: ', error)
+    }
+  }
+
+  const signInWithGoogle = async () => {
+    let timer: ReturnType<typeof setInterval>
+
+    const newWindow = window.open(
+      `${import.meta.env.VITE_BASE_URL}/auth/google/login`,
+      '_blank',
+      'width=500,height=600',
+    )
+
+    if (newWindow) {
+      timer = setInterval(() => {
+        if (newWindow.closed) {
+          fetchAuthUser(timer)
+        }
+      }, 1000)
+    }
+  }
+
+  const signInWithFacebook = async () => {
+    let timer: ReturnType<typeof setInterval>
+
+    const newWindow = window.open(
+      `${import.meta.env.VITE_BASE_URL}/auth/facebook/login`,
+      '_blank',
+      'width=500,height=600',
+    )
+
+    if (newWindow) {
+      timer = setInterval(() => {
+        if (newWindow.closed) {
+          fetchAuthUser(timer)
+        }
+      }, 1000)
+    }
+  }
+
+  const SIGN_IN_VENDORS = [
+    {
+      icon: googleIcon,
+      name: 'Google',
+      onClick: signInWithGoogle,
+    },
+    {
+      icon: facebookIcon,
+      name: 'Facebook',
+      onClick: signInWithFacebook,
+    },
+  ]
 
   return (
     <div className="bg-white p-[40px] rounded-[16px]">
@@ -33,7 +97,7 @@ const SignIn: React.FC = () => {
         <h4 className="text-center font-semibold text-[40px] mb-[32px]">
           Welcome to EngVision!
         </h4>
-        <p className=" text-[#9D9DAD] my-[20px]">Start learning right now!</p>
+        <p className=" text-textSubtle my-[20px]">Start learning right now!</p>
       </div>
 
       <div>
@@ -78,6 +142,8 @@ const SignIn: React.FC = () => {
               <div
                 key={vendor.name}
                 className="flex border-[1px] border-solid border-[#CECED6] rounded-[12px] px-[20px] py-[16px] cursor-pointer"
+                onClick={vendor.onClick}
+                role="presentation"
               >
                 <img
                   src={vendor.icon}
@@ -88,7 +154,7 @@ const SignIn: React.FC = () => {
             ))}
           </div>
 
-          <p className="text-[#0073EA] font-semibold text-right cursor-pointer my-[28px]">
+          <p className="text-primary font-semibold text-right cursor-pointer my-[28px]">
             Forgot password?
           </p>
 
@@ -103,9 +169,9 @@ const SignIn: React.FC = () => {
             </Button>
           </Form.Item>
 
-          <p className="text-center text-[#9D9DAD] ">
+          <p className="text-center text-textSubtle ">
             Didn't have an account?
-            <Link to="/sign-up" className="font-semibold text-[#0073EA] pl-2">
+            <Link to="/sign-up" className="font-semibold text-primary pl-2">
               Sign Up
             </Link>
           </p>
