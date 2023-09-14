@@ -72,7 +72,9 @@ export class UsersController {
   ) {
     await this.usersService.updatePassword(user.sub, updatePasswordDto);
 
-    return res.status(HttpStatus.OK).send('The user password was changed');
+    return res
+      .status(HttpStatus.OK)
+      .send({ message: 'Password change successful' });
   }
 
   /* Forgot password */
