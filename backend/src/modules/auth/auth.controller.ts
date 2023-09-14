@@ -7,6 +7,7 @@ import {
   Req,
   Res,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
@@ -20,12 +21,18 @@ import {
 } from 'src/common/guards';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
 import { JwtPayload, JwtPayloadWithRt } from './types';
 import { Role } from '../users/enums';
 import { plainToClass } from 'class-transformer';
 import { User } from '../users/schemas/user.schema';
 import { UsersService } from '../users/users.service';
+import {
+  EmailDto,
+  LoginDto,
+  ResetPasswordCodeDto,
+  ResetPasswordDto,
+} from './dto';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -51,12 +58,9 @@ export class AuthController {
     @Req() req: Request & { user: JwtPayload },
     @Res() res: Response,
   ) {
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
+    await this.authService.logout(req.user.sub, res);
 
-    await this.authService.logout(req.user.sub);
-
-    return res.status(HttpStatus.OK).send('User logged out');
+    return res.status(HttpStatus.OK).send({ messgae: 'User logged out' });
   }
 
   @Post('register')
@@ -91,9 +95,13 @@ export class AuthController {
   @Get('google/login')
   @UseGuards(GoogleGuard)
   async googleLogin(@Req() req, @Res() res: Response) {
-    const { tokens } = await this.authService.singleSignOn(req);
+    const { tokens, user } = await this.authService.singleSignOn(req);
 
     this.authService.attachTokensCookie(res, tokens);
+
+    if (!user.password) {
+      return res.redirect(`${process.env.CLIENT_URL}/create-profile`);
+    }
 
     return res.redirect(`${process.env.CLIENT_URL}/sso-success`);
   }
@@ -101,13 +109,18 @@ export class AuthController {
   @Get('facebook/login')
   @UseGuards(FacebookGuard)
   async facebookLogin(@Req() req, @Res() res: Response) {
-    const { tokens } = await this.authService.singleSignOn(req);
+    const { tokens, user } = await this.authService.singleSignOn(req);
 
     this.authService.attachTokensCookie(res, tokens);
+
+    if (!user.password) {
+      return res.redirect(`${process.env.CLIENT_URL}/create-profile`);
+    }
 
     return res.redirect(`${process.env.CLIENT_URL}/sso-success`);
   }
 
+  /* Get me */
   @Get('me')
   @UseGuards(AtGuard)
   async getMe(@CurrentUser() currentUser: JwtPayload, @Res() res: Response) {
@@ -116,7 +129,51 @@ export class AuthController {
     return res.status(HttpStatus.OK).send(plainToClass(User, user.toObject()));
   }
 
-  /*RoleGuard Testing*/
+  /* Forgot password */
+  @Post('forgot-password')
+  @Throttle({ default: { limit: 1, ttl: 60000 } })
+  async forgotPassword(@Body() body: EmailDto, @Res() res: Response) {
+    const result = await this.usersService.sendMailResetPassword(body.email);
+
+    if (!result) {
+      throw new BadRequestException('Email not found');
+    }
+
+    return res
+      .status(HttpStatus.OK)
+      .send({ message: 'We have just sent you an email' });
+  }
+
+  @Post('validate-reset-password-code')
+  async validateResetPasswordCode(
+    @Body() body: ResetPasswordCodeDto,
+    @Res() res: Response,
+  ) {
+    await this.usersService.validateResetPasswordUrl(body.resetPasswordCode);
+
+    return res.status(HttpStatus.OK).send({ message: 'Validation successful' });
+  }
+
+  @Post('reset-password')
+  async resetForgottenPassword(
+    @Body() resetPassword: ResetPasswordDto,
+    @Res() res: Response,
+  ) {
+    const result = await this.usersService.resetForgottenPassword(
+      resetPassword.resetPasswordCode,
+      resetPassword.newPassword,
+    );
+
+    if (!result) {
+      throw new BadRequestException('invalid reset password code');
+    }
+
+    return res
+      .status(HttpStatus.OK)
+      .send({ message: 'New password have been updated' });
+  }
+
+  /* RoleGuard Testing */
   @Get('admin')
   @UseGuards(AtGuard, RoleGuard(Role.Admin))
   getAdmin() {

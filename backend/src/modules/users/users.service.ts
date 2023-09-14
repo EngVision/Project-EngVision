@@ -1,3 +1,4 @@
+import { CreateAccountDto } from './dto/create-account.dto';
 import {
   BadRequestException,
   Injectable,
@@ -9,12 +10,9 @@ import * as gravatar from 'gravatar';
 import { Model } from 'mongoose';
 import * as nodemailer from 'nodemailer';
 import * as randomstring from 'randomstring';
-import { CreateUserDto } from './dto/create-user.dto';
-import { ResetPasswordDto } from './dto/reset-password.dto';
-import { UpdatePasswordDto } from './dto/update-password.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { emailContent } from './template/email.content';
+import { CreateUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 
 @Injectable()
 export class UsersService {
@@ -52,6 +50,16 @@ export class UsersService {
     await newUser.save();
 
     return newUser;
+  }
+
+  async createAccount(id: string, createAccountDto: CreateAccountDto) {
+    const updatedUser = await this.userModel.findByIdAndUpdate(
+      id,
+      { ...createAccountDto },
+      { returnDocument: 'after' },
+    );
+
+    return updatedUser;
   }
 
   /* Get user */
@@ -111,6 +119,7 @@ export class UsersService {
     }
   }
 
+  /* Reset password */
   async updateResetPasswordCode(
     id: string,
     resetPasswordCode: string,
@@ -127,8 +136,10 @@ export class UsersService {
   async sendMailResetPassword(email: string): Promise<boolean> {
     const user = await this.userModel.findOne({ email });
     if (!user) return false;
+
     const resetPasswordCode = randomstring.generate(10);
     await this.updateResetPasswordCode(user.id, resetPasswordCode);
+
     const mailOptions = {
       from: 'engvision.dev@gmail.com',
       to: email,
@@ -137,30 +148,31 @@ export class UsersService {
       html: emailContent(user, resetPasswordCode),
     };
     await this.transporter.sendMail(mailOptions);
+
     return true;
   }
 
-  async validateResetPasswordUrl(resetPasswordCode: string): Promise<boolean> {
-    try {
-      const user = await this.userModel.findOne({
-        resetPasswordCode: resetPasswordCode,
-      });
-      return !!user;
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+  async validateResetPasswordUrl(resetPasswordCode: string): Promise<void> {
+    const user = await this.userModel.findOne({
+      resetPasswordCode: resetPasswordCode,
+    });
+
+    if (!user) {
+      throw new BadRequestException('Invalid reset password code');
     }
   }
 
   async resetForgottenPassword(
-    resetPassword: ResetPasswordDto,
+    resetPasswordCode: string,
+    password: string,
   ): Promise<boolean> {
     try {
       const user = await this.userModel.findOne({
-        resetPasswordCode: resetPassword.resetPasswordCode,
+        resetPasswordCode: resetPasswordCode,
       });
       if (!user) return false;
 
-      user.password = resetPassword.newPassword;
+      user.password = password;
       user.resetPasswordCode = null;
       await user.save();
 
