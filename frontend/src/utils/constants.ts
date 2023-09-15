@@ -6,6 +6,8 @@ export const ROUTES = {
   settings: '/settings',
   signIn: '/sign-in',
   signUp: '/sign-up',
+  sendMailResetPassword: '/forgot-password',
+  resetForgotPassword: '/reset-password/:resetPasswordCode',
   ssoSuccess: '/sso-success',
   statistics: '/statistics',
 }

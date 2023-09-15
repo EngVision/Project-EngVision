@@ -154,7 +154,10 @@ const SignIn: React.FC = () => {
             ))}
           </div>
 
-          <p className="text-primary font-semibold text-right cursor-pointer my-[28px]">
+          <p
+            className="text-[#0073EA] font-semibold text-right cursor-pointer my-[28px]"
+            onClick={() => navigate('/forgot-password')}
+          >
             Forgot password?
           </p>
 

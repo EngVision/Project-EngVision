@@ -25,7 +25,10 @@ const App: React.FC = () => {
         if (pathname === ROUTES.signIn || pathname === ROUTES.signUp) {
           navigate(ROUTES.home)
         }
-      } else if (!publicRoutes.find((route) => route.path === pathname)) {
+      } else if (
+        !publicRoutes.find((route) => route.path === pathname) &&
+        !location.pathname.includes('reset-password')
+      ) {
         navigate(ROUTES.signIn)
       }
     }
