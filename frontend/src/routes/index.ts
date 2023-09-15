@@ -6,6 +6,7 @@ import SendMailResetPassword from '../pages/SendMailResetPassword'
 import SignIn from '../pages/SignIn'
 import SSOSuccess from '../pages/SignIn/SSOSucess'
 import SignUp from '../pages/SignUp'
+import CourseDetails from '../pages/CourseDetails'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
 
@@ -43,6 +44,10 @@ const publicRoutes: RouteElement[] = [
   {
     element: SSOSuccess,
     path: ROUTES.ssoSuccess,
+  },
+  {
+    element: CourseDetails,
+    path: ROUTES.courseDetails,
   },
 ]
 
