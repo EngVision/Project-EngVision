@@ -45,7 +45,7 @@ export class UsersService {
     return newUser;
   }
 
-  async createWithSSO(user: User) {
+  async createWithSSO(user: User): Promise<UserDocument> {
     const newUser = new this.userModel(user);
     await newUser.save();
 
@@ -90,7 +90,10 @@ export class UsersService {
     return updatedUser;
   }
 
-  async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
+  async updatePassword(
+    id: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<UserDocument> {
     const user = await this.getById(id);
 
     if (user && (await user.validatePassword(updatePasswordDto.oldPassword))) {
@@ -130,7 +133,7 @@ export class UsersService {
     }
   }
 
-  async sendMailResetPassword(email: string) {
+  async sendMailResetPassword(email: string): Promise<boolean> {
     const user = await this.userModel.findOne({ email });
     if (!user) return false;
 
@@ -167,7 +170,6 @@ export class UsersService {
       const user = await this.userModel.findOne({
         resetPasswordCode: resetPasswordCode,
       });
-
       if (!user) return false;
 
       user.password = password;

@@ -15,7 +15,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   //app config
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api', { exclude: ['*'] });
   app.enableCors({
     origin: ['http://localhost:3000'],
     credentials: true,
@@ -43,9 +43,10 @@ async function bootstrap() {
     swaggerOptions: {
       withCredentials: true,
     },
+    useGlobalPrefix: true,
   };
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document, swaggerOptions);
+  SwaggerModule.setup('docs', app, document, swaggerOptions);
 
   await app.listen(port);
   console.log(`Server running on: ${await app.getUrl()}`);
