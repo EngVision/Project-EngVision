@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { plainToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import { CurrentUser } from 'src/common/decorators';
 import {
@@ -19,15 +20,20 @@ import {
   RtGuard,
 } from 'src/common/guards';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { JwtPayload, JwtPayloadWithRt } from './types';
 import { Role } from '../users/enums';
+import { User } from '../users/schemas/user.schema';
+import { UsersService } from '../users/users.service';
+import { AuthService } from './auth.service';
+import { JwtPayload, JwtPayloadWithRt } from './types';
+import { LoginDto } from './dto/login.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   /** Login, register with email and password **/
   @Post('login')
@@ -45,12 +51,9 @@ export class AuthController {
     @Req() req: Request & { user: JwtPayload },
     @Res() res: Response,
   ) {
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
+    await this.authService.logout(req.user.sub, res);
 
-    await this.authService.logout(req.user.sub);
-
-    return res.status(HttpStatus.OK).send('User logged out');
+    return res.status(HttpStatus.OK).send({ messgae: 'User logged out' });
   }
 
   @Post('register')
@@ -89,7 +92,11 @@ export class AuthController {
 
     this.authService.attachTokensCookie(res, tokens);
 
-    return res.status(HttpStatus.CREATED).send(user);
+    if (!user.password) {
+      return res.redirect(`${process.env.CLIENT_URL}/create-profile`);
+    }
+
+    return res.redirect(`${process.env.CLIENT_URL}/sso-success`);
   }
 
   @Get('facebook/login')
@@ -99,10 +106,23 @@ export class AuthController {
 
     this.authService.attachTokensCookie(res, tokens);
 
-    return res.status(HttpStatus.CREATED).send(user);
+    if (!user.password) {
+      return res.redirect(`${process.env.CLIENT_URL}/create-profile`);
+    }
+
+    return res.redirect(`${process.env.CLIENT_URL}/sso-success`);
   }
 
-  /*RoleGuard Testing*/
+  /* Get me */
+  @Get('me')
+  @UseGuards(AtGuard)
+  async getMe(@CurrentUser() currentUser: JwtPayload, @Res() res: Response) {
+    const user = await this.usersService.getById(currentUser.sub);
+
+    return res.status(HttpStatus.OK).send(plainToClass(User, user.toObject()));
+  }
+
+  /* RoleGuard Testing */
   @Get('admin')
   @UseGuards(AtGuard, RoleGuard(Role.Admin))
   getAdmin() {

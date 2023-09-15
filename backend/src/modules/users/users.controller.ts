@@ -1,50 +1,60 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   HttpStatus,
   Patch,
   Post,
   Res,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { Response } from 'express';
-import { multerOptions } from 'src/common/config';
 import { CurrentUser } from 'src/common/decorators';
 import { AtGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
-import { EmailDto } from './dto/email.dto';
-import { ResetPasswordDto } from './dto/reset-password.dto';
-import { UpdatePasswordDto } from './dto/update-password.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ValidateResetPasswordPageDto } from './dto/validate-reset-password-page.dto';
+import {
+  CreateAccountDto,
+  ResetPasswordCodeDto,
+  ResetPasswordDto,
+  UpdatePasswordDto,
+  UpdateUserDto,
+} from './dto';
 import { User } from './schemas/user.schema';
 import { UsersService } from './users.service';
+import { Throttle } from '@nestjs/throttler';
+import { EmailDto } from '../auth/dto/login.dto';
 
 @ApiTags('Account')
 @Controller('account')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Post()
+  @UseGuards(AtGuard)
+  async createAccount(
+    @CurrentUser() user: JwtPayload,
+    @Body() createAccountDto: CreateAccountDto,
+    @Res() res: Response,
+  ) {
+    const updatedUser = await this.usersService.createAccount(
+      user.sub,
+      createAccountDto,
+    );
+
+    return res
+      .status(HttpStatus.OK)
+      .send(plainToClass(User, updatedUser.toObject()));
+  }
+
   @Patch('profile')
   @UseGuards(AtGuard)
-  @UseInterceptors(FileInterceptor('avatar', multerOptions('avatar', 'image')))
-  @ApiConsumes('multipart/form-data')
   async updateProfile(
     @CurrentUser() user: JwtPayload,
     @Body() updateUserDto: UpdateUserDto,
-    @UploadedFile()
-    file: Express.Multer.File,
     @Res() res: Response,
   ) {
-    updateUserDto = file
-      ? { ...updateUserDto, avatar: file.filename }
-      : updateUserDto;
-
     const updatedUser = await this.usersService.update(user.sub, updateUserDto);
 
     return res
@@ -61,38 +71,50 @@ export class UsersController {
   ) {
     await this.usersService.updatePassword(user.sub, updatePasswordDto);
 
-    return res.status(HttpStatus.OK).send('The user password was changed');
+    return res
+      .status(HttpStatus.OK)
+      .send({ message: 'Password change successful' });
   }
 
+  /* Forgot password */
   @Post('forgot-password')
+  @Throttle({ default: { limit: 1, ttl: 60000 } })
   async forgotPassword(@Body() body: EmailDto, @Res() res: Response) {
     const result = await this.usersService.sendMailResetPassword(body.email);
-    if (!result)
-      res.status(HttpStatus.NOT_FOUND).send({ message: 'Email not found' });
+
+    if (!result) {
+      throw new BadRequestException('Email not found');
+    }
+
     return res
       .status(HttpStatus.OK)
       .send({ message: 'We have just sent you an email' });
   }
 
-  @Post('validate-reset-password-url')
-  async validateResetPasswordUrl(@Body() body: ValidateResetPasswordPageDto) {
-    return await this.usersService.validateResetPasswordUrl(
-      body.resetPasswordCode,
-    );
+  @Post('validate-reset-password-code')
+  async validateResetPasswordCode(
+    @Body() body: ResetPasswordCodeDto,
+    @Res() res: Response,
+  ) {
+    await this.usersService.validateResetPasswordUrl(body.resetPasswordCode);
+
+    return res.status(HttpStatus.OK).send({ message: 'Validation successful' });
   }
 
-  @Post('reset-forgotten-password')
+  @Post('reset-password')
   async resetForgottenPassword(
     @Body() resetPassword: ResetPasswordDto,
     @Res() res: Response,
   ) {
     const result = await this.usersService.resetForgottenPassword(
-      resetPassword,
+      resetPassword.resetPasswordCode,
+      resetPassword.newPassword,
     );
-    if (!result)
-      res
-        .status(HttpStatus.NOT_FOUND)
-        .send({ message: 'Reset password code not found' });
+
+    if (!result) {
+      throw new BadRequestException('invalid reset password code');
+    }
+
     return res
       .status(HttpStatus.OK)
       .send({ message: 'New password have been updated' });

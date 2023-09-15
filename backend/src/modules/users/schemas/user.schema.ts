@@ -56,9 +56,6 @@ export class User {
   @Exclude()
   resetPasswordCode?: string;
 
-  @Prop({ default: false })
-  isSSO?: boolean;
-
   validatePassword?: (password: string) => Promise<boolean>;
   validateRefreshToken?: (refreshToken: string) => Promise<boolean>;
   preSave?: () => Promise<void>;
@@ -100,6 +97,6 @@ UserSchema.methods.preUpdate = async function (updatedUser: User) {
   }
 
   if (updatedUser?.avatar) {
-    updatedUser.avatar = `${process.env.APP_URL}/file/avatar/${updatedUser.avatar}`;
+    updatedUser.avatar = `${process.env.SERVER_URL}/${updatedUser.avatar}`;
   }
 };

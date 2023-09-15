@@ -4,6 +4,7 @@ import Home from '../pages/Home'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
 import SendMailResetPassword from '../pages/SendMailResetPassword'
 import SignIn from '../pages/SignIn'
+import SSOSuccess from '../pages/SignIn/SSOSucess'
 import SignUp from '../pages/SignUp'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
@@ -11,10 +12,6 @@ import { ROUTES } from '../utils/constants'
 import type { RouteElement } from './types'
 
 const publicRoutes: RouteElement[] = [
-  {
-    element: Home,
-    path: ROUTES.home,
-  },
   {
     element: DocumentList,
     path: ROUTES.docList,
@@ -43,8 +40,17 @@ const publicRoutes: RouteElement[] = [
     element: UpdateProfile,
     path: ROUTES.UpdateProfile,
   },
+  {
+    element: SSOSuccess,
+    path: ROUTES.ssoSuccess,
+  },
 ]
 
-const privateRoutes: any[] = []
+const privateRoutes: RouteElement[] = [
+  {
+    element: Home,
+    path: ROUTES.home,
+  },
+]
 
 export { publicRoutes, privateRoutes }

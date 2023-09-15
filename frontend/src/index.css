@@ -7,12 +7,26 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Poppins, sans-serif;
+  background: var(--theme-page-background);
+  color: var(--theme-page-text);
 }
 
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: #313134;
+}
+
+button,
+input {
+  outline: none;
+  border: none;
+}
+
+a {
+  color: #313134;
+  text-decoration: none;
 }
 
 code {
@@ -32,7 +46,6 @@ code {
   src: url('/frontend/src/assets/fonts/SVN-Poppins\ Regular.ttf');
   font-weight: 500;
 }
-
 
 @font-face {
   font-family: Poppins;

@@ -6,9 +6,8 @@ import {
   SwaggerModule,
 } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
-import { AppModule } from './app.module';
 import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const port = process.env.PORT || 5000;
@@ -24,13 +23,7 @@ async function bootstrap() {
 
   //setup middleware
   app.use(cookieParser());
-  app.use(helmet());
-  app.use(
-    rateLimit({
-      windowMs: 60 * 1000, // 1 minute in milliseconds
-      max: 100, // limit each IP to 100 requests per minute
-    }),
-  );
+  app.use(helmet({ crossOriginResourcePolicy: false }));
 
   //setup pipes
   app.useGlobalPipes(

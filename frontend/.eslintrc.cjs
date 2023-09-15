@@ -10,6 +10,7 @@ module.exports = {
   },
   plugins: ['react-hooks', 'jsx-a11y'],
   root: true,
+  settings: {},
   rules: {
     'react-hooks/rules-of-hooks': 'error',
     '@typescript-eslint/interface-name-prefix': 'off',
@@ -24,5 +25,4 @@ module.exports = {
       },
     ],
   },
-  settings: {},
 }
