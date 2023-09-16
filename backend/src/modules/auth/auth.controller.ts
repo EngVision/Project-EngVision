@@ -24,8 +24,8 @@ import { Role } from '../users/enums';
 import { User } from '../users/schemas/user.schema';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
-import { JwtPayload, JwtPayloadWithRt } from './types';
 import { LoginDto } from './dto/login.dto';
+import { JwtPayload, JwtPayloadWithRt } from './types';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -37,7 +37,7 @@ export class AuthController {
 
   /** Login, register with email and password **/
   @Post('login')
-  async login(@Body() loginDto: LoginDto, @Res() res: Response) {
+  async login(@Body() loginDto: LoginDto, @Res() res: Response<User>) {
     const { tokens, user } = await this.authService.login(loginDto);
 
     this.authService.attachTokensCookie(res, tokens);

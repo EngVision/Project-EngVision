@@ -5,14 +5,17 @@ import {
   HttpStatus,
   Patch,
   Post,
+  Put,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { plainToClass } from 'class-transformer';
 import { Response } from 'express';
 import { CurrentUser } from 'src/common/decorators';
 import { AtGuard } from 'src/common/guards';
+import { EmailDto } from '../auth/dto/login.dto';
 import { JwtPayload } from '../auth/types';
 import {
   CreateAccountDto,
@@ -23,8 +26,6 @@ import {
 } from './dto';
 import { User } from './schemas/user.schema';
 import { UsersService } from './users.service';
-import { Throttle } from '@nestjs/throttler';
-import { EmailDto } from '../auth/dto/login.dto';
 
 @ApiTags('Account')
 @Controller('account')
@@ -62,7 +63,7 @@ export class UsersController {
       .send(plainToClass(User, updatedUser.toObject()));
   }
 
-  @Post('password')
+  @Put('password')
   @UseGuards(AtGuard)
   async updatePassword(
     @CurrentUser() user: JwtPayload,

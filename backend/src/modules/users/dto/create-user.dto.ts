@@ -2,11 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEnum,
+  IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsStrongPassword,
-  IsUrl,
   Length,
 } from 'class-validator';
 import { Gender, Role } from '../enums';
@@ -31,7 +31,7 @@ export class CreateUserDto {
   password: string;
 
   @IsOptional()
-  @IsUrl()
+  @IsMongoId()
   @ApiProperty({ type: String, description: 'Avatar url' })
   avatar?: string;
 

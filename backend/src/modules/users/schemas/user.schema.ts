@@ -1,8 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { Exclude, Expose, Transform } from 'class-transformer';
-import { Document } from 'mongoose';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
+import { Document, SchemaTypes } from 'mongoose';
 import { hashString } from 'src/common/utils';
+import { FileUploadService } from 'src/modules/file-upload/file-upload.service';
+import { LocalFile } from 'src/modules/file-upload/schemas/local-file.schema';
 import { Role } from '../enums';
 import { Gender } from './../enums/index';
 
@@ -33,8 +35,9 @@ export class User {
   @Prop({ enum: Role, required: true, default: Role.Student })
   role: Role;
 
-  @Prop({ required: true })
-  avatar: string;
+  @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name })
+  @Type(() => LocalFile)
+  avatar?: string;
 
   @Prop({ enum: Gender, default: Gender.Male })
   gender?: string;
@@ -58,7 +61,7 @@ export class User {
 
   validatePassword?: (password: string) => Promise<boolean>;
   validateRefreshToken?: (refreshToken: string) => Promise<boolean>;
-  preSave?: () => Promise<void>;
+  preSave?: (fileUploadService: FileUploadService) => Promise<void>;
   preUpdate?: () => Promise<void>;
 }
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -79,9 +82,17 @@ UserSchema.methods.validateRefreshToken = async function (
 };
 
 /* Hooks */
-UserSchema.methods.preSave = async function () {
+UserSchema.methods.preSave = async function (
+  fileUploadService: FileUploadService,
+) {
   if (this.password) {
     this.password = await hashString(this.password);
+  }
+
+  if (!this.avatar) {
+    this.avatar = (
+      await fileUploadService.getDefaultAvatar(this.id, this.email)
+    ).id;
   }
 };
 
@@ -94,9 +105,5 @@ UserSchema.methods.preUpdate = async function (updatedUser: User) {
     updatedUser.refreshToken = await hashString(
       updatedUser.refreshToken.slice(-25),
     );
-  }
-
-  if (updatedUser?.avatar) {
-    updatedUser.avatar = `${process.env.SERVER_URL}/${updatedUser.avatar}`;
   }
 };
