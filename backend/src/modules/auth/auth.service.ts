@@ -10,7 +10,6 @@ import {
   accessTokenConfig,
   refreshTokenConfig,
 } from 'src/common/config/cookie.config';
-import { UserDto } from '../users/dto/user.dto';
 import { Role } from '../users/enums';
 import { User, UserDocument } from '../users/schemas/user.schema';
 import { CreateUserDto } from './../users/dto/create-user.dto';

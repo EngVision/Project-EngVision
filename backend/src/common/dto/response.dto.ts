@@ -1,33 +1,16 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Type, plainToInstance } from 'class-transformer';
+import { Type, plainToInstance } from 'class-transformer';
+import { BaseResponseDto, ResponseParams } from './base-response.dto';
 import { Document } from 'mongoose';
 
-export class ResponseDto<TData> {
-  @Exclude()
-  private type: any;
-
-  @ApiProperty()
-  success: boolean;
-
-  @ApiProperty()
-  message: string;
-
+export class ResponseDto<TData> extends BaseResponseDto<TData> {
   @Type(options => {
     return (options.newObject as ResponseDto<TData>).type;
   })
   data: TData;
-
-  constructor(type: any, init?: Partial<ResponseDto<TData>>) {
-    this.type = type;
-    Object.assign(this, init);
-  }
 }
 
-interface ResponseParams {
-  dataType?: any;
+interface ResponseDataParams extends ResponseParams {
   data?: Document | any;
-  message?: string;
-  success?: boolean;
 }
 
 export const GetResponse = ({
@@ -35,11 +18,14 @@ export const GetResponse = ({
   data = null,
   message = null,
   success = true,
-}: ResponseParams) => {
+}: ResponseDataParams) => {
   const response = new ResponseDto<any>(dataType, {
     success,
     message,
-    data: data?.toObject ? plainToInstance(dataType, data.toObject()) : data,
+    data:
+      data instanceof Document
+        ? plainToInstance(dataType, data.toObject())
+        : data,
   });
 
   return response;
