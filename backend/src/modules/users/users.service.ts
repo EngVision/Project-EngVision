@@ -1,18 +1,16 @@
-import { CreateAccountDto } from './dto/create-account.dto';
 import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { unlink } from 'fs';
-import * as gravatar from 'gravatar';
 import { Model } from 'mongoose';
 import * as nodemailer from 'nodemailer';
 import * as randomstring from 'randomstring';
+import { CreateUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
+import { CreateAccountDto } from './dto/create-account.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { emailContent } from './template/email.content';
-import { CreateUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 
 @Injectable()
 export class UsersService {
@@ -32,24 +30,17 @@ export class UsersService {
 
   /* Create new user */
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
-    createUserDto.avatar = gravatar.url(createUserDto.email, {
-      protocol: 'https',
-      s: '200',
-      r: 'pg',
-      d: 'identicon',
-    });
-
     const newUser = new this.userModel(createUserDto);
     await newUser.save();
 
-    return newUser;
+    return newUser.populate('avatar', ['id', 'url']);
   }
 
   async createWithSSO(user: User): Promise<UserDocument> {
     const newUser = new this.userModel(user);
     await newUser.save();
 
-    return newUser;
+    return newUser.populate('avatar', ['id', 'url']);
   }
 
   async createAccount(id: string, createAccountDto: CreateAccountDto) {
@@ -59,16 +50,20 @@ export class UsersService {
       { returnDocument: 'after' },
     );
 
-    return updatedUser;
+    return updatedUser.populate('avatar', ['id', 'url']);
   }
 
   /* Get user */
   async getById(id: string): Promise<UserDocument> {
-    return await this.userModel.findOne({ _id: id });
+    return await this.userModel
+      .findOne({ _id: id })
+      .populate('avatar', ['id', 'url']);
   }
 
   async getByEmail(email: string): Promise<UserDocument> {
-    return await this.userModel.findOne({ email });
+    return await this.userModel
+      .findOne({ email })
+      .populate('avatar', ['id', 'url']);
   }
 
   /* Update user */
@@ -77,46 +72,29 @@ export class UsersService {
     updateUserDto: UpdateUserDto,
   ): Promise<UserDocument> {
     if (updateUserDto.avatar) {
-      const beforeDocument = await this.getById(id);
-      await this.deleteOldAvatar(beforeDocument.avatar);
     }
-
     const updatedUser = await this.userModel.findByIdAndUpdate(
       id,
       { ...updateUserDto },
       { returnDocument: 'after' },
     );
 
-    return updatedUser;
+    return updatedUser.populate('avatar', ['id', 'url']);
   }
 
   async updatePassword(
     id: string,
     updatePasswordDto: UpdatePasswordDto,
-  ): Promise<UserDocument> {
+  ): Promise<void> {
     const user = await this.getById(id);
 
     if (user && (await user.validatePassword(updatePasswordDto.oldPassword))) {
       user.password = updatePasswordDto.password;
 
       await user.save();
-
-      return user;
     }
 
     throw new BadRequestException('Old password is incorrect');
-  }
-
-  async deleteOldAvatar(avatarPath: string): Promise<void> {
-    const isDefaultAvatar = avatarPath.includes('gravatar');
-
-    if (!isDefaultAvatar) {
-      const fileName = avatarPath.split('/').pop();
-
-      unlink(`upload/avatar/${fileName}`, err => {
-        if (err) throw new InternalServerErrorException(err);
-      });
-    }
   }
 
   /* Reset password */
