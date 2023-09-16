@@ -14,15 +14,16 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { plainToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import { multerOptions } from 'src/common/config';
 import { CurrentUser } from 'src/common/decorators';
+import { ApiResponseData } from 'src/common/decorators/api-response-data.decorator';
+import { GetResponse } from 'src/common/dto';
 import { AtGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
+import { LocalFileDto } from './dto/local-file.dto';
 import { FileValidationErrors } from './enums';
 import { FileUploadService } from './file-upload.service';
-import { LocalFile } from './schemas/local-file.schema';
 
 @ApiTags('File upload')
 @UseGuards(AtGuard)
@@ -44,6 +45,7 @@ export class FileUploadController {
     },
   })
   @ApiConsumes('multipart/form-data')
+  @ApiResponseData(LocalFileDto)
   async uploadImage(
     @CurrentUser() user: JwtPayload,
     @UploadedFile()
@@ -63,7 +65,7 @@ export class FileUploadController {
 
     return res
       .status(HttpStatus.CREATED)
-      .send(plainToClass(LocalFile, newFile.toObject()));
+      .send(GetResponse({ dataType: LocalFileDto, data: newFile }));
   }
 
   @Post('audio')
@@ -81,6 +83,7 @@ export class FileUploadController {
     },
   })
   @ApiConsumes('multipart/form-data')
+  @ApiResponseData(LocalFileDto)
   async uploadAudio(
     @CurrentUser() user: JwtPayload,
     @UploadedFile()
@@ -91,7 +94,7 @@ export class FileUploadController {
 
     return res
       .status(HttpStatus.CREATED)
-      .send(plainToClass(LocalFile, newFile.toObject()));
+      .send(GetResponse({ dataType: LocalFileDto, data: newFile }));
   }
 
   @Put(':id')
@@ -108,6 +111,7 @@ export class FileUploadController {
       },
     },
   })
+  @ApiResponseData(LocalFileDto)
   async update(
     @CurrentUser() user: JwtPayload,
     @Param('id') id: string,
@@ -119,11 +123,12 @@ export class FileUploadController {
 
     return res
       .status(HttpStatus.OK)
-      .send(plainToClass(LocalFile, updatedFile.toObject()));
+      .send(GetResponse({ dataType: LocalFileDto, data: updatedFile }));
   }
 
   @Delete(':id')
   @UseGuards(AtGuard)
+  @ApiResponseData(Object)
   async remove(
     @CurrentUser() user: JwtPayload,
     @Param('id') id: string,
@@ -133,6 +138,6 @@ export class FileUploadController {
 
     return res
       .status(HttpStatus.OK)
-      .send({ message: 'Remove file successful' });
+      .send(GetResponse({ message: 'Remove file successful' }));
   }
 }

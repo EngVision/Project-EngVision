@@ -11,9 +11,10 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { plainToClass } from 'class-transformer';
 import { Response } from 'express';
 import { CurrentUser } from 'src/common/decorators';
+import { ApiResponseData } from 'src/common/decorators/api-response-data.decorator';
+import { GetResponse } from 'src/common/dto';
 import { AtGuard } from 'src/common/guards';
 import { EmailDto } from '../auth/dto/login.dto';
 import { JwtPayload } from '../auth/types';
@@ -24,7 +25,7 @@ import {
   UpdatePasswordDto,
   UpdateUserDto,
 } from './dto';
-import { User } from './schemas/user.schema';
+import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
 
 @ApiTags('Account')
@@ -34,6 +35,7 @@ export class UsersController {
 
   @Post()
   @UseGuards(AtGuard)
+  @ApiResponseData(UserDto)
   async createAccount(
     @CurrentUser() user: JwtPayload,
     @Body() createAccountDto: CreateAccountDto,
@@ -46,11 +48,12 @@ export class UsersController {
 
     return res
       .status(HttpStatus.OK)
-      .send(plainToClass(User, updatedUser.toObject()));
+      .send(GetResponse({ dataType: UserDto, data: updatedUser }));
   }
 
   @Patch('profile')
   @UseGuards(AtGuard)
+  @ApiResponseData(UserDto)
   async updateProfile(
     @CurrentUser() user: JwtPayload,
     @Body() updateUserDto: UpdateUserDto,
@@ -60,11 +63,12 @@ export class UsersController {
 
     return res
       .status(HttpStatus.OK)
-      .send(plainToClass(User, updatedUser.toObject()));
+      .send(GetResponse({ dataType: UserDto, data: updatedUser }));
   }
 
   @Put('password')
   @UseGuards(AtGuard)
+  @ApiResponseData(Object)
   async updatePassword(
     @CurrentUser() user: JwtPayload,
     @Body() updatePasswordDto: UpdatePasswordDto,
@@ -74,12 +78,13 @@ export class UsersController {
 
     return res
       .status(HttpStatus.OK)
-      .send({ message: 'Password change successful' });
+      .send(GetResponse({ message: 'Password change successful' }));
   }
 
   /* Forgot password */
   @Post('forgot-password')
   @Throttle({ default: { limit: 1, ttl: 60000 } })
+  @ApiResponseData(Object)
   async forgotPassword(@Body() body: EmailDto, @Res() res: Response) {
     const result = await this.usersService.sendMailResetPassword(body.email);
 
@@ -89,20 +94,24 @@ export class UsersController {
 
     return res
       .status(HttpStatus.OK)
-      .send({ message: 'We have just sent you an email' });
+      .send(GetResponse({ message: 'We have just sent you an email' }));
   }
 
   @Post('validate-reset-password-code')
+  @ApiResponseData(Object)
   async validateResetPasswordCode(
     @Body() body: ResetPasswordCodeDto,
     @Res() res: Response,
   ) {
     await this.usersService.validateResetPasswordUrl(body.resetPasswordCode);
 
-    return res.status(HttpStatus.OK).send({ message: 'Validation successful' });
+    return res
+      .status(HttpStatus.OK)
+      .send(GetResponse({ message: 'Validation successful' }));
   }
 
   @Post('reset-password')
+  @ApiResponseData(Object)
   async resetForgottenPassword(
     @Body() resetPassword: ResetPasswordDto,
     @Res() res: Response,
@@ -118,6 +127,6 @@ export class UsersController {
 
     return res
       .status(HttpStatus.OK)
-      .send({ message: 'New password have been updated' });
+      .send(GetResponse({ message: 'New password have been updated' }));
   }
 }

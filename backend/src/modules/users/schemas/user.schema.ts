@@ -12,8 +12,6 @@ export type UserDocument = User & Document;
 
 @Schema({ versionKey: false, timestamps: true })
 export class User {
-  @Expose({ name: '_id' })
-  @Transform(value => value.obj._id.toString())
   id?: string;
 
   @Prop({ required: true })
@@ -29,14 +27,12 @@ export class User {
   email: string;
 
   @Prop({ default: null })
-  @Exclude()
   password?: string;
 
   @Prop({ enum: Role, required: true, default: Role.Student })
   role: Role;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name })
-  @Type(() => LocalFile)
   avatar?: string;
 
   @Prop({ enum: Gender, default: Gender.Male })
@@ -52,11 +48,9 @@ export class User {
   country?: string;
 
   @Prop({ default: null })
-  @Exclude()
   refreshToken?: string;
 
   @Prop({ default: null })
-  @Exclude()
   resetPasswordCode?: string;
 
   validatePassword?: (password: string) => Promise<boolean>;
