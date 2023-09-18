@@ -1,11 +1,10 @@
 {
-    "SignIn":{
-        
-    },
-    "SignUp":{
-
-    },
-    "Home":{
+    "SignIn": {},
+    "SignUp": {},
+    "Home": {
         "doclist": "Doclist"
+    },
+    "CourseList": {
+        "course": "Course"
     }
 }

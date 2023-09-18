@@ -6,6 +6,9 @@
 
     },
     "Home":{
-        "doclist": "Danh sach"
+        "doclist": "Danh sách"
+    },
+    "CourseList": {
+        "course": "Khóa học"
     }
 }

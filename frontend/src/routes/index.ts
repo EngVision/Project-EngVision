@@ -8,6 +8,7 @@ import SSOSuccess from '../pages/SignIn/SSOSucess'
 import SignUp from '../pages/SignUp'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
+import { CourseList } from '../pages/CourseList'
 
 import type { RouteElement } from './types'
 
@@ -43,6 +44,10 @@ const publicRoutes: RouteElement[] = [
   {
     element: SSOSuccess,
     path: ROUTES.ssoSuccess,
+  },
+  {
+    element: CourseList,
+    path: ROUTES.courses,
   },
 ]
 
