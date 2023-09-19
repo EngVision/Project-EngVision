@@ -9,7 +9,7 @@ import {
   IsStrongPassword,
   Length,
 } from 'class-validator';
-import { Gender, Role } from '../enums';
+import { Gender, Role } from 'src/common/enums';
 
 export class CreateUserDto {
   @IsNotEmpty()

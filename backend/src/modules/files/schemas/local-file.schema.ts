@@ -5,19 +5,17 @@ export type LocalFileDocument = LocalFile & Document;
 
 @Schema({ versionKey: false, timestamps: true })
 export class LocalFile {
-  id?: string;
-
   @Prop({ default: null })
   filename?: string;
 
-  @Prop({ required: true })
-  url: string;
+  @Prop({ default: null })
+  url?: string;
 
   @Prop({ default: null })
   mimetype?: string;
 
   @Prop({ required: true })
-  user: string;
+  userId: string;
 
   @Prop({ default: null })
   path?: string;

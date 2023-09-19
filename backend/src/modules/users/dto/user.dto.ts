@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
-import { LocalFileDto } from 'src/modules/file-upload/dto/local-file.dto';
-import { Role } from '../enums';
+import { Types } from 'mongoose';
+import { Role } from 'src/common/enums';
 
 export class UserDto {
   @Expose({ name: '_id' })
@@ -21,8 +21,8 @@ export class UserDto {
   @ApiProperty({ type: String, description: 'Role' })
   role: Role;
 
-  @ApiProperty({ type: () => LocalFileDto, description: 'Avatar' })
-  @Type(() => LocalFileDto)
+  @ApiProperty({ type: () => Types.ObjectId, description: 'Avatar' })
+  @Transform(value => value.obj.avatar.toString())
   avatar?: string;
 
   @ApiProperty({ type: String, description: 'Gender' })

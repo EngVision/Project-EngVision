@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { FileUploadService } from './file-upload.service';
-import { FileUploadController } from './file-upload.controller';
+import { FilesService } from './files.service';
+import { FilesController } from './files.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LocalFile, LocalFileSchema } from './schemas/local-file.schema';
 
@@ -10,8 +10,8 @@ import { LocalFile, LocalFileSchema } from './schemas/local-file.schema';
       { name: LocalFile.name, schema: LocalFileSchema },
     ]),
   ],
-  controllers: [FileUploadController],
-  providers: [FileUploadService],
-  exports: [FileUploadService],
+  controllers: [FilesController],
+  providers: [FilesService],
+  exports: [FilesService],
 })
-export class FileUploadModule {}
+export class FilesModule {}

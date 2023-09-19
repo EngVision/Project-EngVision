@@ -1,14 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEnum,
+  IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsStrongPassword,
-  IsUrl,
   Length,
 } from 'class-validator';
-import { Gender, Role } from '../enums';
+import { Gender, Role } from 'src/common/enums';
 
 export class CreateAccountDto {
   @IsStrongPassword()
@@ -16,8 +16,8 @@ export class CreateAccountDto {
   password: string;
 
   @IsOptional()
-  @IsUrl()
-  @ApiProperty({ type: String, description: 'Avatar Url' })
+  @IsMongoId()
+  @ApiProperty({ type: String, description: 'Avatar file id' })
   avatar?: string;
 
   @IsEnum(Gender)
