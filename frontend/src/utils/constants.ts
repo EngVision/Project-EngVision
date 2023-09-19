@@ -10,6 +10,8 @@ export const ROUTES = {
   resetForgotPassword: '/reset-password/:resetPasswordCode',
   ssoSuccess: '/sso-success',
   statistics: '/statistics',
+  exam: '/exam',
+  examEdit: '/exam-edit',
 }
 
 export const ROLES = {
