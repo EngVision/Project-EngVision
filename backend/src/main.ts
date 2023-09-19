@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   DocumentBuilder,
@@ -15,7 +15,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   //app config
-  app.setGlobalPrefix('api', { exclude: ['*'] });
+  app.setGlobalPrefix('api', {
+    exclude: ['*', { path: 'files/:id', method: RequestMethod.GET }],
+  });
   app.enableCors({
     origin: ['http://localhost:3000'],
     credentials: true,
@@ -30,6 +32,7 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       transform: true,
+      stopAtFirstError: false,
     }),
   );
 

@@ -1,14 +1,11 @@
-import { extname } from 'path';
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { diskStorage } from 'multer';
 import { existsSync, mkdirSync } from 'fs';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { v4 as uuid } from 'uuid';
+import { FileValidationErrors, SupportedFileType } from '../enums';
 
-//The max file size (20MB)
-const maxFileSize = 20 * 1000 * 1000;
-
-const imageType = /jpg|jpeg|png|gif|svg/;
-const audioType = /mp3|wav|ogg|aac|flac/;
+//The max file size (30MB)
+const maxFileSize = 30 * 1000 * 1000;
 
 export const multerOptions = (dest: string, fileType?: 'image' | 'audio') => ({
   // File size limits
@@ -21,13 +18,15 @@ export const multerOptions = (dest: string, fileType?: 'image' | 'audio') => ({
     let regex: RegExp;
     switch (fileType) {
       case 'image':
-        regex = imageType;
+        regex = new RegExp(SupportedFileType.IMAGE);
         break;
       case 'audio':
-        regex = audioType;
+        regex = new RegExp(SupportedFileType.AUDIO);
         break;
       default:
-        regex = imageType;
+        regex = new RegExp(
+          SupportedFileType.AUDIO + '|' + SupportedFileType.IMAGE,
+        );
         break;
     }
 
@@ -36,13 +35,9 @@ export const multerOptions = (dest: string, fileType?: 'image' | 'audio') => ({
       cb(null, true);
     } else {
       // Reject file
-      cb(
-        new HttpException(
-          `Unsupported file type ${extname(file.originalname)}`,
-          HttpStatus.BAD_REQUEST,
-        ),
-        false,
-      );
+      req.fileValidationError = FileValidationErrors.UNSUPPORTED_FILE_TYPE;
+      req.unsupportedFileType = extname(file.originalname);
+      cb(null, false);
     }
   },
 

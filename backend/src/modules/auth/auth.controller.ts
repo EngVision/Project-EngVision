@@ -9,23 +9,21 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { plainToClass } from 'class-transformer';
 import { Request, Response } from 'express';
-import { CurrentUser } from 'src/common/decorators';
+import { ApiResponseData, CurrentUser } from 'src/common/decorators';
+import { GetResponse } from 'src/common/dto';
 import {
   AtGuard,
   FacebookGuard,
   GoogleGuard,
-  RoleGuard,
   RtGuard,
 } from 'src/common/guards';
+import { UserDto } from '../users/dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { Role } from '../users/enums';
-import { User } from '../users/schemas/user.schema';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
-import { JwtPayload, JwtPayloadWithRt } from './types';
 import { LoginDto } from './dto/login.dto';
+import { JwtPayload, JwtPayloadWithRt } from './types';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -37,26 +35,33 @@ export class AuthController {
 
   /** Login, register with email and password **/
   @Post('login')
+  @ApiResponseData(UserDto)
   async login(@Body() loginDto: LoginDto, @Res() res: Response) {
     const { tokens, user } = await this.authService.login(loginDto);
 
     this.authService.attachTokensCookie(res, tokens);
 
-    return res.status(HttpStatus.OK).send(user);
+    return res
+      .status(HttpStatus.OK)
+      .send(GetResponse({ dataType: UserDto, data: user }));
   }
 
   @Post('logout')
   @UseGuards(AtGuard)
+  @ApiResponseData(Object)
   async logout(
     @Req() req: Request & { user: JwtPayload },
     @Res() res: Response,
   ) {
     await this.authService.logout(req.user.sub, res);
 
-    return res.status(HttpStatus.OK).send({ messgae: 'User logged out' });
+    return res
+      .status(HttpStatus.OK)
+      .send(GetResponse({ message: 'User logged out' }));
   }
 
   @Post('register')
+  @ApiResponseData(UserDto)
   async registerUser(
     @Body() createUserDto: CreateUserDto,
     @Res() res: Response,
@@ -65,11 +70,14 @@ export class AuthController {
 
     this.authService.attachTokensCookie(res, tokens);
 
-    return res.status(HttpStatus.CREATED).send(user);
+    return res
+      .status(HttpStatus.CREATED)
+      .send(GetResponse({ dataType: UserDto, data: user }));
   }
 
   @Get('refresh')
   @UseGuards(RtGuard)
+  @ApiResponseData(Object)
   async refreshTokens(
     @CurrentUser() user: JwtPayloadWithRt,
     @Res() res: Response,
@@ -81,7 +89,7 @@ export class AuthController {
 
     this.authService.attachTokensCookie(res, tokens);
 
-    return res.status(HttpStatus.OK).send(tokens);
+    return res.status(HttpStatus.OK).send(GetResponse({ data: tokens }));
   }
 
   /** Single Sign-On **/
@@ -116,28 +124,12 @@ export class AuthController {
   /* Get me */
   @Get('me')
   @UseGuards(AtGuard)
+  @ApiResponseData(UserDto)
   async getMe(@CurrentUser() currentUser: JwtPayload, @Res() res: Response) {
     const user = await this.usersService.getById(currentUser.sub);
 
-    return res.status(HttpStatus.OK).send(plainToClass(User, user.toObject()));
-  }
-
-  /* RoleGuard Testing */
-  @Get('admin')
-  @UseGuards(AtGuard, RoleGuard(Role.Admin))
-  getAdmin() {
-    return 'Admin';
-  }
-
-  @Get('teacher')
-  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
-  getTeacher() {
-    return 'Admin, Teacher';
-  }
-
-  @Get('student')
-  @UseGuards(AtGuard, RoleGuard(Role.Student))
-  getStudent() {
-    return 'Admin, Student';
+    return res
+      .status(HttpStatus.OK)
+      .send(GetResponse({ dataType: UserDto, data: user }));
   }
 }

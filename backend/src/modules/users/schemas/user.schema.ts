@@ -1,17 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { Exclude, Expose, Transform } from 'class-transformer';
-import { Document } from 'mongoose';
+import { Document, SchemaTypes } from 'mongoose';
+import { Gender, Role } from 'src/common/enums';
 import { hashString } from 'src/common/utils';
-import { Role } from '../enums';
-import { Gender } from './../enums/index';
+import { LocalFile } from 'src/modules/files/schemas/local-file.schema';
 
 export type UserDocument = User & Document;
 
 @Schema({ versionKey: false, timestamps: true })
 export class User {
-  @Expose({ name: '_id' })
-  @Transform(value => value.obj._id.toString())
   id?: string;
 
   @Prop({ required: true })
@@ -27,14 +24,13 @@ export class User {
   email: string;
 
   @Prop({ default: null })
-  @Exclude()
   password?: string;
 
   @Prop({ enum: Role, required: true, default: Role.Student })
   role: Role;
 
-  @Prop({ required: true })
-  avatar: string;
+  @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name })
+  avatar?: string;
 
   @Prop({ enum: Gender, default: Gender.Male })
   gender?: string;
@@ -49,11 +45,9 @@ export class User {
   country?: string;
 
   @Prop({ default: null })
-  @Exclude()
   refreshToken?: string;
 
   @Prop({ default: null })
-  @Exclude()
   resetPasswordCode?: string;
 
   validatePassword?: (password: string) => Promise<boolean>;
@@ -94,9 +88,5 @@ UserSchema.methods.preUpdate = async function (updatedUser: User) {
     updatedUser.refreshToken = await hashString(
       updatedUser.refreshToken.slice(-25),
     );
-  }
-
-  if (updatedUser?.avatar) {
-    updatedUser.avatar = `${process.env.SERVER_URL}/${updatedUser.avatar}`;
   }
 };

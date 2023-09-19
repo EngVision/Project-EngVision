@@ -5,20 +5,18 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
-import { plainToClass } from 'class-transformer';
 import { Response } from 'express';
-import { CreateUserDto } from './../users/dto/create-user.dto';
-import { UsersService } from './../users/users.service';
-import { LoginDto } from './dto/login.dto';
-import { JwtPayload } from './types';
-import { Tokens } from './types/tokens.type';
 import {
   accessTokenConfig,
   refreshTokenConfig,
 } from 'src/common/config/cookie.config';
 import { User, UserDocument } from '../users/schemas/user.schema';
-import { Role } from '../users/enums';
+import { CreateUserDto } from './../users/dto/create-user.dto';
+import { UsersService } from './../users/users.service';
+import { LoginDto } from './dto/login.dto';
+import { JwtPayload } from './types';
+import { Tokens } from './types/tokens.type';
+import { Role } from 'src/common/enums';
 
 @Injectable()
 export class AuthService {
@@ -27,19 +25,23 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(loginDto: LoginDto): Promise<{ tokens: Tokens; user: User }> {
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ tokens: Tokens; user: UserDocument }> {
     const { email, password } = loginDto;
 
-    const userDocument = await this.validateUser(email, password);
-    if (!userDocument)
+    const user = await this.validateUser(email, password);
+    if (!user) {
       throw new UnauthorizedException('Email or password is incorrect');
-
-    const user = plainToClass(User, userDocument.toObject());
+    }
 
     const tokens = await this.getTokens(user);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
-    return { tokens, user };
+    return {
+      tokens,
+      user,
+    };
   }
 
   async logout(userId: string, res: Response): Promise<void> {
@@ -51,21 +53,19 @@ export class AuthService {
 
   async register(
     createUserDto: CreateUserDto,
-  ): Promise<{ tokens: Tokens; user: User }> {
+  ): Promise<{ tokens: Tokens; user: UserDocument }> {
     const { email, password, firstName, lastName, role } = createUserDto;
 
     const existedUser = await this.usersService.getByEmail(email);
     if (existedUser) throw new BadRequestException('Email existed');
 
-    const userDocument = await this.usersService.create({
+    const user = await this.usersService.create({
       email,
       password,
       firstName,
       lastName,
       role,
     });
-
-    const user = plainToClass(User, userDocument.toObject());
 
     const tokens = await this.getTokens(user);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
@@ -87,7 +87,7 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<UserDocument> {
     const user = await this.usersService.getByEmail(email);
 
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (user && (await user.validatePassword(password))) {
       return user;
     }
 
@@ -141,29 +141,26 @@ export class AuthService {
 
   async singleSignOn(
     req: Request & { user: User },
-  ): Promise<{ tokens: Tokens; user: User }> {
+  ): Promise<{ tokens: Tokens; user: UserDocument }> {
     if (!req.user) {
       throw new UnauthorizedException('No user from this service provider');
     }
 
-    const userDocument = await this.usersService.getByEmail(req.user.email);
+    const user = await this.usersService.getByEmail(req.user.email);
 
-    if (!userDocument) {
-      const newUserDocument = await this.usersService.createWithSSO({
+    if (!user) {
+      const newUser = await this.usersService.createWithSSO({
         email: req.user.email,
         firstName: req.user.firstName,
         lastName: req.user.lastName,
         avatar: req.user.avatar,
         role: req.user.role || Role.Student,
       });
-      const newUser = plainToClass(User, newUserDocument.toObject());
 
       const tokens = await this.getTokens(newUser);
       await this.updateRefreshToken(newUser.id, tokens.refreshToken);
       return { tokens, user: newUser };
     }
-
-    const user = plainToClass(User, userDocument.toObject());
 
     const tokens = await this.getTokens(user);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
