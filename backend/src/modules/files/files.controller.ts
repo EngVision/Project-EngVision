@@ -66,7 +66,7 @@ export class FilesController {
     return res
       .status(HttpStatus.CREATED)
       .send(
-        GetResponse({ message: 'File uploaded', data: { id: newFile.id } }),
+        GetResponse({ message: 'File uploaded', data: { fileId: newFile.id } }),
       );
   }
 
@@ -105,7 +105,7 @@ export class FilesController {
     return res
       .status(HttpStatus.CREATED)
       .send(
-        GetResponse({ message: 'File uploaded', data: { id: newFile.id } }),
+        GetResponse({ message: 'File uploaded', data: { fileId: newFile.id } }),
       );
   }
 
@@ -132,11 +132,12 @@ export class FilesController {
   ) {
     const updatedFile = await this.filesService.update(id, user.sub, file);
 
-    return res
-      .status(HttpStatus.OK)
-      .send(
-        GetResponse({ message: 'File updated', data: { id: updatedFile.id } }),
-      );
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        message: 'File updated',
+        data: { fileId: updatedFile.id },
+      }),
+    );
   }
 
   @Get(':id')

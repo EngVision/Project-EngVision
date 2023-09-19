@@ -37,6 +37,12 @@ export const GetResponseList = ({
   limit,
   offset,
 }: ResponseListParams) => {
+  let transformData = data;
+
+  if (data?.[0] instanceof Document) {
+    transformData = data.map(d => d.toObject());
+  }
+
   const response = new PaginatedResponseDto<any>(dataType, {
     success,
     message,
@@ -44,13 +50,9 @@ export const GetResponseList = ({
       total,
       limit,
       offset,
-      results:
-        data?.[0] instanceof Document
-          ? plainToInstance(
-              dataType,
-              data.map(d => d.toObject()),
-            )
-          : data,
+      results: dataType
+        ? plainToInstance(dataType, transformData)
+        : transformData,
     },
   });
 

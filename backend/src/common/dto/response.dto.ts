@@ -19,14 +19,20 @@ export const GetResponse = ({
   message = null,
   success = true,
 }: ResponseDataParams) => {
+  let transformData = data;
+
+  if (data instanceof Array) {
+    transformData = data.map(d => d.toObject());
+  }
+
+  if (data instanceof Document) {
+    transformData = data.toObject();
+  }
+
   const response = new ResponseDto<any>(dataType, {
     success,
     message,
-    data: dataType
-      ? data instanceof Document
-        ? plainToInstance(dataType, data.toObject()) // dataType is defined, data is Document
-        : plainToInstance(dataType, data) // dataType is defined, data is not Document
-      : data,
+    data: dataType ? plainToInstance(dataType, transformData) : transformData,
   });
 
   return response;
