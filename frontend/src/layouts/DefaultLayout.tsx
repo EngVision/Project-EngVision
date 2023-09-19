@@ -1,7 +1,7 @@
 import React from 'react'
 
-import Header from '../compoments/Header'
-import Sidebar from '../compoments/Sidebar'
+import Header from '../components/Header'
+import Sidebar from '../components/Sidebar'
 
 import type { LayoutProps } from './types'
 

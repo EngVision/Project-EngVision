@@ -1,23 +1,19 @@
 import AuthLayout from '../layouts/AuthLayout'
 import CourseDetailsPage from '../pages/CourseDetails'
 import { CourseList } from '../pages/CourseList'
-import DocumentList from '../pages/DocumentList'
 import Home from '../pages/Home'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
 import SendMailResetPassword from '../pages/SendMailResetPassword'
 import SignIn from '../pages/SignIn'
 import SSOSuccess from '../pages/SignIn/SSOSucess'
 import SignUp from '../pages/SignUp'
+import TeacherCourses from '../pages/Teacher/Courses'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
 
 import type { RouteElement } from './types'
 
 const publicRoutes: RouteElement[] = [
-  {
-    element: DocumentList,
-    path: ROUTES.docList,
-  },
   {
     element: SignIn,
     layout: AuthLayout,
@@ -53,6 +49,10 @@ const publicRoutes: RouteElement[] = [
   {
     element: CourseList,
     path: ROUTES.courses,
+  },
+  {
+    element: TeacherCourses,
+    path: ROUTES.coursesTeacher,
   },
 ]
 

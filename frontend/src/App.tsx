@@ -10,6 +10,7 @@ import { ROUTES } from './utils/constants'
 
 const App: React.FC = () => {
   const userAccountId = useAppSelector((state) => state.app.app.userAccountId)
+  console.log('🚀 ~ file: App.tsx:13 ~ userAccountId:', userAccountId)
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()

@@ -2,6 +2,7 @@ export const ROUTES = {
   UpdateProfile: '/update-profile',
   courses: '/courses',
   courseDetails: '/courses/:courseId',
+  coursesTeacher: '/teacher/courses',
   docList: '/doclist',
   home: '/',
   settings: '/settings',
