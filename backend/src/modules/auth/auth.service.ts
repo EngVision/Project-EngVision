@@ -10,13 +10,13 @@ import {
   accessTokenConfig,
   refreshTokenConfig,
 } from 'src/common/config/cookie.config';
-import { Role } from '../users/enums';
 import { User, UserDocument } from '../users/schemas/user.schema';
 import { CreateUserDto } from './../users/dto/create-user.dto';
 import { UsersService } from './../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './types';
 import { Tokens } from './types/tokens.type';
+import { Role } from 'src/common/enums';
 
 @Injectable()
 export class AuthService {

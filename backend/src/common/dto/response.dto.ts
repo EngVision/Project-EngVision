@@ -1,6 +1,6 @@
 import { Type, plainToInstance } from 'class-transformer';
-import { BaseResponseDto, ResponseParams } from './base-response.dto';
 import { Document } from 'mongoose';
+import { BaseResponseDto, ResponseParams } from './base-response.dto';
 
 export class ResponseDto<TData> extends BaseResponseDto<TData> {
   @Type(options => {
@@ -19,13 +19,20 @@ export const GetResponse = ({
   message = null,
   success = true,
 }: ResponseDataParams) => {
+  let transformData = data;
+
+  if (data instanceof Array) {
+    transformData = data.map(d => d.toObject());
+  }
+
+  if (data instanceof Document) {
+    transformData = data.toObject();
+  }
+
   const response = new ResponseDto<any>(dataType, {
     success,
     message,
-    data:
-      data instanceof Document
-        ? plainToInstance(dataType, data.toObject())
-        : data,
+    data: dataType ? plainToInstance(dataType, transformData) : transformData,
   });
 
   return response;

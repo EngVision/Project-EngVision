@@ -1,37 +1,38 @@
 import {
   Controller,
   Delete,
+  Get,
   HttpStatus,
   Param,
   Post,
   Put,
   Req,
   Res,
+  StreamableFile,
   UnsupportedMediaTypeException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { multerOptions } from 'src/common/config';
-import { CurrentUser } from 'src/common/decorators';
-import { ApiResponseData } from 'src/common/decorators/api-response-data.decorator';
-import { GetResponse } from 'src/common/dto';
-import { AtGuard } from 'src/common/guards';
+import { ApiResponseData, CurrentUser } from 'src/common/decorators';
 import { JwtPayload } from '../auth/types';
-import { LocalFileDto } from './dto/local-file.dto';
-import { FileValidationErrors } from './enums';
-import { FileUploadService } from './file-upload.service';
+import { FilesService } from './files.service';
+import { FileValidationErrors } from 'src/common/enums';
+import { GetResponse } from 'src/common/dto';
+import { Response } from 'express';
+import { AtGuard } from 'src/common/guards';
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
-@ApiTags('File upload')
-@UseGuards(AtGuard)
-@Controller('file-upload')
-export class FileUploadController {
-  constructor(private readonly fileUploadService: FileUploadService) {}
+@Controller('files')
+export class FilesController {
+  constructor(private readonly filesService: FilesService) {}
 
   @Post('image')
+  @UseGuards(AtGuard)
   @UseInterceptors(FileInterceptor('file', multerOptions('', 'image')))
   @ApiBody({
     schema: {
@@ -45,7 +46,6 @@ export class FileUploadController {
     },
   })
   @ApiConsumes('multipart/form-data')
-  @ApiResponseData(LocalFileDto)
   async uploadImage(
     @CurrentUser() user: JwtPayload,
     @UploadedFile()
@@ -61,11 +61,13 @@ export class FileUploadController {
       );
     }
 
-    const newFile = await this.fileUploadService.create(file, user.sub);
+    const newFile = await this.filesService.create(file, user.sub);
 
     return res
       .status(HttpStatus.CREATED)
-      .send(GetResponse({ dataType: LocalFileDto, data: newFile }));
+      .send(
+        GetResponse({ message: 'File uploaded', data: { fileId: newFile.id } }),
+      );
   }
 
   @Post('audio')
@@ -83,18 +85,28 @@ export class FileUploadController {
     },
   })
   @ApiConsumes('multipart/form-data')
-  @ApiResponseData(LocalFileDto)
   async uploadAudio(
     @CurrentUser() user: JwtPayload,
     @UploadedFile()
     file: Express.Multer.File,
+    @Req() req: Request,
     @Res() res: Response,
   ) {
-    const newFile = await this.fileUploadService.create(file, user.sub);
+    if (
+      req['fileValidationError'] === FileValidationErrors.UNSUPPORTED_FILE_TYPE
+    ) {
+      throw new UnsupportedMediaTypeException(
+        `Unsupported file type ${req['unsupportedFileType']}`,
+      );
+    }
+
+    const newFile = await this.filesService.create(file, user.sub);
 
     return res
       .status(HttpStatus.CREATED)
-      .send(GetResponse({ dataType: LocalFileDto, data: newFile }));
+      .send(
+        GetResponse({ message: 'File uploaded', data: { fileId: newFile.id } }),
+      );
   }
 
   @Put(':id')
@@ -111,7 +123,6 @@ export class FileUploadController {
       },
     },
   })
-  @ApiResponseData(LocalFileDto)
   async update(
     @CurrentUser() user: JwtPayload,
     @Param('id') id: string,
@@ -119,11 +130,34 @@ export class FileUploadController {
     file: Express.Multer.File,
     @Res() res: Response,
   ) {
-    const updatedFile = await this.fileUploadService.update(id, user.sub, file);
+    const updatedFile = await this.filesService.update(id, user.sub, file);
 
-    return res
-      .status(HttpStatus.OK)
-      .send(GetResponse({ dataType: LocalFileDto, data: updatedFile }));
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        message: 'File updated',
+        data: { fileId: updatedFile.id },
+      }),
+    );
+  }
+
+  @Get(':id')
+  async getFile(
+    @Param('id') id: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const file = await this.filesService.get(id);
+
+    if (file.url) {
+      return res.redirect(file.url);
+    }
+
+    const stream = createReadStream(join(process.cwd(), file.path));
+
+    res.set({
+      'Content-Disposition': `inline; filename="${file.filename}"`,
+      'Content-Type': file.mimetype,
+    });
+    return new StreamableFile(stream);
   }
 
   @Delete(':id')
@@ -134,7 +168,7 @@ export class FileUploadController {
     @Param('id') id: string,
     @Res() res: Response,
   ) {
-    await this.fileUploadService.remove(id, user.sub);
+    await this.filesService.remove(id, user.sub);
 
     return res
       .status(HttpStatus.OK)

@@ -23,7 +23,7 @@ import { courseIdDto } from './dto/course-id';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'src/common/config';
-import { Role } from '../users/enums';
+import { Role } from 'src/common/enums';
 
 @ApiTags('Courses')
 @Controller('courses')
