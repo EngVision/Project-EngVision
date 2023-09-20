@@ -24,9 +24,7 @@ export const multerOptions = (dest: string, fileType?: 'image' | 'audio') => ({
         regex = new RegExp(SupportedFileType.AUDIO);
         break;
       default:
-        regex = new RegExp(
-          SupportedFileType.AUDIO + '|' + SupportedFileType.IMAGE,
-        );
+        regex = new RegExp('/*/');
         break;
     }
 

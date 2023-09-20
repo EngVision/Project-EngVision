@@ -22,9 +22,9 @@ import {
 } from './dto';
 import { ExercisesService } from './exercises.service';
 
-@ApiExtraModels(CreateMultipleChoiceDto)
 @Controller('exercises')
 @ApiTags('Exercises')
+@ApiExtraModels(CreateMultipleChoiceDto)
 export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 

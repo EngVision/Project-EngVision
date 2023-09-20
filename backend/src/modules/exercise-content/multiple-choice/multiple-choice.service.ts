@@ -19,6 +19,7 @@ export class MultipleChoiceService extends ExerciseContentService {
       createContentDto,
       CreateMultipleChoiceDto,
     );
+
     const content = new this.multipleChoiceModel(validatedContent);
     await content.save();
 
