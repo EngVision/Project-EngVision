@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsArray,
   IsEnum,
   IsMongoId,
   IsNotEmpty,
@@ -20,11 +21,16 @@ export class CreateAccountDto {
   @ApiProperty({ type: String, description: 'Avatar file id' })
   avatar?: string;
 
-  @IsEnum(Gender)
   @IsOptional()
+  @IsArray()
+  @IsMongoId({ each: true })
+  @ApiProperty({ type: String, description: 'certificates file id' })
+  certificates?: string;
+
+  @IsEnum(Gender)
   @IsString()
   @ApiProperty({ enum: Gender, description: 'Gender' })
-  gender?: string;
+  gender: string;
 
   @IsOptional()
   @IsString()
