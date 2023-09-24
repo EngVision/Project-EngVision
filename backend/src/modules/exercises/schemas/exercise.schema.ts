@@ -9,6 +9,9 @@ export class Exercise {
   @Prop({ type: String, default: null })
   title?: string;
 
+  @Prop({ type: String, default: null })
+  description?: string;
+
   @Prop({ type: [String], enum: ExerciseTag, required: true })
   tags: string[];
 
@@ -18,8 +21,8 @@ export class Exercise {
   @Prop({ enum: ExerciseType, required: true })
   type: ExerciseType;
 
-  @Prop({ type: SchemaTypes.ObjectId, refPath: 'type', required: true })
-  content: string;
+  @Prop([{ type: SchemaTypes.ObjectId, refPath: 'type', required: true }])
+  content: string[];
 }
 
 export const ExerciseSchema = SchemaFactory.createForClass(Exercise);

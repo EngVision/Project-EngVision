@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes } from 'mongoose';
+import { CEFRLevel, ExerciseTag } from 'src/common/enums';
 import { LocalFile } from 'src/modules/files/schemas/local-file.schema';
 
 @Schema({ _id: false, versionKey: false })
@@ -34,15 +35,31 @@ class Question {
 }
 const QuestionSchema = SchemaFactory.createForClass(Question);
 
+@Schema({ _id: false, versionKey: false })
+class CorrectAnswer {
+  @Prop({ type: [Number], required: true })
+  detail: number[];
+
+  @Prop({ type: String, default: null })
+  explain: string;
+}
+const CorrectAnswerSchema = SchemaFactory.createForClass(CorrectAnswer);
+
 export type MultipleChoiceDocument = MultipleChoice & Document;
 
-@Schema({ versionKey: false })
+@Schema({ versionKey: false, timestamps: true })
 export class MultipleChoice {
+  @Prop({ type: [String], enum: ExerciseTag, required: true })
+  tags: string[];
+
+  @Prop({ enum: CEFRLevel, required: true })
+  level: string;
+
   @Prop({ type: QuestionSchema, required: true })
   question: Question;
 
-  @Prop({ type: [Number], required: true })
-  correctAnswer: number[];
+  @Prop({ type: CorrectAnswerSchema, required: true })
+  correctAnswer: CorrectAnswer;
 }
 
 export const MultipleChoiceSchema =

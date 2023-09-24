@@ -12,19 +12,13 @@ import {
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { GetResponse } from 'src/common/dto';
-import { GetResponseList } from 'src/common/dto/paginated-response.dto';
 import { CreateMultipleChoiceDto } from '../exercise-content/multiple-choice/dto/create-multiple-choice.dto';
-import {
-  CreateExerciseDto,
-  CreateExerciseListDto,
-  ExerciseDto,
-  UpdateExerciseDto,
-} from './dto';
+import { CreateExerciseDto, ExerciseDto, UpdateExerciseDto } from './dto';
 import { ExercisesService } from './exercises.service';
 
-@ApiExtraModels(CreateMultipleChoiceDto)
 @Controller('exercises')
 @ApiTags('Exercises')
+@ApiExtraModels(CreateMultipleChoiceDto)
 export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 
@@ -40,48 +34,39 @@ export class ExercisesController {
       .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
   }
 
-  @Post('list')
-  async createList(
-    @Body() createExerciseListDto: CreateExerciseListDto,
-    @Res() res: Response,
-  ) {
-    const exerciseList = await this.exercisesService.createExerciseList(
-      createExerciseListDto,
-    );
+  @Get(':id')
+  async findOne(@Param('id') id: string, @Res() res: Response) {
+    const exercise = await this.exercisesService.findOne(id);
 
     return res
-      .status(HttpStatus.CREATED)
-      .send(GetResponse({ dataType: ExerciseDto, data: exerciseList }));
+      .status(HttpStatus.OK)
+      .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
   }
 
-  @Get()
-  async findAll() {
-    const exercises = await this.exercisesService.findAll();
-
-    return GetResponseList({
-      dataType: ExerciseDto,
-      data: exercises,
-      total: 0,
-      limit: 0,
-      offset: 0,
-    });
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.exercisesService.findOne(+id);
+  @Post('check-answer/:id')
+  async checkAnswer(@Body() exerciseDto: ExerciseDto, @Res() res: Response) {
+    return res.status(HttpStatus.OK).send('123');
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateExerciseDto: UpdateExerciseDto,
+    @Res() res: Response,
   ) {
-    return this.exercisesService.update(+id, updateExerciseDto);
+    const exercise = await this.exercisesService.update(id, updateExerciseDto);
+
+    return res
+      .status(HttpStatus.OK)
+      .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.exercisesService.remove(+id);
+  async remove(@Param('id') id: string, @Res() res: Response) {
+    await this.exercisesService.remove(id);
+
+    return res
+      .status(HttpStatus.OK)
+      .send(GetResponse({ message: 'Delete exercise successful' }));
   }
 }

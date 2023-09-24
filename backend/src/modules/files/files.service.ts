@@ -59,6 +59,7 @@ export class FilesService {
       });
     }
 
+    updatedFile.url = null;
     updatedFile.filename = file.filename;
     updatedFile.path = file.path;
     updatedFile.mimetype = file.mimetype;
