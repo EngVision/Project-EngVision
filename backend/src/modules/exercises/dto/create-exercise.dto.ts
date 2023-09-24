@@ -1,24 +1,29 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
   IsEnum,
   IsNotEmpty,
-  IsNotEmptyObject,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
 import { CEFRLevel, ExerciseTag, ExerciseType } from 'src/common/enums';
-import { ExerciseContentDto } from 'src/modules/exercise-content/dto/exercise-content.dto';
+import { ExerciseQuestionDto } from 'src/modules/exercise-content/dto/exercise-content.dto';
 
 export class CreateExerciseDto {
   @IsOptional()
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ type: String, description: 'Title' })
+  @ApiPropertyOptional({ type: String, description: 'Title' })
   title?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  @ApiPropertyOptional({ type: String, description: 'Title' })
+  description?: string;
 
   @IsArray()
   @IsEnum(ExerciseTag, { each: true })
@@ -41,9 +46,10 @@ export class CreateExerciseDto {
   @ApiProperty({ enum: ExerciseType, description: 'Exercise type' })
   type: ExerciseType;
 
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => ExerciseContentDto)
-  @ApiProperty({ type: ExerciseContentDto, description: 'Exercise content' })
-  content: ExerciseContentDto;
+  @IsArray()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Type(() => ExerciseQuestionDto)
+  @ApiProperty({ type: [ExerciseQuestionDto], description: 'Exercise content' })
+  content: ExerciseQuestionDto[];
 }

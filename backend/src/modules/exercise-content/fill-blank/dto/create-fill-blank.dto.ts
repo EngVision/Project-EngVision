@@ -1,17 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
-  IsArray,
-  IsBoolean,
   IsMongoId,
   IsNotEmpty,
   IsNotEmptyObject,
-  IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { ExerciseContentDto } from '../../dto/exercise-content.dto';
+import { ExerciseQuestionDto } from '../../dto/exercise-content.dto';
 
 class QuestionDto {
   @IsNotEmpty()
@@ -26,13 +23,9 @@ class QuestionDto {
     description: 'Image file id',
   })
   image?: string;
-
-  @IsBoolean()
-  @ApiProperty({ type: Boolean, description: 'Is strict answer' })
-  isStrict: boolean;
 }
 
-export class CreateFillBlankDto implements ExerciseContentDto {
+export class CreateFillBlankDto extends ExerciseQuestionDto {
   @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => QuestionDto)

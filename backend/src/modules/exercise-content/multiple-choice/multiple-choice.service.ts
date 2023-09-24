@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { ExerciseContentService } from '../base-exercise-content.service';
 import { CreateMultipleChoiceDto } from './dto/create-multiple-choice.dto';
 import { MultipleChoice } from './schemas/multiple-choice.schema';
@@ -13,17 +13,18 @@ export class MultipleChoiceService extends ExerciseContentService {
   }
 
   async createContent(
-    createContentDto: CreateMultipleChoiceDto,
-  ): Promise<Document> {
+    createQuestionListDto: CreateMultipleChoiceDto[],
+  ): Promise<string[]> {
     const validatedContent = await this.validate(
-      createContentDto,
+      createQuestionListDto,
       CreateMultipleChoiceDto,
     );
 
-    const content = new this.multipleChoiceModel(validatedContent);
-    await content.save();
+    const questionList = await this.multipleChoiceModel.insertMany(
+      validatedContent,
+    );
 
-    return content;
+    return questionList.map(q => q.id);
   }
 
   async checkAnswer(id: string, answer: number[]): Promise<boolean> {

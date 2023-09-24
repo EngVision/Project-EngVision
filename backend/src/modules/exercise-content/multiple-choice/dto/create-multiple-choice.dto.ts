@@ -12,7 +12,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Types } from 'mongoose';
-import { ExerciseContentDto } from '../../dto/exercise-content.dto';
+import { ExerciseQuestionDto } from '../../dto/exercise-content.dto';
 
 class AnswerDto {
   @IsNumber()
@@ -72,7 +72,7 @@ class QuestionDto {
 
 type CorrectAnswerDto = number[];
 
-export class CreateMultipleChoiceDto implements ExerciseContentDto {
+export class CreateMultipleChoiceDto extends ExerciseQuestionDto {
   @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => QuestionDto)

@@ -14,12 +14,7 @@ import { Response } from 'express';
 import { GetResponse } from 'src/common/dto';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
 import { CreateMultipleChoiceDto } from '../exercise-content/multiple-choice/dto/create-multiple-choice.dto';
-import {
-  CreateExerciseDto,
-  CreateExerciseListDto,
-  ExerciseDto,
-  UpdateExerciseDto,
-} from './dto';
+import { CreateExerciseDto, ExerciseDto, UpdateExerciseDto } from './dto';
 import { ExercisesService } from './exercises.service';
 
 @Controller('exercises')
@@ -38,20 +33,6 @@ export class ExercisesController {
     return res
       .status(HttpStatus.CREATED)
       .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
-  }
-
-  @Post('list')
-  async createList(
-    @Body() createExerciseListDto: CreateExerciseListDto,
-    @Res() res: Response,
-  ) {
-    const exerciseList = await this.exercisesService.createExerciseList(
-      createExerciseListDto,
-    );
-
-    return res
-      .status(HttpStatus.CREATED)
-      .send(GetResponse({ dataType: ExerciseDto, data: exerciseList }));
   }
 
   @Get()

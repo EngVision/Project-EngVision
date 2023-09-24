@@ -17,7 +17,7 @@ const QuestionSchema = SchemaFactory.createForClass(Question);
 
 export type FillBlankDocument = FillBlank & Document;
 
-@Schema({ versionKey: false })
+@Schema({ versionKey: false, timestamps: true })
 export class FillBlank {
   @Prop({ type: QuestionSchema, required: true })
   question: Question;
