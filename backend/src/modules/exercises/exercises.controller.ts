@@ -43,6 +43,11 @@ export class ExercisesController {
       .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
   }
 
+  @Post('check-answer/:id')
+  async checkAnswer(@Body() exerciseDto: ExerciseDto, @Res() res: Response) {
+    return res.status(HttpStatus.OK).send('123');
+  }
+
   @Patch(':id')
   async update(
     @Param('id') id: string,

@@ -35,6 +35,16 @@ class Question {
 }
 const QuestionSchema = SchemaFactory.createForClass(Question);
 
+@Schema({ _id: false, versionKey: false })
+class CorrectAnswer {
+  @Prop({ type: [Number], required: true })
+  detail: number[];
+
+  @Prop({ type: String, default: null })
+  explain: string;
+}
+const CorrectAnswerSchema = SchemaFactory.createForClass(CorrectAnswer);
+
 export type MultipleChoiceDocument = MultipleChoice & Document;
 
 @Schema({ versionKey: false, timestamps: true })
@@ -48,8 +58,8 @@ export class MultipleChoice {
   @Prop({ type: QuestionSchema, required: true })
   question: Question;
 
-  @Prop({ type: [Number], required: true })
-  correctAnswer: number[];
+  @Prop({ type: CorrectAnswerSchema, required: true })
+  correctAnswer: CorrectAnswer;
 }
 
 export const MultipleChoiceSchema =

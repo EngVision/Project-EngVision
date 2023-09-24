@@ -70,7 +70,17 @@ class QuestionDto {
   answers: AnswerDto[];
 }
 
-type CorrectAnswerDto = number[];
+class CorrectAnswerDto {
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsNumber({}, { each: true })
+  detail: number[];
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  explain: string;
+}
 
 export class CreateMultipleChoiceDto extends ExerciseQuestionDto {
   @IsNotEmptyObject()
@@ -79,8 +89,9 @@ export class CreateMultipleChoiceDto extends ExerciseQuestionDto {
   @ApiProperty({ type: QuestionDto, description: 'Question content' })
   question: QuestionDto;
 
-  @IsArray()
-  @IsNumber({}, { each: true })
-  @ApiProperty({ type: [Number], description: 'Correct answer' })
+  @IsNotEmptyObject()
+  @ValidateNested()
+  @Type(() => CorrectAnswerDto)
+  @ApiProperty({ type: CorrectAnswerDto, description: 'Correct answer' })
   correctAnswer: CorrectAnswerDto;
 }

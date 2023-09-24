@@ -20,21 +20,25 @@ export class MultipleChoiceService extends ExerciseContentService {
       CreateMultipleChoiceDto,
     );
 
+    console.log(createQuestionListDto);
+
     const questionList = await this.multipleChoiceModel.insertMany(
       validatedContent,
     );
+    console.log(questionList);
 
     return questionList.map(q => q.id);
   }
 
   async checkAnswer(id: string, answer: number[]): Promise<boolean> {
-    const correctAnswer = (
-      await this.multipleChoiceModel.findById(id).select('correctAnswer')
-    ).correctAnswer;
+    // const correctAnswer = (
+    //   await this.multipleChoiceModel.findById(id).select('correctAnswer')
+    // ).correctAnswer;
 
-    answer.sort();
-    correctAnswer.sort();
+    // answer.sort();
+    // correctAnswer.sort();
 
-    return answer.join() === correctAnswer.join();
+    // return answer.join() === correctAnswer.join();
+    return true;
   }
 }

@@ -29,7 +29,6 @@ export class ExercisesService {
     const content = await service.createContent(createExerciseDto.content);
 
     newExercise.content = content;
-    console.log(newExercise);
     await newExercise.save();
 
     return await newExercise.populate('content');

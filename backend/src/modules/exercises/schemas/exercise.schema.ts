@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types, SchemaTypes } from 'mongoose';
+import { Document, SchemaTypes } from 'mongoose';
 import { CEFRLevel, ExerciseTag, ExerciseType } from 'src/common/enums';
 
 export type ExerciseDocument = Exercise & Document;
@@ -21,7 +21,7 @@ export class Exercise {
   @Prop({ enum: ExerciseType, required: true })
   type: ExerciseType;
 
-  @Prop({ type: Types.ObjectId, refPath: 'type', required: true })
+  @Prop([{ type: SchemaTypes.ObjectId, refPath: 'type', required: true }])
   content: string[];
 }
 
