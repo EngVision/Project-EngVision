@@ -9,9 +9,6 @@ class Question {
 
   @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name, default: null })
   image?: string;
-
-  @Prop({ required: true })
-  isStrict: boolean;
 }
 const QuestionSchema = SchemaFactory.createForClass(Question);
 
