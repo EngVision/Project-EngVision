@@ -1,4 +1,4 @@
-import { combineReducers, createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
 interface AppState {
   userAccountId?: string
@@ -12,7 +12,7 @@ const initialState: AppState = {
   locales: localStorage.getItem('locales') || 'en',
 }
 
-const authSlice = createSlice({
+const appSlice = createSlice({
   initialState,
   name: 'app',
   reducers: {
@@ -21,7 +21,9 @@ const authSlice = createSlice({
     },
   },
 })
-export const { setUserAccountId } = authSlice.actions
+export const { setUserAccountId } = appSlice.actions
+
+export default appSlice.reducer
 
 export const darkModeSlice = createSlice({
   initialState,
@@ -45,10 +47,10 @@ export const localesSlice = createSlice({
 })
 export const { toggleLocales } = localesSlice.actions
 
-const rootReducer = combineReducers({
-  app: authSlice.reducer,
-  darkMode: darkModeSlice.reducer,
-  locales: localesSlice.reducer,
-})
+// const rootReducer = combineReducers({
+//   app: authSlice.reducer,
+//   darkMode: darkModeSlice.reducer,
+//   locales: localesSlice.reducer,
+// })
 
-export default rootReducer
+// export default rootReducer

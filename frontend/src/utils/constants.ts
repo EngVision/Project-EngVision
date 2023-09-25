@@ -10,8 +10,10 @@ export const ROUTES = {
   signUp: '/sign-up',
   sendMailResetPassword: '/forgot-password',
   resetForgotPassword: '/reset-password/:resetPasswordCode',
+  signUpTeacher: '/sign-up/teacher',
   ssoSuccess: '/sso-success',
   statistics: '/statistics',
+  createProfile: '/create-profile',
 }
 
 export const ROLES = {
@@ -28,3 +30,14 @@ export const ROLES = {
     value: 'Teacher',
   },
 }
+
+export const GENDERS = [
+  {
+    label: 'Male',
+    value: 'Male',
+  },
+  {
+    label: 'Female',
+    value: 'Female',
+  },
+]

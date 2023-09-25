@@ -1,12 +1,14 @@
 import AuthLayout from '../layouts/AuthLayout'
 import CourseDetailsPage from '../pages/CourseDetails'
 import { CourseList } from '../pages/CourseList'
+import CreateProfile from '../pages/CreateProfile'
 import Home from '../pages/Home'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
 import SendMailResetPassword from '../pages/SendMailResetPassword'
 import SignIn from '../pages/SignIn'
-import SSOSuccess from '../pages/SignIn/SSOSucess'
+import SSOSuccess from '../pages/SignIn/components/SSOSuccess'
 import SignUp from '../pages/SignUp'
+import TeacherSignUp from '../pages/SignUp/TeacherSignUp'
 import TeacherCourses from '../pages/Teacher/Courses'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
@@ -33,6 +35,16 @@ const publicRoutes: RouteElement[] = [
     element: ResetForgotPassword,
     layout: AuthLayout,
     path: ROUTES.resetForgotPassword,
+  },
+  {
+    element: TeacherSignUp,
+    layout: AuthLayout,
+    path: ROUTES.signUpTeacher,
+  },
+  {
+    element: CreateProfile,
+    path: ROUTES.createProfile,
+    layout: AuthLayout,
   },
   {
     element: UpdateProfile,

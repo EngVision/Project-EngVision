@@ -19,9 +19,9 @@ const SignIn: React.FC = () => {
   const onFinish = async (values: SignInParams) => {
     try {
       const {
-        data: { id },
+        data: { data },
       } = await authApi.signIn(values)
-      dispatch(setUserAccountId(id))
+      dispatch(setUserAccountId(data.id))
       navigate(ROUTES.home)
     } catch (error) {
       setError(error.response.data.message)
@@ -30,7 +30,9 @@ const SignIn: React.FC = () => {
 
   const fetchAuthUser = async (timer: ReturnType<typeof setInterval>) => {
     try {
-      const { data } = await authApi.fetchAuthUser()
+      const {
+        data: { data },
+      } = await authApi.fetchAuthUser()
 
       dispatch(setUserAccountId(data.id))
       navigate(ROUTES.home)
@@ -46,7 +48,7 @@ const SignIn: React.FC = () => {
     const newWindow = window.open(
       `${import.meta.env.VITE_BASE_URL}/auth/google/login`,
       '_blank',
-      'width=500,height=600',
+      'width=500,height=600,left=400,top=200',
     )
 
     if (newWindow) {
@@ -64,7 +66,7 @@ const SignIn: React.FC = () => {
     const newWindow = window.open(
       `${import.meta.env.VITE_BASE_URL}/auth/facebook/login`,
       '_blank',
-      'width=500,height=600',
+      'width=500,height=600,left=400,top=200',
     )
 
     if (newWindow) {
@@ -114,7 +116,7 @@ const SignIn: React.FC = () => {
             <Input
               placeholder="Email"
               size="middle"
-              className="rounded-[8px] h-[44px]"
+              className="rounded-[8px] h-[40px]"
             />
           </Form.Item>
 
@@ -125,7 +127,7 @@ const SignIn: React.FC = () => {
             <Input.Password
               placeholder="Password"
               size="large"
-              className="rounded-[8px] h-[44px]"
+              className="rounded-[8px] h-[40px]"
             />
           </Form.Item>
 
@@ -155,6 +157,7 @@ const SignIn: React.FC = () => {
           <p
             className="text-[#0073EA] font-semibold text-right cursor-pointer my-[28px]"
             onClick={() => navigate('/forgot-password')}
+            role="presentation"
           >
             Forgot password?
           </p>
@@ -164,7 +167,7 @@ const SignIn: React.FC = () => {
               type="primary"
               shape="round"
               htmlType="submit"
-              className="min-w-[200px] font-semibold h-[44px] "
+              className="min-w-[200px] font-semibold h-[40px] "
             >
               Sign In
             </Button>

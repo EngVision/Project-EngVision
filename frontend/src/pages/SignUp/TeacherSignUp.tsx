@@ -10,17 +10,18 @@ import authApi from '../../services/authApi'
 import type { SignUpParams } from '../../services/authApi/types'
 import { ROLES, ROUTES } from '../../utils/constants'
 
-const SignUp: React.FC = () => {
+const TeacherSignUp: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
   const [error, setError] = useState<string>('')
 
   const onFinish = async (values: SignUpParams) => {
+    console.log('🚀 ~ file: index.tsx:20 ~ onFinish ~ values:', values)
     try {
       const {
         data: { id },
-      } = await authApi.signUp({ ...values, role: ROLES.student.value })
+      } = await authApi.signUp({ ...values, role: ROLES.teacher.value })
       dispatch(setUserAccountId(id))
       navigate(ROUTES.home)
     } catch (error) {
@@ -28,63 +29,23 @@ const SignUp: React.FC = () => {
     }
   }
 
-  const fetchAuthUser = async (timer: ReturnType<typeof setInterval>) => {
-    try {
-      const { data } = await authApi.fetchAuthUser()
-
-      dispatch(setUserAccountId(data.id))
-      navigate(ROUTES.createProfile)
-      clearInterval(timer)
-    } catch (error) {
-      console.log('error: ', error)
-    }
+  const signInWithGoogle = async () => {
+    console.log('sign in with google')
   }
-
-  const signUpWithGoogle = async () => {
-    let timer: ReturnType<typeof setInterval>
-
-    const newWindow = window.open(
-      `${import.meta.env.VITE_BASE_URL}/auth/google/login`,
-      '_blank',
-      'width=500,height=600,left=400,top=200',
-    )
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser(timer)
-        }
-      }, 1000)
-    }
-  }
-  const signUpWithFacebook = async () => {
-    let timer: ReturnType<typeof setInterval>
-
-    const newWindow = window.open(
-      `${import.meta.env.VITE_BASE_URL}/auth/facebook/login`,
-      '_blank',
-      'width=500,height=600,left=400,top=200',
-    )
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser(timer)
-        }
-      }, 1000)
-    }
+  const signInWithFacebook = async () => {
+    console.log('sign in with facebook')
   }
 
   const SIGN_UP_VENDORS = [
     {
       icon: googleIcon,
       name: 'Google',
-      onClick: signUpWithGoogle,
+      onClick: signInWithGoogle,
     },
     {
       icon: facebookIcon,
       name: 'Facebook',
-      onClick: signUpWithFacebook,
+      onClick: signInWithFacebook,
     },
   ]
 
@@ -107,35 +68,27 @@ const SignUp: React.FC = () => {
         autoComplete="off"
         onChange={() => setError('')}
       >
-        <div className="flex gap-4">
-          <Form.Item<SignUpParams>
-            name="firstName"
-            rules={[
-              { message: 'Please input your first name!', required: true },
-            ]}
-            className="flex-1"
-          >
-            <Input
-              placeholder="First Name"
-              size="middle"
-              className="rounded-[8px] h-[40px]"
-            />
-          </Form.Item>
+        <Form.Item<SignUpParams>
+          name="firstName"
+          rules={[{ message: 'Please input your first name!', required: true }]}
+        >
+          <Input
+            placeholder="First Name"
+            size="middle"
+            className="rounded-[8px] h-[40px]"
+          />
+        </Form.Item>
 
-          <Form.Item<SignUpParams>
-            name="lastName"
-            rules={[
-              { message: 'Please input your last name!', required: true },
-            ]}
-            className="flex-1"
-          >
-            <Input
-              placeholder="Last Name"
-              size="middle"
-              className="rounded-[8px] h-[40px]"
-            />
-          </Form.Item>
-        </div>
+        <Form.Item<SignUpParams>
+          name="lastName"
+          rules={[{ message: 'Please input your last name!', required: true }]}
+        >
+          <Input
+            placeholder="Last Name"
+            size="middle"
+            className="rounded-[8px] h-[40px]"
+          />
+        </Form.Item>
 
         <Form.Item<SignUpParams>
           name="email"
@@ -144,18 +97,6 @@ const SignUp: React.FC = () => {
           <Input
             placeholder="Email"
             size="middle"
-            className="rounded-[8px] h-[40px]"
-          />
-        </Form.Item>
-
-        <Form.Item<SignUpParams>
-          name="phoneNumber"
-          rules={[
-            { message: 'Please input your phone number!', required: true },
-          ]}
-        >
-          <Input
-            placeholder="Phone Number"
             className="rounded-[8px] h-[40px]"
           />
         </Form.Item>
@@ -187,6 +128,39 @@ const SignUp: React.FC = () => {
           />
         </Form.Item>
 
+        <Form.Item<SignUpParams>
+          name="phoneNumber"
+          rules={[
+            { message: 'Please input your phone number!', required: true },
+          ]}
+        >
+          <Input
+            placeholder="Phone Number"
+            className="rounded-[8px] h-[40px]"
+          />
+        </Form.Item>
+
+        <Form.Item<SignUpParams>
+          name="certificate"
+          rules={[
+            { message: 'Please input your certificate!', required: true },
+          ]}
+        >
+          <Input placeholder="Certificate" className="rounded-[8px] h-[40px]" />
+        </Form.Item>
+
+        <Form.Item<SignUpParams>
+          name="school"
+          rules={[
+            { message: 'Please input your working school!', required: true },
+          ]}
+        >
+          <Input
+            placeholder="Working school"
+            className="rounded-[8px] h-[40px]"
+          />
+        </Form.Item>
+
         {error && <p className="text-red-500">{error}</p>}
 
         <Form.Item<SignUpParams> name="accepted" valuePropName="checked">
@@ -199,17 +173,6 @@ const SignUp: React.FC = () => {
               Terms of Service
             </Link>
           </Checkbox>
-        </Form.Item>
-
-        <Form.Item className="text-center">
-          <Button
-            type="primary"
-            shape="round"
-            htmlType="submit"
-            className="h-[40px] min-w-[200px] font-semibold"
-          >
-            Sign Up
-          </Button>
         </Form.Item>
 
         <p className="text-[#CECED6] text-center my-[18px]">or continue with</p>
@@ -231,6 +194,17 @@ const SignUp: React.FC = () => {
           ))}
         </div>
 
+        <Form.Item className="text-center">
+          <Button
+            type="primary"
+            shape="round"
+            htmlType="submit"
+            className="h-[40px] min-w-[200px] font-semibold"
+          >
+            Sign Up
+          </Button>
+        </Form.Item>
+
         <p className="text-center text-textSubtle">
           Have an account?
           <Link to={ROUTES.signIn} className="font-semibold text-primary pl-2">
@@ -239,12 +213,9 @@ const SignUp: React.FC = () => {
         </p>
 
         <p className="text-center text-textSubtle">
-          Are you a teacher?
-          <Link
-            to={ROUTES.signUpTeacher}
-            className="font-semibold text-primary pl-2"
-          >
-            Teacher Sign Up
+          Are you a student?
+          <Link to={ROUTES.signUp} className="font-semibold text-primary pl-2">
+            Student Sign Up
           </Link>
         </p>
       </Form>
@@ -252,4 +223,4 @@ const SignUp: React.FC = () => {
   )
 }
 
-export default SignUp
+export default TeacherSignUp

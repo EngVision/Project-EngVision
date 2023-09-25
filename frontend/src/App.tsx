@@ -10,8 +10,7 @@ import authApi from './services/authApi'
 import { ROUTES } from './utils/constants'
 
 const App: React.FC = () => {
-  const userAccountId = useAppSelector((state) => state.app.app.userAccountId)
-  console.log('🚀 ~ file: App.tsx:13 ~ userAccountId:', userAccountId)
+  const userAccountId = useAppSelector((state) => state.app.userAccountId)
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -21,12 +20,14 @@ const App: React.FC = () => {
   const fetchAuthUser = async () => {
     if (!userAccountId) {
       try {
-        const { data } = await authApi.fetchAuthUser()
+        const {
+          data: { data },
+        } = await authApi.fetchAuthUser()
 
         if (data?.id) {
           dispatch(setUserAccountId(data.id))
 
-          if (pathname === ROUTES.signIn || pathname === ROUTES.signUp) {
+          if (pathname === ROUTES.signIn || pathname.includes(ROUTES.signUp)) {
             navigate(ROUTES.home)
           }
         } else if (
