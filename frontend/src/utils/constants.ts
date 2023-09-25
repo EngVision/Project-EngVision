@@ -14,6 +14,9 @@ export const ROUTES = {
   ssoSuccess: '/sso-success',
   statistics: '/statistics',
   createProfile: '/create-profile',
+
+  // lesson
+  makeSentence: '/lesson/make-sentence',
 }
 
 export const ROLES = {

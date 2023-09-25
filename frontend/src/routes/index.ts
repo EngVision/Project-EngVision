@@ -3,6 +3,7 @@ import CourseDetailsPage from '../pages/CourseDetails'
 import { CourseList } from '../pages/CourseList'
 import CreateProfile from '../pages/CreateProfile'
 import Home from '../pages/Home'
+import MakeSentences from '../pages/Lesson/MakeSentences'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
 import SendMailResetPassword from '../pages/SendMailResetPassword'
 import SignIn from '../pages/SignIn'
@@ -72,6 +73,10 @@ const privateRoutes: RouteElement[] = [
   {
     element: Home,
     path: ROUTES.home,
+  },
+  {
+    element: MakeSentences,
+    path: ROUTES.makeSentence,
   },
 ]
 
