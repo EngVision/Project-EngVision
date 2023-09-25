@@ -1,4 +1,4 @@
-import { Role } from 'src/modules/users/enums';
+import { Role } from 'src/common/enums';
 
 export type JwtPayload = {
   email: string;

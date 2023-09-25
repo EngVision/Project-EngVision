@@ -10,13 +10,13 @@ import {
   accessTokenConfig,
   refreshTokenConfig,
 } from 'src/common/config/cookie.config';
-import { Role } from '../users/enums';
 import { User, UserDocument } from '../users/schemas/user.schema';
 import { CreateUserDto } from './../users/dto/create-user.dto';
 import { UsersService } from './../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './types';
 import { Tokens } from './types/tokens.type';
+import { Role } from 'src/common/enums';
 
 @Injectable()
 export class AuthService {
@@ -54,18 +54,12 @@ export class AuthService {
   async register(
     createUserDto: CreateUserDto,
   ): Promise<{ tokens: Tokens; user: UserDocument }> {
-    const { email, password, firstName, lastName, role } = createUserDto;
+    const { email } = createUserDto;
 
     const existedUser = await this.usersService.getByEmail(email);
     if (existedUser) throw new BadRequestException('Email existed');
 
-    const user = await this.usersService.create({
-      email,
-      password,
-      firstName,
-      lastName,
-      role,
-    });
+    const user = await this.usersService.create(createUserDto);
 
     const tokens = await this.getTokens(user);
     await this.updateRefreshToken(user.id, tokens.refreshToken);

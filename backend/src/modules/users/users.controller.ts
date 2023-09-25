@@ -12,8 +12,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { Response } from 'express';
-import { CurrentUser } from 'src/common/decorators';
-import { ApiResponseData } from 'src/common/decorators/api-response-data.decorator';
+import { ApiResponseData, CurrentUser } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
 import { AtGuard } from 'src/common/guards';
 import { EmailDto } from '../auth/dto/login.dto';
@@ -24,8 +23,8 @@ import {
   ResetPasswordDto,
   UpdatePasswordDto,
   UpdateUserDto,
+  UserDto,
 } from './dto';
-import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
 
 @ApiTags('Account')

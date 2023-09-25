@@ -1,7 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsEnum,
+  IsMongoId,
   IsNotEmpty,
-  IsNumberString,
+  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -10,40 +12,31 @@ import { Level } from '../enums';
 export class CreateCourseDto {
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ type: String, description: 'title' })
+  @ApiProperty({ type: String, description: 'Title' })
   title: string;
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ type: String, description: 'teacher id' })
-  teacher: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({ type: String, description: 'about' })
+  @ApiProperty({ type: String, description: 'About' })
   about: string;
 
   @IsOptional()
   @IsString()
-  @ApiPropertyOptional({ type: String, description: 'video url' })
+  @ApiPropertyOptional({ type: String, description: 'Video url' })
   introVideo?: number;
 
   @IsOptional()
-  @IsString()
-  @ApiPropertyOptional({
-    type: String,
-    format: 'binary',
-    description: 'thumbnail',
-  })
+  @IsMongoId()
+  @ApiPropertyOptional({ type: String, description: 'Thumbnail url' })
   thumbnail?: string;
 
   @IsOptional()
-  @IsNumberString()
-  @ApiPropertyOptional({ type: Number, description: 'price' })
+  @IsNumber()
+  @ApiPropertyOptional({ type: Number, description: 'Price' })
   price?: number;
 
   @IsOptional()
-  @IsString()
-  @ApiPropertyOptional({ type: String, description: 'level (A1/A2 ...)' })
+  @IsEnum(Level)
+  @ApiPropertyOptional({ enum: Level, description: 'Level (A1/A2 ...)' })
   level?: Level;
 }
