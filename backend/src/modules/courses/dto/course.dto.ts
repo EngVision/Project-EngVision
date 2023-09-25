@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Level } from '../enums';
-import { Expose, Transform } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import mongoose from 'mongoose';
 import { UserBriefDto } from 'src/modules/users/dto/user-brief.dto';
 
@@ -37,4 +37,13 @@ export class CourseDto {
 
   @ApiPropertyOptional({ type: Number, description: 'Average star' })
   avgStar?: number;
+
+  @Exclude()
+  sections?: mongoose.Types.ObjectId[];
+
+  @Exclude()
+  posts?: mongoose.Types.ObjectId[];
+
+  @Exclude()
+  reviews?: mongoose.Types.ObjectId[];
 }

@@ -6,25 +6,29 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
-import { Course, CourseDocument } from './schemas/course.schema';
-import { CreateCourseDto } from './dto/create-course.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
-import { ReviewsService } from '../reviews/reviews.service';
 import { plainToInstance } from 'class-transformer';
-import { ReviewDto } from '../reviews/dto/review.dto';
-import { CourseDto } from './dto/course.dto';
+import mongoose, { AggregatePaginateModel } from 'mongoose';
 import { FilesService } from '../files/files.service';
+import { ReviewDto } from '../reviews/dto/review.dto';
+import { ReviewsService } from '../reviews/reviews.service';
 import { UserBriefDto } from '../users/dto/user-brief.dto';
+import { CourseDto } from './dto/course.dto';
+import { CreateCourseDto } from './dto/create-course.dto';
+import { CreateLessonDto } from './dto/create-lesson.dto';
+import { CreateSectionDto } from './dto/create-section.dto';
+import { SearchCourseDto } from './dto/search.dto';
+import { UpdateCourseDto } from './dto/update-course.dto';
+import { Course, CourseDocument } from './schemas/course.schema';
+import { Lesson } from './schemas/lesson.schema';
+import { Section } from './schemas/section.schema';
 
 @Injectable()
 export class CoursesService {
   constructor(
     @InjectModel(Course.name)
-    private readonly courseModel: Model<CourseDocument>,
+    private readonly courseModel: AggregatePaginateModel<CourseDocument>,
     @Inject(forwardRef(() => ReviewsService))
     private readonly reviewsService: ReviewsService,
-    @Inject(forwardRef(() => FilesService))
     private readonly filesService: FilesService,
   ) {}
 
@@ -33,34 +37,104 @@ export class CoursesService {
     await newCourse.save();
     return await this.getCourse(newCourse.id);
   }
-  // count avg star + sum people enroll
-  async getAll() {
-    let courses = (await this.courseModel
-      .find({})
-      .populate(['reviews', 'teacher'])
-      .exec()) as any;
 
-    courses = courses.map(course => {
-      let sumStar = 0;
-      course.reviews.forEach(review => {
-        sumStar += review.star;
-      });
+  // + sum people enroll + filter tags
+  async getAll(data: SearchCourseDto) {
+    const keyword = { $regex: new RegExp(data.keyword, 'i') };
+    const dataFilter: mongoose.FilterQuery<any> = {};
 
-      const courseMap = {
-        ...plainToInstance(CourseDto, course.toObject()),
-        teacher: plainToInstance(UserBriefDto, course.teacher.toObject()),
-        avgStar: Number((sumStar / course.reviews.length).toFixed(1)),
+    if (data.dateStart || data.dateEnd) {
+      dataFilter.createdAt = {};
+      if (data.dateStart) dataFilter.createdAt.$gte = new Date(data.dateStart);
+      if (data.dateEnd) dataFilter.createdAt.$lte = data.dateEnd;
+    }
+
+    if (data.priceMin || data.priceMax) {
+      dataFilter.price = {};
+      if (data.priceMin) dataFilter.price.$gte = data.priceMin;
+      if (data.priceMax) dataFilter.price.$lte = data.priceMax;
+    }
+
+    const id = new mongoose.Types.ObjectId();
+    console.log(id);
+
+    const result: any = await this.courseModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'teacher',
+          foreignField: '_id',
+          pipeline: [
+            {
+              $addFields: {
+                fullName: {
+                  $concat: ['$firstName', ' ', '$lastName'],
+                },
+              },
+            },
+          ],
+          as: 'teacher',
+        },
+      },
+      {
+        $lookup: {
+          from: 'reviews',
+          localField: 'reviews',
+          foreignField: '_id',
+          pipeline: [
+            {
+              $group: {
+                _id: '$courseId',
+                avgStar: { $avg: '$star' },
+              },
+            },
+          ],
+          as: 'reviews',
+        },
+      },
+      {
+        $match: {
+          $and: [
+            { $or: [{ title: keyword }, { 'teacher.fullName': keyword }] },
+            { $and: [dataFilter] },
+          ],
+        },
+      },
+      {
+        $facet: {
+          courses: [
+            {
+              $skip: data.page && data.limit ? (data.page - 1) * data.limit : 0,
+            },
+            {
+              $limit: data.limit ? data.limit : 20,
+            },
+          ],
+          total: [
+            {
+              $group: {
+                _id: null,
+                count: {
+                  $sum: 1,
+                },
+              },
+            },
+          ],
+        },
+      },
+    ]);
+
+    const courses = result[0].courses.map(course => {
+      return {
+        ...plainToInstance(CourseDto, course),
+        teacher: plainToInstance(UserBriefDto, course.teacher),
+        avgStar: course.reviews[0]
+          ? course.reviews[0].avgStar.toFixed(1)
+          : null,
       };
-
-      if (Number.isNaN(courseMap.avgStar)) delete courseMap['avgStar'];
-      delete courseMap['reviews'];
-      delete courseMap['sections'];
-      delete courseMap['posts'];
-
-      return courseMap;
     });
 
-    return courses;
+    return [courses, result[0].total[0].count];
   }
 
   // add sections - lessons
@@ -148,5 +222,78 @@ export class CoursesService {
   async addReview(course: CourseDocument, reviewId: string) {
     course.reviews.push(new mongoose.Types.ObjectId(reviewId));
     await course.save();
+  }
+
+  async createSection(
+    section: CreateSectionDto,
+    courseId: string,
+    teacherId: string,
+  ) {
+    const course = await this.courseModel.findById(courseId);
+
+    if (!course) throw new BadRequestException('Course not found');
+    if (String(course.teacher) !== teacherId)
+      throw new ForbiddenException('Access denied');
+
+    const newSection: Section = {
+      ...section,
+      id: new mongoose.Types.ObjectId().toString(),
+      lessons: [],
+    };
+
+    course.sections.push(newSection);
+    await course.save();
+
+    return newSection;
+  }
+
+  async updateSection(
+    updateSection: CreateSectionDto,
+    courseId: string,
+    sectionId: string,
+    teacherId: string,
+  ) {
+    const course = await this.courseModel.findById(courseId);
+
+    if (!course) throw new BadRequestException('Course not found');
+    if (String(course.teacher) !== teacherId)
+      throw new ForbiddenException('Access denied');
+
+    const section: Section = course.sections.find(s => s.id === sectionId);
+    if (!section) throw new BadRequestException('Section not found');
+
+    section.title = updateSection.title;
+    course.markModified('sections');
+    await course.save();
+
+    return section;
+  }
+
+  async createLesson(
+    lesson: CreateLessonDto,
+    courseId: string,
+    sectionId: string,
+    teacherId: string,
+  ) {
+    const course = await this.courseModel.findById(courseId);
+
+    if (!course) throw new BadRequestException('Course not found');
+    if (String(course.teacher) !== teacherId)
+      throw new ForbiddenException('Access denied');
+
+    const section: Section = course.sections.find(s => s.id === sectionId);
+    if (!section) throw new BadRequestException('Section not found');
+
+    const newLesson: Lesson = {
+      ...lesson,
+      id: new mongoose.Types.ObjectId().toString(),
+      exercises: [],
+    };
+
+    section.lessons.push(newLesson);
+    course.markModified('sections');
+    await course.save();
+
+    return newLesson;
   }
 }

@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -30,6 +31,13 @@ import { JwtPayload } from '../auth/types';
 import { CourseDto } from './dto/course.dto';
 import { CourseDetailDto } from './dto/course-detail.dto';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
+import { SearchCourseDto } from './dto/search.dto';
+import { CreateSectionDto } from './dto/create-section.dto';
+import { SectionDto } from './dto/section.dto';
+import { LessonDto } from './dto/lesson.dto';
+import { CreateLessonDto } from './dto/create-lesson.dto';
+import { CourseSectionIdDto } from './dto/course-section-id.dto';
+import { UpdateSectionDto } from './dto/update-section.dto';
 
 @ApiTags('Courses')
 @Controller('courses')
@@ -60,16 +68,16 @@ export class CoursesController {
   @Get('')
   @ApiResponseList(CourseDto)
   @UseGuards(AtGuard)
-  async getAll(@Res() res: Response) {
-    const courses = await this.coursesService.getAll();
+  async getAll(@Res() res: Response, @Query() query: SearchCourseDto) {
+    const [courses, total] = await this.coursesService.getAll(query);
 
     return res.status(HttpStatus.OK).send(
       GetResponseList({
         data: courses,
-        message: 'All courses',
-        total: null,
-        limit: null,
-        offset: null,
+        message: 'Courses',
+        total: total,
+        limit: query.limit ? query.limit : 20,
+        offset: query.page && query.limit ? (query.page - 1) * query.limit : 0,
       }),
     );
   }
@@ -149,6 +157,77 @@ export class CoursesController {
         dataType: ReviewDto,
         data: newReview,
         message: 'Add review successful',
+      }),
+    );
+  }
+
+  @Post('/:id/sections')
+  @ApiResponseData(SectionDto)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async createSection(
+    @Body() createSection: CreateSectionDto,
+    @Res() res: Response,
+    @Param() params: courseIdDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const newSection = await this.coursesService.createSection(
+      createSection,
+      params.id,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        data: newSection,
+        message: 'Add section successful',
+      }),
+    );
+  }
+
+  @Patch('/:id/sections/:sectionId')
+  @ApiResponseData(SectionDto)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async updateSection(
+    @Body() updateSection: UpdateSectionDto,
+    @Res() res: Response,
+    @Param() params: CourseSectionIdDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const newSection = await this.coursesService.updateSection(
+      updateSection,
+      params.id,
+      params.sectionId,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        data: newSection,
+        message: 'Update section successful',
+      }),
+    );
+  }
+
+  @Post('/:id/sections/:sectionId/lessons')
+  @ApiResponseData(LessonDto)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async createLesson(
+    @Body() createLesson: CreateLessonDto,
+    @Res() res: Response,
+    @Param() params: CourseSectionIdDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const newSection = await this.coursesService.createLesson(
+      createLesson,
+      params.id,
+      params.sectionId,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        data: newSection,
+        message: 'Add lesson successful',
       }),
     );
   }
