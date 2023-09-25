@@ -1,31 +1,34 @@
 import { ValidationPipe } from '@nestjs/common';
-import { Validator } from 'class-validator';
-import { Document } from 'mongoose';
-import { ExerciseContentDto } from './dto/exercise-content.dto';
 import { plainToInstance } from 'class-transformer';
+import { Validator } from 'class-validator';
+import { ExerciseQuestionDto } from './dto/exercise-content.dto';
 
 export abstract class ExerciseContentService {
   async validate(
-    content: ExerciseContentDto,
+    questionList: ExerciseQuestionDto[],
     dataType: any,
-  ): Promise<ExerciseContentDto> {
+  ): Promise<ExerciseQuestionDto[]> {
     const validator = new Validator();
-    const errors = await validator.validate(
-      plainToInstance(dataType, content),
-      { whitelist: true },
-    );
 
-    if (errors.length !== 0) {
+    const dataList: any = plainToInstance(dataType, questionList);
+
+    const errorlist = (
+      await Promise.all(
+        dataList.map(data => validator.validate(data, { whitelist: true })),
+      )
+    ).reduce((prev, errors) => [...prev, ...errors], []);
+
+    if (errorlist.length !== 0) {
       const validatePipe = new ValidationPipe().createExceptionFactory();
-      throw validatePipe(errors);
+      throw validatePipe(errorlist);
     }
 
-    return content;
+    return questionList;
   }
 
   abstract createContent(
-    createContentDto: ExerciseContentDto,
-  ): Promise<Document>;
+    questionListDto: ExerciseQuestionDto[],
+  ): Promise<string[]>;
 
   abstract checkAnswer(id: string, answer: any): Promise<boolean>;
 }

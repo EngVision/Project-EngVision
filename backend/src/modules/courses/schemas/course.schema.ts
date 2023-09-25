@@ -1,21 +1,20 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Expose, Transform } from 'class-transformer';
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, SchemaTypes } from 'mongoose';
 import { Level } from '../enums';
+import { User } from 'src/modules/users/schemas/user.schema';
+import { LocalFile } from 'src/modules/files/schemas/local-file.schema';
 
 export type CourseDocument = Course & Document;
 
 @Schema({ versionKey: false, timestamps: true })
 export class Course {
-  @Expose({ name: '_id' })
-  @Transform(value => value.obj._id.toString())
   id?: string;
 
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true, type: mongoose.Types.ObjectId, ref: 'User' })
-  teacher: mongoose.Types.ObjectId;
+  @Prop({ required: true, type: SchemaTypes.ObjectId, ref: User.name })
+  teacher: string;
 
   @Prop({ required: true })
   about: string;
@@ -23,7 +22,7 @@ export class Course {
   @Prop({ default: null })
   introVideo: string;
 
-  @Prop({ default: null })
+  @Prop({ default: null, type: SchemaTypes.ObjectId, ref: LocalFile.name })
   thumbnail: string;
 
   @Prop({ default: null })

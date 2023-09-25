@@ -32,7 +32,10 @@ export class User {
   @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name })
   avatar?: string;
 
-  @Prop({ enum: Gender, default: Gender.Male })
+  @Prop({ type: [SchemaTypes.ObjectId], ref: LocalFile.name, default: [] })
+  certificates?: string;
+
+  @Prop({ enum: Gender, default: null })
   gender?: string;
 
   @Prop({ default: null })

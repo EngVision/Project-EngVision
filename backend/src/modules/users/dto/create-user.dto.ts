@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  ArrayMinSize,
+  IsArray,
   IsEmail,
   IsEnum,
   IsMongoId,
@@ -32,14 +34,19 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsMongoId()
-  @ApiProperty({ type: String, description: 'Avatar url' })
+  @ApiProperty({ type: String, description: 'image file id' })
   avatar?: string;
 
-  @IsEnum(Gender)
   @IsOptional()
+  @IsArray()
+  @IsMongoId({ each: true })
+  @ApiProperty({ type: String, description: 'certificates file id' })
+  certificates?: string;
+
+  @IsEnum(Gender)
   @IsString()
   @ApiProperty({ enum: Gender, description: 'Gender' })
-  gender?: string;
+  gender: string;
 
   @IsOptional()
   @IsString()

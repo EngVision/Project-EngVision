@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined } from 'class-validator';
+import { ArrayMinSize, IsArray, IsDefined, IsEnum } from 'class-validator';
+import { CEFRLevel, ExerciseTag } from 'src/common/enums';
 
-export class ExerciseContentDto {
+export class ExerciseQuestionDto {
   @IsDefined()
   @ApiProperty({ type: Object, description: 'Question' })
   question: any;
@@ -9,4 +10,21 @@ export class ExerciseContentDto {
   @IsDefined()
   @ApiProperty({ type: Object, description: 'Correct answer' })
   correctAnswer: any;
+
+  @IsArray()
+  @IsEnum(ExerciseTag, { each: true })
+  @ArrayMinSize(1)
+  @ApiProperty({
+    enum: ExerciseTag,
+    isArray: true,
+    description: 'Question tags',
+  })
+  tags: ExerciseTag[];
+
+  @IsEnum(CEFRLevel)
+  @ApiProperty({
+    enum: CEFRLevel,
+    description: 'Question level',
+  })
+  level: CEFRLevel;
 }

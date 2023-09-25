@@ -22,7 +22,7 @@ export const GetResponse = ({
   let transformData = data;
 
   if (data instanceof Array) {
-    transformData = data.map(d => d.toObject());
+    transformData = data.map(d => (typeof d === 'object' ? d : d.toObject()));
   }
 
   if (data instanceof Document) {

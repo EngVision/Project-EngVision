@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -12,7 +12,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Types } from 'mongoose';
-import { ExerciseContentDto } from '../../dto/exercise-content.dto';
+import { ExerciseQuestionDto } from '../../dto/exercise-content.dto';
 
 class AnswerDto {
   @IsNumber()
@@ -70,17 +70,28 @@ class QuestionDto {
   answers: AnswerDto[];
 }
 
-type CorrectAnswerDto = number[];
+class CorrectAnswerDto {
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsNumber({}, { each: true })
+  detail: number[];
 
-export class CreateMultipleChoiceDto implements ExerciseContentDto {
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  explain: string;
+}
+
+export class CreateMultipleChoiceDto extends ExerciseQuestionDto {
   @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => QuestionDto)
   @ApiProperty({ type: QuestionDto, description: 'Question content' })
   question: QuestionDto;
 
-  @IsArray()
-  @IsNumber({}, { each: true })
-  @ApiProperty({ type: [Number], description: 'Correct answer' })
+  @IsNotEmptyObject()
+  @ValidateNested()
+  @Type(() => CorrectAnswerDto)
+  @ApiProperty({ type: CorrectAnswerDto, description: 'Correct answer' })
   correctAnswer: CorrectAnswerDto;
 }
