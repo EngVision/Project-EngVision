@@ -11,6 +11,7 @@ import { CreateUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { emailContent } from './template/email.content';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class UsersService {
@@ -18,6 +19,7 @@ export class UsersService {
 
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    private readonly filesService: FilesService,
   ) {
     this.transporter = nodemailer.createTransport({
       service: 'Gmail',
@@ -31,16 +33,32 @@ export class UsersService {
   /* Create new user */
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
     const newUser = new this.userModel(createUserDto);
+
+    newUser.avatar = (
+      await this.filesService.getDefaultAvatar(newUser._id, newUser.email)
+    ).id;
+
     await newUser.save();
 
-    return newUser.populate('avatar', ['id', 'url']);
+    return newUser;
   }
 
   async createWithSSO(user: User): Promise<UserDocument> {
     const newUser = new this.userModel(user);
+
+    if (user.avatar) {
+      newUser.avatar = (
+        await this.filesService.createWithUrl(user.avatar, newUser._id)
+      ).id;
+    } else {
+      newUser.avatar = (
+        await this.filesService.getDefaultAvatar(newUser._id, newUser.email)
+      ).id;
+    }
+
     await newUser.save();
 
-    return newUser.populate('avatar', ['id', 'url']);
+    return newUser;
   }
 
   async createAccount(id: string, createAccountDto: CreateAccountDto) {
@@ -50,20 +68,16 @@ export class UsersService {
       { returnDocument: 'after' },
     );
 
-    return updatedUser.populate('avatar', ['id', 'url']);
+    return updatedUser;
   }
 
   /* Get user */
   async getById(id: string): Promise<UserDocument> {
-    return await this.userModel
-      .findOne({ _id: id })
-      .populate('avatar', ['id', 'url']);
+    return await this.userModel.findOne({ _id: id });
   }
 
   async getByEmail(email: string): Promise<UserDocument> {
-    return await this.userModel
-      .findOne({ email })
-      .populate('avatar', ['id', 'url']);
+    return await this.userModel.findOne({ email });
   }
 
   /* Update user */
@@ -79,7 +93,7 @@ export class UsersService {
       { returnDocument: 'after' },
     );
 
-    return updatedUser.populate('avatar', ['id', 'url']);
+    return updatedUser;
   }
 
   async updatePassword(

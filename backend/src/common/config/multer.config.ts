@@ -1,14 +1,11 @@
 import { existsSync, mkdirSync } from 'fs';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { FileValidationErrors } from 'src/modules/file-upload/enums';
 import { v4 as uuid } from 'uuid';
+import { FileValidationErrors, SupportedFileType } from '../enums';
 
-//The max file size (500MB)
-const maxFileSize = 500 * 1000 * 1000;
-
-export const IMAGE_TYPE = /jpg|jpeg|png|gif|svg/;
-export const AUDIO_TYPE = /mp3|wav|ogg|aac|flac|mpeg/;
+//The max file size (30MB)
+const maxFileSize = 30 * 1000 * 1000;
 
 export const multerOptions = (dest: string, fileType?: 'image' | 'audio') => ({
   // File size limits
@@ -21,13 +18,13 @@ export const multerOptions = (dest: string, fileType?: 'image' | 'audio') => ({
     let regex: RegExp;
     switch (fileType) {
       case 'image':
-        regex = IMAGE_TYPE;
+        regex = new RegExp(SupportedFileType.IMAGE);
         break;
       case 'audio':
-        regex = AUDIO_TYPE;
+        regex = new RegExp(SupportedFileType.AUDIO);
         break;
       default:
-        regex = new RegExp(IMAGE_TYPE.source + '|' + AUDIO_TYPE.source);
+        regex = new RegExp('/*/');
         break;
     }
 

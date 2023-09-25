@@ -26,12 +26,10 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
   ): Promise<any> {
     const { name, emails, photos } = profile;
 
-    const emailWithoutDomain = emails[0].value?.split('@')[0] || profile.id;
-
     const user: User & Tokens = {
-      email: emailWithoutDomain + '@facebook.com',
-      firstName: name.givenName || profile.displayName || 'first_name',
-      lastName: name.familyName || 'last_name',
+      email: emails[0].value,
+      firstName: name.givenName || profile.displayName,
+      lastName: name.familyName,
       avatar: photos[0].value,
       role: req.body['role'],
       accessToken,

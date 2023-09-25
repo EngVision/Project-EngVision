@@ -1,18 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Expose, Transform } from 'class-transformer';
+import { SchemaTypes } from 'mongoose';
+import { User } from 'src/modules/users/schemas/user.schema';
 
 export type ReviewDocument = Review & Document;
 
 @Schema({ versionKey: false, timestamps: true })
 export class Review {
-  @Expose({ name: '_id' })
-  @Transform(value => value.obj._id.toString())
   id?: string;
 
-  @Prop({ required: true })
-  userId: string;
+  @Prop({ type: SchemaTypes.ObjectId, required: true, ref: User.name })
+  user: string;
 
-  @Prop({ required: true })
+  @Prop({ type: SchemaTypes.ObjectId, required: true })
   courseId: string;
 
   @Prop({ required: true })

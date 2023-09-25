@@ -1,12 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import { Document, SchemaTypes } from 'mongoose';
+import { Gender, Role } from 'src/common/enums';
 import { hashString } from 'src/common/utils';
-import { FileUploadService } from 'src/modules/file-upload/file-upload.service';
-import { LocalFile } from 'src/modules/file-upload/schemas/local-file.schema';
-import { Role } from '../enums';
-import { Gender } from './../enums/index';
+import { LocalFile } from 'src/modules/files/schemas/local-file.schema';
 
 export type UserDocument = User & Document;
 
@@ -35,7 +32,10 @@ export class User {
   @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name })
   avatar?: string;
 
-  @Prop({ enum: Gender, default: Gender.Male })
+  @Prop({ type: [SchemaTypes.ObjectId], ref: LocalFile.name, default: [] })
+  certificates?: string;
+
+  @Prop({ enum: Gender, default: null })
   gender?: string;
 
   @Prop({ default: null })
@@ -55,7 +55,7 @@ export class User {
 
   validatePassword?: (password: string) => Promise<boolean>;
   validateRefreshToken?: (refreshToken: string) => Promise<boolean>;
-  preSave?: (fileUploadService: FileUploadService) => Promise<void>;
+  preSave?: () => Promise<void>;
   preUpdate?: () => Promise<void>;
 }
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -76,17 +76,9 @@ UserSchema.methods.validateRefreshToken = async function (
 };
 
 /* Hooks */
-UserSchema.methods.preSave = async function (
-  fileUploadService: FileUploadService,
-) {
+UserSchema.methods.preSave = async function () {
   if (this.password) {
     this.password = await hashString(this.password);
-  }
-
-  if (!this.avatar) {
-    this.avatar = (
-      await fileUploadService.getDefaultAvatar(this.id, this.email)
-    ).id;
   }
 };
 

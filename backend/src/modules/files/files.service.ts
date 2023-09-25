@@ -5,15 +5,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { LocalFile, LocalFileDocument } from './schemas/local-file.schema';
+import { Model } from 'mongoose';
 import { unlink } from 'fs';
 import * as gravatar from 'gravatar';
-import { Model } from 'mongoose';
-import { LocalFile, LocalFileDocument } from './schemas/local-file.schema';
 
 @Injectable()
-export class FileUploadService {
-  private readonly BaseUrl = `${process.env.SERVER_URL}/file/`;
-
+export class FilesService {
   constructor(
     @InjectModel(LocalFile.name)
     private readonly fileModel: Model<LocalFileDocument>,
@@ -26,11 +24,19 @@ export class FileUploadService {
     const newFile = new this.fileModel({
       filename: file.filename,
       path: file.path,
-      url: this.BaseUrl + file.filename,
       mimetype: file.mimetype,
-      user: userId,
+      userId,
     });
+    await newFile.save();
 
+    return newFile;
+  }
+
+  async createWithUrl(url: string, userId): Promise<LocalFileDocument> {
+    const newFile = new this.fileModel({
+      url,
+      userId,
+    });
     await newFile.save();
 
     return newFile;
@@ -43,7 +49,7 @@ export class FileUploadService {
   ): Promise<LocalFileDocument> {
     const updatedFile = await this.fileModel.findById(id);
 
-    if (updatedFile.user !== userId) {
+    if (updatedFile.userId !== userId) {
       throw new ForbiddenException('Access denied');
     }
 
@@ -53,23 +59,33 @@ export class FileUploadService {
       });
     }
 
+    updatedFile.url = null;
     updatedFile.filename = file.filename;
     updatedFile.path = file.path;
-    updatedFile.url = this.BaseUrl + file.filename;
     updatedFile.mimetype = file.mimetype;
     updatedFile.save();
 
     return updatedFile;
   }
 
+  async get(id: string): Promise<LocalFileDocument> {
+    const file = await this.fileModel.findById(id);
+
+    if (!file) {
+      throw new NotFoundException('File not found');
+    }
+
+    return file;
+  }
+
   async remove(id: string, userId: string): Promise<void> {
     const file = await this.fileModel.findById(id);
 
     if (!file) {
-      throw new NotFoundException('File id not found');
+      throw new NotFoundException('File not found');
     }
 
-    if (file.user !== userId) {
+    if (file.userId !== userId) {
       throw new ForbiddenException('Access denied');
     }
 
@@ -92,9 +108,8 @@ export class FileUploadService {
     });
 
     const newFile = new this.fileModel({
-      mimetype: 'defaultAvatar',
       url: avatarUrl,
-      user: userId,
+      userId,
     });
 
     await newFile.save();

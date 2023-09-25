@@ -10,19 +10,16 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { CurrentUser } from 'src/common/decorators';
-import { ApiResponseData } from 'src/common/decorators/api-response-data.decorator';
+import { ApiResponseData, CurrentUser } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
 import {
   AtGuard,
   FacebookGuard,
   GoogleGuard,
-  RoleGuard,
   RtGuard,
 } from 'src/common/guards';
+import { UserDto } from '../users/dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { UserDto } from '../users/dto/user.dto';
-import { Role } from '../users/enums';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -134,24 +131,5 @@ export class AuthController {
     return res
       .status(HttpStatus.OK)
       .send(GetResponse({ dataType: UserDto, data: user }));
-  }
-
-  /* RoleGuard Testing */
-  @Get('admin')
-  @UseGuards(AtGuard, RoleGuard(Role.Admin))
-  getAdmin() {
-    return 'Admin';
-  }
-
-  @Get('teacher')
-  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
-  getTeacher() {
-    return 'Admin, Teacher';
-  }
-
-  @Get('student')
-  @UseGuards(AtGuard, RoleGuard(Role.Student))
-  getStudent() {
-    return 'Admin, Student';
   }
 }
