@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AssignmentsModule } from '../assignments/assignments.module';
+import { ExerciseContentModule } from '../exercise-content/exercise-content.module';
 import { ExercisesController } from './exercises.controller';
 import { ExercisesService } from './exercises.service';
 import { Exercise, ExerciseSchema } from './schemas/exercise.schema';
-import { ExerciseContentModule } from '../exercise-content/exercise-content.module';
-import { AssignmentModule } from '../assignment/assignment.module';
 
 @Module({
   imports: [
@@ -12,7 +12,7 @@ import { AssignmentModule } from '../assignment/assignment.module';
       { name: Exercise.name, schema: ExerciseSchema },
     ]),
     ExerciseContentModule,
-    AssignmentModule,
+    AssignmentsModule,
   ],
   controllers: [ExercisesController],
   providers: [ExercisesService],

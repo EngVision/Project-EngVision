@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AssignmentService } from './assignment.service';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AssignmentsController } from './assignments.controller';
+import { AssignmentsService } from './assignments.service';
 import { Assignment, AssignmentSchema } from './schemas/assignment.schema';
 
 @Module({
@@ -9,7 +10,8 @@ import { Assignment, AssignmentSchema } from './schemas/assignment.schema';
       { name: Assignment.name, schema: AssignmentSchema },
     ]),
   ],
-  providers: [AssignmentService],
-  exports: [AssignmentService],
+  controllers: [AssignmentsController],
+  providers: [AssignmentsService],
+  exports: [AssignmentsService],
 })
-export class AssignmentModule {}
+export class AssignmentsModule {}

@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { SchemaTypes } from 'mongoose';
+import { Document, SchemaTypes } from 'mongoose';
 import { ExerciseType } from 'src/common/enums';
 import { Exercise } from 'src/modules/exercises/schemas/exercise.schema';
 import { User } from 'src/modules/users/schemas/user.schema';
@@ -11,6 +11,9 @@ export class QuestionResult {
 
   @Prop({ required: true })
   isCorrect: boolean;
+
+  @Prop({ type: Object, required: true })
+  answer: any;
 
   @Prop({ type: Object, required: true })
   correctAnswer: any;

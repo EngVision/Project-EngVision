@@ -15,7 +15,7 @@ import { Response } from 'express';
 import { CurrentUser } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
 import { AtGuard } from 'src/common/guards';
-import { QuestionResult } from '../assignment/schemas/assignment.schema';
+import { QuestionResult } from '../assignments/schemas/assignment.schema';
 import { JwtPayload } from '../auth/types';
 import { CreateMultipleChoiceDto } from '../exercise-content/multiple-choice/dto/create-multiple-choice.dto';
 import { CreateExerciseDto, ExerciseDto, UpdateExerciseDto } from './dto';
@@ -48,8 +48,8 @@ export class ExercisesController {
       .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
   }
 
-  @UseGuards(AtGuard)
   @Post(':exerciseId/check-answer/:questionId')
+  @UseGuards(AtGuard)
   async checkAnswer(
     @CurrentUser() user: JwtPayload,
     @Param('exerciseId') exerciseId: string,

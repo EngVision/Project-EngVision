@@ -1,11 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Assignment, QuestionResult } from './schemas/assignment.schema';
 import { Model } from 'mongoose';
 import { AssignmentDto } from './dto/assignment.dto';
+import {
+  Assignment,
+  AssignmentDocument,
+  QuestionResult,
+} from './schemas/assignment.schema';
 
 @Injectable()
-export class AssignmentService {
+export class AssignmentsService {
   constructor(
     @InjectModel(Assignment.name) private assignmentModel: Model<Assignment>,
   ) {}
@@ -14,7 +18,7 @@ export class AssignmentService {
     userId: string,
     exerciseId: string,
     assignmentDto: AssignmentDto,
-  ) {
+  ): Promise<AssignmentDocument> {
     const assignment = await this.findByUserAndExercise(userId, exerciseId);
 
     let detail: QuestionResult[] = [];
@@ -52,7 +56,10 @@ export class AssignmentService {
     return newAssignment;
   }
 
-  async findByUserAndExercise(userId: string, exerciseId: string) {
+  async findByUserAndExercise(
+    userId: string,
+    exerciseId: string,
+  ): Promise<AssignmentDocument> {
     const assignment = await this.assignmentModel.findOne({
       user: userId,
       exercise: exerciseId,
@@ -65,11 +72,19 @@ export class AssignmentService {
     return assignment;
   }
 
-  async findOne(id: string) {
+  async findByUser(userId: string): Promise<AssignmentDocument[]> {
+    const assignments = await this.assignmentModel.find({
+      user: userId,
+    });
+
+    return assignments;
+  }
+
+  async findOne(id: string): Promise<AssignmentDocument> {
     const assignment = await this.assignmentModel.findById(id);
 
     if (!assignment) {
-      return null;
+      throw new NotFoundException('Assignment not found');
     }
 
     return assignment;

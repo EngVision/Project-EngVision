@@ -1,7 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Validator } from 'class-validator';
-import { QuestionResult } from '../assignment/schemas/assignment.schema';
+import { QuestionResult } from '../assignments/schemas/assignment.schema';
 import { ExerciseQuestionDto } from './dto/exercise-content.dto';
 
 export abstract class ExerciseContentService {

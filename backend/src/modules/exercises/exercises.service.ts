@@ -5,8 +5,8 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AssignmentService } from '../assignment/assignment.service';
-import { QuestionResult } from '../assignment/schemas/assignment.schema';
+import { AssignmentsService } from '../assignments/assignments.service';
+import { QuestionResult } from '../assignments/schemas/assignment.schema';
 import { ExerciseContentServiceFactory } from '../exercise-content/exercise-content-factory.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
@@ -17,7 +17,7 @@ export class ExercisesService {
   constructor(
     @InjectModel(Exercise.name) private exerciseModel: Model<Exercise>,
     private readonly exerciseContentServiceFactory: ExerciseContentServiceFactory,
-    private readonly assignmentService: AssignmentService,
+    private readonly assignmentsService: AssignmentsService,
   ) {}
 
   async create(
@@ -93,7 +93,7 @@ export class ExercisesService {
 
     const result = await service.checkAnswer(questionId, answer);
 
-    await this.assignmentService.update(userId, exercise.id, {
+    await this.assignmentsService.update(userId, exercise.id, {
       user: userId,
       exercise: exerciseId,
       exerciseType: exercise.type,
