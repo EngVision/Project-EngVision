@@ -9,6 +9,7 @@ import SignUp from '../pages/SignUp'
 import CourseDetails from '../pages/CourseDetails'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
+import { CourseList } from '../pages/CourseList'
 
 import type { RouteElement } from './types'
 
@@ -48,6 +49,10 @@ const publicRoutes: RouteElement[] = [
   {
     element: CourseDetails,
     path: ROUTES.courseDetails,
+  },
+  {
+    element: CourseList,
+    path: ROUTES.courses,
   },
 ]
 
