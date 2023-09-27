@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { QuestionResult } from 'src/modules/assignments/schemas/assignment.schema';
 import { ExerciseContentService } from '../base-exercise-content.service';
 import { CreateFillBlankDto } from './dto/create-fill-blank.dto';
 import { FillBlank } from './schemas/fill-blank.schema';
@@ -31,10 +32,18 @@ export class FillBlankService extends ExerciseContentService {
     return questionList.map(q => q.id);
   }
 
-  async checkAnswer(id: string, answer: string): Promise<boolean> {
-    const exercise = await this.fillBlankModel.findById(id);
+  async checkAnswer(id: string, answer: string): Promise<QuestionResult> {
+    if (typeof answer !== 'string') {
+      throw new BadRequestException('answer must be a string');
+    }
 
-    return exercise.correctAnswer.toLowerCase() === answer.toLowerCase();
+    const { detail, explain } = (
+      await this.fillBlankModel.findById(id).select('correctAnswer')
+    ).correctAnswer;
+
+    const isCorrect = detail.toLowerCase() === answer.toLowerCase();
+
+    return { question: id, isCorrect, answer, correctAnswer: detail, explain };
   }
 
   isValidQuestionList(questionList: FillBlank[]): boolean {

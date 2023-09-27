@@ -45,4 +45,7 @@ export class UserDto {
 
   @Exclude()
   resetPasswordCode?: string;
+
+  @Exclude()
+  certificates?: string[];
 }

@@ -1,5 +1,7 @@
+import { BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { QuestionResult } from 'src/modules/assignments/schemas/assignment.schema';
 import { ExerciseContentService } from '../base-exercise-content.service';
 import { CreateMultipleChoiceDto } from './dto/create-multiple-choice.dto';
 import { MultipleChoice } from './schemas/multiple-choice.schema';
@@ -20,25 +22,27 @@ export class MultipleChoiceService extends ExerciseContentService {
       CreateMultipleChoiceDto,
     );
 
-    console.log(createQuestionListDto);
-
     const questionList = await this.multipleChoiceModel.insertMany(
       validatedContent,
     );
-    console.log(questionList);
 
     return questionList.map(q => q.id);
   }
 
-  async checkAnswer(id: string, answer: number[]): Promise<boolean> {
-    // const correctAnswer = (
-    //   await this.multipleChoiceModel.findById(id).select('correctAnswer')
-    // ).correctAnswer;
+  async checkAnswer(id: string, answer: number[]): Promise<QuestionResult> {
+    if (Array.isArray(answer) && typeof answer[0] !== 'number') {
+      throw new BadRequestException('answer must be a number array');
+    }
 
-    // answer.sort();
-    // correctAnswer.sort();
+    const { detail, explain } = (
+      await this.multipleChoiceModel.findById(id).select('correctAnswer')
+    ).correctAnswer;
 
-    // return answer.join() === correctAnswer.join();
-    return true;
+    answer.sort();
+    detail.sort();
+
+    const isCorrect = answer.join() === detail.join();
+
+    return { question: id, isCorrect, answer, correctAnswer: detail, explain };
   }
 }
