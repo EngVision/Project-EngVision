@@ -11,7 +11,7 @@ const Sidebar = () => {
       </h2>
       <Menu />
 
-      <div className="bg-neutral absolute bottom-0">
+      <div className="pt-20">
         <Account />
       </div>
     </div>
