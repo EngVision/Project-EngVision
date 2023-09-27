@@ -1,6 +1,7 @@
 export const ROUTES = {
   UpdateProfile: '/update-profile',
   courses: '/courses',
+  courseDetails: '/courses/:courseId',
   docList: '/doclist',
   home: '/',
   settings: '/settings',
