@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsMongoId,
@@ -18,11 +18,24 @@ class QuestionDto {
 
   @IsOptional()
   @IsMongoId()
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: 'Image file id',
   })
   image?: string;
+}
+
+class CorrectAnswerDto {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ type: String, description: 'Correct answer' })
+  detail: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  @ApiPropertyOptional({ type: String, description: 'Explain' })
+  explain: string;
 }
 
 export class CreateFillBlankDto extends ExerciseQuestionDto {
@@ -32,8 +45,9 @@ export class CreateFillBlankDto extends ExerciseQuestionDto {
   @ApiProperty({ type: QuestionDto, description: 'Question content' })
   question: QuestionDto;
 
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({ type: String, description: 'Correct answer' })
-  correctAnswer: string;
+  @IsNotEmptyObject()
+  @ValidateNested()
+  @Type(() => CorrectAnswerDto)
+  @ApiProperty({ type: CorrectAnswerDto, description: 'Correct answer' })
+  correctAnswer: CorrectAnswerDto;
 }

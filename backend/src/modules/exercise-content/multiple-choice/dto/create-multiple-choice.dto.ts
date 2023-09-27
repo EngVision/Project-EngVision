@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
@@ -25,7 +25,7 @@ class AnswerDto {
 
   @IsOptional()
   @IsMongoId()
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: 'Audio file id',
   })
@@ -33,7 +33,7 @@ class AnswerDto {
 
   @IsOptional()
   @IsMongoId()
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: 'Image file id',
   })
@@ -48,7 +48,7 @@ class QuestionDto {
 
   @IsOptional()
   @IsMongoId()
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: 'Audio file id',
   })
@@ -56,7 +56,7 @@ class QuestionDto {
 
   @IsOptional()
   @IsMongoId()
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: 'Image file id',
   })
@@ -74,11 +74,13 @@ class CorrectAnswerDto {
   @IsArray()
   @ArrayMinSize(1)
   @IsNumber({}, { each: true })
+  @ApiProperty({ type: [Number], description: 'Correct answer' })
   detail: number[];
 
   @IsOptional()
   @IsNotEmpty()
   @IsString()
+  @ApiPropertyOptional({ type: String, description: 'Explain' })
   explain: string;
 }
 

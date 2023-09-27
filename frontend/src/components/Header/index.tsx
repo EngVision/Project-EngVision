@@ -7,9 +7,7 @@ import Search from './Search'
 
 const Header = () => {
   return (
-    <div className="flex items-center py-5 px-[32px] shadow-headerShadow">
-      <h2 className="text-primary font-bold text-4xl w-[300px]">EngVision</h2>
-
+    <div className="flex items-center py-9">
       <div className="flex-1 flex justify-between">
         <Search />
 
