@@ -1,33 +1,23 @@
-import React, { useEffect, useState, ChangeEvent } from 'react'
-import { useParams } from 'react-router-dom'
-import coursesApi from '../../services/coursesApi'
-import { Input, Tabs, Avatar, Rate, Button, Collapse } from 'antd'
+import { faHeart } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { TabsProps } from 'antd'
+import { Avatar, Button, Collapse, Input, Rate, Tabs } from 'antd'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+
+import coursesApi from '../../services/coursesApi'
+import type { CourseDetails } from '../../services/coursesApi/types'
+import timeToNow from '../../utils/timeToNow'
 const { Panel } = Collapse
 const { TextArea } = Input
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart } from '@fortawesome/free-regular-svg-icons'
-interface Course {
-  id: string
-  title: string
-  teacher: string
-  about: string
-  introVideo: string
-  thumbnail: string
-  price: number
-  level: string
-  tags: string[] // Assuming tags are an array of strings
-  createdAt: string // Assuming createdAt and updatedAt are ISO 8601 date strings
-  updatedAt: string
-  avgStar: number
-}
+
 const onChange = (key: string) => {
   console.log(key)
 }
 
-const CourseDetails = () => {
+const CourseDetailsPage = () => {
   const { courseId } = useParams()
-  const [courseDetails, setCourseDetails] = useState<Course | null>(null)
+  const [courseDetails, setCourseDetails] = useState<CourseDetails | null>(null)
 
   const [reviewContent, setReviewContent] = useState<string>('')
   const [rating, setRating] = useState<number>(0)
@@ -41,12 +31,9 @@ const CourseDetails = () => {
   }
 
   const handleSubmitReview = () => {
-    // Handle the submission of the review, e.g., send it to a server.
-    // You can access the 'reviewContent' and 'rating' variables here.
-    // For demonstration purposes, we'll just log them to the console.
-    console.log('Review Content:', reviewContent)
     console.log('Rating:', rating)
   }
+
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
@@ -62,21 +49,12 @@ const CourseDetails = () => {
     fetchCourseDetails()
   }, [courseId])
 
-  const text = `
-  Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-`
+  const text = `Lorem ipsum dolor sit amet consectetur adipisicing elit.`
   const itemsTabs: TabsProps['items'] = [
     {
       key: '1',
       label: 'About',
-      children: (
-        <div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil iste
-          nesciunt eveniet temporibus, repellendus beatae rerum illo unde iusto
-          impedit consectetur saepe odit qui ullam sunt nisi eius veritatis
-          iure.
-        </div>
-      ),
+      children: <div>{courseDetails?.about}</div>,
     },
     {
       key: '2',
@@ -141,62 +119,26 @@ const CourseDetails = () => {
             </Button>
           </div>
           <div className="flex mb-10 flex-row">
-            <div>
+            {courseDetails?.reviews.map((review) => (
               <div className="flex items-start space-x-4">
-                {/* Avatar */}
                 <div>
                   <Avatar
                     size={50}
                     src="https://i.pinimg.com/736x/30/b5/49/30b54999b098050158ed13a1ecdcaab0.jpg"
                   />
                 </div>
-
-                {/* Review Content */}
                 <div className="flex-grow">
-                  <div className="font-semibold">Minh Tri Nguyen</div>
+                  <div className="font-semibold">
+                    {review.user.firstName + ' ' + review.user.lastName}
+                  </div>
                   <div className="flex items-center">
-                    <Rate disabled defaultValue={4} />
+                    <Rate disabled defaultValue={review.star} />
                     <span className="text-gray-500 ml-2">A day ago</span>
                   </div>
-                  <div className="mt-2">
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                    Nobis similique consectetur veniam, eligendi voluptas
-                    tempore suscipit consequatur itaque asperiores modi. Culpa
-                    voluptas officia magni ipsam, quae dolores ea obcaecati
-                    eligendi.
-                  </div>
+                  <div className="mt-2">{review.comment}</div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="flex mb-10 flex-row">
-            <div>
-              <div className="flex items-start space-x-4">
-                {/* Avatar */}
-                <div>
-                  <Avatar
-                    size={50}
-                    src="https://i.pinimg.com/736x/30/b5/49/30b54999b098050158ed13a1ecdcaab0.jpg"
-                  />
-                </div>
-
-                {/* Review Content */}
-                <div className="flex-grow">
-                  <div className="font-semibold">Minh Tri Nguyen</div>
-                  <div className="flex items-center">
-                    <Rate disabled defaultValue={4} />
-                    <span className="text-gray-500 ml-2">A day ago</span>
-                  </div>
-                  <div className="mt-2">
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                    Nobis similique consectetur veniam, eligendi voluptas
-                    tempore suscipit consequatur itaque asperiores modi. Culpa
-                    voluptas officia magni ipsam, quae dolores ea obcaecati
-                    eligendi.
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       ),
@@ -204,14 +146,7 @@ const CourseDetails = () => {
     {
       key: '4',
       label: 'Resources',
-      children: (
-        <div>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quaerat
-          delectus explicabo amet nulla, impedit magni porro nobis.
-          Necessitatibus esse laudantium mollitia minus. Sint, odit omnis iste
-          optio ducimus et blanditiis?
-        </div>
-      ),
+      children: <div></div>,
     },
   ]
   return (
@@ -288,4 +223,4 @@ const CourseDetails = () => {
   )
 }
 
-export default CourseDetails
+export default CourseDetailsPage

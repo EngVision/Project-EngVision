@@ -5,6 +5,15 @@ import type { CourseParams } from './types'
 const PREFIX = 'courses/'
 
 const coursesApi = {
+  getCourseDetails: async (coursesId: string) => {
+    try {
+      const res = await axiosClient.get(`${PREFIX}${coursesId}`)
+      return res.data
+    } catch (error) {
+      console.error('Error get course details:', error)
+      throw error
+    }
+  },
   getCourses: async () => {
     try {
       const res = await axiosClient.get(`${PREFIX}`)
@@ -14,10 +23,6 @@ const coursesApi = {
       console.error('Error get courses:', error)
       throw error
     }
-  },
-  getCourseDetails: async (coursesId: string) => {
-    const res = await axiosClient.get(`${PREFIX}${coursesId}`)
-    return res
   },
 }
 
