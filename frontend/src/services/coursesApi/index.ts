@@ -1,6 +1,6 @@
 import axiosClient from '../axiosClient'
 
-import type { CourseParams } from './types'
+import type { CourseParams, ReviewParams } from './types'
 
 const PREFIX = 'courses/'
 
@@ -21,6 +21,15 @@ const coursesApi = {
       return data
     } catch (error) {
       console.error('Error get courses:', error)
+      throw error
+    }
+  },
+  postReview: async (courseId: string, data: ReviewParams) => {
+    try {
+      const res = await axiosClient.post(`${PREFIX}${courseId}/review`, data)
+      return res
+    } catch (error) {
+      console.error('Error post review:', error)
       throw error
     }
   },

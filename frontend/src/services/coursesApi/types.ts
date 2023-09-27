@@ -41,3 +41,7 @@ export interface CourseDetails {
   reviews: Review[]
   avgStar: number
 }
+export interface ReviewParams {
+  star: number
+  comment: string
+}
