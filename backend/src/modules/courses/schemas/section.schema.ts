@@ -1,18 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Lesson } from './lesson.schema';
+import { LessonDocument, LessonSchema } from './lesson.schema';
 
 export type SectionDocument = Section & Document;
 
-@Schema({ _id: true })
+@Schema()
 export class Section {
-  id: string;
+  id?: string;
 
   @Prop({ required: true })
   title: string;
 
-  @Prop({ default: null })
-  lessons: Lesson[];
+  @Prop([{ type: LessonSchema, default: null }])
+  lessons: LessonDocument[];
 }
 
 export const SectionSchema = SchemaFactory.createForClass(Section);

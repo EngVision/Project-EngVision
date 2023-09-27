@@ -3,7 +3,7 @@ import mongoose, { Document, SchemaTypes } from 'mongoose';
 import { Level } from '../enums';
 import { User } from 'src/modules/users/schemas/user.schema';
 import { LocalFile } from 'src/modules/files/schemas/local-file.schema';
-import { Section } from './section.schema';
+import { Section, SectionDocument, SectionSchema } from './section.schema';
 
 export type CourseDocument = Course & Document;
 
@@ -35,8 +35,11 @@ export class Course {
   @Prop({ default: null })
   tags: string[];
 
-  @Prop({ default: null })
-  sections: Section[];
+  @Prop({ default: null, type: [mongoose.Types.ObjectId], ref: User.name })
+  attendanceList: string[];
+
+  @Prop([{ type: SectionSchema, default: null }])
+  sections: SectionDocument[];
 
   @Prop({ default: null, type: [mongoose.Types.ObjectId], ref: 'Post' })
   posts: mongoose.Types.ObjectId[];

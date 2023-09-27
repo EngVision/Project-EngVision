@@ -34,6 +34,9 @@ export class UserBriefDto {
   country?: string;
 
   @Exclude()
+  certificates?: string[];
+
+  @Exclude()
   password?: string;
 
   @Exclude()

@@ -14,10 +14,8 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CoursesService } from './courses.service';
 import { AtGuard, RoleGuard } from 'src/common/guards';
-import { CreateCourseDto } from './dto/create-course.dto';
 import { Response } from 'express';
 import { courseIdDto } from './dto/course-id.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
 import { Role } from 'src/common/enums';
 import { CreateReviewDto } from '../reviews/dto/create-review.dto';
 import {
@@ -28,16 +26,20 @@ import { ReviewDto } from '../reviews/dto/review.dto';
 import { GetResponse } from 'src/common/dto';
 import { CurrentUser } from 'src/common/decorators';
 import { JwtPayload } from '../auth/types';
-import { CourseDto } from './dto/course.dto';
-import { CourseDetailDto } from './dto/course-detail.dto';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
-import { SearchCourseDto } from './dto/search.dto';
-import { CreateSectionDto } from './dto/create-section.dto';
-import { SectionDto } from './dto/section.dto';
-import { LessonDto } from './dto/lesson.dto';
-import { CreateLessonDto } from './dto/create-lesson.dto';
-import { CourseSectionIdDto } from './dto/course-section-id.dto';
-import { UpdateSectionDto } from './dto/update-section.dto';
+import {
+  UpdateLessonDto,
+  CourseDto,
+  CreateCourseDto,
+  CreateLessonDto,
+  CreateSectionDto,
+  SearchCourseDto,
+  UpdateCourseDto,
+  CourseDetailDto,
+  CourseSectionIdDto,
+  UpdateSectionDto,
+  CourseSectionLessonIdDto,
+ } from './dto';
 
 @ApiTags('Courses')
 @Controller('courses')
@@ -90,7 +92,7 @@ export class CoursesController {
     return res.status(HttpStatus.OK).send(
       GetResponse({
         data: course,
-        message: 'Get courses',
+        message: 'Get course',
       }),
     );
   }
@@ -162,7 +164,7 @@ export class CoursesController {
   }
 
   @Post('/:id/sections')
-  @ApiResponseData(SectionDto)
+  @ApiResponseData(CourseDetailDto)
   @UseGuards(AtGuard, RoleGuard(Role.Teacher))
   async createSection(
     @Body() createSection: CreateSectionDto,
@@ -170,7 +172,7 @@ export class CoursesController {
     @Param() params: courseIdDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    const newSection = await this.coursesService.createSection(
+    const newCourse = await this.coursesService.createSection(
       createSection,
       params.id,
       user.sub,
@@ -178,14 +180,14 @@ export class CoursesController {
 
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
-        data: newSection,
+        data: newCourse,
         message: 'Add section successful',
       }),
     );
   }
 
   @Patch('/:id/sections/:sectionId')
-  @ApiResponseData(SectionDto)
+  @ApiResponseData(CourseDetailDto)
   @UseGuards(AtGuard, RoleGuard(Role.Teacher))
   async updateSection(
     @Body() updateSection: UpdateSectionDto,
@@ -193,7 +195,7 @@ export class CoursesController {
     @Param() params: CourseSectionIdDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    const newSection = await this.coursesService.updateSection(
+    const newCourse = await this.coursesService.updateSection(
       updateSection,
       params.id,
       params.sectionId,
@@ -202,14 +204,36 @@ export class CoursesController {
 
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
-        data: newSection,
+        data: newCourse,
         message: 'Update section successful',
       }),
     );
   }
 
+  @Delete('/:id/sections/:sectionId')
+  @ApiResponseData(CourseDetailDto)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async removeSection(
+    @Res() res: Response,
+    @Param() params: CourseSectionIdDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const newCourse = await this.coursesService.removeSection(
+      params.id,
+      params.sectionId,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        data: newCourse,
+        message: 'Remove section successful',
+      }),
+    );
+  }
+
   @Post('/:id/sections/:sectionId/lessons')
-  @ApiResponseData(LessonDto)
+  @ApiResponseData(CourseDetailDto)
   @UseGuards(AtGuard, RoleGuard(Role.Teacher))
   async createLesson(
     @Body() createLesson: CreateLessonDto,
@@ -217,7 +241,7 @@ export class CoursesController {
     @Param() params: CourseSectionIdDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    const newSection = await this.coursesService.createLesson(
+    const newCourse = await this.coursesService.createLesson(
       createLesson,
       params.id,
       params.sectionId,
@@ -226,8 +250,97 @@ export class CoursesController {
 
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
-        data: newSection,
+        data: newCourse,
         message: 'Add lesson successful',
+      }),
+    );
+  }
+
+  @Patch('/:id/sections/:sectionId/lessons/:lessonId')
+  @ApiResponseData(CourseDetailDto)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async updateLesson(
+    @Body() updateLesson: UpdateLessonDto,
+    @Res() res: Response,
+    @Param() params: CourseSectionLessonIdDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const newCourse = await this.coursesService.updateLesson(
+      updateLesson,
+      params.id,
+      params.sectionId,
+      params.lessonId,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        data: newCourse,
+        message: 'Update lesson successful',
+      }),
+    );
+  }
+
+  @Delete('/:id/sections/:sectionId/lessons/:lessonId')
+  @ApiResponseData(CourseDetailDto)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async removeLesson(
+    @Res() res: Response,
+    @Param() params: CourseSectionLessonIdDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const newCourse = await this.coursesService.removeLesson(
+      params.id,
+      params.sectionId,
+      params.lessonId,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        data: newCourse,
+        message: 'Remove lesson successful',
+      }),
+    );
+  }
+
+  @Post('/:id/attend')
+  @ApiResponseData(Object)
+  @UseGuards(AtGuard, RoleGuard(Role.Student))
+  async attendCourse(
+    @Res() res: Response,
+    @Param() params: courseIdDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    await this.coursesService.attendCourse(
+      params.id,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        message: 'Attend course successful',
+      }),
+    );
+  }
+
+  @Get('/:id/attend')
+  @ApiResponseData(Array)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async attendanceList(
+    @Res() res: Response,
+    @Param() params: courseIdDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const attendanceList = await this.coursesService.getAttendanceList(
+      params.id,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        message: 'Get attendance list',
+        data: attendanceList,
       }),
     );
   }

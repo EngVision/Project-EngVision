@@ -38,6 +38,14 @@ export class CourseDto {
   @ApiPropertyOptional({ type: Number, description: 'Average star' })
   avgStar?: number;
 
+  @Expose({ name: 'attendanceList' })
+  @Transform(value => value.obj?.attendanceList?.length)
+  @ApiPropertyOptional({
+    type: Number,
+    description: 'Count attendance',
+  })
+  attendance?: number;
+
   @Exclude()
   sections?: mongoose.Types.ObjectId[];
 

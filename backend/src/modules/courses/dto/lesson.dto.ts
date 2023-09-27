@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import mongoose from 'mongoose';
+import { Expose, Transform } from 'class-transformer';
 
 export class LessonDto {
-  @Transform(value => value.obj.id.toString())
-  @ApiProperty({ type: mongoose.Types.ObjectId, description: 'Lesson id' })
+  @Expose({ name: '_id' })
+  @Transform(value => value.obj._id.toString())
+  @ApiProperty({ type: String, description: 'Lesson id' })
   id?: string;
 
   @ApiProperty({ type: String, description: 'Title' })
   title: string;
 
-  @ApiProperty({ type: String, description: 'Title' })
-  exercises: string;
+  @ApiProperty({ type: [String], description: 'Exercises' })
+  exercises: string[];
 }
