@@ -4,6 +4,7 @@ import { Expose, Transform } from 'class-transformer';
 import { UserBriefDto } from 'src/modules/users/dto/user-brief.dto';
 import mongoose from 'mongoose';
 import { ReviewDto } from 'src/modules/reviews/dto/review.dto';
+import { Section } from '../schemas/section.schema';
 
 export class CourseDetailDto {
   @Expose({ name: '_id' })
@@ -36,8 +37,8 @@ export class CourseDetailDto {
   @ApiPropertyOptional({ type: String, description: 'level (A1/A2 ...)' })
   level?: Level;
 
-  @ApiPropertyOptional({ type: [String], description: 'sections' })
-  sections: string[];
+  @ApiPropertyOptional({ type: [Section], description: 'sections' })
+  sections: Section[];
 
   @ApiPropertyOptional({ type: [String], description: 'posts' })
   posts: string[];

@@ -24,8 +24,8 @@ export class CreateAccountDto {
   @IsOptional()
   @IsArray()
   @IsMongoId({ each: true })
-  @ApiProperty({ type: String, description: 'certificates file id' })
-  certificates?: string;
+  @ApiProperty({ type: [String], description: 'certificates file id' })
+  certificates?: string[];
 
   @IsEnum(Gender)
   @IsString()

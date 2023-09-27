@@ -8,10 +8,15 @@ import {
   Patch,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { CurrentUser } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
+import { AtGuard } from 'src/common/guards';
+import { QuestionResult } from '../assignments/schemas/assignment.schema';
+import { JwtPayload } from '../auth/types';
 import { CreateMultipleChoiceDto } from '../exercise-content/multiple-choice/dto/create-multiple-choice.dto';
 import { CreateExerciseDto, ExerciseDto, UpdateExerciseDto } from './dto';
 import { ExercisesService } from './exercises.service';
@@ -43,9 +48,25 @@ export class ExercisesController {
       .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
   }
 
-  @Post('check-answer/:id')
-  async checkAnswer(@Body() exerciseDto: ExerciseDto, @Res() res: Response) {
-    return res.status(HttpStatus.OK).send('123');
+  @Post(':exerciseId/check-answer/:questionId')
+  @UseGuards(AtGuard)
+  async checkAnswer(
+    @CurrentUser() user: JwtPayload,
+    @Param('exerciseId') exerciseId: string,
+    @Param('questionId') questionId: string,
+    @Body('answer') answer: any,
+    @Res() res: Response,
+  ) {
+    const result = await this.exercisesService.checkAnswer(
+      user.sub,
+      exerciseId,
+      questionId,
+      answer,
+    );
+
+    return res
+      .status(HttpStatus.OK)
+      .send(GetResponse({ dataType: QuestionResult, data: result }));
   }
 
   @Patch(':id')

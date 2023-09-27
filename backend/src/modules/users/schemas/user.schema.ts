@@ -33,7 +33,7 @@ export class User {
   avatar?: string;
 
   @Prop({ type: [SchemaTypes.ObjectId], ref: LocalFile.name, default: [] })
-  certificates?: string;
+  certificates?: string[];
 
   @Prop({ enum: Gender, default: null })
   gender?: string;

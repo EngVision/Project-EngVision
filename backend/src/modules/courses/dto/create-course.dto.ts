@@ -39,4 +39,9 @@ export class CreateCourseDto {
   @IsEnum(Level)
   @ApiPropertyOptional({ enum: Level, description: 'Level (A1/A2 ...)' })
   level?: Level;
+
+  // @IsOptional()
+  // @IsEnum(Level)
+  // @ApiPropertyOptional({ enum: Level, description: 'Level (A1/A2 ...)' })
+  // tag?: Level; []
 }

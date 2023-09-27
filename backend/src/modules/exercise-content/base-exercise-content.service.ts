@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Validator } from 'class-validator';
+import { QuestionResult } from '../assignments/schemas/assignment.schema';
 import { ExerciseQuestionDto } from './dto/exercise-content.dto';
 
 export abstract class ExerciseContentService {
@@ -30,5 +31,5 @@ export abstract class ExerciseContentService {
     questionListDto: ExerciseQuestionDto[],
   ): Promise<string[]>;
 
-  abstract checkAnswer(id: string, answer: any): Promise<boolean>;
+  abstract checkAnswer(id: string, answer: any): Promise<QuestionResult>;
 }

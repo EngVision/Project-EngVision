@@ -10,7 +10,7 @@ export class ReviewDto {
   @ApiProperty({ type: String, description: 'User id' })
   user: string;
 
-  @Transform(value => value.obj._id.toString())
+  @Transform(value => value.obj.courseId.toString())
   @ApiProperty({ type: String, description: 'Course id' })
   courseId: string;
 

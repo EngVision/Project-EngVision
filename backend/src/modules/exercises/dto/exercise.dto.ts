@@ -1,8 +1,9 @@
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
 class ContentDto {
-  @Exclude()
-  _id?: string;
+  @Expose({ name: '_id' })
+  @Transform(value => value.obj._id.toString())
+  id?: string;
 
   @Exclude()
   correctAnswer: any;
