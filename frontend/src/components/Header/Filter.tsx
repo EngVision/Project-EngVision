@@ -23,12 +23,12 @@ const Filter = () => {
       options={Object.values(SEARCH_OPTIONS)}
       defaultValue={Object.values(SEARCH_OPTIONS)}
       onChange={onChange}
-      className="flex flex-col gap-3 p-1"
+      className="flex flex-col gap-4 p-1"
     />
   )
 
   return (
-    <Popover content={content} trigger="click">
+    <Popover content={content} trigger="click" className="flex cursor-pointer">
       <div>
         <FilterIcon width={20} height={20} />
       </div>

@@ -2,6 +2,7 @@ import AuthLayout from '../layouts/AuthLayout'
 import CourseDetailsPage from '../pages/CourseDetails'
 import { CourseList } from '../pages/CourseList'
 import CreateProfile from '../pages/CreateProfile'
+import HelpCenter from '../pages/HelpCenter'
 import Home from '../pages/Home'
 import MakeSentences from '../pages/Lesson/MakeSentences'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
@@ -87,6 +88,10 @@ const privateRoutes: RouteElement[] = [
   {
     element: Settings,
     path: ROUTES.settings,
+  },
+  {
+    element: HelpCenter,
+    path: ROUTES.helpCenter,
   },
 ]
 

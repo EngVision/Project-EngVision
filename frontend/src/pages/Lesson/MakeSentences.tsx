@@ -36,22 +36,34 @@ const MakeSentences = () => {
 
       <div className="mt-8">
         <h3 className="text-[24px]">General</h3>
-        <div className="flex flex-col gap-6 mt-4">
+        <div className="flex flex-col gap-4 mt-4">
           <div className="flex gap-3">
-            <Input placeholder="Make sentences" className="rounded-[8px]" />
-            <Input placeholder="Exercise title 1" className="rounded-[8px]" />
-            <Input placeholder="Description" className="rounded-[8px]" />
-            <Input placeholder="Deadline" className="rounded-[8px]" />
+            <Input
+              placeholder="Make sentences"
+              className="rounded-[8px] h-[32px] text-[14px]"
+            />
+            <Input
+              placeholder="Exercise title 1"
+              className="rounded-[8px] h-[32px] text-[14px]"
+            />
+            <Input
+              placeholder="Description"
+              className="rounded-[8px] h-[32px] text-[14px]"
+            />
+            <Input
+              placeholder="Deadline"
+              className="rounded-[8px] h-[32px] text-[14px]"
+            />
           </div>
 
           <div className="flex gap-3">
             <Input
               placeholder="Default tags (Optional)"
-              className="rounded-[8px]"
+              className="rounded-[8px] h-[32px] text-[14px]"
             />
             <Input
               placeholder="Default levels (Optional)"
-              className="rounded-[8px]"
+              className="rounded-[8px] h-[32px] text-[14px]"
             />
           </div>
         </div>
@@ -77,10 +89,22 @@ const MakeSentences = () => {
           </div>
 
           <div className="flex gap-3 items-center">
-            <Input placeholder="Question 1" className="rounded-[8px]" />
-            <Input placeholder="Image" className="rounded-[8px]" />
-            <Input placeholder="Tags" className="rounded-[8px]" />
-            <Input placeholder="Levels" className="rounded-[8px]" />
+            <Input
+              placeholder="Question 1"
+              className="rounded-[8px] h-[32px] text-[14px]"
+            />
+            <Input
+              placeholder="Image"
+              className="rounded-[8px] h-[32px] text-[14px]"
+            />
+            <Input
+              placeholder="Tags"
+              className="rounded-[8px] h-[32px] text-[14px]"
+            />
+            <Input
+              placeholder="Levels"
+              className="rounded-[8px] h-[32px] text-[14px]"
+            />
 
             <Checkbox>Strict</Checkbox>
 

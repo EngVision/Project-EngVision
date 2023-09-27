@@ -6,6 +6,7 @@ export const ROUTES = {
   docList: '/doclist',
   home: '/',
   settings: '/settings',
+  helpCenter: '/help-center',
   signIn: '/sign-in',
   signUp: '/sign-up',
   sendMailResetPassword: '/forgot-password',
