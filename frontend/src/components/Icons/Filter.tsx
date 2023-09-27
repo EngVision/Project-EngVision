@@ -2,66 +2,61 @@ import React from 'react'
 
 import type { IconProps } from './types'
 
-const GlobalSearch = ({
-  width = 24,
-  height = 24,
-  className = '',
-}: IconProps) => {
+const ArrowLeft = ({ width = 24, height = 24, className = '' }: IconProps) => {
   return (
     <svg
       width={width}
       height={height}
       className={className}
-      viewBox="0 0 24 25"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M22 12.7C22 7.17995 17.52 2.69995 12 2.69995C6.48 2.69995 2 7.17995 2 12.7C2 18.22 6.48 22.7 12 22.7"
+        d="M22 6.5H16"
         stroke="currentColor"
         strokeWidth="1.5"
+        strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M8.0001 3.69995H9.0001C7.0501 9.53995 7.0501 15.86 9.0001 21.7H8.0001"
+        d="M6 6.5H2"
         stroke="currentColor"
         strokeWidth="1.5"
+        strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M15 3.69995C15.97 6.61995 16.46 9.65995 16.46 12.7"
+        d="M10 10C11.933 10 13.5 8.433 13.5 6.5C13.5 4.567 11.933 3 10 3C8.067 3 6.5 4.567 6.5 6.5C6.5 8.433 8.067 10 10 10Z"
         stroke="currentColor"
         strokeWidth="1.5"
+        strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M3 16.7V15.7C5.92 16.67 8.96 17.16 12 17.16"
+        d="M22 17.5H18"
         stroke="currentColor"
         strokeWidth="1.5"
+        strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M3 9.69993C8.84 7.74993 15.16 7.74993 21 9.69993"
+        d="M8 17.5H2"
         stroke="currentColor"
         strokeWidth="1.5"
+        strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M18.2 22.1C19.9673 22.1 21.4 20.6673 21.4 18.9C21.4 17.1327 19.9673 15.7 18.2 15.7C16.4327 15.7 15 17.1327 15 18.9C15 20.6673 16.4327 22.1 18.2 22.1Z"
+        d="M14 21C15.933 21 17.5 19.433 17.5 17.5C17.5 15.567 15.933 14 14 14C12.067 14 10.5 15.567 10.5 17.5C10.5 19.433 12.067 21 14 21Z"
         stroke="currentColor"
         strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M22 22.7L21 21.7"
-        stroke="currentColor"
-        strokeWidth="1.5"
+        strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -69,4 +64,4 @@ const GlobalSearch = ({
   )
 }
 
-export default GlobalSearch
+export default ArrowLeft

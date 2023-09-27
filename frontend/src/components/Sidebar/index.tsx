@@ -1,6 +1,5 @@
 import React from 'react'
 
-import Account from './Account'
 import Menu from './Menu'
 
 const Sidebar = () => {
@@ -9,8 +8,6 @@ const Sidebar = () => {
       <Menu />
 
       <div className="h-[2px] bg-neutral"></div>
-
-      <Account />
     </div>
   )
 }

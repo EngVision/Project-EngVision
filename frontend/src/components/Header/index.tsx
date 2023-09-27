@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Avatar } from 'antd'
 import React from 'react'
 
-import LogoutButton from './LogoutButton'
 import Search from './Search'
 
 const Header = () => {
@@ -17,7 +16,6 @@ const Header = () => {
         <div className="flex items-center gap-8">
           <FontAwesomeIcon icon={faBell} size="xl" />
           <Avatar size="default">Kiet</Avatar>
-          <LogoutButton />
         </div>
       </div>
     </div>

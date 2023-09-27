@@ -4,12 +4,14 @@ interface AppState {
   userAccountId?: string
   darkMode: boolean | string
   locales: string
+  searchOptions: string[]
 }
 
 const initialState: AppState = {
   userAccountId: '',
   darkMode: localStorage.getItem('darkMode') || false,
   locales: localStorage.getItem('locales') || 'en',
+  searchOptions: [],
 }
 
 const appSlice = createSlice({
@@ -19,9 +21,12 @@ const appSlice = createSlice({
     setUserAccountId: (state, action) => {
       state.userAccountId = action.payload
     },
+    setSearchOptions: (state, action) => {
+      state.searchOptions = action.payload
+    },
   },
 })
-export const { setUserAccountId } = appSlice.actions
+export const { setUserAccountId, setSearchOptions } = appSlice.actions
 
 export default appSlice.reducer
 

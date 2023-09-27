@@ -12,8 +12,13 @@ export const ROUTES = {
   resetForgotPassword: '/reset-password/:resetPasswordCode',
   signUpTeacher: '/sign-up/teacher',
   ssoSuccess: '/sso-success',
-  statistics: '/statistics',
+  statistic: '/statistic',
   createProfile: '/create-profile',
+  search: '/search',
+  myHub: '/my-hub',
+  exam: '/exam',
+  discover: '/discover',
+  chat: '/chat',
 
   // lesson
   makeSentence: '/lesson/make-sentence',
@@ -44,3 +49,8 @@ export const GENDERS = [
     value: 'Female',
   },
 ]
+
+export const SEARCH_OPTIONS = {
+  homework: 'Homeworks',
+  course: 'Courses',
+}

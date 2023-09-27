@@ -5,7 +5,9 @@ import CreateProfile from '../pages/CreateProfile'
 import Home from '../pages/Home'
 import MakeSentences from '../pages/Lesson/MakeSentences'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
+import Search from '../pages/Search'
 import SendMailResetPassword from '../pages/SendMailResetPassword'
+import Settings from '../pages/Settings'
 import SignIn from '../pages/SignIn'
 import SSOSuccess from '../pages/SignIn/components/SSOSuccess'
 import SignUp from '../pages/SignUp'
@@ -77,6 +79,14 @@ const privateRoutes: RouteElement[] = [
   {
     element: MakeSentences,
     path: ROUTES.makeSentence,
+  },
+  {
+    element: Search,
+    path: ROUTES.search,
+  },
+  {
+    element: Settings,
+    path: ROUTES.settings,
   },
 ]
 
