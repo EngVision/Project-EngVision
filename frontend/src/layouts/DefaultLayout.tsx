@@ -7,11 +7,13 @@ import type { LayoutProps } from './types'
 
 const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="flex flex-col h-[100vh]">
-      <Header />
+    <div className="flex flex-row h-[100vh]">
+      <Sidebar />
       <div className="flex flex-1">
-        <Sidebar />
-        <div className="px-[32px] flex-1 bg-bgNeutral">{children}</div>
+        <div className="px-8 flex-1 flex-col bg-bgNeutral">
+          <Header />
+          {children}
+        </div>
       </div>
     </div>
   )
