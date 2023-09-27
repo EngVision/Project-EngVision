@@ -38,6 +38,11 @@ const accountApi = {
       throw error
     }
   },
+
+  updateWhenSignUp: async (data: any) => {
+    const res = await axiosClient.post(PREFIX, data)
+    return res
+  },
 }
 
 export default accountApi

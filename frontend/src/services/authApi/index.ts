@@ -21,6 +21,10 @@ const authApi = {
     const res = await axiosClient.post(`${PREFIX}register`, data)
     return res
   },
+  logout: async () => {
+    const res = await axiosClient.post(`${PREFIX}logout`)
+    return res
+  },
 }
 
 export default authApi
