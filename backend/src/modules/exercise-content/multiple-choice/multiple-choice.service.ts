@@ -22,6 +22,9 @@ export class MultipleChoiceService extends ExerciseContentService {
       CreateMultipleChoiceDto,
     );
 
+    this.setDefaultExplain(validatedContent);
+    this.setMultipleAnswerValue(validatedContent);
+
     const questionList = await this.multipleChoiceModel.insertMany(
       validatedContent,
     );
@@ -44,5 +47,26 @@ export class MultipleChoiceService extends ExerciseContentService {
     const isCorrect = answer.join() === detail.join();
 
     return { question: id, isCorrect, answer, correctAnswer: detail, explain };
+  }
+
+  setDefaultExplain(questionList: MultipleChoice[]) {
+    questionList.forEach(q => {
+      if (!q.correctAnswer.explain) {
+        const correctAnswerString = q.question.answers
+          .filter(answer => q.correctAnswer.detail.includes(answer.id))
+          .map(correctAnswer => correctAnswer.text)
+          .join(', ');
+
+        q.correctAnswer.explain = `Correct answer: ${correctAnswerString}`;
+      }
+    });
+  }
+
+  setMultipleAnswerValue(questionList: MultipleChoice[]) {
+    questionList.forEach(q => {
+      if (q.correctAnswer.detail.length > 1) {
+        q.question.multipleCorrectAnswers = true;
+      }
+    });
   }
 }

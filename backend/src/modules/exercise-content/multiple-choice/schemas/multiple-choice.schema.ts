@@ -21,6 +21,9 @@ const AnswerSchema = SchemaFactory.createForClass(Answer);
 
 @Schema({ _id: false, versionKey: false })
 class Question {
+  @Prop({ default: null })
+  title: string;
+
   @Prop({ required: true })
   text: string;
 
@@ -29,6 +32,9 @@ class Question {
 
   @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name, default: null })
   audio?: string;
+
+  @Prop({ default: false })
+  multipleCorrectAnswers: boolean;
 
   @Prop([{ type: AnswerSchema }])
   answers: Answer[];

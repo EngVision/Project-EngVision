@@ -48,7 +48,7 @@ export class ExercisesController {
       .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
   }
 
-  @Post(':exerciseId/check-answer/:questionId')
+  @Post(':exerciseId/submit-answer/:questionId')
   @UseGuards(AtGuard)
   async checkAnswer(
     @CurrentUser() user: JwtPayload,
