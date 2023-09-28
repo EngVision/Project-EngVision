@@ -1,9 +1,50 @@
-import { Button, Form, Input, Space, Divider } from 'antd'
+import { Button, Form, Input, Space, Divider, Select } from 'antd'
 import accountApi from '../../services/accountApi'
 import { ProfileParams } from '../../services/accountApi/types'
+import { useEffect, useState } from 'react'
+import authApi from '../../services/authApi'
+import { Link } from 'react-router-dom'
+import { ROUTES } from '../../utils/constants'
+import { S } from 'msw/lib/glossary-de6278a9'
 
 export const UpdateProfile = () => {
   const { TextArea } = Input
+  const [account, setAccount] = useState<ProfileParams | null>(null)
+
+  useEffect(() => {
+    const fetchAccount = async () => {
+      try {
+        const auth = await authApi.fetchAuthUser()
+        const in4Account = auth.data.data
+        setAccount(in4Account)
+      } catch (error) {
+        console.error('Error fetching courses:', error)
+      }
+    }
+
+    fetchAccount()
+  }, [])
+
+  const gender = [
+    { value: 'Male', label: 'Male' },
+    { value: 'Female', label: 'Female' },
+    { value: 'Other', label: 'Other' },
+  ]
+
+  const role = [
+    {
+      value: 'Student',
+      label: 'Student',
+    },
+    {
+      value: 'Teacher',
+      label: 'Teacher',
+    },
+    {
+      value: 'Admin',
+      label: 'Admin',
+    },
+  ]
 
   const onFinish = async (values: ProfileParams) => {
     console.log('Success:', values)
@@ -12,6 +53,7 @@ export const UpdateProfile = () => {
     } catch (error) {
       throw error
     }
+    window.location.reload()
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -24,70 +66,103 @@ export const UpdateProfile = () => {
         <p className="font-bold text-lg">Personal information</p>
         <Divider />
       </div>
+      {account && (
+        <Form
+          name="validateOnly"
+          layout="vertical"
+          autoComplete="off"
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+        >
+          <div className="m-6">
+            <p className="font-medium text-xl my-6">Profile</p>
 
-      <Form
-        name="validateOnly"
-        layout="vertical"
-        autoComplete="off"
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
-        <div className="m-6">
-          <p className="font-medium text-xl my-6">Profile</p>
+            <Space className="flex justify-between">
+              <Form.Item<ProfileParams> name="firstName" label="First Name">
+                <Input
+                  defaultValue={account.firstName}
+                  className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md"
+                />
+              </Form.Item>
+              <Form.Item<ProfileParams> name="lastName" label="Last Name">
+                <Input
+                  defaultValue={account.lastName}
+                  className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md"
+                />
+              </Form.Item>
+            </Space>
+            <Form.Item<ProfileParams> name="email" label="Email">
+              <Input
+                defaultValue={account.email}
+                className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md"
+              />
+            </Form.Item>
+            <Form.Item<ProfileParams> name="about" label="About">
+              <TextArea
+                defaultValue={account.about}
+                style={{ height: 80, resize: 'none' }}
+                className="border-slate-300 hover:border-slate-40 rounded-md"
+              />
+            </Form.Item>
+          </div>
 
-          <Space className="flex justify-between">
-            <Form.Item<ProfileParams> name="firstName" label="First Name">
-              <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
-            </Form.Item>
-            <Form.Item<ProfileParams> name="lastName" label="Last Name">
-              <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
-            </Form.Item>
-          </Space>
-          <Form.Item<ProfileParams> name="email" label="Email">
-            <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
-          </Form.Item>
-          <Form.Item<ProfileParams> name="about" label="About">
-            <TextArea
-              style={{ height: 80, resize: 'none' }}
-              className="border-slate-300 hover:border-slate-40 rounded-md"
-            />
-          </Form.Item>
-        </div>
+          <div className="m-6">
+            <p className="font-medium text-xl mt-12 mb-6">
+              Personal Information
+            </p>
+            <Space className="flex justify-between">
+              <Form.Item<ProfileParams>
+                name="gender"
+                label="Gender"
+                className="w-[18rem]"
+              >
+                <Select
+                  defaultValue={account.gender}
+                  options={gender}
+                  size="large"
+                />
+              </Form.Item>
+              <Form.Item name="role" label="Role" className="w-[18rem]">
+                <Select
+                  defaultValue={account.role}
+                  options={role}
+                  size="large"
+                />
+              </Form.Item>
+            </Space>
+            <Space className="flex justify-between">
+              <Form.Item<ProfileParams> name="country" label="Country">
+                <Input
+                  defaultValue={account.country}
+                  className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md"
+                />
+              </Form.Item>
+              <Form.Item<ProfileParams> name="phone" label="Phone Number">
+                <Input
+                  defaultValue={account.phone}
+                  className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md"
+                />
+              </Form.Item>
+            </Space>
+          </div>
 
-        <div className="m-6">
-          <p className="font-medium text-xl mt-12 mb-6">Personal Information</p>
-          <Space className="flex justify-between">
-            <Form.Item<ProfileParams> name="gender" label="Gender">
-              <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
-            </Form.Item>
-            <Form.Item<ProfileParams> name="phone" label="Phone Number">
-              <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
-            </Form.Item>
-          </Space>
-          <Space className="flex justify-between">
-            <Form.Item<ProfileParams> name="country" label="Country">
-              <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
-            </Form.Item>
-            <Form.Item name="preferLanguage" label="Prefer Language">
-              <Input className="w-[18rem] border-slate-300 hover:border-slate-40 rounded-md" />
-            </Form.Item>
-          </Space>
-        </div>
-
-        <div className="m-6">
-          <Divider className="mt-12 mb-6" />
-          <Space className="flex justify-end">
-            <Button className="h-10 w-20">Cancel</Button>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="h-10 w-20 bg-[#2563EB]"
-            >
-              Save
-            </Button>
-          </Space>
-        </div>
-      </Form>
+          <div className="m-6">
+            <Divider className="mt-12 mb-6" />
+            <Space className="flex justify-end">
+              <Link to={ROUTES.home}>
+                <Button className="h-10 w-20">Cancel</Button>
+              </Link>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="h-10 w-20 bg-[#2563EB]"
+              >
+                Save
+              </Button>
+            </Space>
+          </div>
+        </Form>
+      )}
     </div>
   )
 }
