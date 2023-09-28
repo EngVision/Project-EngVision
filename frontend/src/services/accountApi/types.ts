@@ -1,24 +1,25 @@
 export interface Email {
-  email: string,
+  email: string
 }
 
 export interface ResetPasswordCode {
-  resetPasswordCode: string,
+  resetPasswordCode: string
 }
 
 export interface ResetForgottenPassword {
-  resetPasswordCode: string,
-  newPassword: string,
+  resetPasswordCode: string
+  newPassword: string
 }
 
 export interface ProfileParams {
   firstName: string
   lastName: string
   email: string
-  //avatar:
+  avatar: string
+  certificates: string
   about: string
   gender: string
   phone: string
-  country: boolean
-  //role
+  country: string
+  role: string
 }
