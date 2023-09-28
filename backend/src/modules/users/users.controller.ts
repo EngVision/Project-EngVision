@@ -82,7 +82,7 @@ export class UsersController {
 
   /* Forgot password */
   @Post('forgot-password')
-  @Throttle({ default: { limit: 1, ttl: 60000 } })
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   @ApiResponseData(Object)
   async forgotPassword(@Body() body: EmailDto, @Res() res: Response) {
     const result = await this.usersService.sendMailResetPassword(body.email);

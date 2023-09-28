@@ -16,16 +16,13 @@ const accountApi = {
   },
   validateUrlResetPassword: async (data: ResetPasswordCode) => {
     const res = await axiosClient.post(
-      `${PREFIX}validate-reset-password-url`,
+      `${PREFIX}validate-reset-password-code`,
       data,
     )
     return res
   },
   resetForgotPassword: async (data: ResetForgottenPassword) => {
-    const res = await axiosClient.post(
-      `${PREFIX}reset-forgotten-password`,
-      data,
-    )
+    const res = await axiosClient.post(`${PREFIX}reset-password`, data)
     return res
   },
 
