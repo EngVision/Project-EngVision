@@ -20,7 +20,7 @@ const ACCOUNT_ITEMS = [
 const Account = () => {
   return (
     <div>
-      <div className="flex flex-col mt-4">
+      <div className="flex flex-col my-4 gap-2">
         {ACCOUNT_ITEMS.map((item) => (
           <MenuItem key={item.path} item={item} />
         ))}
