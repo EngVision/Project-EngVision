@@ -1,68 +1,39 @@
 import { Button, Form, Input } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Email } from '../../services/accountApi/types'
 import accountApi from '../../services/accountApi'
+import { toast } from 'react-toastify'
+import { ROUTES } from '../../utils/constants'
 
 const SendMailResetPassword: React.FC = () => {
-  const [error, setError] = useState<string>('');
-  const [sentMail, setSentMail] = useState<boolean>(false);
-  const [seconds, setSeconds] = useState(30);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if(localStorage.getItem('timeForgotPassword')) {
-      setSentMail(true);
-      setSeconds(Number(localStorage.getItem('timeForgotPassword')));
-    }
-  }, [])
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if(sentMail) {
-      const interval = setInterval(() => {
-        const prevSeconds = Number(localStorage.getItem('timeForgotPassword'));
-        localStorage.setItem('timeForgotPassword', String(prevSeconds - 1));
-        if(prevSeconds < 1) {
-          localStorage.removeItem('timeForgotPassword');
-          clearInterval(interval);
-          setSentMail(false);
-        }
-        else setSeconds(prevSeconds - 1);
-      }, 1000);
-    }
-
-    return () => clearInterval(interval);
-  }, [sentMail]);
+  const [error, setError] = useState<string>('')
+  const [sentMail, setSentMail] = useState<boolean>(false)
+  const navigate = useNavigate()
 
   const validateEmail = (email: string) => {
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    return emailRegex.test(email);
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+    return emailRegex.test(email)
   }
 
   const onFinish = async (values: Email) => {
-    setSentMail(true);
-    localStorage.setItem('timeForgotPassword', '30');
-    setSeconds(30);
+    setSentMail(true)
     try {
-      const rs = await accountApi.sendMailForgotPassword(values);
-      if(rs.status === 200) {
-        alert(rs.data.message);
-      }
+      const rs = await accountApi.sendMailForgotPassword(values)
+      if (rs.data.success) {
+        toast.success(rs.data.message)
+      } else toast.error('Send mail failed')
     } catch (error) {
-      setSentMail(false);
-      setError(error.response.data.message);
+      setSentMail(false)
+      setError(error.response.data.message)
     }
   }
 
   return (
     <div className="w-[515px] bg-white px-[32px] py-[24px] rounded-[16px] w">
       <div>
-        <h4 className="text-center text-[40px] mb-[32px]">
-          Forgot Your Password?
-        </h4>
-        <p className=" text-[#9D9DAD] my-[20px] text-[22px]">
+        <h4 className="text-center text-[40px]">Forgot Your Password?</h4>
+        <p className=" text-[#9D9DAD] my-[20px] text-lg">
           Just enter your email and we’ll send you a link to reset your password
         </p>
       </div>
@@ -78,16 +49,17 @@ const SendMailResetPassword: React.FC = () => {
           <Form.Item
             name="email"
             className="mb-[0px]"
-            rules={[{ 
-              validator(rule, value) {
-                return new Promise((resolve, reject) => {
-                  if(validateEmail(value)) {
-                    resolve('');
-                  }
-                  else reject('Invalid email')
-                })
-              }
-            }]}
+            rules={[
+              {
+                async validator(_, value) {
+                  return new Promise((resolve, reject) => {
+                    if (validateEmail(value)) {
+                      resolve('')
+                    } else reject(new Error('Invalid email'))
+                  })
+                },
+              },
+            ]}
           >
             <Input
               placeholder="Email"
@@ -105,23 +77,28 @@ const SendMailResetPassword: React.FC = () => {
               shape="round"
               htmlType="submit"
               disabled={sentMail}
-              className="w-full font-semibold h-[44px] text-[22px] mt-[20px]"
+              className="w-full font-semibold h-[44px] text-xl mt-[20px]"
             >
-              Reset Password {sentMail && '(' + seconds + 's)'}
+              Reset Password
             </Button>
           </Form.Item>
 
-          <p className="text-[#0073EA] text-[22px] font-semibold text-center cursor-pointer my-[28px]" onClick={() => navigate('/sign-in')}>
+          <p
+            className="text-[#0073EA] text-xl font-semibold text-center cursor-pointer my-[28px]"
+            onClick={() => navigate(ROUTES.signIn)}
+            role="presentation"
+          >
             Return to Sign In?
           </p>
 
-          {sentMail && <p className="text-center text-[#9D9DAD] text-[22px] mb-[30px]">
+          {sentMail && (
+            <p className="text-center text-[#9D9DAD] text-xl mb-[30px]">
               Didn’t receive any email? Try looking up in your Spams or try
               again after
-            <span className="font-semibold text-[#1B1B2A]"> {seconds} seconds</span>
-          </p>}
+            </p>
+          )}
 
-          <p className="text-center text-[#9D9DAD] text-[22px]">
+          <p className="text-center text-[#9D9DAD] text-xl">
             Having troubles?
             <Link to="/sign-up" className="font-semibold text-[#0073EA] pl-2">
               Contact Us

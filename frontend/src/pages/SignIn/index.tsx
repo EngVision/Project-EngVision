@@ -156,7 +156,7 @@ const SignIn: React.FC = () => {
 
           <p
             className="text-[#0073EA] font-semibold text-right cursor-pointer my-[28px]"
-            onClick={() => navigate('/forgot-password')}
+            onClick={() => navigate(ROUTES.sendMailResetPassword)}
             role="presentation"
           >
             Forgot password?

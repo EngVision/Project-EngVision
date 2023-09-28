@@ -39,7 +39,7 @@ import {
   CourseSectionIdDto,
   UpdateSectionDto,
   CourseSectionLessonIdDto,
- } from './dto';
+} from './dto';
 
 @ApiTags('Courses')
 @Controller('courses')
@@ -312,10 +312,7 @@ export class CoursesController {
     @Param() params: courseIdDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    await this.coursesService.attendCourse(
-      params.id,
-      user.sub,
-    );
+    await this.coursesService.attendCourse(params.id, user.sub);
 
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
