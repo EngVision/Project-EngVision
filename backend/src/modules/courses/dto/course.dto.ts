@@ -47,6 +47,9 @@ export class CourseDto {
   })
   attendance?: number;
 
+  @ApiPropertyOptional({ type: Number, description: 'Total lessons' })
+  totalLessons?: number;
+
   @Exclude()
   sections?: mongoose.Types.ObjectId[];
 
