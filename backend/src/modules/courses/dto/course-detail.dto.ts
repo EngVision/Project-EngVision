@@ -1,28 +1,29 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Level } from '../enums';
-import { Expose, Transform } from 'class-transformer';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import { UserBriefDto } from 'src/modules/users/dto/user-brief.dto';
 import mongoose from 'mongoose';
-import { ReviewDto } from 'src/modules/reviews/dto/review.dto';
-import { Section } from '../schemas/section.schema';
+import { ReviewDetailDto } from 'src/modules/reviews/dto/review-detail.dto';
+import { SectionDto } from './section.dto';
 
 export class CourseDetailDto {
   @Expose({ name: '_id' })
   @Transform(value => value.obj._id.toString())
-  @ApiProperty({ type: String, description: 'course id' })
+  @ApiProperty({ type: String, description: 'user id' })
   id?: string;
 
-  @ApiProperty({ type: String, description: 'title' })
+  @ApiProperty({ type: String, description: 'Title' })
   title: string;
 
-  @ApiProperty({ type: UserBriefDto, description: 'teacher id' })
+  @Type(() => UserBriefDto)
+  @ApiProperty({ type: UserBriefDto, description: 'Teacher' })
   teacher: UserBriefDto;
 
-  @ApiProperty({ type: String, description: 'about' })
+  @ApiProperty({ type: String, description: 'About' })
   about: string;
 
-  @ApiPropertyOptional({ type: String, description: 'video url' })
-  introVideo?: string;
+  @ApiPropertyOptional({ type: String, description: 'Video url' })
+  introVideo?: number;
 
   @Transform(value => value.obj.thumbnail.toString())
   @ApiPropertyOptional({
@@ -34,17 +35,27 @@ export class CourseDetailDto {
   @ApiPropertyOptional({ type: Number, description: 'price' })
   price?: number;
 
-  @ApiPropertyOptional({ type: String, description: 'level (A1/A2 ...)' })
+  @ApiPropertyOptional({ type: String, description: 'Level (A1/A2 ...)' })
   level?: Level;
 
-  @ApiPropertyOptional({ type: [Section], description: 'sections' })
-  sections: Section[];
+  @Expose({ name: 'attendanceList' })
+  @Transform(value => value.obj?.attendanceList?.length)
+  @ApiPropertyOptional({
+    type: Number,
+    description: 'Count attendance',
+  })
+  attendance?: number;
 
-  @ApiPropertyOptional({ type: [String], description: 'posts' })
-  posts: string[];
+  @Type(() => ReviewDetailDto)
+  @ApiProperty({ type: [ReviewDetailDto], description: 'Reviews' })
+  reviews?: ReviewDetailDto[];
 
-  @ApiPropertyOptional({ type: [ReviewDto], description: 'reviews' })
-  reviews: ReviewDto[];
+  @Type(() => SectionDto)
+  @ApiProperty({ type: [SectionDto], description: 'sections' })
+  sections?: SectionDto[];
+
+  @Exclude()
+  posts?: mongoose.Types.ObjectId[];
 
   @ApiPropertyOptional({ type: Number, description: 'Average star' })
   avgStar?: number;

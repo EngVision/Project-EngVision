@@ -23,4 +23,14 @@ export class ReviewsService {
     });
     return deletedReview;
   }
+
+  averageStar(reviews: ReviewDto[]) {
+    let sumStar = 0;
+
+    reviews.forEach(review => {
+      sumStar += review.star;
+    });
+
+    return sumStar ? Number((sumStar / reviews.length).toFixed(1)) : null;
+  }
 }

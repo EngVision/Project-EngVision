@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Level } from '../enums';
-import { Exclude, Expose, Transform } from 'class-transformer';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import mongoose from 'mongoose';
 import { UserBriefDto } from 'src/modules/users/dto/user-brief.dto';
 
@@ -13,6 +13,7 @@ export class CourseDto {
   @ApiProperty({ type: String, description: 'Title' })
   title: string;
 
+  @Type(() => UserBriefDto)
   @ApiProperty({ type: UserBriefDto, description: 'Teacher' })
   teacher: UserBriefDto;
 
