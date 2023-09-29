@@ -23,7 +23,7 @@ export class MultipleChoiceService extends ExerciseContentService {
     );
 
     this.setDefaultExplain(validatedContent);
-    this.setMultipleAnswerValue(validatedContent);
+    this.setIsMultipleCorrectAnswer(validatedContent);
 
     const questionList = await this.multipleChoiceModel.insertMany(
       validatedContent,
@@ -62,7 +62,7 @@ export class MultipleChoiceService extends ExerciseContentService {
     });
   }
 
-  setMultipleAnswerValue(questionList: MultipleChoice[]) {
+  setIsMultipleCorrectAnswer(questionList: MultipleChoice[]) {
     questionList.forEach(q => {
       if (q.correctAnswer.detail.length > 1) {
         q.question.multipleCorrectAnswers = true;

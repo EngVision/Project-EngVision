@@ -27,6 +27,8 @@ export class FillBlankService extends ExerciseContentService {
       throw new BadRequestException(`question.text should contain one '[[]]'`);
     }
 
+    this.setDefaultExplain(validatedContent);
+
     const questionList = await this.fillBlankModel.insertMany(validatedContent);
 
     return questionList.map(q => q.id);
@@ -58,5 +60,12 @@ export class FillBlankService extends ExerciseContentService {
 
       return false; // return false if question text does not contain '[[]]' or more than one
     });
+  }
+
+  setDefaultExplain(questionList: FillBlank[]): void {
+    questionList.forEach(
+      q =>
+        (q.correctAnswer.explain = `Correct answer: ${q.correctAnswer.detail}`),
+    );
   }
 }
