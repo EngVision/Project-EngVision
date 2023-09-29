@@ -31,7 +31,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
-  ) {}
+  ) { }
 
   /** Login, register with email and password **/
   @Post('login')
@@ -100,9 +100,9 @@ export class AuthController {
 
     this.authService.attachTokensCookie(res, tokens);
 
-    if (!user.password) {
-      return res.redirect(`${process.env.CLIENT_URL}/create-profile`);
-    }
+    // if (!user.password) {
+    //   return res.redirect(`${process.env.CLIENT_URL}/create-profile`);
+    // }
 
     return res.redirect(`${process.env.CLIENT_URL}/sso-success`);
   }

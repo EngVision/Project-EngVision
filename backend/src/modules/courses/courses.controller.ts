@@ -39,7 +39,7 @@ import {
   CourseSectionIdDto,
   UpdateSectionDto,
   CourseSectionLessonIdDto,
- } from './dto';
+} from './dto';
 
 @ApiTags('Courses')
 @Controller('courses')
@@ -181,6 +181,7 @@ export class CoursesController {
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
         data: newCourse,
+        dataType: CourseDetailDto,
         message: 'Add section successful',
       }),
     );
@@ -205,6 +206,7 @@ export class CoursesController {
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
         data: newCourse,
+        dataType: CourseDetailDto,
         message: 'Update section successful',
       }),
     );
@@ -227,6 +229,7 @@ export class CoursesController {
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
         data: newCourse,
+        dataType: CourseDetailDto,
         message: 'Remove section successful',
       }),
     );
@@ -251,6 +254,7 @@ export class CoursesController {
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
         data: newCourse,
+        dataType: CourseDetailDto,
         message: 'Add lesson successful',
       }),
     );
@@ -276,6 +280,7 @@ export class CoursesController {
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
         data: newCourse,
+        dataType: CourseDetailDto,
         message: 'Update lesson successful',
       }),
     );
@@ -299,6 +304,7 @@ export class CoursesController {
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
         data: newCourse,
+        dataType: CourseDetailDto,
         message: 'Remove lesson successful',
       }),
     );
@@ -312,10 +318,7 @@ export class CoursesController {
     @Param() params: courseIdDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    await this.coursesService.attendCourse(
-      params.id,
-      user.sub,
-    );
+    await this.coursesService.attendCourse(params.id, user.sub);
 
     return res.status(HttpStatus.CREATED).send(
       GetResponse({

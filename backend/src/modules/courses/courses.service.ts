@@ -13,15 +13,16 @@ import { ReviewsService } from '../reviews/reviews.service';
 import { UserBriefDto } from '../users/dto/user-brief.dto';
 import { Course, CourseDocument } from './schemas/course.schema';
 import {
- UpdateLessonDto,
- CourseDto,
- CreateCourseDto,
- CreateLessonDto,
- CreateSectionDto,
- SearchCourseDto,
- UpdateCourseDto,
- SectionDto,
- LessonDto,
+  UpdateLessonDto,
+  CourseDto,
+  CreateCourseDto,
+  CreateLessonDto,
+  CreateSectionDto,
+  SearchCourseDto,
+  UpdateCourseDto,
+  SectionDto,
+  LessonDto,
+  CourseDetailDto,
 } from './dto';
 
 @Injectable()
@@ -125,7 +126,6 @@ export class CoursesService {
     const courses = result[0].courses.map(course => {
       return {
         ...plainToInstance(CourseDto, course),
-        teacher: plainToInstance(UserBriefDto, course.teacher),
         avgStar: course.reviews[0]
           ? course.reviews[0].avgStar.toFixed(1)
           : null,
@@ -145,32 +145,10 @@ export class CoursesService {
         populate: { path: 'user' },
       })) as any;
 
-    let sumStar = 0;
-    course.reviews.forEach(review => {
-      sumStar += review.star;
-    });
-
     const courseMap = {
-      ...plainToInstance(CourseDto, course.toObject()),
-      avgStar: Number((sumStar / course.reviews.length).toFixed(1)),
-      teacher: plainToInstance(UserBriefDto, course.teacher.toObject()),
-      reviews: course.reviews.map(review => {
-        return {
-          ...plainToInstance(ReviewDto, review.toObject()),
-          user: plainToInstance(UserBriefDto, review.user.toObject()),
-        };
-      }),
-      sections: course.sections.map(section => {
-        return {
-          ...plainToInstance(SectionDto, section.toObject()),
-          lessons: section.lessons.map(
-            lesson => plainToInstance(LessonDto, lesson.toObject())
-          )
-        };
-      }),
+      ...plainToInstance(CourseDetailDto, course.toObject()),
+      avgStar: this.reviewsService.averageStar(course.reviews),
     };
-
-    if (Number.isNaN(courseMap.avgStar)) delete courseMap['avgStar'];
 
     return courseMap;
   }
@@ -240,14 +218,14 @@ export class CoursesService {
         _id: courseId,
         teacher: teacherId,
       },
-      { "$push": { "sections": section } },
+      { $push: { sections: section } },
       { new: true },
     );
-    
+
     if (!course)
       throw new BadRequestException('Course ID not found or access denied');
 
-    return this.courseSectionLessonMap(course);
+    return course;
   }
 
   async updateSection(
@@ -262,35 +240,35 @@ export class CoursesService {
         teacher: teacherId,
         'sections._id': sectionId,
       },
-      { "$set": { "sections.$": updateSection } },
+      { $set: { 'sections.$': updateSection } },
       { new: true },
     );
-    
-    if (!course)
-      throw new BadRequestException('Course ID or section ID is either missing or access denied');
 
-    return this.courseSectionLessonMap(course);
+    if (!course)
+      throw new BadRequestException(
+        'Course ID or section ID is either missing or access denied',
+      );
+
+    return course;
   }
 
-  async removeSection(
-    courseId: string,
-    sectionId: string,
-    teacherId: string,
-  ) {
+  async removeSection(courseId: string, sectionId: string, teacherId: string) {
     const course = await this.courseModel.findOneAndUpdate(
       {
         _id: courseId,
         teacher: teacherId,
         'sections._id': sectionId,
       },
-      { "$pull": { "sections": { _id: sectionId } } },
+      { $pull: { sections: { _id: sectionId } } },
       { new: true },
     );
-    
-    if (!course)
-      throw new BadRequestException('Course ID or section ID is either missing or access denied');
 
-    return this.courseSectionLessonMap(course);
+    if (!course)
+      throw new BadRequestException(
+        'Course ID or section ID is either missing or access denied',
+      );
+
+    return course;
   }
 
   async createLesson(
@@ -305,14 +283,16 @@ export class CoursesService {
         teacher: teacherId,
         'sections._id': sectionId,
       },
-      { "$push": { "sections.$.lessons": lesson } },
+      { $push: { 'sections.$.lessons': lesson } },
       { new: true },
     );
-    
-    if (!course)
-      throw new BadRequestException('Course ID or section ID is either missing or access denied');
 
-    return this.courseSectionLessonMap(course);
+    if (!course)
+      throw new BadRequestException(
+        'Course ID or section ID is either missing or access denied',
+      );
+
+    return course;
   }
 
   async updateLesson(
@@ -329,14 +309,16 @@ export class CoursesService {
         'sections._id': sectionId,
         'sections.lessons._id': lessonId,
       },
-      { "$set": { "sections.$.lessons.$[index]": updateLesson } },
-      { arrayFilters: [ { 'index._id': lessonId } ], new: true },
+      { $set: { 'sections.$.lessons.$[index]': updateLesson } },
+      { arrayFilters: [{ 'index._id': lessonId }], new: true },
     );
-    
-    if (!course)
-      throw new BadRequestException('Course ID, section ID or lessonID is either missing or access denied');
 
-    return this.courseSectionLessonMap(course);
+    if (!course)
+      throw new BadRequestException(
+        'Course ID, section ID or lessonID is either missing or access denied',
+      );
+
+    return course;
   }
 
   async removeLesson(
@@ -352,20 +334,19 @@ export class CoursesService {
         'sections._id': sectionId,
         'sections.lessons._id': lessonId,
       },
-      { "$pull": { "sections.$.lessons": { _id: lessonId } } },
+      { $pull: { 'sections.$.lessons': { _id: lessonId } } },
       { new: true },
     );
-    
-    if (!course)
-      throw new BadRequestException('Course ID, section ID or lessonID is either missing or access denied');
 
-    return this.courseSectionLessonMap(course);
+    if (!course)
+      throw new BadRequestException(
+        'Course ID, section ID or lessonID is either missing or access denied',
+      );
+
+    return course;
   }
 
-  async attendCourse(
-    courseId: string,
-    studentId: string,
-  ) {
+  async attendCourse(courseId: string, studentId: string) {
     const course = await this.courseModel.findById(courseId);
 
     if (!course) throw new BadRequestException('Course not found');
@@ -378,36 +359,19 @@ export class CoursesService {
     return true;
   }
 
-  async getAttendanceList(
-    courseId: string,
-    teacherId: string,
-  ) {
-    const course = await this.courseModel
+  async getAttendanceList(courseId: string, teacherId: string) {
+    const course = (await this.courseModel
       .findOne({ _id: courseId })
-      .populate('attendanceList') as any;
+      .populate('attendanceList')) as any;
 
     if (!course) throw new BadRequestException('Course not found');
     if (String(course.teacher) !== teacherId)
       throw new ForbiddenException('Access denied');
 
-    const attendanceList = course.attendanceList.map(
-      student => plainToInstance(UserBriefDto, student.toObject())
+    const attendanceList = course.attendanceList.map(student =>
+      plainToInstance(UserBriefDto, student.toObject()),
     );
 
     return attendanceList;
-  }
-
-  courseSectionLessonMap(course: CourseDocument) {
-    return {
-      ...plainToInstance(CourseDto, course.toObject()),
-      sections: course.sections.map(section => {
-        return {
-          ...plainToInstance(SectionDto, section.toObject()),
-          lessons: section.lessons.map(
-            lesson => plainToInstance(LessonDto, lesson.toObject())
-          )
-        };
-      }),
-    };
   }
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { LessonDto } from './lesson.dto';
 
 export class SectionDto {
@@ -11,6 +11,7 @@ export class SectionDto {
   @ApiProperty({ type: String, description: 'Title' })
   title: string;
 
+  @Type(() => LessonDto)
   @ApiProperty({ type: [LessonDto], description: 'Lessons' })
   lessons: LessonDto[];
 }
