@@ -2,6 +2,7 @@ import AuthLayout from '../layouts/AuthLayout'
 import CourseDetailsPage from '../pages/CourseDetails'
 import { CourseList } from '../pages/CourseList'
 import CreateProfile from '../pages/CreateProfile'
+import Exercise from '../pages/Exercise'
 import HelpCenter from '../pages/HelpCenter'
 import Home from '../pages/Home'
 import MakeSentences from '../pages/Lesson/MakeSentences'
@@ -67,6 +68,11 @@ const publicRoutes: RouteElement[] = [
     path: ROUTES.courses,
   },
   {
+    element: Exercise,
+    layout: null,
+    path: ROUTES.exercise,
+  },
+  {
     element: TeacherCourses,
     path: ROUTES.coursesTeacher,
   },
@@ -95,4 +101,4 @@ const privateRoutes: RouteElement[] = [
   },
 ]
 
-export { publicRoutes, privateRoutes }
+export { privateRoutes, publicRoutes }
