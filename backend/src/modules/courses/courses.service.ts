@@ -20,8 +20,6 @@ import {
   CreateSectionDto,
   SearchCourseDto,
   UpdateCourseDto,
-  SectionDto,
-  LessonDto,
   CourseDetailDto,
 } from './dto';
 
@@ -124,11 +122,17 @@ export class CoursesService {
     ]);
 
     const courses = result[0].courses.map(course => {
+      let totalLessons = 0;
+      course.sections.forEach(section => {
+        totalLessons += section.lessons.length;
+      });
+
       return {
         ...plainToInstance(CourseDto, course),
         avgStar: course.reviews[0]
           ? course.reviews[0].avgStar.toFixed(1)
           : null,
+        totalLessons: totalLessons,
       };
     });
 
