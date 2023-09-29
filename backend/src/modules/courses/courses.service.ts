@@ -374,18 +374,4 @@ export class CoursesService {
 
     return attendanceList;
   }
-
-  courseSectionLessonMap(course: CourseDocument) {
-    return {
-      ...plainToInstance(CourseDto, course.toObject()),
-      sections: course.sections.map(section => {
-        return {
-          ...plainToInstance(SectionDto, section.toObject()),
-          lessons: section.lessons.map(lesson =>
-            plainToInstance(LessonDto, lesson.toObject()),
-          ),
-        };
-      }),
-    };
-  }
 }
