@@ -22,6 +22,7 @@ import {
   UpdateCourseDto,
   SectionDto,
   LessonDto,
+  CourseDetailDto,
 } from './dto';
 
 @Injectable()
@@ -125,7 +126,6 @@ export class CoursesService {
     const courses = result[0].courses.map(course => {
       return {
         ...plainToInstance(CourseDto, course),
-        teacher: plainToInstance(UserBriefDto, course.teacher),
         avgStar: course.reviews[0]
           ? course.reviews[0].avgStar.toFixed(1)
           : null,
@@ -145,32 +145,10 @@ export class CoursesService {
         populate: { path: 'user' },
       })) as any;
 
-    let sumStar = 0;
-    course.reviews.forEach(review => {
-      sumStar += review.star;
-    });
-
     const courseMap = {
-      ...plainToInstance(CourseDto, course.toObject()),
-      avgStar: Number((sumStar / course.reviews.length).toFixed(1)),
-      teacher: plainToInstance(UserBriefDto, course.teacher.toObject()),
-      reviews: course.reviews.map(review => {
-        return {
-          ...plainToInstance(ReviewDto, review.toObject()),
-          user: plainToInstance(UserBriefDto, review.user.toObject()),
-        };
-      }),
-      sections: course.sections.map(section => {
-        return {
-          ...plainToInstance(SectionDto, section.toObject()),
-          lessons: section.lessons.map(lesson =>
-            plainToInstance(LessonDto, lesson.toObject()),
-          ),
-        };
-      }),
+      ...plainToInstance(CourseDetailDto, course.toObject()),
+      avgStar: this.reviewsService.averageStar(course.reviews),
     };
-
-    if (Number.isNaN(courseMap.avgStar)) delete courseMap['avgStar'];
 
     return courseMap;
   }
@@ -247,7 +225,7 @@ export class CoursesService {
     if (!course)
       throw new BadRequestException('Course ID not found or access denied');
 
-    return this.courseSectionLessonMap(course);
+    return course;
   }
 
   async updateSection(
@@ -271,7 +249,7 @@ export class CoursesService {
         'Course ID or section ID is either missing or access denied',
       );
 
-    return this.courseSectionLessonMap(course);
+    return course;
   }
 
   async removeSection(courseId: string, sectionId: string, teacherId: string) {
@@ -290,7 +268,7 @@ export class CoursesService {
         'Course ID or section ID is either missing or access denied',
       );
 
-    return this.courseSectionLessonMap(course);
+    return course;
   }
 
   async createLesson(
@@ -314,7 +292,7 @@ export class CoursesService {
         'Course ID or section ID is either missing or access denied',
       );
 
-    return this.courseSectionLessonMap(course);
+    return course;
   }
 
   async updateLesson(
@@ -340,7 +318,7 @@ export class CoursesService {
         'Course ID, section ID or lessonID is either missing or access denied',
       );
 
-    return this.courseSectionLessonMap(course);
+    return course;
   }
 
   async removeLesson(
@@ -365,7 +343,7 @@ export class CoursesService {
         'Course ID, section ID or lessonID is either missing or access denied',
       );
 
-    return this.courseSectionLessonMap(course);
+    return course;
   }
 
   async attendCourse(courseId: string, studentId: string) {
