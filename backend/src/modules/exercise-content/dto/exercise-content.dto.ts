@@ -11,7 +11,7 @@ export class ExerciseQuestionDto {
   @ApiProperty({ type: Object, description: 'Correct answer' })
   correctAnswer: {
     detail: any;
-    explain: string;
+    explanation: string;
   };
 
   @IsArray()

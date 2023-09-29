@@ -87,7 +87,7 @@ class CorrectAnswerDto {
   @IsNotEmpty()
   @IsString()
   @ApiPropertyOptional({ type: String, description: 'Explain' })
-  explain: string;
+  explanation: string;
 }
 
 export class CreateMultipleChoiceDto extends ExerciseQuestionDto {

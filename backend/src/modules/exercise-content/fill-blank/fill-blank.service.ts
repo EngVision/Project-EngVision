@@ -39,7 +39,7 @@ export class FillBlankService extends ExerciseContentService {
       throw new BadRequestException('answer must be a string');
     }
 
-    const { detail, explain } = (
+    const { detail, explanation: explain } = (
       await this.fillBlankModel.findById(id).select('correctAnswer')
     ).correctAnswer;
 
@@ -65,7 +65,7 @@ export class FillBlankService extends ExerciseContentService {
   setDefaultExplain(questionList: FillBlank[]): void {
     questionList.forEach(
       q =>
-        (q.correctAnswer.explain = `Correct answer: ${q.correctAnswer.detail}`),
+        (q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail}`),
     );
   }
 }

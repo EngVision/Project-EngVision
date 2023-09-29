@@ -47,7 +47,7 @@ class CorrectAnswer {
   detail: number[];
 
   @Prop({ type: String, default: null })
-  explain: string;
+  explanation: string;
 }
 const CorrectAnswerSchema = SchemaFactory.createForClass(CorrectAnswer);
 

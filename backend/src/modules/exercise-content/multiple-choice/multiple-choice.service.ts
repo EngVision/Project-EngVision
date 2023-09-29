@@ -37,7 +37,7 @@ export class MultipleChoiceService extends ExerciseContentService {
       throw new BadRequestException('answer must be a number array');
     }
 
-    const { detail, explain } = (
+    const { detail, explanation: explain } = (
       await this.multipleChoiceModel.findById(id).select('correctAnswer')
     ).correctAnswer;
 
@@ -51,13 +51,13 @@ export class MultipleChoiceService extends ExerciseContentService {
 
   setDefaultExplain(questionList: MultipleChoice[]) {
     questionList.forEach(q => {
-      if (!q.correctAnswer.explain) {
+      if (!q.correctAnswer.explanation) {
         const correctAnswerString = q.question.answers
           .filter(answer => q.correctAnswer.detail.includes(answer.id))
           .map(correctAnswer => correctAnswer.text)
           .join(', ');
 
-        q.correctAnswer.explain = `Correct answer: ${correctAnswerString}`;
+        q.correctAnswer.explanation = `Correct answer: ${correctAnswerString}`;
       }
     });
   }
