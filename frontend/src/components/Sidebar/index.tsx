@@ -5,7 +5,7 @@ import Menu from './Menu'
 const Sidebar = () => {
   return (
     <div className="w-sidebarWidth px-[32px] flex flex-col">
-      <h2 className="text-primary font-bold text-4xl w-[300px] py-[32px]">
+      <h2 className="text-primary font-bold text-4xl w-full py-[32px]">
         EngVision
       </h2>
 
