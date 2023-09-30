@@ -1,10 +1,14 @@
 import AuthLayout from '../layouts/AuthLayout'
+import Chat from '../pages/Chat'
 import CourseDetailsPage from '../pages/CourseDetails'
 import { CourseList } from '../pages/CourseList'
 import CreateProfile from '../pages/CreateProfile'
+import Discover from '../pages/Discover'
+import Exam from '../pages/Exam'
 import HelpCenter from '../pages/HelpCenter'
 import Home from '../pages/Home'
 import MakeSentences from '../pages/Lesson/MakeSentences'
+import MyHub from '../pages/MyHub'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
 import Search from '../pages/Search'
 import SendMailResetPassword from '../pages/SendMailResetPassword'
@@ -13,6 +17,7 @@ import SignIn from '../pages/SignIn'
 import SSOSuccess from '../pages/SignIn/components/SSOSuccess'
 import SignUp from '../pages/SignUp'
 import TeacherSignUp from '../pages/SignUp/TeacherSignUp'
+import Statistic from '../pages/Statistic'
 import TeacherCourses from '../pages/Teacher/Courses'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
@@ -52,7 +57,7 @@ const publicRoutes: RouteElement[] = [
   },
   {
     element: UpdateProfile,
-    path: ROUTES.UpdateProfile,
+    path: ROUTES.updateProfile,
   },
   {
     element: SSOSuccess,
@@ -76,6 +81,26 @@ const privateRoutes: RouteElement[] = [
   {
     element: Home,
     path: ROUTES.home,
+  },
+  {
+    element: MyHub,
+    path: ROUTES.myHub,
+  },
+  {
+    element: Exam,
+    path: ROUTES.exam,
+  },
+  {
+    element: Discover,
+    path: ROUTES.discover,
+  },
+  {
+    element: Statistic,
+    path: ROUTES.statistic,
+  },
+  {
+    element: Chat,
+    path: ROUTES.chat,
   },
   {
     element: MakeSentences,

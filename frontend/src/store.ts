@@ -5,8 +5,6 @@ import { combineReducers } from 'redux'
 import { createReduxHistoryContext } from 'redux-first-history'
 
 import appReducer from './redux/app/slice'
-import counterReducer from './redux/counter/slice'
-import { docsApi } from './services/docsApi'
 
 // Setup redux-first-history
 const { createReduxHistory, routerMiddleware, routerReducer } =
@@ -14,12 +12,10 @@ const { createReduxHistory, routerMiddleware, routerReducer } =
 export const store = configureStore({
   devTools: process.env.NODE_ENV === 'development' ? true : false,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([docsApi.middleware, routerMiddleware]),
+    getDefaultMiddleware().concat([routerMiddleware]),
   reducer: combineReducers({
     app: appReducer,
-    counter: counterReducer,
     router: routerReducer,
-    [docsApi.reducerPath]: docsApi.reducer,
   }),
 })
 

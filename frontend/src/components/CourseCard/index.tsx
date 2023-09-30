@@ -1,7 +1,6 @@
-import { faClock, faStar } from '@fortawesome/free-regular-svg-icons'
-import { faClapperboard } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Avatar, Card } from 'antd'
+
+import { PlayCircleIcon, StarIcon, VideoPlayIcon } from '../Icons'
 
 export const CourseCard = (course: any) => {
   const { Meta } = Card
@@ -21,11 +20,11 @@ export const CourseCard = (course: any) => {
       </p>
       <div className="flex justify-between text-xs">
         <div className="flex items-center">
-          <FontAwesomeIcon icon={faClapperboard} className="pr-1" />
+          <VideoPlayIcon className="pr-1" />
           <p>10 Lessons</p>
         </div>
         <div className="flex items-center">
-          <FontAwesomeIcon icon={faClock} className="pr-1" />
+          <PlayCircleIcon className="pr-1" />
           <p>25 hr 3 min </p>
         </div>
       </div>
@@ -47,7 +46,7 @@ export const CourseCard = (course: any) => {
       />
       <div className="flex justify-between items-center text-xs pt-3">
         <div className="flex ">
-          <FontAwesomeIcon icon={faStar} className="text-blue-600" />
+          <StarIcon className="text-blue-600" />
           <p className="font-semibold pl-1">{course.course.avgStar}</p>
         </div>
         <div className="flex">

@@ -1,13 +1,11 @@
-import { faHeart } from '@fortawesome/free-regular-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { TabsProps } from 'antd'
 import { Avatar, Button, Collapse, Input, Rate, Tabs } from 'antd'
-import { ChangeEvent, useEffect, useState } from 'react'
+import type { ChangeEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import coursesApi from '../../services/coursesApi'
 import type { CourseDetails } from '../../services/coursesApi/types'
-import timeToNow from '../../utils/timeToNow'
 const { Panel } = Collapse
 const { TextArea } = Input
 
@@ -196,9 +194,9 @@ const CourseDetailsPage = () => {
               <p>{text}</p>
             </Panel>
           </Collapse>
-          <div className="text-4xl font-bold mt-10">{`${
-            courseDetails?.price ? courseDetails.price : 0
-          } VNĐ`}</div>
+          <div className="text-4xl font-bold mt-10">
+            {`${courseDetails?.price ? courseDetails.price : 0} VNĐ`}
+          </div>
           <div className="flex flex-row justify-between items-center align-middle mt-10">
             <Button
               type="primary"
@@ -206,16 +204,6 @@ const CourseDetailsPage = () => {
             >
               Enroll now!
             </Button>
-            <Button
-              shape="circle"
-              icon={
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  className="text-red-500"
-                  size="xl"
-                />
-              }
-            />
           </div>
         </div>
       </div>
