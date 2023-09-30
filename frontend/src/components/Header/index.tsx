@@ -1,7 +1,7 @@
-import { faBell } from '@fortawesome/free-regular-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Avatar } from 'antd'
 import React from 'react'
+
+import { NotificationIcon } from '../Icons'
 
 import Search from './Search'
 
@@ -11,8 +11,8 @@ const Header = () => {
       <div className="flex-1 flex justify-between">
         <Search />
 
-        <div className="flex items-center gap-8">
-          <FontAwesomeIcon icon={faBell} size="xl" />
+        <div className="flex items-center gap-4">
+          <NotificationIcon width={40} height={40} />
           <Avatar size="default">Kiet</Avatar>
         </div>
       </div>

@@ -1,9 +1,10 @@
 import { Anchor } from 'antd'
-import { useTranslation } from 'react-i18next'
-import { CourseCard } from '../../compoments/CourseCard'
-import coursesApi from '../../services/coursesApi'
-import { CourseParams } from '../../services/coursesApi/types'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import { CourseCard } from '../../components/CourseCard'
+import coursesApi from '../../services/coursesApi'
+import type { CourseParams } from '../../services/coursesApi/types'
 
 export const CourseList = () => {
   const { t } = useTranslation()
