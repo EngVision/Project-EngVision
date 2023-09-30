@@ -1,3 +1,4 @@
+import { Button } from 'antd'
 import React from 'react'
 
 import { useAppSelector } from '../../hooks/redux'
@@ -11,9 +12,17 @@ const Search = () => {
 
   return (
     <div>
-      <h2 className="text-primary text-[32px] font-bold mt-[40px] mb-[32px]">
-        Results found for "Grammar"
-      </h2>
+      <div className="flex justify-between">
+        <h2 className="text-primary text-[32px] font-bold mb-[32px]">
+          Results found for "Grammar"
+        </h2>
+
+        <div className="flex gap-3">
+          <Button className="border-primary text-primary">Filter</Button>
+          <Button className="border-primary text-primary">Sort</Button>
+          <Button type="primary">Apply</Button>
+        </div>
+      </div>
 
       {searchOptions.includes(SEARCH_OPTIONS.homework) && (
         <div>
