@@ -8,22 +8,33 @@ export const ROUTES = {
   home: '/',
   resetForgotPassword: '/reset-password/:resetPasswordCode',
   sendMailResetPassword: '/forgot-password',
+  
+  // Menu
+  home: '/',
+  myHub: '/my-hub',
+  exam: '/exam',
+  discover: '/discover',
+  statistic: '/statistic',
+  chat: '/chat',
   settings: '/settings',
   helpCenter: '/help-center',
+
+  // Auth
   signIn: '/sign-in',
   signUp: '/sign-up',
   signUpTeacher: '/sign-up/teacher',
   ssoSuccess: '/sso-success',
-  statistic: '/statistic',
   createProfile: '/create-profile',
+  updateProfile: '/update-profile',
+
   search: '/search',
-  myHub: '/my-hub',
-  exam: '/exam',
-  discover: '/discover',
-  chat: '/chat',
 
   // lesson
   makeSentence: '/lesson/make-sentence',
+
+  courses: '/courses',
+  courseDetails: '/courses/:courseId',
+  coursesTeacher: '/teacher/courses',
 }
 
 export const ROLES = {

@@ -1,9 +1,10 @@
 import { Anchor } from 'antd'
-import { useTranslation } from 'react-i18next'
-import { CourseCard } from '../../compoments/CourseCard'
-import coursesApi from '../../services/coursesApi'
-import { CourseParams } from '../../services/coursesApi/types'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import { CourseCard } from '../../components/CourseCard'
+import coursesApi from '../../services/coursesApi'
+import type { CourseParams } from '../../services/coursesApi/types'
 
 export const CourseList = () => {
   const { t } = useTranslation()
@@ -12,8 +13,11 @@ export const CourseList = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courses = await coursesApi.getCourses()
-        setCourseList(courses)
+        const {
+          data: { results },
+        }: any = await coursesApi.getCourses()
+        // TODO: [Huu] Error here (results is the right course list but app crash)
+        setCourseList(results)
       } catch (error) {
         console.error('Error fetching courses:', error)
       }
