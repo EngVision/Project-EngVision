@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, SchemaTypes } from 'mongoose';
 import { CEFRLevel, ExerciseTag, ExerciseType } from 'src/common/enums';
+import { User } from 'src/modules/users/schemas/user.schema';
 
 export type ExerciseDocument = Exercise & Document;
 
@@ -8,6 +9,9 @@ export type ExerciseDocument = Exercise & Document;
 export class Exercise {
   @Prop({ type: String, default: null })
   title?: string;
+
+  @Prop({ type: SchemaTypes.ObjectId, ref: User.name, required: true })
+  creator: string;
 
   @Prop({ type: String, default: null })
   description?: string;

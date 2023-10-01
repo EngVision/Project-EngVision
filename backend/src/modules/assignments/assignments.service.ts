@@ -18,7 +18,7 @@ export class AssignmentsService {
     userId: string,
     exerciseId: string,
     assignmentDto: AssignmentDto,
-  ): Promise<AssignmentDocument> {
+  ): Promise<AssignmentDto> {
     const assignment = await this.findByUserAndExercise(userId, exerciseId);
 
     let detail: QuestionResult[] = [];
@@ -53,13 +53,18 @@ export class AssignmentsService {
       },
     );
 
-    return newAssignment;
+    return {
+      ...newAssignment,
+      progress: +(
+        newAssignment.totalDone / newAssignment.totalQuestion
+      ).toPrecision(2),
+    };
   }
 
   async findByUserAndExercise(
     userId: string,
     exerciseId: string,
-  ): Promise<AssignmentDocument> {
+  ): Promise<AssignmentDto> {
     const assignment = await this.assignmentModel.findOne({
       user: userId,
       exercise: exerciseId,
@@ -69,7 +74,12 @@ export class AssignmentsService {
       return null;
     }
 
-    return assignment;
+    return {
+      ...assignment.toObject(),
+      progress: +(assignment.totalDone / assignment.totalQuestion).toPrecision(
+        2,
+      ),
+    };
   }
 
   async findByUser(userId: string): Promise<AssignmentDocument[]> {

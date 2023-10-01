@@ -3,6 +3,7 @@ import Chat from '../pages/Chat'
 import CourseDetailsPage from '../pages/CourseDetails'
 import { CourseList } from '../pages/CourseList'
 import CreateProfile from '../pages/CreateProfile'
+import Exercise from '../pages/Exercise'
 import Discover from '../pages/Discover'
 import Exam from '../pages/Exam'
 import HelpCenter from '../pages/HelpCenter'
@@ -72,6 +73,11 @@ const publicRoutes: RouteElement[] = [
     path: ROUTES.courses,
   },
   {
+    element: Exercise,
+    layout: null,
+    path: ROUTES.exercise,
+  },
+  {
     element: TeacherCourses,
     path: ROUTES.coursesTeacher,
   },
@@ -120,4 +126,4 @@ const privateRoutes: RouteElement[] = [
   },
 ]
 
-export { publicRoutes, privateRoutes }
+export { privateRoutes, publicRoutes }

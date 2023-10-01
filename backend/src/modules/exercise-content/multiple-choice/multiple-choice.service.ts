@@ -22,6 +22,9 @@ export class MultipleChoiceService extends ExerciseContentService {
       CreateMultipleChoiceDto,
     );
 
+    this.setDefaultExplain(validatedContent);
+    this.setIsMultipleCorrectAnswer(validatedContent);
+
     const questionList = await this.multipleChoiceModel.insertMany(
       validatedContent,
     );
@@ -34,7 +37,7 @@ export class MultipleChoiceService extends ExerciseContentService {
       throw new BadRequestException('answer must be a number array');
     }
 
-    const { detail, explain } = (
+    const { detail, explanation: explain } = (
       await this.multipleChoiceModel.findById(id).select('correctAnswer')
     ).correctAnswer;
 
@@ -44,5 +47,26 @@ export class MultipleChoiceService extends ExerciseContentService {
     const isCorrect = answer.join() === detail.join();
 
     return { question: id, isCorrect, answer, correctAnswer: detail, explain };
+  }
+
+  setDefaultExplain(questionList: MultipleChoice[]) {
+    questionList.forEach(q => {
+      if (!q.correctAnswer.explanation) {
+        const correctAnswerString = q.question.answers
+          .filter(answer => q.correctAnswer.detail.includes(answer.id))
+          .map(correctAnswer => correctAnswer.text)
+          .join(', ');
+
+        q.correctAnswer.explanation = `Correct answer: ${correctAnswerString}`;
+      }
+    });
+  }
+
+  setIsMultipleCorrectAnswer(questionList: MultipleChoice[]) {
+    questionList.forEach(q => {
+      if (q.correctAnswer.detail.length > 1) {
+        q.question.multipleCorrectAnswers = true;
+      }
+    });
   }
 }

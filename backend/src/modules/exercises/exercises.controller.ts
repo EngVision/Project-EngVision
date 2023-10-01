@@ -14,12 +14,13 @@ import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { CurrentUser } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
-import { AtGuard } from 'src/common/guards';
+import { AtGuard, RoleGuard } from 'src/common/guards';
 import { QuestionResult } from '../assignments/schemas/assignment.schema';
 import { JwtPayload } from '../auth/types';
 import { CreateMultipleChoiceDto } from '../exercise-content/multiple-choice/dto/create-multiple-choice.dto';
 import { CreateExerciseDto, ExerciseDto, UpdateExerciseDto } from './dto';
 import { ExercisesService } from './exercises.service';
+import { Role } from 'src/common/enums';
 
 @Controller('exercises')
 @ApiTags('Exercises')
@@ -28,10 +29,13 @@ export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 
   @Post()
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
   async create(
+    @CurrentUser() user: JwtPayload,
     @Body() createExerciseDto: CreateExerciseDto,
     @Res() res: Response,
   ) {
+    createExerciseDto.creator = user.sub;
     const exercise = await this.exercisesService.create(createExerciseDto);
 
     return res
@@ -48,7 +52,7 @@ export class ExercisesController {
       .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
   }
 
-  @Post(':exerciseId/check-answer/:questionId')
+  @Post(':exerciseId/submit-answer/:questionId')
   @UseGuards(AtGuard)
   async checkAnswer(
     @CurrentUser() user: JwtPayload,
@@ -57,7 +61,7 @@ export class ExercisesController {
     @Body('answer') answer: any,
     @Res() res: Response,
   ) {
-    const result = await this.exercisesService.checkAnswer(
+    const result = await this.exercisesService.submitAnswer(
       user.sub,
       exerciseId,
       questionId,

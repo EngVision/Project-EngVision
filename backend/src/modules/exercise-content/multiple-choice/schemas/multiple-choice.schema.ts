@@ -1,3 +1,4 @@
+import { shuffleArray } from './../../../../common/utils/shuffleArray';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes } from 'mongoose';
 import { CEFRLevel, ExerciseTag } from 'src/common/enums';
@@ -21,6 +22,9 @@ const AnswerSchema = SchemaFactory.createForClass(Answer);
 
 @Schema({ _id: false, versionKey: false })
 class Question {
+  @Prop({ default: null })
+  title: string;
+
   @Prop({ required: true })
   text: string;
 
@@ -29,6 +33,9 @@ class Question {
 
   @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name, default: null })
   audio?: string;
+
+  @Prop({ default: false })
+  multipleCorrectAnswers: boolean;
 
   @Prop([{ type: AnswerSchema }])
   answers: Answer[];
@@ -41,7 +48,7 @@ class CorrectAnswer {
   detail: number[];
 
   @Prop({ type: String, default: null })
-  explain: string;
+  explanation: string;
 }
 const CorrectAnswerSchema = SchemaFactory.createForClass(CorrectAnswer);
 
@@ -64,3 +71,7 @@ export class MultipleChoice {
 
 export const MultipleChoiceSchema =
   SchemaFactory.createForClass(MultipleChoice);
+
+MultipleChoiceSchema.post('find', function (docs: MultipleChoice[]) {
+  docs.forEach(doc => shuffleArray(doc.question.answers));
+});

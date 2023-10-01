@@ -9,7 +9,10 @@ export class ExerciseQuestionDto {
 
   @IsDefined()
   @ApiProperty({ type: Object, description: 'Correct answer' })
-  correctAnswer: any;
+  correctAnswer: {
+    detail: any;
+    explanation: string;
+  };
 
   @IsArray()
   @IsEnum(ExerciseTag, { each: true })
