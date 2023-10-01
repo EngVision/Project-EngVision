@@ -20,9 +20,7 @@ const App: React.FC = () => {
   const fetchAuthUser = async () => {
     if (!userAccountId) {
       try {
-        const {
-          data: { data },
-        } = await authApi.fetchAuthUser()
+        const { data } = await authApi.fetchAuthUser()
 
         if (data?.id) {
           dispatch(setUserAccountId(data.id))

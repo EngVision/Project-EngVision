@@ -2,8 +2,7 @@ import { Button, Form, Checkbox, Input } from 'antd'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
-import facebookIcon from '../../assets/images/facebook.png'
-import googleIcon from '../../assets/images/google.png'
+import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import { useAppDispatch } from '../../hooks/redux'
 import { setUserAccountId } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
@@ -17,12 +16,12 @@ const TeacherSignUp: React.FC = () => {
   const [error, setError] = useState<string>('')
 
   const onFinish = async (values: SignUpParams) => {
-    console.log('🚀 ~ file: index.tsx:20 ~ onFinish ~ values:', values)
     try {
-      const {
-        data: { id },
-      } = await authApi.signUp({ ...values, role: ROLES.teacher.value })
-      dispatch(setUserAccountId(id))
+      const { data } = await authApi.signUp({
+        ...values,
+        role: ROLES.teacher.value,
+      })
+      dispatch(setUserAccountId(data.id))
       navigate(ROUTES.home)
     } catch (error) {
       setError(error.response.data.message)
@@ -38,12 +37,12 @@ const TeacherSignUp: React.FC = () => {
 
   const SIGN_UP_VENDORS = [
     {
-      icon: googleIcon,
+      icon: <GoogleIcon />,
       name: 'Google',
       onClick: signInWithGoogle,
     },
     {
-      icon: facebookIcon,
+      icon: <FacebookIcon />,
       name: 'Facebook',
       onClick: signInWithFacebook,
     },
@@ -185,11 +184,7 @@ const TeacherSignUp: React.FC = () => {
               onClick={vendor.onClick}
               role="presentation"
             >
-              <img
-                src={vendor.icon}
-                alt={vendor.name}
-                className="w-[32px] h-[32px] object-contain"
-              />
+              {vendor.icon}
             </div>
           ))}
         </div>

@@ -13,8 +13,11 @@ export const CourseList = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courses = await coursesApi.getCourses()
-        setCourseList(courses)
+        const {
+          data: { results },
+        }: any = await coursesApi.getCourses()
+        // TODO: [Huu] Error here (results is the right course list but app crash)
+        setCourseList(results)
       } catch (error) {
         console.error('Error fetching courses:', error)
       }

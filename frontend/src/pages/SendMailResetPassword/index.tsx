@@ -1,8 +1,9 @@
 import { Button, Form, Input, notification } from 'antd'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Email } from '../../services/accountApi/types'
+
 import accountApi from '../../services/accountApi'
+import type { Email } from '../../services/accountApi/types'
 import { ROUTES } from '../../utils/constants'
 
 const SendMailResetPassword: React.FC = () => {
@@ -20,15 +21,15 @@ const SendMailResetPassword: React.FC = () => {
     setSentMail(true)
     try {
       const rs = await accountApi.sendMailForgotPassword(values)
-      if (rs.data.success) {
+      if (rs.success) {
         apiNotification.success({
           message: 'Success',
-          description: rs.data.message,
+          description: rs.message,
         })
       } else
         apiNotification.error({
           message: 'Error',
-          description: rs.data.message,
+          description: rs.message,
         })
     } catch (error) {
       setSentMail(false)
