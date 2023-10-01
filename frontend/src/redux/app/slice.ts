@@ -24,38 +24,19 @@ const appSlice = createSlice({
     setSearchOptions: (state, action) => {
       state.searchOptions = action.payload
     },
-  },
-})
-export const { setUserAccountId, setSearchOptions } = appSlice.actions
-
-export default appSlice.reducer
-
-export const darkModeSlice = createSlice({
-  initialState,
-  name: 'darkMode',
-  reducers: {
     toggleDarkMode: (state) => {
       state.darkMode = !state.darkMode
     },
-  },
-})
-export const { toggleDarkMode } = darkModeSlice.actions
-
-export const localesSlice = createSlice({
-  initialState,
-  name: 'locales',
-  reducers: {
     toggleLocales: (state, action) => {
       state.locales = action.payload
     },
   },
 })
-export const { toggleLocales } = localesSlice.actions
+export const {
+  setUserAccountId,
+  setSearchOptions,
+  toggleDarkMode,
+  toggleLocales,
+} = appSlice.actions
 
-// const rootReducer = combineReducers({
-//   app: authSlice.reducer,
-//   darkMode: darkModeSlice.reducer,
-//   locales: localesSlice.reducer,
-// })
-
-// export default rootReducer
+export default appSlice.reducer

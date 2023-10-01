@@ -1,8 +1,9 @@
 import { Button, Form, Input, notification } from 'antd'
+import classNames from 'classnames'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+
 import accountApi from '../../services/accountApi'
-import classNames from 'classnames'
 import { ROUTES } from '../../utils/constants'
 
 const ResetForgotPassword: React.FC = () => {
@@ -19,8 +20,8 @@ const ResetForgotPassword: React.FC = () => {
     const res = await accountApi.validateUrlResetPassword({
       resetPasswordCode: String(resetPasswordCode),
     })
-    if (!res.data) navigate(ROUTES.sendMailResetPassword)
-    setValidatedUrl(res.data)
+    if (!res) navigate(ROUTES.sendMailResetPassword)
+    setValidatedUrl(res)
   }
 
   const validatePassword = (password: string) => {
@@ -35,10 +36,10 @@ const ResetForgotPassword: React.FC = () => {
         resetPasswordCode: String(resetPasswordCode),
         newPassword: values.password,
       })
-      if (rs.data.success) {
+      if (rs.success) {
         apiNotification.success({
           message: 'Success',
-          description: rs.data.message,
+          description: rs.message,
         })
         setTimeout(() => {
           navigate(ROUTES.signIn)

@@ -36,8 +36,8 @@ const CourseDetailsPage = () => {
     const fetchCourseDetails = async () => {
       try {
         if (courseId) {
-          const response = await coursesApi.getCourseDetails(courseId)
-          setCourseDetails(response.data)
+          const { data } = await coursesApi.getCourseDetails(courseId)
+          setCourseDetails(data)
         }
       } catch (error) {
         console.error(error)

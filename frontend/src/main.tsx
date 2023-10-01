@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import { Provider as ReduxStoreProvider } from 'react-redux'
 import { HistoryRouter } from 'redux-first-history/rr6'
-import 'react-toastify/dist/ReactToastify.css'
 
 import App from './App'
 import { history, store } from './store'
