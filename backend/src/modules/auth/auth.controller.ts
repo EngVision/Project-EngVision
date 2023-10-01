@@ -31,7 +31,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
-  ) { }
+  ) {}
 
   /** Login, register with email and password **/
   @Post('login')

@@ -79,7 +79,7 @@ export class ExercisesService {
     return exercise;
   }
 
-  async checkAnswer(
+  async submitAnswer(
     userId: string,
     exerciseId: string,
     questionId: string,
@@ -99,6 +99,7 @@ export class ExercisesService {
       exerciseType: exercise.type,
       totalQuestion: exercise.content.length,
       detail: [result],
+      teacher: exercise.creator,
     });
 
     return result;

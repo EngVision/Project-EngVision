@@ -30,6 +30,9 @@ export class Assignment {
   @Prop({ type: SchemaTypes.ObjectId, ref: User.name, required: true })
   user: string;
 
+  @Prop({ type: SchemaTypes.ObjectId, ref: User.name, required: true })
+  teacher: string;
+
   @Prop({ type: SchemaTypes.ObjectId, ref: Exercise.name, required: true })
   exercise: string;
 

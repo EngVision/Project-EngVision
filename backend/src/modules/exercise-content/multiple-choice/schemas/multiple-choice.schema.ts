@@ -1,3 +1,4 @@
+import { shuffleArray } from './../../../../common/utils/shuffleArray';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes } from 'mongoose';
 import { CEFRLevel, ExerciseTag } from 'src/common/enums';
@@ -70,3 +71,7 @@ export class MultipleChoice {
 
 export const MultipleChoiceSchema =
   SchemaFactory.createForClass(MultipleChoice);
+
+MultipleChoiceSchema.post('find', function (docs: MultipleChoice[]) {
+  docs.forEach(doc => shuffleArray(doc.question.answers));
+});

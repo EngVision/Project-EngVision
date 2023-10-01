@@ -14,6 +14,9 @@ export class ExerciseDto {
   @Transform(value => value.obj._id.toString())
   id?: string;
 
+  @Transform(value => value.obj.creator.toString())
+  creator?: string;
+
   @Type(() => ContentDto)
   content: string;
 }

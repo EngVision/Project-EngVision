@@ -46,15 +46,17 @@ export class AssignmentsController {
     @Param('exerciseId') exerciseId: string,
     @Res() res: Response,
   ) {
-    const assignments = await this.assignmentsService.findByUserAndExercise(
+    const assignment = await this.assignmentsService.findByUserAndExercise(
       user.sub,
       exerciseId,
     );
 
+    console.log(assignment);
+
     return res.status(HttpStatus.OK).send(
       GetResponse({
         dataType: AssignmentDto,
-        data: assignments,
+        data: assignment,
       }),
     );
   }
