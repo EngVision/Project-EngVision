@@ -3,7 +3,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import { Provider as ReduxStoreProvider } from 'react-redux'
-import { ToastContainer } from 'react-toastify'
 import { HistoryRouter } from 'redux-first-history/rr6'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -24,7 +23,6 @@ const ClientRenderer = () =>
       <ReduxStoreProvider store={store}>
         <HistoryRouter history={history}>
           <App />
-          <ToastContainer />
         </HistoryRouter>
       </ReduxStoreProvider>
     </ConfigProvider>,
