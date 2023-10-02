@@ -1,10 +1,4 @@
 export const ROUTES = {
-  UpdateProfile: '/update-profile',
-  docList: '/doclist',
-  exercise: '/exercise/:id',
-  resetForgotPassword: '/reset-password/:resetPasswordCode',
-  sendMailResetPassword: '/forgot-password',
-
   // Menu
   home: '/',
   myHub: '/my-hub',
@@ -24,6 +18,9 @@ export const ROUTES = {
   updateProfile: '/update-profile',
 
   search: '/search',
+  exercise: '/exercise/:id',
+  resetForgotPassword: '/reset-password/:resetPasswordCode',
+  sendMailResetPassword: '/forgot-password',
 
   // lesson
   makeSentence: '/lesson/make-sentence',
