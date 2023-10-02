@@ -13,15 +13,15 @@ export abstract class ExerciseContentService {
 
     const dataList: any = plainToInstance(dataType, questionList);
 
-    const errorlist = (
+    const errors = (
       await Promise.all(
         dataList.map(data => validator.validate(data, { whitelist: true })),
       )
     ).reduce((prev, errors) => [...prev, ...errors], []);
 
-    if (errorlist.length !== 0) {
+    if (errors.length !== 0) {
       const validatePipe = new ValidationPipe().createExceptionFactory();
-      throw validatePipe(errorlist);
+      throw validatePipe(errors);
     }
 
     return questionList;
@@ -32,4 +32,6 @@ export abstract class ExerciseContentService {
   ): Promise<string[]>;
 
   abstract checkAnswer(id: string, answer: any): Promise<QuestionResult>;
+
+  abstract setDefaultExplain(questionList: ExerciseQuestionDto[]): void;
 }

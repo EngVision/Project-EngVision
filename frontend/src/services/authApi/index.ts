@@ -1,4 +1,5 @@
 import axiosClient from '../axiosClient'
+import type { ResponseData } from '../types'
 
 import type { SignInParams, SignUpParams } from './types'
 
@@ -6,23 +7,23 @@ const PREFIX = 'auth/'
 
 const authApi = {
   fetchAuthUser: async () => {
-    const res = await axiosClient.get(`${PREFIX}me`)
+    const res: ResponseData = await axiosClient.get(`${PREFIX}me`)
     return res
   },
   signIn: async (data: SignInParams) => {
-    const res = await axiosClient.post(`${PREFIX}login`, data)
+    const res: ResponseData = await axiosClient.post(`${PREFIX}login`, data)
     return res
   },
   signInWithGoogle: async () => {
-    const res = await axiosClient.get(`${PREFIX}google/login`)
+    const res: ResponseData = await axiosClient.get(`${PREFIX}google/login`)
     return res
   },
   signUp: async (data: SignUpParams) => {
-    const res = await axiosClient.post(`${PREFIX}register`, data)
+    const res: ResponseData = await axiosClient.post(`${PREFIX}register`, data)
     return res
   },
   logout: async () => {
-    const res = await axiosClient.post(`${PREFIX}logout`)
+    const res: ResponseData = await axiosClient.post(`${PREFIX}logout`)
     return res
   },
 }

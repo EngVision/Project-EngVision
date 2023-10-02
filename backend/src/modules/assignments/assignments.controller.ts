@@ -1,4 +1,11 @@
-import { Controller, Get, HttpStatus, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ApiResponseData, CurrentUser } from 'src/common/decorators';
@@ -7,6 +14,7 @@ import { AtGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
 import { AssignmentsService } from './assignments.service';
 import { AssignmentDto } from './dto/assignment.dto';
+import { GetResponse } from 'src/common/dto';
 
 @ApiTags('Assignments')
 @Controller('assignments')
@@ -16,7 +24,7 @@ export class AssignmentsController {
   @Get()
   @UseGuards(AtGuard)
   @ApiResponseData(AssignmentDto)
-  async getAll(@CurrentUser() user: JwtPayload, @Res() res: Response) {
+  async findAll(@CurrentUser() user: JwtPayload, @Res() res: Response) {
     const assignments = await this.assignmentsService.findByUser(user.sub);
 
     return res.status(HttpStatus.OK).send(
@@ -26,6 +34,27 @@ export class AssignmentsController {
         limit: 0,
         offset: 0,
         total: 0,
+      }),
+    );
+  }
+
+  @Get(':exerciseId')
+  @UseGuards(AtGuard)
+  @ApiResponseData(AssignmentDto)
+  async findOne(
+    @CurrentUser() user: JwtPayload,
+    @Param('exerciseId') exerciseId: string,
+    @Res() res: Response,
+  ) {
+    const assignment = await this.assignmentsService.findByUserAndExercise(
+      user.sub,
+      exerciseId,
+    );
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        dataType: AssignmentDto,
+        data: assignment,
       }),
     );
   }

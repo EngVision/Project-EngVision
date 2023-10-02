@@ -21,7 +21,7 @@ class CorrectAnswer {
   detail: string;
 
   @Prop({ type: String, default: null })
-  explain: string;
+  explanation: string;
 }
 const CorrectAnswerSchema = SchemaFactory.createForClass(CorrectAnswer);
 

@@ -1,14 +1,13 @@
 import axiosClient from '../axiosClient'
-
-import type { CourseParams, ReviewParams } from './types'
+import type { ResponseData, ReviewParams } from '../types'
 
 const PREFIX = 'courses/'
 
 const coursesApi = {
   getCourseDetails: async (coursesId: string) => {
     try {
-      const res = await axiosClient.get(`${PREFIX}${coursesId}`)
-      return res.data
+      const res: ResponseData = await axiosClient.get(`${PREFIX}${coursesId}`)
+      return res
     } catch (error) {
       console.error('Error get course details:', error)
       throw error
@@ -16,9 +15,8 @@ const coursesApi = {
   },
   getCourses: async () => {
     try {
-      const res = await axiosClient.get(`${PREFIX}`)
-      const data: CourseParams[] = res.data
-      return data
+      const res: ResponseData = await axiosClient.get(`${PREFIX}`)
+      return res
     } catch (error) {
       console.error('Error get courses:', error)
       throw error

@@ -1,11 +1,11 @@
 import { Button, Form, Input, Space, Divider, Select } from 'antd'
-import accountApi from '../../services/accountApi'
-import { ProfileParams } from '../../services/accountApi/types'
 import { useEffect, useState } from 'react'
-import authApi from '../../services/authApi'
 import { Link } from 'react-router-dom'
+
+import accountApi from '../../services/accountApi'
+import type { ProfileParams } from '../../services/accountApi/types'
+import authApi from '../../services/authApi'
 import { ROUTES } from '../../utils/constants'
-import { S } from 'msw/lib/glossary-de6278a9'
 
 export const UpdateProfile = () => {
   const { TextArea } = Input
@@ -14,9 +14,8 @@ export const UpdateProfile = () => {
   useEffect(() => {
     const fetchAccount = async () => {
       try {
-        const auth = await authApi.fetchAuthUser()
-        const in4Account = auth.data.data
-        setAccount(in4Account)
+        const { data } = await authApi.fetchAuthUser()
+        setAccount(data)
       } catch (error) {
         console.error('Error fetching courses:', error)
       }

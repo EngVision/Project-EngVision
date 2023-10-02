@@ -4,6 +4,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsEnum,
+  IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -22,7 +23,7 @@ export class CreateExerciseDto {
   @IsOptional()
   @IsNotEmpty()
   @IsString()
-  @ApiPropertyOptional({ type: String, description: 'Title' })
+  @ApiPropertyOptional({ type: String, description: 'Description' })
   description?: string;
 
   @IsArray()
@@ -52,4 +53,8 @@ export class CreateExerciseDto {
   @Type(() => ExerciseQuestionDto)
   @ApiProperty({ type: [ExerciseQuestionDto], description: 'Exercise content' })
   content: ExerciseQuestionDto[];
+
+  @IsOptional()
+  @IsMongoId()
+  creator: string;
 }

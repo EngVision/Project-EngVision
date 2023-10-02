@@ -16,7 +16,7 @@ class QuestionResultDto {
   correctAnswer: object;
 
   @ApiProperty({ description: 'Result' })
-  explain: string;
+  explanation: string;
 }
 
 export class AssignmentDto {
@@ -25,8 +25,13 @@ export class AssignmentDto {
   @ApiProperty({ description: 'Assignment id' })
   id?: string;
 
+  @Transform(value => value.obj.user.toString())
   @ApiProperty({ description: 'User id' })
   user: string;
+
+  @Transform(value => value.obj.teacher.toString())
+  @ApiProperty({ description: 'User id' })
+  teacher: string;
 
   @ApiProperty({ description: 'Exercise id' })
   exercise: string;
@@ -42,6 +47,9 @@ export class AssignmentDto {
 
   @ApiProperty({ description: 'Total question done' })
   totalDone?: number;
+
+  @ApiProperty({ description: 'Exercise progress' })
+  progress?: number;
 
   @ApiProperty({ type: QuestionResultDto, description: 'Result' })
   detail: QuestionResultDto[];

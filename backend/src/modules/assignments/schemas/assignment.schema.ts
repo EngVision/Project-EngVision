@@ -19,7 +19,7 @@ export class QuestionResult {
   correctAnswer: any;
 
   @Prop()
-  explain: string;
+  explanation: string;
 }
 const QuestionResultSchema = SchemaFactory.createForClass(QuestionResult);
 
@@ -29,6 +29,9 @@ export type AssignmentDocument = Assignment & Document;
 export class Assignment {
   @Prop({ type: SchemaTypes.ObjectId, ref: User.name, required: true })
   user: string;
+
+  @Prop({ type: SchemaTypes.ObjectId, ref: User.name, required: true })
+  teacher: string;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: Exercise.name, required: true })
   exercise: string;

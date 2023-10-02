@@ -2,8 +2,7 @@ import { Button, Form, Input } from 'antd'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
-import facebookIcon from '../../assets/images/facebook.png'
-import googleIcon from '../../assets/images/google.png'
+import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import { useAppDispatch } from '../../hooks/redux'
 import { setUserAccountId } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
@@ -18,9 +17,7 @@ const SignIn: React.FC = () => {
 
   const onFinish = async (values: SignInParams) => {
     try {
-      const {
-        data: { data },
-      } = await authApi.signIn(values)
+      const { data } = await authApi.signIn(values)
       dispatch(setUserAccountId(data.id))
       navigate(ROUTES.home)
     } catch (error) {
@@ -30,9 +27,7 @@ const SignIn: React.FC = () => {
 
   const fetchAuthUser = async (timer: ReturnType<typeof setInterval>) => {
     try {
-      const {
-        data: { data },
-      } = await authApi.fetchAuthUser()
+      const { data } = await authApi.fetchAuthUser()
 
       dispatch(setUserAccountId(data.id))
       navigate(ROUTES.home)
@@ -80,12 +75,12 @@ const SignIn: React.FC = () => {
 
   const SIGN_IN_VENDORS = [
     {
-      icon: googleIcon,
+      icon: <GoogleIcon />,
       name: 'Google',
       onClick: signInWithGoogle,
     },
     {
-      icon: facebookIcon,
+      icon: <FacebookIcon />,
       name: 'Facebook',
       onClick: signInWithFacebook,
     },
@@ -145,11 +140,7 @@ const SignIn: React.FC = () => {
                 onClick={vendor.onClick}
                 role="presentation"
               >
-                <img
-                  src={vendor.icon}
-                  alt={vendor.name}
-                  className="w-[32px] h-[32px] object-contain"
-                />
+                {vendor.icon}
               </div>
             ))}
           </div>

@@ -27,6 +27,8 @@ export class FillBlankService extends ExerciseContentService {
       throw new BadRequestException(`question.text should contain one '[[]]'`);
     }
 
+    this.setDefaultExplain(validatedContent);
+
     const questionList = await this.fillBlankModel.insertMany(validatedContent);
 
     return questionList.map(q => q.id);
@@ -37,13 +39,19 @@ export class FillBlankService extends ExerciseContentService {
       throw new BadRequestException('answer must be a string');
     }
 
-    const { detail, explain } = (
+    const { detail, explanation } = (
       await this.fillBlankModel.findById(id).select('correctAnswer')
     ).correctAnswer;
 
     const isCorrect = detail.toLowerCase() === answer.toLowerCase();
 
-    return { question: id, isCorrect, answer, correctAnswer: detail, explain };
+    return {
+      question: id,
+      isCorrect,
+      answer,
+      correctAnswer: detail,
+      explanation,
+    };
   }
 
   isValidQuestionList(questionList: FillBlank[]): boolean {
@@ -58,5 +66,12 @@ export class FillBlankService extends ExerciseContentService {
 
       return false; // return false if question text does not contain '[[]]' or more than one
     });
+  }
+
+  setDefaultExplain(questionList: FillBlank[]): void {
+    questionList.forEach(
+      q =>
+        (q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail}`),
+    );
   }
 }
