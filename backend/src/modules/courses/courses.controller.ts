@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -16,7 +17,7 @@ import { CoursesService } from './courses.service';
 import { AtGuard, RoleGuard } from 'src/common/guards';
 import { Response } from 'express';
 import { courseIdDto } from './dto/course-id.dto';
-import { Role } from 'src/common/enums';
+import { Role, StatusCourseSearch } from 'src/common/enums';
 import { CreateReviewDto } from '../reviews/dto/create-review.dto';
 import {
   ApiResponseData,
@@ -70,8 +71,23 @@ export class CoursesController {
   @Get('')
   @ApiResponseList(CourseDto)
   @UseGuards(AtGuard)
-  async getAll(@Res() res: Response, @Query() query: SearchCourseDto) {
-    const [courses, total] = await this.coursesService.getAll(query);
+  async getAll(
+    @Res() res: Response,
+    @Query() query: SearchCourseDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    if (
+      (user.roles.includes(Role.Teacher) &&
+        (query.status === StatusCourseSearch.Attended ||
+          query.status === StatusCourseSearch.All)) ||
+      (user.roles.includes(Role.Student) &&
+        (query.status === StatusCourseSearch.Published ||
+          query.status === StatusCourseSearch.Draft))
+    ) {
+      throw new ConflictException('Your query has conflicts');
+    }
+
+    const [courses, total] = await this.coursesService.getAll(query, user.sub);
 
     return res.status(HttpStatus.OK).send(
       GetResponseList({
@@ -87,8 +103,12 @@ export class CoursesController {
   @Get('/:id')
   @ApiResponseData(CourseDetailDto)
   @UseGuards(AtGuard)
-  async getCourse(@Param() params: courseIdDto, @Res() res: Response) {
-    const course = await this.coursesService.getCourse(params.id);
+  async getCourse(
+    @Param() params: courseIdDto,
+    @Res() res: Response,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const course = await this.coursesService.getCourse(params.id, user);
     return res.status(HttpStatus.OK).send(
       GetResponse({
         data: course,
@@ -203,7 +223,7 @@ export class CoursesController {
       user.sub,
     );
 
-    return res.status(HttpStatus.CREATED).send(
+    return res.status(HttpStatus.OK).send(
       GetResponse({
         data: newCourse,
         dataType: CourseDetailDto,
@@ -226,7 +246,7 @@ export class CoursesController {
       user.sub,
     );
 
-    return res.status(HttpStatus.CREATED).send(
+    return res.status(HttpStatus.OK).send(
       GetResponse({
         data: newCourse,
         dataType: CourseDetailDto,
@@ -277,7 +297,7 @@ export class CoursesController {
       user.sub,
     );
 
-    return res.status(HttpStatus.CREATED).send(
+    return res.status(HttpStatus.OK).send(
       GetResponse({
         data: newCourse,
         dataType: CourseDetailDto,
@@ -301,7 +321,7 @@ export class CoursesController {
       user.sub,
     );
 
-    return res.status(HttpStatus.CREATED).send(
+    return res.status(HttpStatus.OK).send(
       GetResponse({
         data: newCourse,
         dataType: CourseDetailDto,
@@ -340,10 +360,27 @@ export class CoursesController {
       user.sub,
     );
 
-    return res.status(HttpStatus.CREATED).send(
+    return res.status(HttpStatus.OK).send(
       GetResponse({
         message: 'Get attendance list',
         data: attendanceList,
+      }),
+    );
+  }
+
+  @Post(':id/publish')
+  @ApiResponseData(Object)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async publishCourse(
+    @Res() res: Response,
+    @Param() params: courseIdDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    await this.coursesService.publishCourse(params.id, user.sub);
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        message: 'Publish course successful',
       }),
     );
   }

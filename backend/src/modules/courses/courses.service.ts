@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { FilesService } from '../files/files.service';
 import { ReviewDto } from '../reviews/dto/review.dto';
 import { ReviewsService } from '../reviews/reviews.service';
@@ -22,6 +22,8 @@ import {
   UpdateCourseDto,
   CourseDetailDto,
 } from './dto';
+import { Role, StatusCourseSearch } from 'src/common/enums';
+import { JwtPayload } from '../auth/types';
 
 @Injectable()
 export class CoursesService {
@@ -39,9 +41,29 @@ export class CoursesService {
   }
 
   // + sum people enroll + filter tags
-  async getAll(data: SearchCourseDto) {
+  async getAll(data: SearchCourseDto, userId: string) {
     const keyword = { $regex: new RegExp(data.keyword, 'i') };
     const dataFilter: mongoose.FilterQuery<any> = {};
+
+    switch (data.status) {
+      case StatusCourseSearch.All:
+        dataFilter.isPublished = { $eq: true };
+        break;
+      case StatusCourseSearch.Attended:
+        dataFilter.isPublished = { $eq: true };
+        dataFilter.attendanceList = {
+          $elemMatch: { $eq: new Types.ObjectId(userId) },
+        };
+        break;
+      case StatusCourseSearch.Draft:
+        dataFilter.isPublished = { $eq: false };
+        dataFilter['teacher._id'] = { $eq: new Types.ObjectId(userId) };
+        break;
+      case StatusCourseSearch.Published:
+        dataFilter.isPublished = { $eq: true };
+        dataFilter['teacher._id'] = { $eq: new Types.ObjectId(userId) };
+        break;
+    }
 
     if (data.dateStart || data.dateEnd) {
       dataFilter.createdAt = {};
@@ -55,7 +77,7 @@ export class CoursesService {
       if (data.priceMax) dataFilter.price.$lte = data.priceMax;
     }
 
-    const result: any = await this.courseModel.aggregate([
+    const result = await this.courseModel.aggregate([
       {
         $lookup: {
           from: 'users',
@@ -73,6 +95,7 @@ export class CoursesService {
           as: 'teacher',
         },
       },
+      { $unwind: '$teacher' },
       {
         $lookup: {
           from: 'reviews',
@@ -93,7 +116,7 @@ export class CoursesService {
         $match: {
           $and: [
             { $or: [{ title: keyword }, { 'teacher.fullName': keyword }] },
-            { $and: [dataFilter] },
+            dataFilter,
           ],
         },
       },
@@ -136,11 +159,12 @@ export class CoursesService {
       };
     });
 
-    return [courses, result[0].total[0].count];
+    const totalItem = result[0].total.length ? result[0]?.total[0]?.count : 0;
+    return [courses, totalItem];
   }
 
   // add sections - lessons
-  async getCourse(id: string) {
+  async getCourse(id: string, user?: JwtPayload) {
     const course = (await this.courseModel
       .findOne({ _id: id })
       .populate('teacher')
@@ -149,10 +173,14 @@ export class CoursesService {
         populate: { path: 'user' },
       })) as any;
 
-    const courseMap = {
+    const courseMap: CourseDetailDto = {
       ...plainToInstance(CourseDetailDto, course.toObject()),
       avgStar: this.reviewsService.averageStar(course.reviews),
     };
+
+    if (user?.roles?.[0] === Role.Student) {
+      courseMap.isAttended = course.attendanceList.includes(user.sub);
+    }
 
     return courseMap;
   }
@@ -198,7 +226,10 @@ export class CoursesService {
 
   async createReview(review: ReviewDto) {
     const course = await this.courseModel.findById(review.courseId);
+
     if (!course) throw new BadRequestException('Course not found');
+    if (!course.attendanceList.includes(review.user))
+      throw new ConflictException('You have not attended this course');
 
     const newReview = await this.reviewsService.createReview(review);
 
@@ -377,5 +408,18 @@ export class CoursesService {
     );
 
     return attendanceList;
+  }
+
+  async publishCourse(courseId: string, teacherId: string) {
+    const course = await this.courseModel.findById(courseId);
+
+    if (!course) throw new BadRequestException('Course not found');
+    if (String(course.teacher) !== teacherId)
+      throw new ForbiddenException('Access denied');
+
+    course.isPublished = true;
+    await course.save();
+
+    return true;
   }
 }

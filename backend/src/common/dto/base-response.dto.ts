@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { PaginatedDto } from './paginated-response.dto';
 
 export class BaseResponseDto<TData> {
   @Exclude()
@@ -13,7 +12,7 @@ export class BaseResponseDto<TData> {
   message: string;
 
   @ApiProperty()
-  data: TData | PaginatedDto<TData>;
+  data: TData | TData[];
 
   constructor(type: any, init?: Partial<BaseResponseDto<TData>>) {
     this.type = type;

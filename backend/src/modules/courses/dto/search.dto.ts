@@ -1,6 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+} from 'class-validator';
+import { StatusCourseSearch } from 'src/common/enums';
 
 export class SearchCourseDto {
   @IsOptional()
@@ -38,12 +45,20 @@ export class SearchCourseDto {
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  @ApiPropertyOptional({ type: Number, description: 'page' })
+  @ApiPropertyOptional({ type: Number, description: 'Page' })
   page?: number;
 
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  @ApiPropertyOptional({ type: Number, description: 'limit' })
+  @ApiPropertyOptional({ type: Number, description: 'Limit' })
   limit?: number;
+
+  @IsNotEmpty()
+  @IsEnum(StatusCourseSearch)
+  @ApiPropertyOptional({
+    enum: StatusCourseSearch,
+    description: 'Status courses',
+  })
+  status?: StatusCourseSearch;
 }
