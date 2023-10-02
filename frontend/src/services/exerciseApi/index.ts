@@ -8,7 +8,7 @@ const exerciseApi = {
   getExercise: async (id: string): Promise<ExerciseResponse> => {
     const res = await axiosClient.get(`${PREFIX}/${id}`)
 
-    return res.data.data
+    return res.data
   },
 
   submitAnswer: async (
@@ -17,11 +17,11 @@ const exerciseApi = {
     data: any,
   ): Promise<SubmitAnswerResponse> => {
     const res = await axiosClient.post(
-      `${PREFIX}/${exerciseId}/check-answer/${questionId}`,
+      `${PREFIX}/${exerciseId}/submit-answer/${questionId}`,
       data,
     )
 
-    return res.data.data
+    return res.data
   },
 }
 

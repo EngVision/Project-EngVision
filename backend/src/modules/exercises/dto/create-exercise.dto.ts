@@ -23,7 +23,7 @@ export class CreateExerciseDto {
   @IsOptional()
   @IsNotEmpty()
   @IsString()
-  @ApiPropertyOptional({ type: String, description: 'Title' })
+  @ApiPropertyOptional({ type: String, description: 'Description' })
   description?: string;
 
   @IsArray()

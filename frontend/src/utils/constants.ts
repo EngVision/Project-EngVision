@@ -1,14 +1,10 @@
 export const ROUTES = {
   UpdateProfile: '/update-profile',
-  courses: '/courses',
-  courseDetails: '/courses/:courseId',
-  coursesTeacher: '/teacher/courses',
   docList: '/doclist',
   exercise: '/exercise/:id',
-  home: '/',
   resetForgotPassword: '/reset-password/:resetPasswordCode',
   sendMailResetPassword: '/forgot-password',
-  
+
   // Menu
   home: '/',
   myHub: '/my-hub',

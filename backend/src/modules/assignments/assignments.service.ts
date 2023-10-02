@@ -55,9 +55,9 @@ export class AssignmentsService {
 
     return {
       ...newAssignment,
-      progress: +(
-        newAssignment.totalDone / newAssignment.totalQuestion
-      ).toPrecision(2),
+      progress: Math.round(
+        newAssignment.totalDone / newAssignment.totalQuestion,
+      ),
     };
   }
 
