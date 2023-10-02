@@ -75,7 +75,14 @@ function Exercise() {
             />
           )
         case ExerciseType.FillBlank:
-          return <FillBlank />
+          return (
+            <FillBlank
+              {...content}
+              exerciseId={id}
+              result={assignment?.detail[questionIndex]}
+              submitAnswer={submitAnswer}
+            />
+          )
         default:
           return <></>
       }
