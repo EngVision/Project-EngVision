@@ -53,8 +53,8 @@ export class ExercisesController {
   }
 
   @Post(':exerciseId/submit-answer/:questionId')
-  @UseGuards(AtGuard)
-  async checkAnswer(
+  @UseGuards(AtGuard, RoleGuard(Role.Student))
+  async submitAnswer(
     @CurrentUser() user: JwtPayload,
     @Param('exerciseId') exerciseId: string,
     @Param('questionId') questionId: string,

@@ -51,8 +51,6 @@ export class AssignmentsController {
       exerciseId,
     );
 
-    console.log(assignment);
-
     return res.status(HttpStatus.OK).send(
       GetResponse({
         dataType: AssignmentDto,

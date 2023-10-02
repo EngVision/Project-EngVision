@@ -16,7 +16,7 @@ class QuestionResultDto {
   correctAnswer: object;
 
   @ApiProperty({ description: 'Result' })
-  explain: string;
+  explanation: string;
 }
 
 export class AssignmentDto {

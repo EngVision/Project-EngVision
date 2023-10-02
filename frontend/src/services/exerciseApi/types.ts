@@ -25,5 +25,5 @@ export interface SubmitAnswerResponse {
   isCorrect: boolean
   answer: any
   correctAnswer: any
-  explain: string
+  explanation: string
 }

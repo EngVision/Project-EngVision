@@ -8,7 +8,7 @@ const assignmentApi = {
   getAssignment: async (exerciseId: string): Promise<AssignmentResponse> => {
     const res = await axiosClient.get(`${PREFIX}/${exerciseId}`)
 
-    return res.data.data
+    return res.data
   },
 }
 

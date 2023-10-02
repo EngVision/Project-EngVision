@@ -19,7 +19,7 @@ export class QuestionResult {
   correctAnswer: any;
 
   @Prop()
-  explain: string;
+  explanation: string;
 }
 const QuestionResultSchema = SchemaFactory.createForClass(QuestionResult);
 

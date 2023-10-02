@@ -39,13 +39,19 @@ export class FillBlankService extends ExerciseContentService {
       throw new BadRequestException('answer must be a string');
     }
 
-    const { detail, explanation: explain } = (
+    const { detail, explanation } = (
       await this.fillBlankModel.findById(id).select('correctAnswer')
     ).correctAnswer;
 
     const isCorrect = detail.toLowerCase() === answer.toLowerCase();
 
-    return { question: id, isCorrect, answer, correctAnswer: detail, explain };
+    return {
+      question: id,
+      isCorrect,
+      answer,
+      correctAnswer: detail,
+      explanation,
+    };
   }
 
   isValidQuestionList(questionList: FillBlank[]): boolean {
