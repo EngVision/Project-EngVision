@@ -7,7 +7,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Level } from '../enums';
+import { CEFRLevel } from 'src/common/enums';
 
 export class CreateCourseDto {
   @IsNotEmpty()
@@ -36,9 +36,9 @@ export class CreateCourseDto {
   price?: number;
 
   @IsOptional()
-  @IsEnum(Level)
-  @ApiPropertyOptional({ enum: Level, description: 'Level (A1/A2 ...)' })
-  level?: Level;
+  @IsEnum(CEFRLevel)
+  @ApiPropertyOptional({ enum: CEFRLevel, description: 'Level (A1/A2 ...)' })
+  level?: CEFRLevel;
 
   // @IsOptional()
   // @IsEnum(Level)

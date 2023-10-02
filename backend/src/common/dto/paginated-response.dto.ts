@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { BaseResponseDto, ResponseParams } from './base-response.dto';
 import { Document } from 'mongoose';
 
-export class PaginatedDto<TData> {
+export class PaginatedResponseDto<TData> extends BaseResponseDto<TData> {
   @ApiProperty()
   total: number;
 
@@ -13,12 +13,12 @@ export class PaginatedDto<TData> {
   @ApiProperty()
   offset: number;
 
-  results: TData[];
-}
+  data: TData[];
 
-export class PaginatedResponseDto<TData> extends BaseResponseDto<TData> {
-  @Type(() => PaginatedDto<TData>)
-  data: PaginatedDto<TData>;
+  constructor(type: any, init?: Partial<PaginatedResponseDto<TData>>) {
+    super(type);
+    Object.assign(this, init);
+  }
 }
 
 interface ResponseListParams extends ResponseParams {
@@ -46,14 +46,10 @@ export const GetResponseList = ({
   const response = new PaginatedResponseDto<any>(dataType, {
     success,
     message,
-    data: {
-      total,
-      limit,
-      offset,
-      results: dataType
-        ? plainToInstance(dataType, transformData)
-        : transformData,
-    },
+    total,
+    limit,
+    offset,
+    data: dataType ? plainToInstance(dataType, transformData) : transformData,
   });
 
   return response;

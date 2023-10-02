@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Review, ReviewDocument } from './schemas/review.schema';
@@ -12,6 +12,13 @@ export class ReviewsService {
   ) {}
 
   async createReview(review: ReviewDto) {
+    const oldReview = await this.reviewModel.findOne({
+      user: review.user,
+      courseId: review.courseId,
+    });
+    if (oldReview)
+      throw new ConflictException('You can only evaluate the course once');
+
     const newReview = new this.reviewModel(review);
     await newReview.save();
     return newReview;
