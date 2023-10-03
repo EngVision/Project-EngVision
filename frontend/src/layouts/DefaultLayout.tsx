@@ -7,7 +7,7 @@ import type { LayoutProps } from './types'
 
 const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="flex flex-row h-[100vh]">
+    <div className="flex flex-row bg-[#F3EFE2] h-[100vh]">
       <Sidebar />
       <div className="flex flex-1 flex-col">
         <div className="px-8  bg-bgNeutral">
