@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Level } from '../enums';
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import mongoose from 'mongoose';
+import { CEFRLevel } from 'src/common/enums';
 import { UserBriefDto } from 'src/modules/users/dto/user-brief.dto';
 
 export class CourseDto {
@@ -34,7 +34,7 @@ export class CourseDto {
   price?: number;
 
   @ApiPropertyOptional({ type: String, description: 'Level (A1/A2 ...)' })
-  level?: Level;
+  level?: CEFRLevel;
 
   @ApiPropertyOptional({ type: Number, description: 'Average star' })
   avgStar?: number;

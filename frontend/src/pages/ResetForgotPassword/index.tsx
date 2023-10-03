@@ -20,8 +20,11 @@ const ResetForgotPassword: React.FC = () => {
     const res = await accountApi.validateUrlResetPassword({
       resetPasswordCode: String(resetPasswordCode),
     })
-    if (!res) navigate(ROUTES.sendMailResetPassword)
-    setValidatedUrl(res)
+
+    if (!res.success) {
+      navigate(ROUTES.sendMailResetPassword)
+    }
+    setValidatedUrl(res.success)
   }
 
   const validatePassword = (password: string) => {

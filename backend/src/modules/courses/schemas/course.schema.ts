@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document, SchemaTypes } from 'mongoose';
-import { Level } from '../enums';
 import { User } from 'src/modules/users/schemas/user.schema';
 import { LocalFile } from 'src/modules/files/schemas/local-file.schema';
-import { Section, SectionDocument, SectionSchema } from './section.schema';
+import { SectionDocument, SectionSchema } from './section.schema';
+import { CEFRLevel } from 'src/common/enums';
 
 export type CourseDocument = Course & Document;
 
@@ -30,7 +30,10 @@ export class Course {
   price: number;
 
   @Prop({ default: null })
-  level: Level;
+  level: CEFRLevel;
+
+  @Prop({ default: false })
+  isPublished: boolean;
 
   @Prop({ default: null })
   tags: string[];

@@ -25,7 +25,10 @@ export const ROUTES = {
 
   // lesson
   makeSentence: '/lesson/make-sentence',
-  courseDetails: '/discover/:courseId',
+  multipleChoice: '/lesson/multiple-choice',
+
+  courses: '/courses',
+  courseDetails: '/courses/:courseId',
   coursesTeacher: '/teacher/courses',
 }
 

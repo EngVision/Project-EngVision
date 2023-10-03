@@ -1,10 +1,10 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Level } from '../enums';
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import { UserBriefDto } from 'src/modules/users/dto/user-brief.dto';
 import mongoose from 'mongoose';
 import { ReviewDetailDto } from 'src/modules/reviews/dto/review-detail.dto';
 import { SectionDto } from './section.dto';
+import { CEFRLevel } from 'src/common/enums';
 
 export class CourseDetailDto {
   @Expose({ name: '_id' })
@@ -36,7 +36,7 @@ export class CourseDetailDto {
   price?: number;
 
   @ApiPropertyOptional({ type: String, description: 'Level (A1/A2 ...)' })
-  level?: Level;
+  level?: CEFRLevel;
 
   @Expose({ name: 'attendanceList' })
   @Transform(value => value.obj?.attendanceList?.length)
@@ -54,9 +54,15 @@ export class CourseDetailDto {
   @ApiProperty({ type: [SectionDto], description: 'sections' })
   sections?: SectionDto[];
 
-  @Exclude()
-  posts?: mongoose.Types.ObjectId[];
-
   @ApiPropertyOptional({ type: Number, description: 'Average star' })
   avgStar?: number;
+
+  @ApiPropertyOptional({
+    type: Boolean,
+    description: 'True if user attended course',
+  })
+  isAttended?: boolean;
+
+  @Exclude()
+  posts?: mongoose.Types.ObjectId[];
 }
