@@ -34,8 +34,8 @@ const CourseDetailsPage = () => {
     fetchCourseDetails()
   }, [])
   return courseDetails ? (
-    <div className="flex flex-col bg-[#FFFCF7] p-[1.5rem]">
-      <div className="flex h-[15rem] mb-8">
+    <div className="flex flex-col bg-white p-5 rounded-md shadow-lg">
+      <div className="flex h-60 mb-8">
         <div className="h-full w-[18.75rem] mr-8">
           <img
             className="object-cover w-full h-full"

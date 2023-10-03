@@ -16,6 +16,7 @@ export const ROUTES = {
   ssoSuccess: '/sso-success',
   createProfile: '/create-profile',
   updateProfile: '/update-profile',
+  appearance: '/appearance',
 
   search: '/search',
   exercise: '/exercise/:id',
@@ -24,9 +25,7 @@ export const ROUTES = {
 
   // lesson
   makeSentence: '/lesson/make-sentence',
-
-  courses: '/courses',
-  courseDetails: '/courses/:courseId',
+  courseDetails: '/discover/:courseId',
   coursesTeacher: '/teacher/courses',
 }
 

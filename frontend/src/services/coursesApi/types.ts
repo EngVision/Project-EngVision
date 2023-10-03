@@ -1,12 +1,22 @@
 export interface CourseParams {
+  id: string
   title: string
-  teacher: string
+  teacher: {
+    id: string
+    firstName: string
+    lastName: string
+    email: string
+    avatar: string
+    gender: string
+  }
   about: string
   introVideo: string
   thumbnail: string
   price: number
   level: string
   avgStar: number
+  attendance: number
+  totalLessons: number
 }
 export interface User {
   firstName: string

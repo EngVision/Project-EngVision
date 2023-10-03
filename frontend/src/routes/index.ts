@@ -1,7 +1,6 @@
 import AuthLayout from '../layouts/AuthLayout'
 import Chat from '../pages/Chat'
 import CourseDetailsPage from '../pages/CourseDetails'
-import { CourseList } from '../pages/CourseList'
 import CreateProfile from '../pages/CreateProfile'
 import Exercise from '../pages/Exercise'
 import Discover from '../pages/Discover'
@@ -24,6 +23,7 @@ import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
 
 import type { RouteElement } from './types'
+import { Appearance } from '../pages/Appearance'
 
 const publicRoutes: RouteElement[] = [
   {
@@ -69,10 +69,6 @@ const publicRoutes: RouteElement[] = [
     path: ROUTES.courseDetails,
   },
   {
-    element: CourseList,
-    path: ROUTES.courses,
-  },
-  {
     element: Exercise,
     layout: null,
     path: ROUTES.exercise,
@@ -80,6 +76,10 @@ const publicRoutes: RouteElement[] = [
   {
     element: TeacherCourses,
     path: ROUTES.coursesTeacher,
+  },
+  {
+    element: Appearance,
+    path: ROUTES.appearance,
   },
 ]
 

@@ -1,5 +1,6 @@
 import axiosClient from '../axiosClient'
-import type { ResponseData, ReviewParams } from '../types'
+import type { ResponseData } from '../types'
+import type { ReviewParams } from './types'
 
 const PREFIX = 'courses/'
 
