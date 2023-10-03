@@ -25,6 +25,7 @@ import { ROUTES } from '../utils/constants'
 import MultipleChoice from '../pages/Lesson/MultipleChoice'
 
 import type { RouteElement } from './types'
+import ManageExercise from '../pages/ManageExercise'
 
 const publicRoutes: RouteElement[] = [
   {
@@ -74,11 +75,6 @@ const publicRoutes: RouteElement[] = [
     path: ROUTES.courses,
   },
   {
-    element: Exercise,
-    layout: null,
-    path: ROUTES.exercise,
-  },
-  {
     element: TeacherCourses,
     path: ROUTES.coursesTeacher,
   },
@@ -100,6 +96,19 @@ const privateRoutes: RouteElement[] = [
   {
     element: Exam,
     path: ROUTES.exam,
+  },
+  {
+    element: Exercise,
+    layout: null,
+    path: ROUTES.exercise,
+  },
+  {
+    element: ManageExercise,
+    path: ROUTES.createExercise,
+  },
+  {
+    element: ManageExercise,
+    path: ROUTES.editExercise,
   },
   {
     element: Discover,

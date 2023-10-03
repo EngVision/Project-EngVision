@@ -6,7 +6,6 @@ module.exports = {
   corePlugins: {
     preflight: false,
   },
-  plugins: [require('@tailwindcss/forms')],
   theme: {
     extend: {
       boxShadow: {
