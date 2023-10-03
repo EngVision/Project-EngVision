@@ -73,11 +73,6 @@ const publicRoutes: RouteElement[] = [
     path: ROUTES.courses,
   },
   {
-    element: Exercise,
-    layout: null,
-    path: ROUTES.exercise,
-  },
-  {
     element: TeacherCourses,
     path: ROUTES.coursesTeacher,
   },
@@ -95,6 +90,11 @@ const privateRoutes: RouteElement[] = [
   {
     element: Exam,
     path: ROUTES.exam,
+  },
+  {
+    element: Exercise,
+    layout: null,
+    path: ROUTES.exercise,
   },
   {
     element: Discover,

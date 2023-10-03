@@ -3,6 +3,8 @@ import {
   Question,
   SubmitAnswerResponse,
 } from '../../../../services/exerciseApi/types'
+import { EmojiHappyIcon, EmojiSadIcon } from '../../../../components/Icons'
+import { useEffect, useState } from 'react'
 
 interface SubmitAnswer {
   answer: number[]
@@ -15,6 +17,7 @@ interface MultipleChoiceProps extends Question {
       id: number
       text: string
     }[]
+    multipleCorrectAnswers: boolean
   }
   exerciseId: string
   result: MultipleChoiceResponse | undefined
@@ -28,10 +31,31 @@ interface MultipleChoiceResponse extends SubmitAnswerResponse {
 
 function MultipleChoice(props: MultipleChoiceProps) {
   const { question, id, result, submitAnswer } = props
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>([])
+
+  const selectAnswers = (answer: number) => {
+    if (question.multipleCorrectAnswers) {
+      setSelectedAnswers((prev) => {
+        return prev.includes(answer)
+          ? prev.filter((value) => value !== answer)
+          : [...prev, answer]
+      })
+    } else {
+      submitAnswer({ answer: [answer] }, id)
+    }
+  }
+
+  useEffect(() => {
+    setSelectedAnswers([])
+  }, [props])
 
   return (
     <div>
-      <p>{question.text}</p>
+      <p className="mb-5 text-primary text-xl font-semibold">
+        Multiple choice question
+        {question.multipleCorrectAnswers ? ' (Multiple correct choices)' : ''}
+      </p>
+      <p dangerouslySetInnerHTML={{ __html: question.text }} />
       <div className="flex flex-row justify-between flex-wrap gap-5 mt-14 mb-20">
         {question.answers.map((answer) => {
           const isSubmitAnswer = result && result.answer.includes(answer.id)
@@ -45,14 +69,16 @@ function MultipleChoice(props: MultipleChoiceProps) {
               ghost
               disabled={!!result}
               className={`flex-1 ${
-                isSubmitAnswer || isCorrectAnswer
+                selectedAnswers.includes(answer.id)
+                  ? '!text-white !bg-primary'
+                  : isSubmitAnswer || isCorrectAnswer
                   ? `!text-white ${
                       isCorrectAnswer ? '!bg-green-400' : '!bg-red-400'
                     }`
                   : ''
               }`}
               onClick={() => {
-                submitAnswer({ answer: [answer.id] }, id)
+                selectAnswers(answer.id)
               }}
             >
               {answer.text}
@@ -61,9 +87,25 @@ function MultipleChoice(props: MultipleChoiceProps) {
         })}
       </div>
       {result && (
-        <p className="w-full p-3 border-2 border-solid border-primary rounded-md">
-          {result.explanation}
-        </p>
+        <div className="w-full py-2 px-5 border-2 border-solid border-primary rounded-md flex items-center gap-4">
+          {result.isCorrect ? <EmojiHappyIcon /> : <EmojiSadIcon />}
+          <div className="flex-1 text-primary flex flex-col gap-2">
+            {result.isCorrect && <b>Good job!</b>}
+            <p>{result.explanation}</p>
+          </div>
+        </div>
+      )}
+      {question.multipleCorrectAnswers && !result && (
+        <Button
+          type="primary"
+          className="w-[150px]"
+          disabled={selectedAnswers.length === 0}
+          onClick={async () => {
+            await submitAnswer({ answer: selectedAnswers }, id)
+          }}
+        >
+          Submit
+        </Button>
       )}
     </div>
   )
