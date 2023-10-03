@@ -22,6 +22,7 @@ import Statistic from '../pages/Statistic'
 import TeacherCourses from '../pages/Teacher/Courses'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
+import MultipleChoice from '../pages/Lesson/MultipleChoice'
 
 import type { RouteElement } from './types'
 
@@ -75,6 +76,10 @@ const publicRoutes: RouteElement[] = [
   {
     element: TeacherCourses,
     path: ROUTES.coursesTeacher,
+  },
+  {
+    element: MultipleChoice,
+    path: ROUTES.multipleChoice,
   },
 ]
 
