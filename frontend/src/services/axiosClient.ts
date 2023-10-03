@@ -18,16 +18,16 @@ export const setupAxiosInterceptor = (navigate: NavigateFunction) => {
         .find((row) => row.startsWith('refresh_token='))
         ?.split('=')[1]
 
-      if (error.response?.status === HttpStatusCode.NotFound) {
-        navigate('not-found', { replace: true })
-      }
+      // if (error.response?.status === HttpStatusCode.NotFound) {
+      //   navigate('not-found', { replace: true })
+      // }
 
-      if (
-        error.response?.status === HttpStatusCode.Unauthorized &&
-        !refreshToken
-      ) {
-        navigate('sign-in')
-      }
+      // if (
+      //   error.response?.status === HttpStatusCode.Unauthorized &&
+      //   !refreshToken
+      // ) {
+      //   navigate('sign-in')
+      // }
 
       if (error.response?.status !== 401 || !refreshToken) {
         return Promise.reject(error)
