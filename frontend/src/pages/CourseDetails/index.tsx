@@ -55,23 +55,22 @@ const CourseDetailsPage = () => {
             </div>
           </div>
           <h2 className="text-4xl text-[#2769E7]">{courseDetails.title}</h2>
-          <p>
-            Boost your English public speaking and presentation skills with
-            confidence.
-          </p>
+          <p>{courseDetails.about}</p>
           <div className="flex items-center leading-6">
             <Star className="text-[#FD6267] mr-1.5" />
             <span className="mr-1.5 font-bold">{courseDetails.avgStar}</span>
             <div className="mr-1.5 text-[#706E68]">(451,444 Rating)</div>
           </div>
-          <div>
-            <Button
-              className="flex items-center text-lg px-10 py-5"
-              type="primary"
-            >
-              Enroll with ${courseDetails.price}
-            </Button>
-          </div>
+          {!courseDetails.isAttended && (
+            <div>
+              <Button
+                className="flex items-center text-lg px-10 py-5"
+                type="primary"
+              >
+                Enroll with ${courseDetails.price}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       <Tabs

@@ -28,7 +28,7 @@ export const ROUTES = {
   multipleChoice: '/lesson/multiple-choice',
 
   courses: '/courses',
-  courseDetails: '/courses/:courseId',
+  courseDetails: '/discover/:courseId',
   coursesTeacher: '/teacher/courses',
 }
 

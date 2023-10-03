@@ -52,6 +52,7 @@ export interface CourseDetails {
   avgStar: number
   updatedAt: string
   totalLessons: number
+  isAttended: boolean
 }
 export interface ReviewParams {
   star: number

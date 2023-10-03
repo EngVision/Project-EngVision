@@ -26,42 +26,44 @@ const Reviews = (course: any) => {
       <div className="mb-4">
         <h3 className="text-2xl text-[#2769E7] mb-6">Reviews</h3>
       </div>
-      <div className="mb-8">
-        <Form
-          name="validateOnly"
-          layout="vertical"
-          autoComplete="off"
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-        >
-          <div className="font-bold text-sm mb-2">Review this course</div>
-          <Form.Item<ReviewParams> name="comment" label="Reviews">
-            <TextArea
-              className="mb-6"
-              rows={3}
-              showCount
-              maxLength={500}
-              placeholder="Write your review here"
-            />
-          </Form.Item>
-          <div className="flex items-center w-full justify-between">
-            <Form.Item<ReviewParams> name="star" label="Reviews">
-              <Rate
-                className="text-[#FD6267] mr-5"
-                character={<Star width={24} height={24}></Star>}
-                defaultValue={0}
+      {course.course.isAttended && (
+        <div className="mb-8">
+          <Form
+            name="validateOnly"
+            layout="vertical"
+            autoComplete="off"
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+          >
+            <div className="font-bold text-sm mb-2">Review this course</div>
+            <Form.Item<ReviewParams> name="comment" label="Reviews">
+              <TextArea
+                className="mb-6"
+                rows={3}
+                showCount
+                maxLength={500}
+                placeholder="Write your review here"
               />
             </Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="rounded-xl h-[2.5rem] w-[8rem]"
-            >
-              Submit
-            </Button>
-          </div>
-        </Form>
-      </div>
+            <div className="flex items-center w-full justify-between">
+              <Form.Item<ReviewParams> name="star" label="Reviews">
+                <Rate
+                  className="text-[#FD6267] mr-5"
+                  character={<Star width={24} height={24}></Star>}
+                  defaultValue={0}
+                />
+              </Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="rounded-xl h-[2.5rem] w-[8rem]"
+              >
+                Submit
+              </Button>
+            </div>
+          </Form>
+        </div>
+      )}
       <div>
         {course.course.reviews &&
           course.course.reviews.map((review: any) => (

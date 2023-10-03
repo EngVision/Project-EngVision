@@ -11,7 +11,7 @@ const Overview = (course: any) => {
         <div className="flex text-base font-light">
           <div className="flex items-center  mr-12">
             <VideoPlay className="mr-3" />
-            <div>{course.totalLessons} lessons</div>
+            <div>{course.course.totalLessons} lessons</div>
           </div>
           <div className="flex items-center ">
             <PlayCircle className="mr-3" />
@@ -22,7 +22,7 @@ const Overview = (course: any) => {
       <div className="mb-6">
         <h4 className="text-base mb-2">Description</h4>
         <div className="border-solid border-[1px] border-[#D3D3D3] py-2 px-4 rounded-lg">
-          {course.description}
+          {course.course.description}
         </div>
       </div>
 

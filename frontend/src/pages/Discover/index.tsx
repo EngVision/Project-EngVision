@@ -12,9 +12,8 @@ const Discover = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courses: any = await coursesApi.getCourses()
-        setCourseList(courses.data.results)
-        console.log(courses.data.results)
+        const courses: any = await coursesApi.getCourses('All')
+        setCourseList(courses.data)
       } catch (error) {
         console.error('Error fetching courses:', error)
       }

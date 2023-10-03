@@ -38,7 +38,7 @@ const CourseContent = (course: any) => {
                         <div className="ml-8 mb-4 flex items-center cursor-pointer ">
                           <Circle className="mr-2" width={30} height={30} />
                           <div className="font-bold text-lg">
-                            {lesson.lesson.title}
+                            {lesson.title}
                           </div>
                         </div>
                       ))}
