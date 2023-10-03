@@ -50,6 +50,8 @@ export interface CourseDetails {
   posts: string[]
   reviews: Review[]
   avgStar: number
+  updatedAt: string
+  totalLessons: number
 }
 export interface ReviewParams {
   star: number

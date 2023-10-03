@@ -75,6 +75,15 @@ export enum CEFRLevel {
   A1 = 'A1',
 }
 
+export const Level = [
+  { level: CEFRLevel.A1, color: 'bg-green-300' },
+  { level: CEFRLevel.A2, color: 'bg-green-500' },
+  { level: CEFRLevel.B1, color: 'bg-blue-300' },
+  { level: CEFRLevel.B2, color: 'bg-blue-500' },
+  { level: CEFRLevel.C1, color: 'bg-red-300' },
+  { level: CEFRLevel.C2, color: 'bg-red-500' },
+]
+
 export const GENDERS = [
   {
     label: 'Male',

@@ -13,26 +13,28 @@ const { TabPane } = Tabs
 const CourseDetailsPage = () => {
   const { courseId } = useParams()
   const [courseDetails, setCourseDetails] = useState<CourseDetails | null>(null)
-
   const [activeKey, setActiveKey] = useState<string>('1')
+
+  useEffect(() => {
+    const fetchCourseDetails = async () => {
+      try {
+        if (courseId) {
+          const courses: any = await coursesApi.getCourseDetails(courseId)
+          setCourseDetails(courses.data)
+          console.log(courses.data)
+        }
+      } catch (error) {
+        console.error('Error fetching courses:', error)
+      }
+    }
+
+    fetchCourseDetails()
+  }, [])
+
   const handleTabChange = (key: string) => {
     setActiveKey(key)
   }
 
-  const fetchCourseDetails = async () => {
-    try {
-      if (courseId) {
-        const response = await coursesApi.getCourseDetails(courseId)
-        setCourseDetails(response.data)
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  useEffect(() => {
-    fetchCourseDetails()
-  }, [])
   return courseDetails ? (
     <div className="flex flex-col bg-white p-5 rounded-md shadow-lg">
       <div className="flex h-60 mb-8">
@@ -45,23 +47,21 @@ const CourseDetailsPage = () => {
         </div>
         <div className="flex flex-col h-full justify-between">
           <div className="flex text-sm">
-            <div className="mr-6">
-              Publish: <span className="font-bold">10/12/2021</span>
-            </div>
             <div>
-              Last Update: <span className="font-bold">10/12/2021</span>
+              Last Update:{' '}
+              <span className="font-bold">
+                {courseDetails.updatedAt.substring(0, 10)}
+              </span>
             </div>
           </div>
-          <h2 className="text-4xl text-[#2769E7]">
-            Public Speaking and Presentation Skills in English
-          </h2>
+          <h2 className="text-4xl text-[#2769E7]">{courseDetails.title}</h2>
           <p>
             Boost your English public speaking and presentation skills with
             confidence.
           </p>
           <div className="flex items-center leading-6">
             <Star className="text-[#FD6267] mr-1.5" />
-            <span className="mr-1.5 font-bold">3.8</span>
+            <span className="mr-1.5 font-bold">{courseDetails.avgStar}</span>
             <div className="mr-1.5 text-[#706E68]">(451,444 Rating)</div>
           </div>
           <div>
@@ -69,7 +69,7 @@ const CourseDetailsPage = () => {
               className="flex items-center text-lg px-10 py-5"
               type="primary"
             >
-              Enroll with $29.00
+              Enroll with ${courseDetails.price}
             </Button>
           </div>
         </div>
@@ -92,7 +92,7 @@ const CourseDetailsPage = () => {
           }
           key="1"
         >
-          <Overview />
+          <Overview course={courseDetails} />
         </TabPane>
         <TabPane
           tab={
@@ -107,7 +107,7 @@ const CourseDetailsPage = () => {
           }
           key="2"
         >
-          <CourseContent />
+          <CourseContent course={courseDetails} />
         </TabPane>
         <TabPane
           tab={
@@ -122,7 +122,7 @@ const CourseDetailsPage = () => {
           }
           key="3"
         >
-          <Reviews />
+          <Reviews course={courseDetails} />
         </TabPane>
       </Tabs>
     </div>

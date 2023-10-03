@@ -14,6 +14,7 @@ const Discover = () => {
       try {
         const courses: any = await coursesApi.getCourses()
         setCourseList(courses.data.results)
+        console.log(courses.data.results)
       } catch (error) {
         console.error('Error fetching courses:', error)
       }

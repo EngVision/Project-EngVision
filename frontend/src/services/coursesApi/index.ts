@@ -26,6 +26,7 @@ const coursesApi = {
   postReview: async (courseId: string, data: ReviewParams) => {
     try {
       const res = await axiosClient.post(`${PREFIX}${courseId}/review`, data)
+      console.log('res:', data)
       return res
     } catch (error) {
       console.error('Error post review:', error)

@@ -8,19 +8,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Card, Popover } from 'antd'
 import { StarIcon, VideoPlayIcon } from '../Icons'
 import { Link } from 'react-router-dom'
-import { ROUTES } from '../../utils/constants'
+import { ROUTES, Level } from '../../utils/constants'
 
 export const CourseCard = (course: any) => {
   const { Meta } = Card
-
-  const levels = [
-    { level: 'A1', color: 'bg-green-300' },
-    { level: 'A2', color: 'bg-green-500' },
-    { level: 'B1', color: 'bg-blue-300' },
-    { level: 'B2', color: 'bg-blue-500' },
-    { level: 'C1', color: 'bg-red-300' },
-    { level: 'C2', color: 'bg-red-500' },
-  ]
 
   const popover = (
     <div className="flex flex-col items-start">
@@ -52,7 +43,7 @@ export const CourseCard = (course: any) => {
         }
       >
         <p
-          className={`${levels.find(
+          className={`${Level.find(
             (level) => level.level === course.course.level,
           )?.color} absolute left-2 top-2 text-white px-2 py-0.5 rounded-md`}
         >
@@ -65,9 +56,9 @@ export const CourseCard = (course: any) => {
           </div>
           <div className="flex items-center">
             <p>
-              {course.course.teacher[0].firstName +
+              {course.course.teacher.firstName +
                 ' ' +
-                course.course.teacher[0].lastName}
+                course.course.teacher.lastName}
             </p>
           </div>
         </div>
@@ -81,7 +72,7 @@ export const CourseCard = (course: any) => {
         />
         <div className="flex justify-between items-center text-xs pb-2">
           <div className="flex items-center">
-            <StarIcon className="text-yellow-400" />
+            <StarIcon className="text-[#FD6267]" />
             <p className="font-semibold pl-1">{course.course.avgStar}</p>
           </div>
           <div className="flex">

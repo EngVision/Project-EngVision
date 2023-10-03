@@ -18,7 +18,7 @@ import SSOSuccess from '../pages/SignIn/components/SSOSuccess'
 import SignUp from '../pages/SignUp'
 import TeacherSignUp from '../pages/SignUp/TeacherSignUp'
 import Statistic from '../pages/Statistic'
-import TeacherCourses from '../pages/Teacher/Courses'
+import YourCourses from '../pages/Teacher/Courses/YourCourses'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
 
@@ -74,7 +74,7 @@ const publicRoutes: RouteElement[] = [
     path: ROUTES.exercise,
   },
   {
-    element: TeacherCourses,
+    element: YourCourses,
     path: ROUTES.coursesTeacher,
   },
   {
