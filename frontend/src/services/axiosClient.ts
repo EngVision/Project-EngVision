@@ -25,6 +25,10 @@ const createAxiosResponseInterceptor = () => {
 
       try {
         await axiosClient.get('/auth/refresh')
+        error.response.config.transformResponse = (response: any) => {
+          const res = JSON.parse(response)
+          return res.data
+        }
         return axios(error.response.config)
       } catch (refreshError) {
         return Promise.reject(refreshError)
