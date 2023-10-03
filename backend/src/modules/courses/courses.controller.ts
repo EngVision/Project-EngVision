@@ -135,7 +135,7 @@ export class CoursesController {
     return res.status(HttpStatus.OK).send(
       GetResponse({
         data: course,
-        message: 'Updated course',
+        message: 'Updated course successful',
       }),
     );
   }
