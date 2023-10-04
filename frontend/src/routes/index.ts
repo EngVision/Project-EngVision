@@ -19,11 +19,13 @@ import SSOSuccess from '../pages/SignIn/components/SSOSuccess'
 import SignUp from '../pages/SignUp'
 import TeacherSignUp from '../pages/SignUp/TeacherSignUp'
 import Statistic from '../pages/Statistic'
-import YourCourses from '../pages/Teacher/Courses/YourCourses'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
 
+import TeacherCourses from '../pages/Teacher/Courses'
 import type { RouteElement } from './types'
+import TeacherCourseDetail from '../pages/Teacher/CourseDetail'
+import TeacherCreateCourse from '../pages/Teacher/CreateCourse'
 
 import { Appearance } from '../pages/Appearance'
 
@@ -80,10 +82,6 @@ const publicRoutes: RouteElement[] = [
   {
     element: Discover,
     path: ROUTES.courses,
-  },
-  {
-    element: YourCourses,
-    path: ROUTES.coursesTeacher,
   },
   {
     element: MultipleChoice,
@@ -148,6 +146,18 @@ const privateRoutes: RouteElement[] = [
   {
     element: HelpCenter,
     path: ROUTES.helpCenter,
+  },
+  {
+    element: TeacherCourses,
+    path: ROUTES.teacherCourses,
+  },
+  {
+    element: TeacherCourseDetail,
+    path: ROUTES.teacherCourseDetail,
+  },
+  {
+    element: TeacherCreateCourse,
+    path: ROUTES.teacherCreateCourse,
   },
 ]
 

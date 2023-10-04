@@ -18,11 +18,13 @@ export interface CourseParams {
   attendance: number
   totalLessons: number
 }
+
 export interface User {
   firstName: string
   lastName: string
   email: string
 }
+
 export interface Review {
   id: string
   user: User
@@ -31,16 +33,19 @@ export interface Review {
   comment: string
   updatedAt: string
 }
+
 export interface Lesson {
-  id: string
+  id?: string
   title: string
   exercises: string[]
 }
+
 export interface Section {
-  id: string
+  id?: string
   title: string
   lessons: Lesson[]
 }
+
 export interface CourseDetails {
   id: string
   title: string
@@ -64,7 +69,12 @@ export interface CourseDetails {
   updatedAt: string
   isAttended: boolean
 }
+
 export interface ReviewParams {
   star: number
   comment: string
+}
+
+export interface GetCourseProps {
+  status: string
 }

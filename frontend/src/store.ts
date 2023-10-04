@@ -5,6 +5,7 @@ import { combineReducers } from 'redux'
 import { createReduxHistoryContext } from 'redux-first-history'
 
 import appReducer from './redux/app/slice'
+import courseReducer from './redux/course/slice'
 
 // Setup redux-first-history
 const { createReduxHistory, routerMiddleware, routerReducer } =
@@ -15,6 +16,7 @@ export const store = configureStore({
     getDefaultMiddleware().concat([routerMiddleware]),
   reducer: combineReducers({
     app: appReducer,
+    course: courseReducer,
     router: routerReducer,
   }),
 })

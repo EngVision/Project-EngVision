@@ -32,7 +32,7 @@ export class CoursesService {
     private readonly courseModel: Model<CourseDocument>,
     private readonly reviewsService: ReviewsService,
     private readonly filesService: FilesService,
-  ) {}
+  ) { }
 
   async createCourse(course: CreateCourseDto, teacher: string) {
     const newCourse = new this.courseModel({ ...course, teacher });
@@ -196,7 +196,7 @@ export class CoursesService {
       throw new ForbiddenException('Access denied');
     }
 
-    if (updateCourse.thumbnail) {
+    if (updateCourse.thumbnail && oldCourse.thumbnail) {
       await this.filesService.remove(oldCourse.thumbnail, teacherId);
     }
 

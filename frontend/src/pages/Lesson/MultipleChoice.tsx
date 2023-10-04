@@ -1,10 +1,10 @@
-import {
-  faChartSimple,
-  faEllipsisVertical,
-  faEraser,
-  faNoteSticky,
-} from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import {
+//   faChartSimple,
+//   faEllipsisVertical,
+//   faEraser,
+//   faNoteSticky,
+// } from '@fortawesome/free-solid-svg-icons'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Checkbox, Input, Popover } from 'antd'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox/Checkbox'
 

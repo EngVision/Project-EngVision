@@ -1,10 +1,10 @@
-import { faNoteSticky } from '@fortawesome/free-regular-svg-icons'
-import {
-  faChartSimple,
-  faEllipsis,
-  faEraser,
-} from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faNoteSticky } from '@fortawesome/free-regular-svg-icons'
+// import {
+//   faChartSimple,
+//   faEllipsis,
+//   faEraser,
+// } from '@fortawesome/free-solid-svg-icons'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Card, Popover } from 'antd'
 import { StarIcon, VideoPlayIcon } from '../Icons'
 import { Link } from 'react-router-dom'
