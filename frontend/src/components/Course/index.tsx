@@ -8,19 +8,25 @@ import {
   StarIcon,
   VideoPlayIcon,
 } from '../Icons'
+import { useNavigate } from 'react-router-dom'
 
 interface CourseProps {
   course: any
 }
 
 const Course = ({ course }: CourseProps) => {
+  const navigate = useNavigate()
+
   return (
     <Card
-      className="w-[100%]"
+      className="w-full"
       cover={
         <img
           alt="example"
-          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+          src={`${import.meta.env.VITE_SERVER_FILES_URL}${course.thumbnail}`}
+          onClick={() => navigate(course.id)}
+          role="presentation"
+          className="cursor-pointer h-[200px]"
         />
       }
     >

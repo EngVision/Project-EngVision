@@ -1,4 +1,5 @@
 import axiosClient from '../axiosClient'
+import type { ResponseData } from '../types'
 
 const PREFIX = 'files/'
 
@@ -18,6 +19,10 @@ const fileApi = {
       console.error('Error post file details:', error)
       throw error
     }
+  },
+  uploadImage: async (data: any) => {
+    const res: ResponseData = await axiosClient.post(PREFIX, data)
+    return res
   },
 }
 

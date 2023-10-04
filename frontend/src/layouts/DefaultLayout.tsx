@@ -13,7 +13,7 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
         <div className="px-8  bg-bgNeutral">
           <Header />
         </div>
-        <div className="px-8 flex-1  overflow-y-scroll bg-bgNeutral">
+        <div className="px-8 pb-8 flex-1 overflow-y-auto bg-bgNeutral">
           {children}
         </div>
       </div>

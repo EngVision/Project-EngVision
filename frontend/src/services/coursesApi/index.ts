@@ -1,6 +1,7 @@
 import axiosClient from '../axiosClient'
 import type { ResponseData } from '../types'
 import type { ReviewParams } from './types'
+import { GetCourseProps } from './types'
 
 const PREFIX = 'courses/'
 
@@ -14,7 +15,7 @@ const coursesApi = {
       throw error
     }
   },
-  getCourses: async (status: string) => {
+  getCourses: async ({ status }: GetCourseProps) => {
     try {
       const res: ResponseData = await axiosClient.get(
         `${PREFIX}?status=${status}`,
@@ -22,6 +23,33 @@ const coursesApi = {
       return res
     } catch (error) {
       console.error('Error get courses:', error)
+      throw error
+    }
+  },
+  create: async (data: any) => {
+    try {
+      const res: ResponseData = await axiosClient.post(PREFIX, data)
+      return res
+    } catch (error) {
+      console.error('Error create course:', error)
+      throw error
+    }
+  },
+  update: async (id: string, data: any) => {
+    try {
+      const res: ResponseData = await axiosClient.patch(`${PREFIX}${id}`, data)
+      return res
+    } catch (error) {
+      console.error('Error update course:', error)
+      throw error
+    }
+  },
+  delete: async (id: string) => {
+    try {
+      const res: ResponseData = await axiosClient.delete(`${PREFIX}${id}`)
+      return res
+    } catch (error) {
+      console.error('Error delete course:', error)
       throw error
     }
   },

@@ -58,3 +58,24 @@ code {
   src: url('/assets/fonts/SVN-Poppins-Bold.ttf');
   font-weight: 700;
 }
+
+/* Custom antd */
+.ant-tabs-ink-bar {
+  background-color: transparent !important;
+}
+
+.ant-collapse-header {
+  align-items: center !important;
+}
+
+.ant-tabs-content-holder {
+  overflow: auto !important
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}

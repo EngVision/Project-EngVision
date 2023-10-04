@@ -1,9 +1,4 @@
 export const ROUTES = {
-  UpdateProfile: '/update-profile',
-  docList: '/doclist',
-  resetForgotPassword: '/reset-password/:resetPasswordCode',
-  sendMailResetPassword: '/forgot-password',
-
   // Menu
   home: '/',
   myHub: '/my-hub',
@@ -24,6 +19,8 @@ export const ROUTES = {
   appearance: '/appearance',
 
   search: '/search',
+  resetForgotPassword: '/reset-password/:resetPasswordCode',
+  sendMailResetPassword: '/forgot-password',
 
   // Exercise
   exercise: '/exercise/:id',
@@ -36,7 +33,9 @@ export const ROUTES = {
 
   courses: '/discover',
   courseDetails: '/discover/:courseId',
-  coursesTeacher: '/teacher/courses',
+  teacherCourses: '/teacher/courses',
+  teacherCourseDetail: '/teacher/courses/:courseId',
+  teacherCreateCourse: '/teacher/courses/new',
 }
 
 export const ROLES = {
@@ -111,3 +110,16 @@ export const SEARCH_OPTIONS = {
 }
 
 export const UPLOAD_FILE_URL = `${import.meta.env.VITE_BASE_URL}/files`
+
+export const COURSE_STATUS = {
+  draft: 'Draft',
+  published: 'Published',
+  all: 'All',
+  attended: 'Attended',
+}
+
+export const TEACHER_COURSE_TABS = {
+  overview: 'Overview',
+  course: 'Courses',
+  statistic: 'Statistic',
+}
