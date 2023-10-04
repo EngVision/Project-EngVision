@@ -24,9 +24,12 @@ export class FillBlankService extends ExerciseContentService {
     );
 
     if (!this.isValidQuestionList(validatedContent)) {
-      throw new BadRequestException(`question.text should contain one '[[]]'`);
+      throw new BadRequestException(
+        `question.text, correctAnswer.detail: Number of answer must match with number of blank`,
+      );
     }
 
+    this.transformAnswerList(validatedContent);
     this.setDefaultExplain(validatedContent);
 
     const questionList = await this.fillBlankModel.insertMany(validatedContent);
@@ -36,42 +39,75 @@ export class FillBlankService extends ExerciseContentService {
 
   async checkAnswer(id: string, answer: string): Promise<QuestionResult> {
     if (typeof answer !== 'string') {
-      throw new BadRequestException('answer must be a string');
+      throw new BadRequestException('Answer must be a string');
     }
 
-    const { detail, explanation } = (
-      await this.fillBlankModel.findById(id).select('correctAnswer')
-    ).correctAnswer;
+    const {
+      question,
+      correctAnswer: { detail, explanation },
+    } = await this.fillBlankModel.findById(id);
 
-    const isCorrect = detail.toLowerCase() === answer.toLowerCase();
+    if (!this.isValidQuestion(question.text, answer)) {
+      throw new BadRequestException(
+        'Number of answer must match with number of blank',
+      );
+    }
+
+    const transformAnswer = this.transformAnswer(question.text, answer);
+
+    const isCorrect = detail.toLowerCase() === transformAnswer.toLowerCase();
 
     return {
       question: id,
       isCorrect,
-      answer,
+      answer: transformAnswer,
       correctAnswer: detail,
       explanation,
     };
   }
 
   isValidQuestionList(questionList: FillBlank[]): boolean {
-    return questionList.every(q => {
-      const check = q.question.text
-        .split(' ')
-        .filter(value => value === '[[]]').length;
+    return questionList.every(q =>
+      this.isValidQuestion(q.question.text, q.correctAnswer.detail),
+    );
+  }
 
-      if (check === 1) {
-        return true; // return true if question text contain one '[[]]'
-      }
+  isValidQuestion(question: string, answer: string): boolean {
+    const count = (question.match(/\[]/g) || []).length;
 
-      return false; // return false if question text does not contain '[[]]' or more than one
+    if (count === answer.split('/').length) {
+      return true; // return true if question text number of '[]' is match with number of correct answer
+    }
+
+    return false; // return false if question text does not contain '[]' or not valid
+  }
+
+  transformAnswerList(questionList: FillBlank[]): void {
+    questionList.forEach(q => {
+      q.correctAnswer.detail = this.transformAnswer(
+        q.question.text,
+        q.correctAnswer.detail,
+      );
     });
   }
 
+  transformAnswer(question: string, answer: string): string {
+    const answerSplitted = answer.split('/').map(s => s.trim());
+
+    return question
+      .split('[]')
+      .reduce(
+        (prev, s, i) =>
+          `${prev}${s}${
+            answerSplitted[i] ? '<b>' + answerSplitted[i] + '</b>' : ''
+          }`,
+        '',
+      );
+  }
+
   setDefaultExplain(questionList: FillBlank[]): void {
-    questionList.forEach(
-      q =>
-        (q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail}`),
-    );
+    questionList.forEach(q => {
+      q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail}`;
+    });
   }
 }

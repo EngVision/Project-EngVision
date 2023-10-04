@@ -21,10 +21,14 @@ import { CreateMultipleChoiceDto } from '../exercise-content/multiple-choice/dto
 import { CreateExerciseDto, ExerciseDto, UpdateExerciseDto } from './dto';
 import { ExercisesService } from './exercises.service';
 import { Role } from 'src/common/enums';
+import { CreateFillBlankDto } from '../exercise-content/fill-blank/dto';
+import { CreateConstructedResponseDto } from '../exercise-content/constructed-response/dto/create-constructed-response.dto';
 
 @Controller('exercises')
 @ApiTags('Exercises')
 @ApiExtraModels(CreateMultipleChoiceDto)
+@ApiExtraModels(CreateFillBlankDto)
+@ApiExtraModels(CreateConstructedResponseDto)
 export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 

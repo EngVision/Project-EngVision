@@ -25,8 +25,10 @@ export class UsersService {
       service: 'Gmail',
       auth: {
         user: 'engvision.dev@gmail.com',
-        pass: process.env.MAIL_PASSWORD,
+        pass: 'EngVision2023',
       },
+      secure: false,
+      requireTLS: true,
     });
   }
 
