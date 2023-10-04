@@ -1,4 +1,9 @@
 export const ROUTES = {
+  UpdateProfile: '/update-profile',
+  docList: '/doclist',
+  resetForgotPassword: '/reset-password/:resetPasswordCode',
+  sendMailResetPassword: '/forgot-password',
+
   // Menu
   home: '/',
   myHub: '/my-hub',
@@ -19,9 +24,11 @@ export const ROUTES = {
   appearance: '/appearance',
 
   search: '/search',
+
+  // Exercise
   exercise: '/exercise/:id',
-  resetForgotPassword: '/reset-password/:resetPasswordCode',
-  sendMailResetPassword: '/forgot-password',
+  createExercise: '/manage-exercise',
+  editExercise: '/manage-exercise/:id',
 
   // lesson
   makeSentence: '/lesson/make-sentence',
@@ -102,3 +109,5 @@ export const SEARCH_OPTIONS = {
   homework: 'Homeworks',
   course: 'Courses',
 }
+
+export const UPLOAD_FILE_URL = `${import.meta.env.VITE_BASE_URL}/files`
