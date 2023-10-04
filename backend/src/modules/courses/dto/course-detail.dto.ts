@@ -25,7 +25,7 @@ export class CourseDetailDto {
   @ApiPropertyOptional({ type: String, description: 'Video url' })
   introVideo?: number;
 
-  @Transform(value => value.obj.thumbnail.toString())
+  @Transform(value => value.obj.thumbnail?.toString())
   @ApiPropertyOptional({
     type: mongoose.Types.ObjectId,
     description: 'Thumbnail',

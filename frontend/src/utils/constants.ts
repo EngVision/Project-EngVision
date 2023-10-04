@@ -21,6 +21,7 @@ export const ROUTES = {
   ssoSuccess: '/sso-success',
   createProfile: '/create-profile',
   updateProfile: '/update-profile',
+  appearance: '/appearance',
 
   search: '/search',
 
@@ -33,8 +34,8 @@ export const ROUTES = {
   makeSentence: '/lesson/make-sentence',
   multipleChoice: '/lesson/multiple-choice',
 
-  courses: '/courses',
-  courseDetails: '/courses/:courseId',
+  courses: '/discover',
+  courseDetails: '/discover/:courseId',
   coursesTeacher: '/teacher/courses',
 }
 
@@ -83,6 +84,15 @@ export enum CEFRLevel {
   A2 = 'A2',
   A1 = 'A1',
 }
+
+export const Level = [
+  { level: CEFRLevel.A1, color: 'bg-green-300' },
+  { level: CEFRLevel.A2, color: 'bg-green-500' },
+  { level: CEFRLevel.B1, color: 'bg-blue-300' },
+  { level: CEFRLevel.B2, color: 'bg-blue-500' },
+  { level: CEFRLevel.C1, color: 'bg-red-300' },
+  { level: CEFRLevel.C2, color: 'bg-red-500' },
+]
 
 export const GENDERS = [
   {

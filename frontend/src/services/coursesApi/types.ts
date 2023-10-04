@@ -1,12 +1,22 @@
 export interface CourseParams {
+  id: string
   title: string
-  teacher: string
+  teacher: {
+    id: string
+    firstName: string
+    lastName: string
+    email: string
+    avatar: string
+    gender: string
+  }
   about: string
   introVideo: string
   thumbnail: string
   price: number
   level: string
   avgStar: number
+  attendance: number
+  totalLessons: number
 }
 export interface User {
   firstName: string
@@ -19,6 +29,17 @@ export interface Review {
   courseId: string
   star: number
   comment: string
+  updatedAt: string
+}
+export interface Lesson {
+  id: string
+  title: string
+  exercises: string[]
+}
+export interface Section {
+  id: string
+  title: string
+  lessons: Lesson[]
 }
 export interface CourseDetails {
   id: string
@@ -36,10 +57,12 @@ export interface CourseDetails {
   thumbnail: string
   price: number
   level: string
-  sections: string[]
+  sections: Section[]
   posts: string[]
   reviews: Review[]
   avgStar: number
+  updatedAt: string
+  isAttended: boolean
 }
 export interface ReviewParams {
   star: number

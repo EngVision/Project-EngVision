@@ -11,31 +11,39 @@ import Reviews from './Reviews'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {
-  const { courseId } = useParams()
+  const { courseId = '' } = useParams<{ courseId: string }>()
   const [courseDetails, setCourseDetails] = useState<CourseDetails | null>(null)
-
   const [activeKey, setActiveKey] = useState<string>('1')
+
+  useEffect(() => {
+    const fetchCourseDetails = async () => {
+      try {
+        if (courseId) {
+          const courses: any = await coursesApi.getCourseDetails(courseId)
+          setCourseDetails(courses.data)
+        }
+      } catch (error) {
+        console.error('Error fetching courses:', error)
+      }
+    }
+
+    fetchCourseDetails()
+  }, [courseId])
+
   const handleTabChange = (key: string) => {
     setActiveKey(key)
   }
-
-  const fetchCourseDetails = async () => {
+  const handleAttendCourse = async () => {
     try {
-      if (courseId) {
-        const response = await coursesApi.getCourseDetails(courseId)
-        setCourseDetails(response.data)
-      }
+      await coursesApi.postAttend(courseId)
+      window.location.reload()
     } catch (error) {
-      console.error(error)
+      console.error('Error attending course:', error)
     }
   }
-
-  useEffect(() => {
-    fetchCourseDetails()
-  }, [])
   return courseDetails ? (
-    <div className="flex flex-col bg-[#FFFCF7] p-[1.5rem]">
-      <div className="flex h-[15rem] mb-8">
+    <div className="flex flex-col bg-white p-5 rounded-md shadow-lg">
+      <div className="flex h-60 mb-8">
         <div className="h-full w-[18.75rem] mr-8">
           <img
             className="object-cover w-full h-full"
@@ -45,33 +53,31 @@ const CourseDetailsPage = () => {
         </div>
         <div className="flex flex-col h-full justify-between">
           <div className="flex text-sm">
-            <div className="mr-6">
-              Publish: <span className="font-bold">10/12/2021</span>
-            </div>
             <div>
-              Last Update: <span className="font-bold">10/12/2021</span>
+              Last Update:{' '}
+              <span className="font-bold">
+                {courseDetails.updatedAt.substring(0, 10)}
+              </span>
             </div>
           </div>
-          <h2 className="text-4xl text-[#2769E7]">
-            Public Speaking and Presentation Skills in English
-          </h2>
-          <p>
-            Boost your English public speaking and presentation skills with
-            confidence.
-          </p>
+          <h2 className="text-4xl text-[#2769E7]">{courseDetails.title}</h2>
+          <p>{courseDetails.about}</p>
           <div className="flex items-center leading-6">
             <Star className="text-[#FD6267] mr-1.5" />
-            <span className="mr-1.5 font-bold">3.8</span>
-            <div className="mr-1.5 text-[#706E68]">(451,444 Rating)</div>
+            <span className="mr-1.5 font-bold">{courseDetails.avgStar}</span>
+            <div className="mr-1.5 text-[#706E68]">{`(${courseDetails.reviews.length} Rating)`}</div>
           </div>
-          <div>
-            <Button
-              className="flex items-center text-lg px-10 py-5"
-              type="primary"
-            >
-              Enroll with $29.00
-            </Button>
-          </div>
+          {!courseDetails.isAttended && (
+            <div>
+              <Button
+                className="flex items-center text-lg px-10 py-5"
+                type="primary"
+                onClick={handleAttendCourse}
+              >
+                Enroll with ${courseDetails.price}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       <Tabs
@@ -92,7 +98,7 @@ const CourseDetailsPage = () => {
           }
           key="1"
         >
-          <Overview />
+          <Overview {...courseDetails} />
         </TabPane>
         <TabPane
           tab={
@@ -107,7 +113,7 @@ const CourseDetailsPage = () => {
           }
           key="2"
         >
-          <CourseContent />
+          <CourseContent {...courseDetails} />
         </TabPane>
         <TabPane
           tab={
@@ -122,7 +128,7 @@ const CourseDetailsPage = () => {
           }
           key="3"
         >
-          <Reviews />
+          <Reviews {...courseDetails} />
         </TabPane>
       </Tabs>
     </div>

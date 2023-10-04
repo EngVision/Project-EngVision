@@ -1,5 +1,6 @@
 import axiosClient from '../axiosClient'
-import type { ResponseData, ReviewParams } from '../types'
+import type { ResponseData } from '../types'
+import type { ReviewParams } from './types'
 
 const PREFIX = 'courses/'
 
@@ -13,9 +14,11 @@ const coursesApi = {
       throw error
     }
   },
-  getCourses: async () => {
+  getCourses: async (status: string) => {
     try {
-      const res: ResponseData = await axiosClient.get(`${PREFIX}`)
+      const res: ResponseData = await axiosClient.get(
+        `${PREFIX}?status=${status}`,
+      )
       return res
     } catch (error) {
       console.error('Error get courses:', error)
@@ -25,9 +28,19 @@ const coursesApi = {
   postReview: async (courseId: string, data: ReviewParams) => {
     try {
       const res = await axiosClient.post(`${PREFIX}${courseId}/review`, data)
+      console.log('res:', data)
       return res
     } catch (error) {
       console.error('Error post review:', error)
+      throw error
+    }
+  },
+  postAttend: async (courseId: string) => {
+    try {
+      const res = await axiosClient.post(`${PREFIX}${courseId}/attend`)
+      return res
+    } catch (error) {
+      console.error('Error post attend:', error)
       throw error
     }
   },

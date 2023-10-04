@@ -1,14 +1,14 @@
 import AuthLayout from '../layouts/AuthLayout'
 import Chat from '../pages/Chat'
 import CourseDetailsPage from '../pages/CourseDetails'
-import { CourseList } from '../pages/CourseList'
 import CreateProfile from '../pages/CreateProfile'
-import Exercise from '../pages/Exercise'
 import Discover from '../pages/Discover'
 import Exam from '../pages/Exam'
+import Exercise from '../pages/Exercise'
 import HelpCenter from '../pages/HelpCenter'
 import Home from '../pages/Home'
 import MakeSentences from '../pages/Lesson/MakeSentences'
+import MultipleChoice from '../pages/Lesson/MultipleChoice'
 import MyHub from '../pages/MyHub'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
 import Search from '../pages/Search'
@@ -19,12 +19,14 @@ import SSOSuccess from '../pages/SignIn/components/SSOSuccess'
 import SignUp from '../pages/SignUp'
 import TeacherSignUp from '../pages/SignUp/TeacherSignUp'
 import Statistic from '../pages/Statistic'
-import TeacherCourses from '../pages/Teacher/Courses'
+import YourCourses from '../pages/Teacher/Courses/YourCourses'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
-import MultipleChoice from '../pages/Lesson/MultipleChoice'
 
 import type { RouteElement } from './types'
+
+import { Appearance } from '../pages/Appearance'
+
 import ManageExercise from '../pages/ManageExercise'
 
 const publicRoutes: RouteElement[] = [
@@ -71,16 +73,25 @@ const publicRoutes: RouteElement[] = [
     path: ROUTES.courseDetails,
   },
   {
-    element: CourseList,
+    element: Exercise,
+    layout: null,
+    path: ROUTES.exercise,
+  },
+  {
+    element: Discover,
     path: ROUTES.courses,
   },
   {
-    element: TeacherCourses,
+    element: YourCourses,
     path: ROUTES.coursesTeacher,
   },
   {
     element: MultipleChoice,
     path: ROUTES.multipleChoice,
+  },
+  {
+    element: Appearance,
+    path: ROUTES.appearance,
   },
 ]
 

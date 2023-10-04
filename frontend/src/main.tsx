@@ -27,16 +27,4 @@ const ClientRenderer = () =>
     </ConfigProvider>,
   )
 
-if (process.env.NODE_ENV === 'development') {
-  // Prepare MSW in a Service Worker
-  import('../mocks/browser')
-    .then(({ worker }) => {
-      worker.start()
-    })
-    // Launched mock server, and then start client React app
-    .then(() => {
-      ClientRenderer()
-    })
-} else {
-  ClientRenderer()
-}
+ClientRenderer()

@@ -1,59 +1,103 @@
-import { Avatar, Card } from 'antd'
-
-import { PlayCircleIcon, StarIcon, VideoPlayIcon } from '../Icons'
+import { faNoteSticky } from '@fortawesome/free-regular-svg-icons'
+import {
+  faChartSimple,
+  faEllipsis,
+  faEraser,
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Card, Popover } from 'antd'
+import { StarIcon, VideoPlayIcon } from '../Icons'
+import { Link } from 'react-router-dom'
+import { ROUTES, Level } from '../../utils/constants'
 
 export const CourseCard = (course: any) => {
   const { Meta } = Card
 
+  const popover = (
+    <div className="flex flex-col items-start">
+      <Button type="text">
+        <FontAwesomeIcon className="mr-1" icon={faChartSimple} />
+        Statistics
+      </Button>
+      <Button href="./exam-edit" type="text">
+        <FontAwesomeIcon className="mr-1" icon={faNoteSticky} />
+        Edit
+      </Button>
+      <Button type="text">
+        <FontAwesomeIcon className="mr-1" icon={faEraser} />
+        Remove
+      </Button>
+    </div>
+  )
+
   return (
-    <Card
-      className="w-[100%]"
-      cover={
-        <img
-          alt="example"
-          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+    <Link to={ROUTES.discover + '/' + course.course.id}>
+      <Card
+        className="w-[100%]"
+        hoverable
+        cover={
+          <img
+            alt="example"
+            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+          />
+        }
+      >
+        <p
+          className={`${Level.find(
+            (level) => level.level === course.course.level,
+          )?.color} absolute left-2 top-2 text-white px-2 py-0.5 rounded-md`}
+        >
+          {course.course.level}
+        </p>
+        <div className="flex justify-between text-xs">
+          <div className="flex items-center">
+            <VideoPlayIcon className="pr-1" />
+            <p>{course.course.totalLessons}</p>
+          </div>
+          <div className="flex items-center">
+            <p>
+              {course.course.teacher.firstName +
+                ' ' +
+                course.course.teacher.lastName}
+            </p>
+          </div>
+        </div>
+        <Meta
+          title={
+            <span className="text-xl font-bold uppercase">
+              {course.course.title}
+            </span>
+          }
+          className="py-3"
         />
-      }
-    >
-      <p className="absolute left-0 top-0 bg-blue-500 text-white px-2 py-0.5 rounded-md">
-        {course.course.level}
-      </p>
-      <div className="flex justify-between text-xs">
-        <div className="flex items-center">
-          <VideoPlayIcon className="pr-1" />
-          <p>10 Lessons</p>
+        <div className="flex justify-between items-center text-xs pb-2">
+          <div className="flex items-center">
+            <StarIcon className="text-[#FD6267]" />
+            <p className="font-semibold pl-1">{course.course.avgStar}</p>
+          </div>
+          <div className="flex">
+            <p className="text-blue-700 pr-1">{course.course.attendance}</p>
+            <p>Students</p>
+          </div>
         </div>
-        <div className="flex items-center">
-          <PlayCircleIcon className="pr-1" />
-          <p>25 hr 3 min </p>
+
+        <div className="flex justify-between items-center text-xs pt-1">
+          <div className="flex">
+            <p className="font-semibold text-3xl text-blue-600">
+              ${course.course.price}
+            </p>
+          </div>
+          <Popover
+            content={popover}
+            trigger="click"
+            className="text-blue-600 hover:text-slate-400"
+          >
+            <Button type="text" className="absolute right-2">
+              <FontAwesomeIcon icon={faEllipsis} />
+            </Button>
+          </Popover>
         </div>
-      </div>
-      <Meta
-        title={
-          <span className="text-sm font-bold uppercase">
-            {course.course.title}
-          </span>
-        }
-        className="py-3"
-      />
-      <Meta
-        avatar={
-          <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
-        }
-        title={
-          <span className="text-sm font-normal">{course.course.teacher}</span>
-        }
-      />
-      <div className="flex justify-between items-center text-xs pt-3">
-        <div className="flex ">
-          <StarIcon className="text-blue-600" />
-          <p className="font-semibold pl-1">{course.course.avgStar}</p>
-        </div>
-        <div className="flex">
-          <p className="text-blue-700 pr-1">400+</p>
-          <p>Students</p>
-        </div>
-      </div>
-    </Card>
+      </Card>
+    </Link>
   )
 }
