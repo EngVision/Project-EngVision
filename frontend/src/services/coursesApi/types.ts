@@ -29,6 +29,7 @@ export interface Review {
   courseId: string
   star: number
   comment: string
+  updatedAt: string
 }
 export interface Lesson {
   id: string

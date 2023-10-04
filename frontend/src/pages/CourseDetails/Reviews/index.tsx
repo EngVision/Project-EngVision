@@ -1,7 +1,11 @@
 import { Avatar, Button, Form, Input, Rate } from 'antd'
 import Star from '../../../components/Icons/Star'
 import coursesApi from '../../../services/coursesApi'
-import { CourseDetails, ReviewParams } from '../../../services/coursesApi/types'
+import {
+  CourseDetails,
+  Review,
+  ReviewParams,
+} from '../../../services/coursesApi/types'
 
 const Reviews = (course: CourseDetails) => {
   const { TextArea } = Input
@@ -66,7 +70,7 @@ const Reviews = (course: CourseDetails) => {
       )}
       <div>
         {course.reviews &&
-          course.reviews.map((review: any) => (
+          course.reviews.map((review: Review) => (
             <div className="border-dashed border-[1px] rounded-lg mb-10">
               <div className="flex p-4">
                 <Avatar

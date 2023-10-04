@@ -34,7 +34,7 @@ export const ROUTES = {
   makeSentence: '/lesson/make-sentence',
   multipleChoice: '/lesson/multiple-choice',
 
-  courses: '/courses',
+  courses: '/discover',
   courseDetails: '/discover/:courseId',
   coursesTeacher: '/teacher/courses',
 }
