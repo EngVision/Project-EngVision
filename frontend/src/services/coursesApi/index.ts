@@ -35,6 +35,15 @@ const coursesApi = {
       throw error
     }
   },
+  postAttend: async (courseId: string) => {
+    try {
+      const res = await axiosClient.post(`${PREFIX}${courseId}/attend`)
+      return res
+    } catch (error) {
+      console.error('Error post attend:', error)
+      throw error
+    }
+  },
 }
 
 export default coursesApi

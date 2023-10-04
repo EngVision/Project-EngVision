@@ -30,6 +30,16 @@ export interface Review {
   star: number
   comment: string
 }
+export interface Lesson {
+  id: string
+  title: string
+  exercises: string[]
+}
+export interface Section {
+  id: string
+  title: string
+  lessons: Lesson[]
+}
 export interface CourseDetails {
   id: string
   title: string
@@ -46,12 +56,11 @@ export interface CourseDetails {
   thumbnail: string
   price: number
   level: string
-  sections: string[]
+  sections: Section[]
   posts: string[]
   reviews: Review[]
   avgStar: number
   updatedAt: string
-  totalLessons: number
   isAttended: boolean
 }
 export interface ReviewParams {

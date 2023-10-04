@@ -11,7 +11,7 @@ import Reviews from './Reviews'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {
-  const { courseId } = useParams()
+  const { courseId = '' } = useParams<{ courseId: string }>()
   const [courseDetails, setCourseDetails] = useState<CourseDetails | null>(null)
   const [activeKey, setActiveKey] = useState<string>('1')
 
@@ -21,7 +21,6 @@ const CourseDetailsPage = () => {
         if (courseId) {
           const courses: any = await coursesApi.getCourseDetails(courseId)
           setCourseDetails(courses.data)
-          console.log(courses.data)
         }
       } catch (error) {
         console.error('Error fetching courses:', error)
@@ -29,12 +28,19 @@ const CourseDetailsPage = () => {
     }
 
     fetchCourseDetails()
-  }, [])
+  }, [courseId])
 
   const handleTabChange = (key: string) => {
     setActiveKey(key)
   }
-
+  const handleAttendCourse = async () => {
+    try {
+      await coursesApi.postAttend(courseId)
+      window.location.reload()
+    } catch (error) {
+      console.error('Error attending course:', error)
+    }
+  }
   return courseDetails ? (
     <div className="flex flex-col bg-white p-5 rounded-md shadow-lg">
       <div className="flex h-60 mb-8">
@@ -59,13 +65,14 @@ const CourseDetailsPage = () => {
           <div className="flex items-center leading-6">
             <Star className="text-[#FD6267] mr-1.5" />
             <span className="mr-1.5 font-bold">{courseDetails.avgStar}</span>
-            <div className="mr-1.5 text-[#706E68]">(451,444 Rating)</div>
+            <div className="mr-1.5 text-[#706E68]">{`(${courseDetails.reviews.length} Rating)`}</div>
           </div>
           {!courseDetails.isAttended && (
             <div>
               <Button
                 className="flex items-center text-lg px-10 py-5"
                 type="primary"
+                onClick={handleAttendCourse}
               >
                 Enroll with ${courseDetails.price}
               </Button>
@@ -91,7 +98,7 @@ const CourseDetailsPage = () => {
           }
           key="1"
         >
-          <Overview course={courseDetails} />
+          <Overview {...courseDetails} />
         </TabPane>
         <TabPane
           tab={
@@ -106,7 +113,7 @@ const CourseDetailsPage = () => {
           }
           key="2"
         >
-          <CourseContent course={courseDetails} />
+          <CourseContent {...courseDetails} />
         </TabPane>
         <TabPane
           tab={
@@ -121,7 +128,7 @@ const CourseDetailsPage = () => {
           }
           key="3"
         >
-          <Reviews course={courseDetails} />
+          <Reviews {...courseDetails} />
         </TabPane>
       </Tabs>
     </div>
