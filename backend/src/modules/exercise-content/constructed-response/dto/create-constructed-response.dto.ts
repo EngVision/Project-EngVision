@@ -59,8 +59,7 @@ export class CreateConstructedResponseDto extends ExerciseQuestionDto {
   @ApiProperty({ type: QuestionDto, description: 'Question content' })
   question: QuestionDto;
 
-  @IsNotEmptyObject()
-  @ValidateNested()
+  @IsOptional()
   @Type(() => CorrectAnswerDto)
   @ApiProperty({ type: CorrectAnswerDto, description: 'Correct answer' })
   correctAnswer: CorrectAnswerDto;
