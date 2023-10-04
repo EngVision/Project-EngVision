@@ -14,7 +14,7 @@ function DoneExercise({ totalCorrect, totalDone }: DoneExerciseProps) {
       <p className="text-4xl font-bold">
         {((totalCorrect / totalDone) * 100).toFixed(0)}%
       </p>
-      <p className="text-xl">
+      <p className="text-xl font-medium">
         You just ranking up to <span className="font-bold">B2</span>
       </p>
     </div>
