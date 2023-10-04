@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react'
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from './hooks/redux'
-import DefaultLayout from './layouts/DefaultLayout'
-import NoLayout from './layouts/NoLayout'
-import { setUserAccountId } from './redux/app/slice'
-import { privateRoutes, publicRoutes } from './routes'
+import { setRole, setUserAccountId } from './redux/app/slice'
+import AppRoutes from './routes'
 import authApi from './services/authApi'
 import { ROUTES } from './utils/constants'
 import { setupAxiosInterceptor } from './services/axiosClient'
@@ -25,18 +23,14 @@ const App: React.FC = () => {
 
         if (data?.id) {
           dispatch(setUserAccountId(data.id))
+          dispatch(setRole(data.role))
 
           if (pathname === ROUTES.signIn || pathname.includes(ROUTES.signUp)) {
             navigate(ROUTES.home)
           }
-        } else if (
-          !publicRoutes.find((route) => route.path === pathname) &&
-          !location.pathname.includes('reset-password')
-        ) {
-          navigate(ROUTES.signIn)
         }
       } catch (error) {
-        navigate(ROUTES.signIn)
+        console.log(error)
       }
     }
   }
@@ -46,58 +40,7 @@ const App: React.FC = () => {
     fetchAuthUser()
   }, [])
 
-  return (
-    <>
-      <Routes>
-        {publicRoutes.map((route) => {
-          const Comp = route.element
-          let Layout = DefaultLayout
-
-          if (route.layout === null) {
-            Layout = NoLayout
-          } else if (route.layout) {
-            Layout = route.layout
-          }
-          return (
-            <Route
-              key={route.path}
-              path={route.path}
-              element={
-                <Layout>
-                  <Comp />
-                </Layout>
-              }
-            />
-          )
-        })}
-      </Routes>
-      {userAccountId && (
-        <Routes>
-          {privateRoutes.map((route) => {
-            const Comp = route.element
-            let Layout = DefaultLayout
-
-            if (route.layout === null) {
-              Layout = NoLayout
-            } else if (route.layout) {
-              Layout = route.layout
-            }
-            return (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={
-                  <Layout>
-                    <Comp />
-                  </Layout>
-                }
-              />
-            )
-          })}
-        </Routes>
-      )}
-    </>
-  )
+  return <AppRoutes />
 }
 
 export default App

@@ -1,15 +1,10 @@
 import { Button } from 'antd'
 import React from 'react'
 
-import { useAppSelector } from '../../hooks/redux'
-import { SEARCH_OPTIONS } from '../../utils/constants'
-
 import CourseTable from './CourseTable'
 import HomeworkTable from './HomeworkTable'
 
 const Search = () => {
-  const searchOptions = useAppSelector((state) => state.app.searchOptions)
-
   return (
     <div>
       <div className="flex justify-between">
@@ -24,19 +19,15 @@ const Search = () => {
         </div>
       </div>
 
-      {searchOptions.includes(SEARCH_OPTIONS.homework) && (
-        <div>
-          <h4 className="mt-[32px] mb-[16px]">Homeworks</h4>
-          <HomeworkTable />
-        </div>
-      )}
+      <div>
+        <h4 className="mt-[32px] mb-[16px]">Homeworks</h4>
+        <HomeworkTable />
+      </div>
 
-      {searchOptions.includes(SEARCH_OPTIONS.course) && (
-        <div>
-          <h4 className="mt-[32px] mb-[16px]">Courses</h4>
-          <CourseTable />
-        </div>
-      )}
+      <div>
+        <h4 className="mt-[32px] mb-[16px]">Courses</h4>
+        <CourseTable />
+      </div>
     </div>
   )
 }

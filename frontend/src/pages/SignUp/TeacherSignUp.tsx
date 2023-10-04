@@ -66,28 +66,37 @@ const TeacherSignUp: React.FC = () => {
         onFinish={onFinish}
         autoComplete="off"
         onChange={() => setError('')}
+        className="flex flex-col gap-2"
       >
-        <Form.Item<SignUpParams>
-          name="firstName"
-          rules={[{ message: 'Please input your first name!', required: true }]}
-        >
-          <Input
-            placeholder="First Name"
-            size="middle"
-            className="rounded-[8px] h-[40px]"
-          />
-        </Form.Item>
+        <div className="flex gap-4 justify-between">
+          <Form.Item<SignUpParams>
+            name="firstName"
+            rules={[
+              { message: 'Please input your first name!', required: true },
+            ]}
+            className="flex-1"
+          >
+            <Input
+              placeholder="First Name"
+              size="middle"
+              className="rounded-[8px] h-[40px]"
+            />
+          </Form.Item>
 
-        <Form.Item<SignUpParams>
-          name="lastName"
-          rules={[{ message: 'Please input your last name!', required: true }]}
-        >
-          <Input
-            placeholder="Last Name"
-            size="middle"
-            className="rounded-[8px] h-[40px]"
-          />
-        </Form.Item>
+          <Form.Item<SignUpParams>
+            name="lastName"
+            rules={[
+              { message: 'Please input your last name!', required: true },
+            ]}
+            className="flex-1"
+          >
+            <Input
+              placeholder="Last Name"
+              size="middle"
+              className="rounded-[8px] h-[40px]"
+            />
+          </Form.Item>
+        </div>
 
         <Form.Item<SignUpParams>
           name="email"
@@ -100,32 +109,34 @@ const TeacherSignUp: React.FC = () => {
           />
         </Form.Item>
 
-        <Form.Item<SignUpParams>
-          name="password"
-          rules={[{ message: 'Please input your password!', required: true }]}
-        >
-          <Input.Password
-            placeholder="Password"
-            size="large"
-            className="rounded-[8px] h-[40px]"
-          />
-        </Form.Item>
+        <div className="flex gap-4 justify-between">
+          <Form.Item<SignUpParams>
+            name="password"
+            rules={[{ message: 'Please input your password!', required: true }]}
+          >
+            <Input.Password
+              placeholder="Password"
+              size="large"
+              className="rounded-[8px] h-[40px]"
+            />
+          </Form.Item>
 
-        <Form.Item<SignUpParams>
-          name="confirmPassword"
-          rules={[
-            {
-              message: 'Please input your confirm password!',
-              required: true,
-            },
-          ]}
-        >
-          <Input.Password
-            placeholder="Confirm password"
-            size="large"
-            className="rounded-[8px] h-[40px]"
-          />
-        </Form.Item>
+          <Form.Item<SignUpParams>
+            name="confirmPassword"
+            rules={[
+              {
+                message: 'Please input your confirm password!',
+                required: true,
+              },
+            ]}
+          >
+            <Input.Password
+              placeholder="Confirm password"
+              size="large"
+              className="rounded-[8px] h-[40px]"
+            />
+          </Form.Item>
+        </div>
 
         <Form.Item<SignUpParams>
           name="phoneNumber"

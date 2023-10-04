@@ -2,16 +2,16 @@ import { createSlice } from '@reduxjs/toolkit'
 
 interface AppState {
   userAccountId?: string
+  role: string
   darkMode: boolean | string
   locales: string
-  searchOptions: string[]
 }
 
 const initialState: AppState = {
   userAccountId: '',
+  role: '',
   darkMode: localStorage.getItem('darkMode') || false,
   locales: localStorage.getItem('locales') || 'en',
-  searchOptions: [],
 }
 
 const appSlice = createSlice({
@@ -21,8 +21,8 @@ const appSlice = createSlice({
     setUserAccountId: (state, action) => {
       state.userAccountId = action.payload
     },
-    setSearchOptions: (state, action) => {
-      state.searchOptions = action.payload
+    setRole: (state, action) => {
+      state.role = action.payload
     },
     toggleDarkMode: (state) => {
       state.darkMode = !state.darkMode
@@ -32,11 +32,7 @@ const appSlice = createSlice({
     },
   },
 })
-export const {
-  setUserAccountId,
-  setSearchOptions,
-  toggleDarkMode,
-  toggleLocales,
-} = appSlice.actions
+export const { setUserAccountId, setRole, toggleDarkMode, toggleLocales } =
+  appSlice.actions
 
 export default appSlice.reducer

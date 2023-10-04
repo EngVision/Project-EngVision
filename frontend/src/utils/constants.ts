@@ -38,6 +38,17 @@ export const ROUTES = {
   teacherCreateCourse: '/teacher/courses/new',
 }
 
+export const PUBLIC_ROUTES = []
+export const STUDENT_ROUTES = {
+  home: '',
+}
+export const TEACHER_ROUTES = {
+  home: '',
+}
+export const ADMIN_ROUTES = {
+  home: '',
+}
+
 export const ROLES = {
   admin: {
     label: 'Admin',

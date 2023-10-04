@@ -1,35 +1,22 @@
 import AuthLayout from '../layouts/AuthLayout'
-import Chat from '../pages/Chat'
 import CourseDetailsPage from '../pages/CourseDetails'
 import CreateProfile from '../pages/CreateProfile'
 import Discover from '../pages/Discover'
-import Exam from '../pages/Exam'
 import Exercise from '../pages/Exercise'
-import HelpCenter from '../pages/HelpCenter'
-import Home from '../pages/Home'
-import MakeSentences from '../pages/Lesson/MakeSentences'
 import MultipleChoice from '../pages/Lesson/MultipleChoice'
-import MyHub from '../pages/MyHub'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
-import Search from '../pages/Search'
 import SendMailResetPassword from '../pages/SendMailResetPassword'
-import Settings from '../pages/Settings'
 import SignIn from '../pages/SignIn'
 import SSOSuccess from '../pages/SignIn/components/SSOSuccess'
 import SignUp from '../pages/SignUp'
 import TeacherSignUp from '../pages/SignUp/TeacherSignUp'
-import Statistic from '../pages/Statistic'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { ROUTES } from '../utils/constants'
 
-import TeacherCourses from '../pages/Teacher/Courses'
+import RoleRoutes from './RoleRoutes'
 import type { RouteElement } from './types'
-import TeacherCourseDetail from '../pages/Teacher/CourseDetail'
-import TeacherCreateCourse from '../pages/Teacher/CreateCourse'
 
 import { Appearance } from '../pages/Appearance'
-
-import ManageExercise from '../pages/ManageExercise'
 
 const publicRoutes: RouteElement[] = [
   {
@@ -93,72 +80,8 @@ const publicRoutes: RouteElement[] = [
   },
 ]
 
-const privateRoutes: RouteElement[] = [
-  {
-    element: Home,
-    path: ROUTES.home,
-  },
-  {
-    element: MyHub,
-    path: ROUTES.myHub,
-  },
-  {
-    element: Exam,
-    path: ROUTES.exam,
-  },
-  {
-    element: Exercise,
-    layout: null,
-    path: ROUTES.exercise,
-  },
-  {
-    element: ManageExercise,
-    path: ROUTES.createExercise,
-  },
-  {
-    element: ManageExercise,
-    path: ROUTES.editExercise,
-  },
-  {
-    element: Discover,
-    path: ROUTES.discover,
-  },
-  {
-    element: Statistic,
-    path: ROUTES.statistic,
-  },
-  {
-    element: Chat,
-    path: ROUTES.chat,
-  },
-  {
-    element: MakeSentences,
-    path: ROUTES.makeSentence,
-  },
-  {
-    element: Search,
-    path: ROUTES.search,
-  },
-  {
-    element: Settings,
-    path: ROUTES.settings,
-  },
-  {
-    element: HelpCenter,
-    path: ROUTES.helpCenter,
-  },
-  {
-    element: TeacherCourses,
-    path: ROUTES.teacherCourses,
-  },
-  {
-    element: TeacherCourseDetail,
-    path: ROUTES.teacherCourseDetail,
-  },
-  {
-    element: TeacherCreateCourse,
-    path: ROUTES.teacherCreateCourse,
-  },
-]
+const PublicRoutes = () => {
+  return <RoleRoutes routes={publicRoutes} />
+}
 
-export { privateRoutes, publicRoutes }
+export default PublicRoutes
