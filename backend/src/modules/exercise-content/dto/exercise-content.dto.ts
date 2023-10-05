@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayMinSize, IsArray, IsDefined, IsEnum } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsDefined,
+  IsEnum,
+  IsOptional,
+} from 'class-validator';
 import { CEFRLevel, ExerciseTag } from 'src/common/enums';
 
 export class ExerciseQuestionDto {
@@ -7,6 +13,7 @@ export class ExerciseQuestionDto {
   @ApiProperty({ type: Object, description: 'Question' })
   question: any;
 
+  @IsOptional()
   @ApiProperty({ type: Object, description: 'Correct answer' })
   correctAnswer: {
     detail: any;

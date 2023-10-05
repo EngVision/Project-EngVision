@@ -11,6 +11,7 @@ import exerciseApi from '../../services/exerciseApi'
 import { CEFRLevel, ExerciseTag, ExerciseType } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
 import MultipleChoiceForm from './components/MultipleChoiceForm'
+import ConstructedResponseForm from './components/ConstructedResponseForm'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -89,6 +90,8 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
       return <MultipleChoiceForm form={form} />
     case ExerciseType.FillBlank:
       return <></>
+    case ExerciseType.ConstructedResponse:
+      return <ConstructedResponseForm form={form} />
     default:
       return <></>
   }
