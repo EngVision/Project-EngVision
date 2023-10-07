@@ -1,10 +1,3 @@
-// import { faNoteSticky } from '@fortawesome/free-regular-svg-icons'
-// import {
-//   faChartSimple,
-//   faEllipsis,
-//   faEraser,
-// } from '@fortawesome/free-solid-svg-icons'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Card, Popover } from 'antd'
 import { StarIcon, VideoPlayIcon } from '../Icons'
 import { Link } from 'react-router-dom'
@@ -15,18 +8,11 @@ export const CourseCard = (course: any) => {
 
   const popover = (
     <div className="flex flex-col items-start">
-      <Button type="text">
-        <FontAwesomeIcon className="mr-1" icon={faChartSimple} />
-        Statistics
-      </Button>
+      <Button type="text">Statistics</Button>
       <Button href="./exam-edit" type="text">
-        <FontAwesomeIcon className="mr-1" icon={faNoteSticky} />
         Edit
       </Button>
-      <Button type="text">
-        <FontAwesomeIcon className="mr-1" icon={faEraser} />
-        Remove
-      </Button>
+      <Button type="text">Remove</Button>
     </div>
   )
 
@@ -92,9 +78,7 @@ export const CourseCard = (course: any) => {
             trigger="click"
             className="text-blue-600 hover:text-slate-400"
           >
-            <Button type="text" className="absolute right-2">
-              <FontAwesomeIcon icon={faEllipsis} />
-            </Button>
+            <Button type="text" className="absolute right-2"></Button>
           </Popover>
         </div>
       </Card>
