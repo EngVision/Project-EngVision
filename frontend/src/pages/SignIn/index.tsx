@@ -41,7 +41,7 @@ const SignIn: React.FC = () => {
     let timer: ReturnType<typeof setInterval>
 
     const newWindow = window.open(
-      `${import.meta.env.VITE_BASE_URL}/auth/google/login`,
+      `${import.meta.env.VITE_BASE_URL}auth/google/login`,
       '_blank',
       'width=500,height=600,left=400,top=200',
     )
@@ -59,7 +59,7 @@ const SignIn: React.FC = () => {
     let timer: ReturnType<typeof setInterval>
 
     const newWindow = window.open(
-      `${import.meta.env.VITE_BASE_URL}/auth/facebook/login`,
+      `${import.meta.env.VITE_BASE_URL}auth/facebook/login`,
       '_blank',
       'width=500,height=600,left=400,top=200',
     )

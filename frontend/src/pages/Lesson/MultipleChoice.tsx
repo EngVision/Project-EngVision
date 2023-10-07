@@ -15,20 +15,13 @@ const MultipleChoice = () => {
 
   const popover = (
     <div className="flex flex-col items-start">
-      <Button type="text">
-        <FontAwesomeIcon className="mr-1" icon={faChartSimple} />
-        Statistics
-      </Button>
+      <Button type="text">Statistics</Button>
 
       <Button href="./exam-edit" type="text">
-        <FontAwesomeIcon className="mr-1" icon={faNoteSticky} />
         Edit
       </Button>
 
-      <Button type="text">
-        <FontAwesomeIcon className="mr-1" icon={faEraser} />
-        Remove
-      </Button>
+      <Button type="text">Remove</Button>
     </div>
   )
 
@@ -55,9 +48,7 @@ const MultipleChoice = () => {
           trigger="click"
           className="text-black hover:text-slate-400 col-span-1"
         >
-          <Button type="text">
-            <FontAwesomeIcon icon={faEllipsisVertical} />
-          </Button>
+          <Button type="text"></Button>
         </Popover>
       </div>
       <div className="grid grid-cols-5 gap-1 my-5">
