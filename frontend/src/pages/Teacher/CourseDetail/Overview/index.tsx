@@ -69,7 +69,7 @@ const Overview = () => {
 
       <Form.Item
         name="thumbnail"
-        getValueFromEvent={(e: any) => e?.file.response?.data.fileId}
+        getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
       >
         <Upload
           action={`${import.meta.env.VITE_BASE_URL}files`}

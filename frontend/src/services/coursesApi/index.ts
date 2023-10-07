@@ -44,6 +44,15 @@ const coursesApi = {
       throw error
     }
   },
+  publish: async (id: string) => {
+    try {
+      const res: ResponseData = await axiosClient.post(`${PREFIX}${id}/publish`)
+      return res
+    } catch (error) {
+      console.error('Error publish course:', error)
+      throw error
+    }
+  },
   delete: async (id: string) => {
     try {
       const res: ResponseData = await axiosClient.delete(`${PREFIX}${id}`)

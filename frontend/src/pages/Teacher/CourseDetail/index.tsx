@@ -23,7 +23,7 @@ const TeacherCourseDetail = () => {
     const newCourse = {
       ...course,
       ...formValues,
-      // price: parseFloat(formValues.price.toString()),
+      price: parseFloat(formValues.price),
     }
     try {
       // await coursesApi.update(courseId || '', newCourse)
@@ -33,7 +33,13 @@ const TeacherCourseDetail = () => {
     console.log('save: ', newCourse)
   }
 
-  const handleSaveAndPublish = () => {
+  const handleSaveAndPublish = async () => {
+    try {
+      // await coursesApi.update(courseId || '', newCourse)
+      await coursesApi.publish(courseId || '')
+    } catch (error) {
+      console.log('error: ', error)
+    }
     console.log('save and publish: ', form.getFieldsValue())
   }
 
@@ -83,7 +89,7 @@ const TeacherCourseDetail = () => {
         autoComplete="off"
         layout="vertical"
         form={form}
-        className="h-full flex flex-col"
+        className="h-full flex flex-col gap-6"
       >
         <Preview form={form} />
 

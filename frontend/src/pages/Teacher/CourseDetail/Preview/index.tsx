@@ -8,16 +8,16 @@ interface PreviewProps {
 
 const Preview = ({ form }: PreviewProps) => {
   return (
-    <div className="flex h-[12rem] mb-8 select-none">
-      <div className="h-full w-[18.75rem] mr-8">
+    <div className="flex gap-4 h-[12rem] select-none">
+      <Form.Item name="thumbnail">
         <img
-          className="object-cover w-full h-full rounded-md"
+          className="object-cover w-[300px] h-[12rem] rounded-md"
           src={`${import.meta.env.VITE_SERVER_FILES_URL}${form.getFieldValue(
             'thumbnail',
           )}`}
           alt="thumbnail"
         />
-      </div>
+      </Form.Item>
       <div className="flex flex-col h-full justify-between flex-1">
         <div className="flex text-sm">
           <div className="mr-6">
