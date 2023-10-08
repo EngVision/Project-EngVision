@@ -2,11 +2,12 @@ import { Button, Form, Input, Select, Upload } from 'antd'
 import { Link } from 'react-router-dom'
 import coursesApi from '../../../services/coursesApi'
 import { CEFRLevel, TEACHER_ROUTES } from '../../../utils/constants'
+import { PlusIcon } from '../../../components/Icons'
 
 type FieldType = {
   title: string
   about: string
-  price: number
+  price: string
   level: CEFRLevel
   thumbnail: string
 }
@@ -18,11 +19,11 @@ interface TeacherCreateCourseProps {
 const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
   onClose,
 }) => {
-  const handleSave = async (values: any) => {
+  const handleSave = async (values: FieldType) => {
     const newCourse = {
       ...values,
       price: parseFloat(values.price),
-      thumbnail: values.thumbnail.file.response.data.fileId,
+      thumbnail: values.thumbnail,
     }
     await coursesApi.create(newCourse)
     onClose()
@@ -107,15 +108,20 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
             </div>
           </div>
 
-          <Form.Item<FieldType>
+          <Form.Item
             name="thumbnail"
             rules={[{ required: true, message: 'Please upload thumbnail!' }]}
+            getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
           >
             <Upload
               action={`${import.meta.env.VITE_BASE_URL}files`}
               withCredentials
+              listType="picture-card"
             >
-              <Button>Upload thumbnail</Button>
+              <div>
+                <PlusIcon />
+                <div style={{ marginTop: 8 }}>Upload thumbnail</div>
+              </div>
             </Upload>
           </Form.Item>
 

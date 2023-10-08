@@ -1,9 +1,10 @@
 import { Form } from 'antd'
-import { StarIcon } from '../../../../components/Icons'
-import PreviewInput from '../../../../components/common/PreviewInput'
+import { StarIcon } from '../../../components/Icons'
+import PreviewInput from '../../../components/common/PreviewInput'
+import { FormInstance } from 'antd/lib/form/Form'
 
 interface PreviewProps {
-  form: any
+  form: FormInstance
 }
 
 const Preview = ({ form }: PreviewProps) => {

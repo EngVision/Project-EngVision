@@ -4,7 +4,6 @@ import HelpCenter from '../pages/HelpCenter'
 import Home from '../pages/Home'
 import MakeSentences from '../pages/Lesson/MakeSentences'
 import MyHub from '../pages/MyHub'
-import Search from '../pages/Search'
 import Settings from '../pages/Settings'
 import Statistic from '../pages/Statistic'
 import { ADMIN_ROUTES, PRIVATE_ROUTES } from '../utils/constants'
@@ -36,10 +35,6 @@ const adminRoutes: RouteElement[] = [
   {
     element: MakeSentences,
     path: PRIVATE_ROUTES.makeSentence,
-  },
-  {
-    element: Search,
-    path: PRIVATE_ROUTES.search,
   },
   {
     element: Settings,

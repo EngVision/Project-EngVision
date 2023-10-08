@@ -8,12 +8,13 @@ import { COURSE_STATUS } from '../../../utils/constants'
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
 import { setCourseStatus } from '../../../redux/course/slice'
 import TeacherCreateCourse from '../CreateCourse'
+import { CourseDetails } from '../../../services/coursesApi/types'
 
 const Courses: React.FC = () => {
   const dispatch = useAppDispatch()
   const status = useAppSelector((state) => state.course.status)
 
-  const [courses, setCourses] = useState([])
+  const [courses, setCourses] = useState<CourseDetails[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const getCourses = async () => {
@@ -108,9 +109,7 @@ const Courses: React.FC = () => {
 
       <div className="grid grid-cols-4 gap-x-8 gap-y-6">
         {courses.length > 0 ? (
-          courses.map((course: any) => (
-            <Course key={course.id} course={course} />
-          ))
+          courses.map((course) => <Course key={course.id} course={course} />)
         ) : (
           <div className="col-span-4 text-center italic text-textSubtle">
             <p className="text-lg">No courses found</p>

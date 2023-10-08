@@ -18,7 +18,6 @@ export const PRIVATE_ROUTES = {
   helpCenter: '/help-center',
 
   updateProfile: '/update-profile',
-  search: '/search',
 
   // Exercise
   exercise: '/exercise/:id',

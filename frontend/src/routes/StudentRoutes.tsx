@@ -10,7 +10,6 @@ import MakeSentences from '../pages/Lesson/MakeSentences'
 import MultipleChoice from '../pages/Lesson/MultipleChoice'
 import ManageExercise from '../pages/ManageExercise'
 import MyHub from '../pages/MyHub'
-import Search from '../pages/Search'
 import Settings from '../pages/Settings'
 import Statistic from '../pages/Statistic'
 import { UpdateProfile } from '../pages/UpdateProfile'
@@ -59,10 +58,6 @@ const studentRoutes: RouteElement[] = [
   {
     element: MakeSentences,
     path: PRIVATE_ROUTES.makeSentence,
-  },
-  {
-    element: Search,
-    path: PRIVATE_ROUTES.search,
   },
   {
     element: Settings,

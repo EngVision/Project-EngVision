@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Input, Select, Upload } from 'antd'
-import { CEFRLevel } from '../../../../utils/constants'
-import { PlusIcon } from '../../../../components/Icons'
+import { CEFRLevel } from '../../../utils/constants'
+import { PlusIcon } from '../../../components/Icons'
 
 type FieldType = {
   title: string

@@ -5,17 +5,18 @@ import {
   PencilLineIcon,
   PlusIcon,
   TrashIcon,
-} from '../../../../components/Icons'
-import CustomInput from '../../../../components/common/CustomInput'
+} from '../../../components/Icons'
+import CustomInput from '../../../components/common/CustomInput'
+import { FormInstance } from 'antd/lib/form/Form'
 
 const { Panel } = Collapse
 
 interface SectionProps {
-  form: any
+  form: FormInstance
 }
 
 const Section = ({ form }: SectionProps) => {
-  const onDragEnd = (result: any, move: any) => {
+  const onDragEnd = (result: any, move: (from: number, to: number) => void) => {
     if (!result.destination) return
 
     move(result.source.index, result.destination.index)
@@ -137,15 +138,6 @@ const Section = ({ form }: SectionProps) => {
                                                   exercises: [],
                                                 })
                                               }
-                                              className="hover:cursor-pointer"
-                                              width={20}
-                                              height={20}
-                                            />
-                                          </div>
-                                        </Tooltip>
-                                        <Tooltip title="Edit section">
-                                          <div className="flex">
-                                            <PencilLineIcon
                                               className="hover:cursor-pointer"
                                               width={20}
                                               height={20}
