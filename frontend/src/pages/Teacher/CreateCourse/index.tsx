@@ -1,13 +1,13 @@
 import { Button, Form, Input, Select, Upload } from 'antd'
 import { Link } from 'react-router-dom'
-import { CEFRLevel, ROUTES } from '../../../utils/constants'
 import coursesApi from '../../../services/coursesApi'
+import { CEFRLevel, TEACHER_ROUTES } from '../../../utils/constants'
 
 type FieldType = {
-  title?: string
-  about?: string
+  title: string
+  about: string
   price: number
-  level: string
+  level: CEFRLevel
   thumbnail: string
 }
 
@@ -27,8 +27,6 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
     await coursesApi.create(newCourse)
     onClose()
   }
-
-  console.log(Object.values(CEFRLevel))
 
   return (
     <div className="flex flex-col bg-[#FFFCF7] p-[1.5rem] rounded-md h-full">
@@ -123,7 +121,7 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
 
           <div className="flex gap-4 mt-8 justify-end">
             <Button className="text-primary border-primary">
-              <Link to={ROUTES.teacherCourses}>Cancel</Link>
+              <Link to={TEACHER_ROUTES.courses}>Cancel</Link>
             </Button>
 
             <Form.Item>

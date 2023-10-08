@@ -9,7 +9,7 @@ import Section from './Section'
 import Preview from './Preview'
 import Statistic from './Statistic'
 import { CourseDetails } from '../../../services/coursesApi/types'
-import { ROUTES } from '../../../utils/constants'
+import { TEACHER_ROUTES } from '../../../utils/constants'
 const { TabPane } = Tabs
 
 const TeacherCourseDetail = () => {
@@ -41,7 +41,7 @@ const TeacherCourseDetail = () => {
   const handleDelete = async () => {
     try {
       await coursesApi.delete(courseId || '')
-      navigate(ROUTES.teacherCourses)
+      navigate(TEACHER_ROUTES.courses)
     } catch (error) {
       console.log('error: ', error)
     }
@@ -68,8 +68,6 @@ const TeacherCourseDetail = () => {
   }, [])
 
   if (!course) return null
-
-  console.log('🚀 ~ file: index.tsx:18 ~ TeacherCourseDetail ~ course:', course)
 
   return (
     <div className="flex flex-col bg-[#FFFCF7] p-[1.5rem] rounded-md h-full">
@@ -133,7 +131,7 @@ const TeacherCourseDetail = () => {
           <Button
             className="text-primary border-primary"
             onClick={() => {
-              navigate(ROUTES.teacherCourses)
+              navigate(TEACHER_ROUTES.courses)
             }}
           >
             Cancel
