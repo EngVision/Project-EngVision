@@ -75,11 +75,6 @@ const publicRoutes: RouteElement[] = [
     path: ROUTES.courseDetails,
   },
   {
-    element: Exercise,
-    layout: null,
-    path: ROUTES.exercise,
-  },
-  {
     element: Discover,
     path: ROUTES.courses,
   },
