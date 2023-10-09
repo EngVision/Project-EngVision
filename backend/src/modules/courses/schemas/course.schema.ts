@@ -4,6 +4,7 @@ import { User } from 'src/modules/users/schemas/user.schema';
 import { LocalFile } from 'src/modules/files/schemas/local-file.schema';
 import { SectionDocument, SectionSchema } from './section.schema';
 import { CEFRLevel } from 'src/common/enums';
+import { Review } from 'src/modules/reviews/schemas/review.schema';
 
 export type CourseDocument = Course & Document;
 
@@ -47,7 +48,7 @@ export class Course {
   @Prop({ default: null, type: [mongoose.Types.ObjectId], ref: 'Post' })
   posts: mongoose.Types.ObjectId[];
 
-  @Prop({ default: null, type: [mongoose.Types.ObjectId], ref: 'Review' })
+  @Prop({ default: null, type: [mongoose.Types.ObjectId], ref: Review.name })
   reviews: mongoose.Types.ObjectId[];
 }
 

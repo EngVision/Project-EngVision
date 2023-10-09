@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
+import { ExerciseDto } from '.';
 
 export class LessonDto {
   @Expose({ name: '_id' })
@@ -10,6 +11,7 @@ export class LessonDto {
   @ApiProperty({ type: String, description: 'Title' })
   title: string;
 
-  @ApiProperty({ type: [String], description: 'Exercises' })
-  exercises: string[];
+  @Type(() => ExerciseDto)
+  @ApiProperty({ type: [ExerciseDto], description: 'Exercises' })
+  exercises: ExerciseDto[];
 }

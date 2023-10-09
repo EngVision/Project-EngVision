@@ -163,24 +163,65 @@ export class CoursesService {
     return [courses, totalItem];
   }
 
-  // add sections - lessons
   async getCourse(id: string, user?: JwtPayload) {
-    const course = (await this.courseModel
-      .findOne({ _id: id })
-      .populate('teacher')
-      .populate({
-        path: 'reviews',
-        populate: { path: 'user' },
-      })) as any;
+    let course, courseMap: CourseDetailDto;
+    const courseCheck = await this.courseModel.findById(id);
 
-    const courseMap: CourseDetailDto = {
-      ...plainToInstance(CourseDetailDto, course.toObject()),
-      avgStar: this.reviewsService.averageStar(course.reviews),
-    };
-
-    if (user?.roles?.[0] === Role.Student) {
-      courseMap.isAttended = course.attendanceList.includes(user.sub);
+    //Teacher get not own course
+    if (
+      user.roles.includes(Role.Teacher) &&
+      courseCheck.teacher.toString() !== user.sub
+    ) {
+      throw new ForbiddenException('Access denied');
     }
+
+    // Student not attend course yet
+    if (
+      user.roles.includes(Role.Student) &&
+      !courseCheck.attendanceList.includes(user.sub)
+    ) {
+      course = await this.courseModel
+        .findOne({ _id: id })
+        .populate('teacher')
+        .populate({
+          path: 'reviews',
+          populate: { path: 'user' },
+        });
+
+      courseMap = {
+        ...plainToInstance(CourseDetailDto, course.toObject()),
+        isAttended: false,
+      };
+
+      courseMap.sections.forEach(section => {
+        section.lessons.forEach(lesson => {
+          delete lesson.exercises;
+        });
+      });
+    }
+    // Student enrolled or teacher's course or admin
+    else {
+      course = await this.courseModel
+        .findOne({ _id: id })
+        .populate('teacher')
+        .populate({
+          path: 'reviews',
+          populate: { path: 'user' },
+        })
+        .populate('sections.lessons.exercises', 'id title');
+
+      if (user.roles.includes(Role.Student)) {
+        courseMap = {
+          ...plainToInstance(CourseDetailDto, course.toObject()),
+          isAttended: true,
+          isReviewed: !!course.reviews.find(
+            review => review.user.id === user.sub,
+          ),
+        };
+      } else courseMap = plainToInstance(CourseDetailDto, course.toObject());
+    }
+
+    courseMap.avgStar = this.reviewsService.averageStar(course.reviews);
 
     return courseMap;
   }
@@ -375,6 +416,104 @@ export class CoursesService {
       );
 
     return course;
+  }
+
+  async createExercise(
+    exerciseId: string,
+    lessonId: string,
+    teacherId: string,
+  ) {
+    const course = await this.courseModel.findOneAndUpdate(
+      {
+        teacher: teacherId,
+        'sections.lessons._id': lessonId,
+      },
+      { $push: { 'sections.$.lessons.$[index].exercises': exerciseId } },
+      { arrayFilters: [{ 'index._id': lessonId }], new: true },
+    );
+
+    if (!course)
+      throw new BadRequestException('Lesson ID is missing or access denied');
+
+    return course;
+  }
+
+  async removeExercise(
+    exerciseId: string,
+    lessonId: string,
+    teacherId: string,
+  ) {
+    const course = await this.courseModel.findOneAndUpdate(
+      {
+        teacher: teacherId,
+        'sections.lessons._id': lessonId,
+        'sections.lessons.exercises': {
+          $elemMatch: { $eq: exerciseId },
+        },
+      },
+      { $pull: { 'sections.$.lessons.$[index].exercises': exerciseId } },
+      { arrayFilters: [{ 'index._id': lessonId }], new: true },
+    );
+
+    if (!course)
+      throw new BadRequestException(
+        'Lesson ID or exercise ID is either missing or access denied',
+      );
+
+    const newLesson = await this.getLesson(lessonId, teacherId);
+
+    return newLesson;
+  }
+
+  async getLesson(lessonId: string, teacherId: string) {
+    const [lesson] = await this.courseModel.aggregate([
+      {
+        $match: {
+          $and: [
+            { teacher: new Types.ObjectId(teacherId) },
+            { 'sections.lessons._id': new Types.ObjectId(lessonId) },
+          ],
+        },
+      },
+      {
+        $unwind: '$sections',
+      },
+      {
+        $match: {
+          'sections.lessons._id': new Types.ObjectId(lessonId),
+        },
+      },
+      {
+        $unwind: '$sections.lessons',
+      },
+      {
+        $match: {
+          'sections.lessons._id': new Types.ObjectId(lessonId),
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: '$sections.lessons',
+        },
+      },
+      {
+        $lookup: {
+          from: 'exercises',
+          localField: 'exercises',
+          foreignField: '_id',
+          pipeline: [{ $project: { _id: 1, title: 1, description: 1 } }],
+          as: 'exercises',
+        },
+      },
+    ]);
+
+    if (!lesson) {
+      throw new BadRequestException(
+        'Course ID, section ID or lessonID is either missing or access denied',
+      );
+    }
+
+    return lesson;
   }
 
   async attendCourse(courseId: string, studentId: string) {
