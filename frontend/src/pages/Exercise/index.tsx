@@ -135,6 +135,7 @@ function Exercise() {
         <div className="flex justify-between mb-5">
           <Button
             type="primary"
+            size="large"
             ghost
             className="w-[150px]"
             disabled={questionIndex <= 0}
@@ -144,6 +145,7 @@ function Exercise() {
           </Button>
           <Button
             type="primary"
+            size="large"
             className="w-[150px]"
             onClick={nextQuestion}
             disabled={

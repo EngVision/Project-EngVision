@@ -1,5 +1,4 @@
-import axios, { HttpStatusCode } from 'axios'
-import { NavigateFunction } from 'react-router-dom'
+import axios from 'axios'
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -9,7 +8,7 @@ const axiosClient = axios.create({
   withCredentials: true,
 })
 
-export const setupAxiosInterceptor = (navigate: NavigateFunction) => {
+const setupAxiosInterceptor = () => {
   axiosClient.interceptors.response.use(
     (response) => response.data,
     async (error) => {
@@ -18,19 +17,10 @@ export const setupAxiosInterceptor = (navigate: NavigateFunction) => {
         .find((row) => row.startsWith('refresh_token='))
         ?.split('=')[1]
 
-      // if (error.response?.status === HttpStatusCode.NotFound) {
-      //   navigate('not-found', { replace: true })
-      // }
-
-      // if (
-      //   error.response?.status === HttpStatusCode.Unauthorized &&
-      //   !refreshToken
-      // ) {
-      //   navigate('sign-in')
-      // }
+      console.log(error)
 
       if (error.response?.status !== 401 || !refreshToken) {
-        return Promise.reject(error)
+        return Promise.reject(error.response)
       }
 
       try {
@@ -46,5 +36,7 @@ export const setupAxiosInterceptor = (navigate: NavigateFunction) => {
     },
   )
 }
+
+setupAxiosInterceptor()
 
 export default axiosClient

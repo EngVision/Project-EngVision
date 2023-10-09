@@ -50,13 +50,16 @@ function MultipleChoice(props: MultipleChoiceProps) {
   }, [props])
 
   return (
-    <div>
-      <p className="mb-5 text-primary text-xl font-semibold">
+    <div className="h-full">
+      <p className="mb-5 text-primary text-2xl font-semibold">
         Multiple choice question
         {question.multipleCorrectAnswers ? ' (Multiple correct choices)' : ''}
       </p>
-      <p dangerouslySetInnerHTML={{ __html: question.text }} />
-      <div className="flex flex-row justify-between flex-wrap gap-5 mt-14 mb-20">
+      <p
+        className="text-xl"
+        dangerouslySetInnerHTML={{ __html: question.text }}
+      />
+      <div className="flex flex-row justify-between flex-wrap gap-5 my-14">
         {question.answers.map((answer) => {
           const isSubmitAnswer = result && result.answer.includes(answer.id)
           const isCorrectAnswer =
@@ -66,6 +69,7 @@ function MultipleChoice(props: MultipleChoiceProps) {
             <Button
               key={Math.random()}
               type="primary"
+              size="large"
               ghost
               disabled={!!result}
               className={`flex-1 ${
@@ -87,7 +91,7 @@ function MultipleChoice(props: MultipleChoiceProps) {
         })}
       </div>
       {result && (
-        <div className="w-full py-2 px-5 border-2 border-solid border-primary rounded-md flex items-center gap-4">
+        <div className="w-full p-5 border-2 border-solid border-primary rounded-md flex items-center gap-4">
           {result.isCorrect ? <EmojiHappyIcon /> : <EmojiSadIcon />}
           <div className="flex-1 text-primary flex flex-col gap-2">
             {result.isCorrect && <b>Good job!</b>}
@@ -95,18 +99,20 @@ function MultipleChoice(props: MultipleChoiceProps) {
           </div>
         </div>
       )}
-      {question.multipleCorrectAnswers && !result && (
-        <Button
-          type="primary"
-          className="w-[150px]"
-          disabled={selectedAnswers.length === 0}
-          onClick={async () => {
-            await submitAnswer({ answer: selectedAnswers }, id)
-          }}
-        >
-          Submit
-        </Button>
-      )}
+      <div className="">
+        {question.multipleCorrectAnswers && !result && (
+          <Button
+            type="primary"
+            className="w-[150px]"
+            disabled={selectedAnswers.length === 0}
+            onClick={async () => {
+              await submitAnswer({ answer: selectedAnswers }, id)
+            }}
+          >
+            Submit
+          </Button>
+        )}
+      </div>
     </div>
   )
 }
