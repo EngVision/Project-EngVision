@@ -34,10 +34,10 @@ export class CoursesService {
     private readonly filesService: FilesService,
   ) {}
 
-  async createCourse(course: CreateCourseDto, teacher: string) {
-    const newCourse = new this.courseModel({ ...course, teacher });
+  async createCourse(course: CreateCourseDto, user: JwtPayload) {
+    const newCourse = new this.courseModel({ ...course, teacher: user.sub });
     await newCourse.save();
-    return await this.getCourse(newCourse.id);
+    return await this.getCourse(newCourse.id, user);
   }
 
   // + sum people enroll + filter tags
@@ -163,7 +163,7 @@ export class CoursesService {
     return [courses, totalItem];
   }
 
-  async getCourse(id: string, user?: JwtPayload) {
+  async getCourse(id: string, user: JwtPayload) {
     let course, courseMap: CourseDetailDto;
     const courseCheck = await this.courseModel.findById(id);
 
@@ -228,18 +228,18 @@ export class CoursesService {
 
   async updateCourse(
     id: string,
-    teacherId: string,
+    user: JwtPayload,
     updateCourse: UpdateCourseDto,
   ) {
     const oldCourse = await this.courseModel.findById(id);
 
-    if (String(oldCourse.teacher) !== teacherId) {
+    if (String(oldCourse.teacher) !== user.sub) {
       throw new ForbiddenException('Access denied');
     }
 
     await this.courseModel.findOneAndUpdate({ _id: id }, updateCourse);
 
-    return this.getCourse(id);
+    return this.getCourse(id, user);
   }
 
   async deleteCourse(id: string, teacherId: string) {

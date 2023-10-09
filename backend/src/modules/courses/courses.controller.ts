@@ -57,10 +57,7 @@ export class CoursesController {
     @Res() res: Response,
     @CurrentUser() user: JwtPayload,
   ) {
-    const savedCourse = await this.coursesService.createCourse(
-      course,
-      user.sub,
-    );
+    const savedCourse = await this.coursesService.createCourse(course, user);
 
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
@@ -130,7 +127,7 @@ export class CoursesController {
   ) {
     const course = await this.coursesService.updateCourse(
       params.id,
-      user.sub,
+      user,
       updateCourse,
     );
 
