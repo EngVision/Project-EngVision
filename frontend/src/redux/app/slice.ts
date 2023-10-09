@@ -5,7 +5,6 @@ interface AppState {
   role: 'Student' | 'Teacher' | 'Admin' | ''
   darkMode: boolean | string
   locales: string
-  searchOptions: string[]
 }
 
 const initialState: AppState = {
@@ -13,7 +12,6 @@ const initialState: AppState = {
   role: '',
   darkMode: localStorage.getItem('darkMode') || false,
   locales: localStorage.getItem('locales') || 'en',
-  searchOptions: [],
 }
 
 const appSlice = createSlice({
@@ -26,9 +24,6 @@ const appSlice = createSlice({
     setRole: (state, action) => {
       state.role = action.payload
     },
-    setSearchOptions: (state, action) => {
-      state.searchOptions = action.payload
-    },
     toggleDarkMode: (state) => {
       state.darkMode = !state.darkMode
     },
@@ -37,12 +32,7 @@ const appSlice = createSlice({
     },
   },
 })
-export const {
-  setUserAccountId,
-  setRole,
-  setSearchOptions,
-  toggleDarkMode,
-  toggleLocales,
-} = appSlice.actions
+export const { setUserAccountId, setRole, toggleDarkMode, toggleLocales } =
+  appSlice.actions
 
 export default appSlice.reducer

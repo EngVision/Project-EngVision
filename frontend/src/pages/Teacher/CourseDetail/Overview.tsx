@@ -14,9 +14,13 @@ type FieldType = {
 const Overview = () => {
   return (
     <div className="flex flex-col gap-4">
-      <h4 className="text-primary text-2xl mb-4 font-semibold">General</h4>
+      <h4 className="text-primary text-2xl font-semibold">General</h4>
 
-      <Form.Item<FieldType> name="title" label="Title">
+      <Form.Item<FieldType>
+        name="title"
+        label="Title"
+        rules={[{ required: true, message: 'Please input title!' }]}
+      >
         <Input
           placeholder="Public Speaking and Presentation Skills in English"
           size="middle"
@@ -24,7 +28,11 @@ const Overview = () => {
         />
       </Form.Item>
 
-      <Form.Item<FieldType> name="about" label="About">
+      <Form.Item<FieldType>
+        name="about"
+        label="About"
+        rules={[{ required: true, message: 'Please input about!' }]}
+      >
         <Input
           placeholder="Boost your English public speaking and presentation skills with confidence."
           size="middle"
@@ -32,44 +40,49 @@ const Overview = () => {
         />
       </Form.Item>
 
-      <div>
-        <span className="mb-2 inline-block">Addition info</span>
+      <div className="flex gap-4">
+        <Form.Item<FieldType>
+          name="price"
+          label="Price"
+          rules={[
+            { required: true, message: 'Please input price!' },
+            {
+              pattern: /^[0-9.]+$/,
+              message: 'Price can only numbers.',
+            },
+          ]}
+          className="flex-1"
+        >
+          <Input
+            placeholder="$29.00"
+            size="middle"
+            className="rounded-[8px] h-[40px]"
+          />
+        </Form.Item>
 
-        <div className="flex gap-4">
-          <Form.Item<FieldType>
-            name="price"
-            rules={[
-              {
-                pattern: /^[0-9.]+$/,
-                message: 'Price can only numbers.',
-              },
-            ]}
-            className="flex-1"
-          >
-            <Input
-              placeholder="$29.00"
-              size="middle"
-              className="rounded-[8px] h-[40px]"
-            />
-          </Form.Item>
-
-          <Form.Item<FieldType> name="level" className="flex-1">
-            <Select
-              placeholder="Select level"
-              options={Object.values(CEFRLevel).map((level) => ({
-                value: level,
-                label: level,
-              }))}
-              className="rounded-[8px] !h-[40px]"
-              size="large"
-            />
-          </Form.Item>
-        </div>
+        <Form.Item<FieldType>
+          name="level"
+          label="Level"
+          rules={[{ required: true, message: 'Please input level!' }]}
+          className="flex-1"
+        >
+          <Select
+            placeholder="Select level"
+            options={Object.values(CEFRLevel).map((level) => ({
+              value: level,
+              label: level,
+            }))}
+            className="rounded-[8px] !h-[40px]"
+            size="large"
+          />
+        </Form.Item>
       </div>
 
       <Form.Item
         name="thumbnail"
+        label="Thumbnail"
         getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
+        rules={[{ required: true, message: 'Please input thumbnail!' }]}
       >
         <Upload
           action={`${import.meta.env.VITE_BASE_URL}files`}

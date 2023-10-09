@@ -10,6 +10,7 @@ import Preview from './Preview'
 import Statistic from './Statistic'
 import { CourseDetails } from '../../../services/coursesApi/types'
 import { TEACHER_ROUTES } from '../../../utils/constants'
+import { removeKeys } from '../../../utils/common'
 const { TabPane } = Tabs
 
 const TeacherCourseDetail = () => {
@@ -20,27 +21,39 @@ const TeacherCourseDetail = () => {
 
   const handleSave = async () => {
     const formValues = form.getFieldsValue()
-    const newCourse = {
-      ...course,
-      ...formValues,
-      price: parseFloat(formValues.price),
-    }
+    const newCourse = removeKeys(
+      {
+        ...course,
+        ...formValues,
+        price: parseFloat(formValues.price),
+      },
+      ['teacher'],
+    )
+
     try {
-      // await coursesApi.update(courseId || '', newCourse)
+      await coursesApi.update(courseId || '', newCourse)
     } catch (error) {
       console.log('error: ', error)
     }
-    console.log('save: ', newCourse)
   }
 
   const handleSaveAndPublish = async () => {
     try {
-      // await coursesApi.update(courseId || '', newCourse)
+      const formValues = form.getFieldsValue()
+      const newCourse = removeKeys(
+        {
+          ...course,
+          ...formValues,
+          price: parseFloat(formValues.price),
+        },
+        ['teacher'],
+      )
+
+      await coursesApi.update(courseId || '', newCourse)
       await coursesApi.publish(courseId || '')
     } catch (error) {
       console.log('error: ', error)
     }
-    console.log('save and publish: ', form.getFieldsValue())
   }
 
   const handleDelete = async () => {
@@ -64,7 +77,7 @@ const TeacherCourseDetail = () => {
         setCourse(data)
       }
     } catch (error) {
-      console.error(error)
+      console.log('error: ', error)
     }
   }
 

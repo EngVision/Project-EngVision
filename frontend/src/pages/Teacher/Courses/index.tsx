@@ -1,5 +1,5 @@
 import { Button, Modal } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import Course from '../../../components/Course'
 import { PlusIcon } from '../../../components/Icons'
@@ -9,13 +9,22 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
 import { setCourseStatus } from '../../../redux/course/slice'
 import TeacherCreateCourse from '../CreateCourse'
 import { CourseDetails } from '../../../services/coursesApi/types'
+import FilterDropdown from './FilterDropdown'
+import SortDropdown from './SortDropdown'
+import { sortCoursesByTitle } from '../../../utils/common'
 
 const Courses: React.FC = () => {
   const dispatch = useAppDispatch()
   const status = useAppSelector((state) => state.course.status)
+  const sortOption = useAppSelector((state) => state.course.sortOption)
 
   const [courses, setCourses] = useState<CourseDetails[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const filteredCourses = useMemo(
+    () => sortCoursesByTitle(courses, sortOption),
+    [courses, sortOption],
+  )
 
   const getCourses = async () => {
     try {
@@ -82,8 +91,8 @@ const Courses: React.FC = () => {
         </div>
 
         <div className="flex gap-4">
-          <Button className="border-primary text-primary">Filter</Button>
-          <Button className="border-primary text-primary">Sort</Button>
+          <FilterDropdown />
+          <SortDropdown />
 
           <div>
             <Button
@@ -108,8 +117,10 @@ const Courses: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-4 gap-x-8 gap-y-6">
-        {courses.length > 0 ? (
-          courses.map((course) => <Course key={course.id} course={course} />)
+        {filteredCourses.length > 0 ? (
+          filteredCourses.map((course) => (
+            <Course key={course.id} course={course} />
+          ))
         ) : (
           <div className="col-span-4 text-center italic text-textSubtle">
             <p className="text-lg">No courses found</p>

@@ -133,11 +133,11 @@ export const SEARCH_OPTIONS = {
 
 export const UPLOAD_FILE_URL = `${import.meta.env.VITE_BASE_URL}/files`
 
-export const COURSE_STATUS = {
-  draft: 'Draft',
-  published: 'Published',
-  all: 'All',
-  attended: 'Attended',
+export enum COURSE_STATUS {
+  draft = 'Draft',
+  published = 'Published',
+  all = 'All',
+  attended = 'Attended',
 }
 
 export const TEACHER_COURSE_TABS = {

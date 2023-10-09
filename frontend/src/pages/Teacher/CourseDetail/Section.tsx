@@ -68,13 +68,7 @@ const Section = ({ form }: SectionProps) => {
                               <Form.Item>
                                 <Form.List name={[field.name, 'lessons']}>
                                   {(subFields, subOpt) => (
-                                    <div
-                                      style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        rowGap: 16,
-                                      }}
-                                    >
+                                    <div className="flex flex-col gap-4">
                                       {subFields.map((subField) => (
                                         <Space
                                           key={subField.key}

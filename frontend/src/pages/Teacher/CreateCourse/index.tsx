@@ -68,48 +68,43 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
             />
           </Form.Item>
 
-          <div>
-            <span className="mb-2 inline-block">Addition info</span>
+          <Form.Item<FieldType>
+            name="price"
+            label="Price"
+            rules={[
+              {
+                pattern: /^[0-9.]+$/,
+                message: 'Price can only numbers.',
+              },
+              { required: true, message: 'Please input price!' },
+            ]}
+          >
+            <Input
+              placeholder="$29.00"
+              size="middle"
+              className="rounded-[8px] h-[40px]"
+            />
+          </Form.Item>
 
-            <div className="flex gap-4">
-              <Form.Item<FieldType>
-                name="price"
-                rules={[
-                  {
-                    pattern: /^[0-9.]+$/,
-                    message: 'Price can only numbers.',
-                  },
-                  { required: true, message: 'Please input price!' },
-                ]}
-                className="flex-1"
-              >
-                <Input
-                  placeholder="$29.00"
-                  size="middle"
-                  className="rounded-[8px] h-[40px]"
-                />
-              </Form.Item>
-
-              <Form.Item<FieldType>
-                name="level"
-                className="flex-1"
-                rules={[{ required: true, message: 'Please input level!' }]}
-              >
-                <Select
-                  placeholder="Select level"
-                  options={Object.values(CEFRLevel).map((level) => ({
-                    value: level,
-                    label: level,
-                  }))}
-                  className="rounded-[8px] !h-[40px]"
-                  size="large"
-                />
-              </Form.Item>
-            </div>
-          </div>
+          <Form.Item<FieldType>
+            name="level"
+            label="Level"
+            rules={[{ required: true, message: 'Please input level!' }]}
+          >
+            <Select
+              placeholder="Select level"
+              options={Object.values(CEFRLevel).map((level) => ({
+                value: level,
+                label: level,
+              }))}
+              className="rounded-[8px] !h-[40px]"
+              size="large"
+            />
+          </Form.Item>
 
           <Form.Item
             name="thumbnail"
+            label="Thumbnail"
             rules={[{ required: true, message: 'Please upload thumbnail!' }]}
             getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
           >
@@ -120,7 +115,7 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
             >
               <div>
                 <PlusIcon />
-                <div style={{ marginTop: 8 }}>Upload thumbnail</div>
+                <div style={{ marginTop: 8 }}>Upload</div>
               </div>
             </Upload>
           </Form.Item>
