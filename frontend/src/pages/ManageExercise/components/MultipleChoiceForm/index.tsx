@@ -1,8 +1,10 @@
-import { Button, Checkbox, Divider, Form, Input, Select, Upload } from 'antd'
+import { Button, Checkbox, Divider, Form, Input, Select } from 'antd'
 import { CEFRLevel, ExerciseTag } from '../../../../utils/constants'
 import enumToSelectOptions from '../../../../utils/enumsToSelectOptions'
 // eslint-disable-next-line import/no-cycle
+import { useRef } from 'react'
 import { FormSubmit } from '../..'
+import CustomUpload from '../../../../components/CustomUpload'
 
 interface AnswerFormProps {
   index: number
@@ -20,10 +22,12 @@ const AnswerForm = ({ index, remove }: AnswerFormProps) => {
         >
           <Input placeholder="Answer" />
         </Form.Item>
-        <Form.Item name={[index, 'answerImage']}>
-          <Upload>
-            <Button>Upload image</Button>
-          </Upload>
+        <Form.Item
+          className="max-w-[100px]"
+          name={[index, 'answerImage']}
+          valuePropName="fileList"
+        >
+          <CustomUpload />
         </Form.Item>
       </div>
       <Form.Item name={[index, 'correctAnswer']} valuePropName="checked">
@@ -109,7 +113,6 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name }) => {
-              console.log(fields.length)
               return (
                 <AnswerForm
                   key={key}
@@ -193,6 +196,7 @@ const transformSubmitData = (exercise: any) => {
 }
 
 function MultipleChoiceForm({ form }: { form: FormSubmit }) {
+  const divRef = useRef<null | HTMLDivElement>(null)
   form.transform = transformSubmitData
 
   return (
@@ -209,14 +213,29 @@ function MultipleChoiceForm({ form }: { form: FormSubmit }) {
                 <Divider />
               </div>
             ))}
-            <Form.Item>
-              <Button type="dashed" onClick={() => add()} block icon={'+'}>
+            <Form.Item noStyle>
+              <Button
+                className="sticky bottom-0"
+                type="dashed"
+                onClick={() => {
+                  add()
+                  setTimeout(() => {
+                    divRef?.current?.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'end',
+                    })
+                  }, 0)
+                }}
+                block
+                icon={'+'}
+              >
                 Add question
               </Button>
             </Form.Item>
           </>
         )}
       </Form.List>
+      <div style={{ float: 'left', clear: 'both' }} ref={divRef}></div>
     </>
   )
 }

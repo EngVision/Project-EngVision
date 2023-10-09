@@ -40,6 +40,8 @@ import {
   CourseSectionIdDto,
   UpdateSectionDto,
   CourseSectionLessonIdDto,
+  LessonDto,
+  LessonExerciseIdDto,
 } from './dto';
 
 @ApiTags('Courses')
@@ -326,6 +328,48 @@ export class CoursesController {
         data: newCourse,
         dataType: CourseDetailDto,
         message: 'Remove lesson successful',
+      }),
+    );
+  }
+
+  @Get('/lessons/:lessonId')
+  @ApiResponseData(LessonDto)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async getLesson(
+    @Res() res: Response,
+    @Param('lessonId') lessonId: string,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const lesson = await this.coursesService.getLesson(lessonId, user.sub);
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        data: lesson,
+        dataType: LessonDto,
+        message: 'Get lesson successful',
+      }),
+    );
+  }
+
+  @Delete('/lessons/:lessonId/exercises/:exerciseId')
+  @ApiResponseData(LessonDto)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async removeExercise(
+    @Res() res: Response,
+    @Param() params: LessonExerciseIdDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const newLesson = await this.coursesService.removeExercise(
+      params.exerciseId,
+      params.lessonId,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        data: newLesson,
+        dataType: LessonDto,
+        message: 'Delete exercise successful',
       }),
     );
   }

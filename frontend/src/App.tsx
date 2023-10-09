@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from './hooks/redux'
 import DefaultLayout from './layouts/DefaultLayout'

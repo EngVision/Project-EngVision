@@ -78,5 +78,5 @@ export interface ReviewParams {
 }
 
 export interface GetCourseProps {
-  status: string
+  status: 'All' | 'Attended' | 'Published' | 'Draft'
 }

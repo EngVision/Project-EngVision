@@ -1,17 +1,24 @@
+import { RcFile } from 'antd/es/upload'
 import axiosClient from '../axiosClient'
 import type { ResponseData } from '../types'
 
 const PREFIX = 'files/'
 
 const fileApi = {
-  postFile: async (file: any) => {
+  create: async (
+    file: string | RcFile | Blob,
+    onProgress?: ((event: any) => void) | undefined,
+  ): Promise<ResponseData> => {
     const formData = new FormData()
     formData.append('file', file)
 
     try {
-      const res = await axiosClient.post(`${PREFIX}`, formData, {
+      const res: ResponseData = await axiosClient.post(`${PREFIX}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (event) => {
+          onProgress?.({ percent: (event.loaded / (event.total ?? 1)) * 100 })
         },
       })
       return res
@@ -20,9 +27,41 @@ const fileApi = {
       throw error
     }
   },
-  uploadImage: async (data: any) => {
-    const res: ResponseData = await axiosClient.post(PREFIX, data)
-    return res
+  update: async (
+    id: string,
+    file: string | RcFile | Blob,
+    onProgress?: ((event: any) => void) | undefined,
+  ): Promise<ResponseData> => {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const res: ResponseData = await axiosClient.put(
+        `${PREFIX}${id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          onUploadProgress: (event) => {
+            onProgress?.({ percent: (event.loaded / (event.total ?? 1)) * 100 })
+          },
+        },
+      )
+      return res
+    } catch (error) {
+      console.error('Error post file details:', error)
+      throw error
+    }
+  },
+  delete: async (id: string): Promise<ResponseData> => {
+    try {
+      const res: ResponseData = await axiosClient.delete(`${PREFIX}${id}`)
+      return res
+    } catch (error) {
+      console.error('Error post file details:', error)
+      throw error
+    }
   },
 }
 

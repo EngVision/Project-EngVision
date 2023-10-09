@@ -25,7 +25,17 @@ interface GeneralInfo {
 const GeneralInfoForm = () => {
   return (
     <>
-      <div className="grid grid-cols-4 gap-4">
+      <Form.Item<GeneralInfo>
+        label="Title"
+        name="title"
+        rules={[{ required: true }]}
+      >
+        <Input placeholder="Title" />
+      </Form.Item>
+      <Form.Item<GeneralInfo> label="Description" name="description">
+        <Input.TextArea placeholder="Description (optional)" />
+      </Form.Item>
+      <div className="grid grid-cols-2 gap-4">
         <Form.Item<GeneralInfo>
           label="Exercise type"
           name="type"
@@ -35,16 +45,6 @@ const GeneralInfoForm = () => {
             placeholder="Exercise type"
             options={enumToSelectOptions(ExerciseType)}
           />
-        </Form.Item>
-        <Form.Item<GeneralInfo>
-          label="Title"
-          name="title"
-          rules={[{ required: true }]}
-        >
-          <Input placeholder="Title" />
-        </Form.Item>
-        <Form.Item<GeneralInfo> label="Description" name="description">
-          <Input placeholder="Description (optional)" />
         </Form.Item>
         <Form.Item<GeneralInfo> label="Deadline" name="deadline">
           <DatePicker placeholder="Deadline (optional)" className="w-full" />
@@ -108,27 +108,30 @@ function ManageExercise() {
   const type = Form.useWatch('type', form)
 
   const onSubmit = async (values: any, formSubmit: FormSubmit) => {
-    formSubmit.transform(values)
-    try {
-      messageApi.open({
-        key: 'submitMessage',
-        content: 'loading',
-        type: 'loading',
-      })
-      await exerciseApi.createExercise(values)
-      messageApi.open({
-        key: 'submitMessage',
-        content: 'done',
-        type: 'success',
-      })
-    } catch (error) {
-      console.log(error)
-      messageApi.open({
-        key: 'submitMessage',
-        content: error.response?.data?.message,
-        type: 'error',
-      })
-    }
+    console.log(values)
+    // formSubmit.transform(values)
+    // try {
+    //   messageApi.open({
+    //     key: 'submitMessage',
+    //     content: 'loading',
+    //     type: 'loading',
+    //   })
+
+    //   await exerciseApi.createExercise(values)
+
+    //   messageApi.open({
+    //     key: 'submitMessage',
+    //     content: 'done',
+    //     type: 'success',
+    //   })
+    // } catch (error) {
+    //   console.log(error)
+    //   messageApi.open({
+    //     key: 'submitMessage',
+    //     content: error.response?.data?.message,
+    //     type: 'error',
+    //   })
+    // }
   }
 
   return (
@@ -141,15 +144,17 @@ function ManageExercise() {
       >
         <div className="flex items-center justify-between my-4">
           <p className="text-2xl font-bold">General</p>
-          <Form.Item noStyle>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
         </div>
         <GeneralInfoForm />
         <p className="text-2xl font-bold my-5">Exercise content</p>
         <ExerciseForm type={type} form={form as FormSubmit} />
+        <div className="sticky bottom-0 my-6">
+          <Form.Item noStyle>
+            <Button type="primary" htmlType="submit" block>
+              Submit
+            </Button>
+          </Form.Item>
+        </div>
       </Form>
     </>
   )
