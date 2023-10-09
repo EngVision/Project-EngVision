@@ -63,6 +63,12 @@ export class CourseDetailDto {
   })
   isAttended?: boolean;
 
+  @ApiPropertyOptional({
+    type: Boolean,
+    description: 'True if user has reviewed this course',
+  })
+  isReviewed?: boolean;
+
   @Exclude()
   posts?: mongoose.Types.ObjectId[];
 }
