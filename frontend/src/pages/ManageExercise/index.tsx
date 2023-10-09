@@ -7,11 +7,12 @@ import {
   Select,
   message,
 } from 'antd'
+import { useRef } from 'react'
 import exerciseApi from '../../services/exerciseApi'
 import { CEFRLevel, ExerciseTag, ExerciseType } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
-import MultipleChoiceForm from './components/MultipleChoiceForm'
 import ConstructedResponseForm from './components/ConstructedResponseForm'
+import MultipleChoiceForm from './components/MultipleChoiceForm'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -99,64 +100,89 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
 
 export interface FormSubmit extends FormInstance {
   transform: (values: any) => void
+  addQuestion: () => void
 }
 
 function ManageExercise() {
+  const bottomDivRef = useRef<null | HTMLDivElement>(null)
   const [form] = Form.useForm()
-  const [messageApi, contextHolder] = message.useMessage()
 
   const type = Form.useWatch('type', form)
 
   const onSubmit = async (values: any, formSubmit: FormSubmit) => {
     console.log(values)
-    // formSubmit.transform(values)
-    // try {
-    //   messageApi.open({
-    //     key: 'submitMessage',
-    //     content: 'loading',
-    //     type: 'loading',
-    //   })
 
-    //   await exerciseApi.createExercise(values)
+    formSubmit.transform(values)
+    try {
+      message.open({
+        key: 'submitMessage',
+        content: 'loading',
+        type: 'loading',
+      })
 
-    //   messageApi.open({
-    //     key: 'submitMessage',
-    //     content: 'done',
-    //     type: 'success',
-    //   })
-    // } catch (error) {
-    //   console.log(error)
-    //   messageApi.open({
-    //     key: 'submitMessage',
-    //     content: error.response?.data?.message,
-    //     type: 'error',
-    //   })
-    // }
+      await exerciseApi.createExercise(values)
+
+      message.open({
+        key: 'submitMessage',
+        content: 'done',
+        type: 'success',
+      })
+    } catch (error) {
+      console.log(error)
+      message.open({
+        key: 'submitMessage',
+        content: error.response?.data?.message,
+        type: 'error',
+      })
+    }
+  }
+
+  const addQuestion = (formSubmit: FormSubmit) => {
+    formSubmit.addQuestion()
+    setTimeout(() => {
+      bottomDivRef?.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+      })
+    }, 0)
   }
 
   return (
-    <>
-      {contextHolder}
-      <Form
-        form={form}
-        onFinish={async (v) => onSubmit(v, form as FormSubmit)}
-        layout="vertical"
-      >
+    <Form
+      className="flex flex-col h-full"
+      form={form}
+      onFinish={async (v) => onSubmit(v, form as FormSubmit)}
+      layout="vertical"
+    >
+      <div className="overflow-y-scroll px-8 pb-4">
         <div className="flex items-center justify-between my-4">
           <p className="text-2xl font-bold">General</p>
         </div>
         <GeneralInfoForm />
         <p className="text-2xl font-bold my-5">Exercise content</p>
         <ExerciseForm type={type} form={form as FormSubmit} />
-        <div className="sticky bottom-0 my-6">
+        <div style={{ float: 'left', clear: 'both' }} ref={bottomDivRef}></div>
+      </div>
+      <div className="flex flex-col gap-4 pt-4 px-8 mr-4">
+        {type && (
           <Form.Item noStyle>
-            <Button type="primary" htmlType="submit" block>
-              Submit
+            <Button
+              type="dashed"
+              block
+              icon={'+'}
+              onClick={() => addQuestion(form as FormSubmit)}
+            >
+              Add question
             </Button>
           </Form.Item>
-        </div>
-      </Form>
-    </>
+        )}
+        <Form.Item noStyle>
+          <Button type="primary" htmlType="submit" block>
+            Submit
+          </Button>
+        </Form.Item>
+      </div>
+    </Form>
   )
 }
 

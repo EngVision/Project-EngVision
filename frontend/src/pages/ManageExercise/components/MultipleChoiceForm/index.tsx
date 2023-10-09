@@ -1,10 +1,8 @@
 import { Button, Checkbox, Divider, Form, Input, Select } from 'antd'
-import { CEFRLevel, ExerciseTag } from '../../../../utils/constants'
-import enumToSelectOptions from '../../../../utils/enumsToSelectOptions'
-// eslint-disable-next-line import/no-cycle
-import { useRef } from 'react'
 import { FormSubmit } from '../..'
 import CustomUpload from '../../../../components/CustomUpload'
+import { CEFRLevel, ExerciseTag } from '../../../../utils/constants'
+import enumToSelectOptions from '../../../../utils/enumsToSelectOptions'
 
 interface AnswerFormProps {
   index: number
@@ -196,46 +194,25 @@ const transformSubmitData = (exercise: any) => {
 }
 
 function MultipleChoiceForm({ form }: { form: FormSubmit }) {
-  const divRef = useRef<null | HTMLDivElement>(null)
   form.transform = transformSubmitData
 
   return (
     <>
       <Form.List name="content" initialValue={[{}]}>
-        {(fields, { add, remove }) => (
-          <>
-            {fields.map(({ key, name }) => (
-              <div key={key}>
-                <QuestionForm
-                  index={name}
-                  remove={fields.length > 1 ? remove : null}
-                />
-                <Divider />
-              </div>
-            ))}
-            <Form.Item noStyle>
-              <Button
-                className="sticky bottom-0"
-                type="dashed"
-                onClick={() => {
-                  add()
-                  setTimeout(() => {
-                    divRef?.current?.scrollIntoView({
-                      behavior: 'smooth',
-                      block: 'end',
-                    })
-                  }, 0)
-                }}
-                block
-                icon={'+'}
-              >
-                Add question
-              </Button>
-            </Form.Item>
-          </>
-        )}
+        {(fields, { add, remove }) => {
+          form.addQuestion = add
+
+          return fields.map(({ key, name }) => (
+            <div key={key}>
+              <QuestionForm
+                index={name}
+                remove={fields.length > 1 ? remove : null}
+              />
+              <Divider />
+            </div>
+          ))
+        }}
       </Form.List>
-      <div style={{ float: 'left', clear: 'both' }} ref={divRef}></div>
     </>
   )
 }
