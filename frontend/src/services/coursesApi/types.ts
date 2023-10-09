@@ -38,12 +38,14 @@ export interface Lesson {
   id?: string
   title: string
   exercises: string[]
+  completed: boolean
 }
 
 export interface Section {
   id?: string
   title: string
   lessons: Lesson[]
+  completed: boolean
 }
 
 export interface CourseDetails {

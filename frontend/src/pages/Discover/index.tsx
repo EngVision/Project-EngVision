@@ -3,16 +3,18 @@ import { useTranslation } from 'react-i18next'
 
 import { CourseCard } from '../../components/CourseCard'
 import coursesApi from '../../services/coursesApi'
-import type { CourseParams } from '../../services/coursesApi/types'
-
+import type {
+  CourseParams,
+  GetCourseProps,
+} from '../../services/coursesApi/types'
 const Discover = () => {
   const { t } = useTranslation()
   const [courseList, setCourseList] = useState<CourseParams[]>([])
-
+  const status: GetCourseProps = { status: 'All' }
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courses: any = await coursesApi.getCourses('All')
+        const courses: any = await coursesApi.getCourses(status)
         setCourseList(courses.data)
       } catch (error) {
         console.error('Error fetching courses:', error)
