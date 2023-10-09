@@ -33,6 +33,7 @@ export class AssignmentDto {
   @ApiProperty({ description: 'User id' })
   teacher: string;
 
+  @Transform(value => value.obj.exercise.toString())
   @ApiProperty({ description: 'Exercise id' })
   exercise: string;
 

@@ -8,7 +8,6 @@ import { setUserAccountId } from './redux/app/slice'
 import { privateRoutes, publicRoutes } from './routes'
 import authApi from './services/authApi'
 import { ROUTES } from './utils/constants'
-import { setupAxiosInterceptor } from './services/axiosClient'
 
 const App: React.FC = () => {
   const userAccountId = useAppSelector((state) => state.app.userAccountId)
@@ -42,7 +41,6 @@ const App: React.FC = () => {
   }
 
   useEffect(() => {
-    setupAxiosInterceptor(navigate)
     fetchAuthUser()
   }, [])
 
