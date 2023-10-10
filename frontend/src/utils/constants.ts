@@ -15,8 +15,8 @@ export const ROUTES = {
   signUpTeacher: '/sign-up/teacher',
   ssoSuccess: '/sso-success',
   createProfile: '/create-profile',
-  updateProfile: '/update-profile',
-  appearance: '/appearance',
+  updateProfile: '/settings/update-profile',
+  appearance: '/settings/appearance',
 
   search: '/search',
   resetForgotPassword: '/reset-password/:resetPasswordCode',

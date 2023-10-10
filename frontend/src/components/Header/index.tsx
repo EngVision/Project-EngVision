@@ -7,15 +7,18 @@ import Search from './Search'
 import { ProfileParams } from '../../services/accountApi/types'
 import authApi from '../../services/authApi'
 import { getFileUrl } from '../../utils/common'
+import LocalesButton from './LocalesButton'
+import DarkModeButton from './DarkModeButton'
 
 const Header = () => {
-  const [account, setAccount] = useState<ProfileParams | null>(null)
+  const [account, setAccount] = useState<ProfileParams>()
 
   useEffect(() => {
     const fetchAccount = async () => {
       try {
-        const { data } = await authApi.fetchAuthUser()
-        setAccount(data)
+        const res = await authApi.fetchAuthUser()
+        const data = res.data
+        if (data) setAccount(data)
       } catch (error) {
         console.error('Error fetching courses:', error)
       }
@@ -23,6 +26,7 @@ const Header = () => {
 
     fetchAccount()
   }, [])
+
   return (
     <div className="flex items-center py-9">
       <div className="flex-1 flex justify-between">
@@ -30,6 +34,7 @@ const Header = () => {
 
         <div className="flex items-center gap-4">
           <NotificationIcon width={40} height={40} />
+          <DarkModeButton />
           {account && (
             <Avatar
               className={`${account?.avatar ? '' : 'bg-blue-400 text-white'}`}

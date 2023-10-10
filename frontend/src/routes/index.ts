@@ -13,7 +13,7 @@ import MyHub from '../pages/MyHub'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
 import Search from '../pages/Search'
 import SendMailResetPassword from '../pages/SendMailResetPassword'
-import Settings from '../pages/Settings'
+import SettingBar from '../components/SettingBar'
 import SignIn from '../pages/SignIn'
 import SSOSuccess from '../pages/SignIn/components/SSOSuccess'
 import SignUp from '../pages/SignUp'
@@ -135,7 +135,7 @@ const privateRoutes: RouteElement[] = [
     path: ROUTES.search,
   },
   {
-    element: Settings,
+    element: UpdateProfile,
     path: ROUTES.settings,
   },
   {

@@ -6,69 +6,92 @@ import {
   Image,
   Space,
   Upload,
-  message,
+  Switch,
+  Select,
 } from 'antd'
-import type { UploadProps } from 'antd/lib/upload'
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import accountApi from '../../services/accountApi'
 import type { ProfileParams } from '../../services/accountApi/types'
 import authApi from '../../services/authApi'
 import { getFileUrl } from '../../utils/common'
 import { ROUTES } from '../../utils/constants'
-import fileApi from '../../services/fileApi'
+import accountApi from '../../services/accountApi'
+import { toggleDarkMode, toggleLocales } from '../../redux/app/slice'
+import { useAppDispatch } from '../../hooks/redux'
 
 export const Appearance = () => {
-  const [account, setAccount] = useState<ProfileParams | null>(null)
-  const [fileList, setFileList] = useState<any[]>([])
-
-  const handleChange = async (info: any) => {
-    console.log(info.file)
-    const file = await fileApi.postFile(info.file)
-  }
-
-  const props: UploadProps = {
-    name: 'file',
-    onChange(info) {
-      handleChange(info)
-    },
-  }
+  const [account, setAccount] = useState<ProfileParams>()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const fetchAccount = async () => {
       try {
-        const { data } = await authApi.fetchAuthUser()
-        setAccount(data)
+        const res = await authApi.fetchAuthUser()
+        const data = res.data
+        if (data) setAccount(data)
       } catch (error) {
-        console.error('Error fetching courses:', error)
+        console.error('Error fetching account: ', error)
       }
     }
 
     fetchAccount()
   }, [])
 
-  const onFinish = async () => {
+  const onFinish = async (values: ProfileParams) => {
+    if (values.avatar) console.log('Success:', values.avatar)
     try {
-      if (fileList.length > 0) {
-        const file = await fileApi.postFile(fileList[0])
-        console.log(file)
-        await accountApi.update(file.data.id)
-      }
+      const res = await accountApi.update(values)
+      console.log('res: ', res)
+      setAccount(res.data)
     } catch (error) {
       throw error
     }
-    window.location.reload()
+    //window.location.reload()
   }
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }
 
+  const handleChangeTheme = (checked: boolean) => {
+    if (checked) {
+      dispatch(toggleDarkMode())
+    }
+  }
+
+  const handleChangeLocales = (value: any) => {
+    if (value) {
+      dispatch(toggleLocales(value.toString().toLowerCase()))
+    }
+  }
+
   return (
     <div>
       <div className="m-6 ">
         <p className="font-bold text-lg">Appearance</p>
+        <div className="flex flex-row my-6">
+          <p className="mr-5">Dark mode</p>
+          <Switch
+            checkedChildren={<CheckOutlined />}
+            unCheckedChildren={<CloseOutlined />}
+            defaultChecked
+            onChange={(checked) => handleChangeTheme(checked)}
+          />
+        </div>
+        <div className="flex flex-row">
+          <p className="mr-5">Languages</p>
+          <Select
+            defaultValue="en"
+            style={{ width: 120 }}
+            onChange={(value) => handleChangeLocales(value)}
+            options={[
+              { value: 'en', label: 'English' },
+              { value: 'vi', label: 'VietNam' },
+            ]}
+          />
+        </div>
         <Divider />
       </div>
       {account && (
@@ -82,26 +105,25 @@ export const Appearance = () => {
           <div className="m-6">
             <p className="font-medium text-xl my-6">Profile</p>
 
-            {account && (
-              <Space className="flex justify-center">
-                <Form.Item name="avatar">
-                  {account?.avatar && (
-                    <Image
-                      className="rounded-full"
-                      width={300}
-                      src={getFileUrl(account?.avatar)}
-                    />
-                  )}
-                  {!account?.avatar && <Avatar size={300}></Avatar>}
-                </Form.Item>
+            <Space className="flex justify-center">
+              <Form.Item name="avatar">
+                {account?.avatar && (
+                  <Image width={300} src={getFileUrl(account?.avatar)} />
+                )}
+                {!account?.avatar && <Avatar size={300}></Avatar>}
 
-                <Upload {...props}>
+                <Upload
+                  action={`${import.meta.env.VITE_BASE_URL}files`}
+                  withCredentials
+                  maxCount={1}
+                  accept="image/*"
+                >
                   <Button type="primary" className="h-10 mx-5 bg-[#2563EB]">
                     Change
                   </Button>
                 </Upload>
-              </Space>
-            )}
+              </Form.Item>
+            </Space>
           </div>
           <div className="m-6">
             <Divider className="mt-12 mb-6" />

@@ -22,4 +22,12 @@ export interface ProfileParams {
   phone: string
   country: string
   role: string
+  oldPassword: string
+  password: string
+  retypePassword: string
+}
+
+export interface ChangePassword {
+  oldPassword: string
+  password: string
 }
