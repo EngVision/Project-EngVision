@@ -3,6 +3,10 @@ import { FormSubmit } from '../..'
 import CustomUpload from '../../../../components/CustomUpload'
 import { CEFRLevel, ExerciseTag } from '../../../../utils/constants'
 import enumToSelectOptions from '../../../../utils/enumsToSelectOptions'
+import {
+  ExercisePayload,
+  QuestionPayload,
+} from '../../../../services/exerciseApi/types'
 
 interface AnswerFormProps {
   index: number
@@ -25,7 +29,7 @@ const AnswerForm = ({ index, remove }: AnswerFormProps) => {
           name={[index, 'answerImage']}
           valuePropName="fileList"
         >
-          <CustomUpload />
+          <CustomUpload accept="audio" />
         </Form.Item>
       </div>
       <Form.Item name={[index, 'correctAnswer']} valuePropName="checked">
@@ -137,29 +141,29 @@ interface QuestionFormSchema {
   questionLevel: CEFRLevel
   explanation: string
   answers: AnswerFormSchema[]
+  id?: string
 }
 
 interface AnswerFormSchema {
   id: number
   answerText: string
-  answerImage: string
+  answerImage: string | null
   correctAnswer: boolean
 }
 
-interface MultipleChoicePayload {
+interface MultipleChoicePayload extends QuestionPayload {
   question: {
     text: string
     answers: {
       id: number
       text: string
+      image: string | null
     }[]
   }
   correctAnswer: {
     detail: number[]
     explanation: string
   }
-  tags: ExerciseTag[]
-  level: CEFRLevel
 }
 
 const transformSubmitData = (exercise: any) => {
@@ -171,6 +175,7 @@ const transformSubmitData = (exercise: any) => {
 
   exercise.content = content.map((question: QuestionFormSchema) => {
     const transformQuestion: MultipleChoicePayload = {
+      id: question.id,
       tags: question.questionTags,
       level: question.questionLevel,
       question: {
@@ -193,8 +198,35 @@ const transformSubmitData = (exercise: any) => {
   })
 }
 
+function setInitialContent(this: FormSubmit, exercise: ExercisePayload) {
+  const { content } = exercise
+
+  const transformedContent = content.map((q: MultipleChoicePayload) => {
+    const questionForm: QuestionFormSchema = {
+      id: q.id,
+      questionText: q.question.text,
+      questionTags: q.tags,
+      questionLevel: q.level,
+      explanation: q.correctAnswer?.explanation,
+      answers: q.question.answers.map(
+        (ans): AnswerFormSchema => ({
+          id: ans.id,
+          answerText: ans.text,
+          answerImage: ans.image,
+          correctAnswer: q.correctAnswer.detail.includes(ans.id),
+        }),
+      ),
+    }
+
+    return questionForm
+  })
+
+  this.setFieldValue('content', transformedContent)
+}
+
 function MultipleChoiceForm({ form }: { form: FormSubmit }) {
   form.transform = transformSubmitData
+  form.setInitialContent = setInitialContent
 
   return (
     <>

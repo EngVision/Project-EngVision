@@ -7,12 +7,14 @@ import {
   Select,
   message,
 } from 'antd'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import exerciseApi from '../../services/exerciseApi'
 import { CEFRLevel, ExerciseTag, ExerciseType } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
 import ConstructedResponseForm from './components/ConstructedResponseForm'
 import MultipleChoiceForm from './components/MultipleChoiceForm'
+import { ExercisePayload } from '../../services/exerciseApi/types'
+import { useParams } from 'react-router-dom'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -99,42 +101,75 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
 }
 
 export interface FormSubmit extends FormInstance {
-  transform: (values: any) => void
+  transform: (values: ExercisePayload) => void
+  setInitialContent: (values: ExercisePayload) => void
   addQuestion: () => void
+}
+
+interface FormSchema extends GeneralInfo {
+  content: any[]
 }
 
 function ManageExercise() {
   const bottomDivRef = useRef<null | HTMLDivElement>(null)
-  const [form] = Form.useForm()
-
+  const [form] = Form.useForm<FormSchema>()
   const type = Form.useWatch('type', form)
 
-  const onSubmit = async (values: any, formSubmit: FormSubmit) => {
+  const { id } = useParams()
+
+  console.log(id)
+
+  useEffect(() => {
+    getExercise(form as FormSubmit)
+  }, [])
+
+  const getExercise = async (formSubmit: FormSubmit) => {
+    if (id) {
+      const res = await exerciseApi.getExercise(id)
+      console.log(res)
+
+      formSubmit.setFieldsValue({
+        ...res,
+      })
+
+      setTimeout(() => {
+        formSubmit.setInitialContent(res)
+      }, 100)
+    }
+  }
+
+  const onSubmit = async (values: ExercisePayload, formSubmit: FormSubmit) => {
+    formSubmit.transform(values)
     console.log(values)
 
-    formSubmit.transform(values)
-    try {
-      message.open({
-        key: 'submitMessage',
-        content: 'loading',
-        type: 'loading',
-      })
+    // if (id) {
+    // const res = await exerciseApi.updateExercise(id, values)
 
-      await exerciseApi.createExercise(values)
+    // console.log(res)
+    // }
 
-      message.open({
-        key: 'submitMessage',
-        content: 'done',
-        type: 'success',
-      })
-    } catch (error) {
-      console.log(error)
-      message.open({
-        key: 'submitMessage',
-        content: error.response?.data?.message,
-        type: 'error',
-      })
-    }
+    // try {
+    //   message.open({
+    //     key: 'submitMessage',
+    //     content: 'loading',
+    //     type: 'loading',
+    //   })
+
+    //   await exerciseApi.createExercise(values)
+
+    //   message.open({
+    //     key: 'submitMessage',
+    //     content: 'done',
+    //     type: 'success',
+    //   })
+    // } catch (error) {
+    //   console.log(error)
+    //   message.open({
+    //     key: 'submitMessage',
+    //     content: error.response?.data?.message,
+    //     type: 'error',
+    //   })
+    // }
   }
 
   const addQuestion = (formSubmit: FormSubmit) => {
@@ -153,6 +188,7 @@ function ManageExercise() {
       form={form}
       onFinish={async (v) => onSubmit(v, form as FormSubmit)}
       layout="vertical"
+      scrollToFirstError
     >
       <div className="overflow-y-scroll px-8 pb-4">
         <div className="flex items-center justify-between my-4">
@@ -178,7 +214,7 @@ function ManageExercise() {
         )}
         <Form.Item noStyle>
           <Button type="primary" htmlType="submit" block>
-            Submit
+            {id ? 'Save' : 'Create'}
           </Button>
         </Form.Item>
       </div>
