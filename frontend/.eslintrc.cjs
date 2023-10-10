@@ -6,7 +6,7 @@ module.exports = {
   overrides: [],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ['tsconfig.json'],
+    project: ['frontend/tsconfig.json'],
   },
   plugins: ['react-hooks', 'jsx-a11y'],
   root: true,

@@ -1,4 +1,4 @@
-import { Button, Tabs, Form } from 'antd'
+import { Button, Tabs, Form, message } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -9,7 +9,8 @@ import Section from './Section'
 import Preview from './Preview'
 import Statistic from './Statistic'
 import { CourseDetails } from '../../../services/coursesApi/types'
-import { ROUTES } from '../../../utils/constants'
+import { TEACHER_ROUTES } from '../../../utils/constants'
+import { removeKeys } from '../../../utils/common'
 const { TabPane } = Tabs
 
 const TeacherCourseDetail = () => {
@@ -20,28 +21,48 @@ const TeacherCourseDetail = () => {
 
   const handleSave = async () => {
     const formValues = form.getFieldsValue()
-    const newCourse = {
-      ...course,
-      ...formValues,
-      price: parseFloat(formValues.price),
-    }
+    const newCourse = removeKeys(
+      {
+        ...course,
+        ...formValues,
+        price: parseFloat(formValues.price),
+      },
+      ['teacher'],
+    )
+
     try {
       await coursesApi.update(courseId || '', newCourse)
-      console.log('update success')
+      message.success(`Update successfully.`)
     } catch (error) {
       console.log('error: ', error)
     }
-    console.log('save: ', newCourse)
   }
 
-  const handleSaveAndPublish = () => {
-    console.log('save and publish: ', form.getFieldsValue())
+  const handleSaveAndPublish = async () => {
+    try {
+      const formValues = form.getFieldsValue()
+      const newCourse = removeKeys(
+        {
+          ...course,
+          ...formValues,
+          price: parseFloat(formValues.price),
+        },
+        ['teacher'],
+      )
+
+      await coursesApi.update(courseId || '', newCourse)
+      await coursesApi.publish(courseId || '')
+      message.success(`Update and publish successfully.`)
+    } catch (error) {
+      console.log('error: ', error)
+    }
   }
 
   const handleDelete = async () => {
     try {
       await coursesApi.delete(courseId || '')
-      navigate(ROUTES.teacherCourses)
+      message.success(`Delete successfully.`)
+      navigate(TEACHER_ROUTES.courses)
     } catch (error) {
       console.log('error: ', error)
     }
@@ -59,7 +80,7 @@ const TeacherCourseDetail = () => {
         setCourse(data)
       }
     } catch (error) {
-      console.error(error)
+      console.log('error: ', error)
     }
   }
 
@@ -69,87 +90,101 @@ const TeacherCourseDetail = () => {
 
   if (!course) return null
 
-  console.log('🚀 ~ file: index.tsx:18 ~ TeacherCourseDetail ~ course:', course)
-
   return (
     <div className="flex flex-col bg-[#FFFCF7] p-[1.5rem] rounded-md h-full">
-      <Preview course={course} />
-
-      <Tabs
-        className="w-full flex-1 overflow-auto"
-        onChange={handleTabChange}
-        activeKey={activeKey}
+      <Form
+        name="teacher_course_overview"
+        initialValues={{
+          title: course.title,
+          about: course.about,
+          price: course.price,
+          level: course.level,
+          thumbnail: course.thumbnail,
+          sections: course.sections,
+        }}
+        autoComplete="off"
+        layout="vertical"
+        form={form}
+        className="h-full flex flex-col gap-6"
       >
-        <TabPane
-          tab={
-            <Button
-              className={`flex font-light items-center text-lg px-10 py-5 rounded-xl 
+        <Preview form={form} />
+
+        <Tabs
+          className="w-full flex-1 overflow-auto"
+          onChange={handleTabChange}
+          activeKey={activeKey}
+        >
+          <TabPane
+            tab={
+              <Button
+                className={`flex font-light items-center text-lg px-10 py-5 rounded-xl 
               ${activeKey === '1' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
-              type={activeKey === '1' ? 'primary' : 'default'}
-            >
-              Overview
-            </Button>
-          }
-          key="1"
-        >
-          <Overview form={form} course={course} />
-        </TabPane>
-        <TabPane
-          tab={
-            <Button
-              className={`flex font-light items-center text-lg px-10 py-5 rounded-xl 
-              ${activeKey === '2' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
-              type={activeKey === '2' ? 'primary' : 'default'}
-            >
-              Course
-            </Button>
-          }
-          key="2"
-        >
-          <Section sections={course.sections} setCourse={setCourse} />
-        </TabPane>
-        <TabPane
-          tab={
-            <Button
-              className={`flex font-light items-center text-lg px-10 py-5 rounded-xl 
-                ${activeKey === '3' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
-              type={activeKey === '3' ? 'primary' : 'default'}
-            >
-              Statistic
-            </Button>
-          }
-          key="3"
-        >
-          <Statistic />
-        </TabPane>
-      </Tabs>
-
-      <div className="flex justify-between mt-8">
-        <div className="flex gap-4">
-          <Button type="primary" danger onClick={handleDelete}>
-            Delete
-          </Button>
-
-          <Button
-            className="text-primary border-primary"
-            onClick={() => {
-              navigate(ROUTES.teacherCourses)
-            }}
+                type={activeKey === '1' ? 'primary' : 'default'}
+              >
+                Overview
+              </Button>
+            }
+            key="1"
           >
-            Cancel
-          </Button>
-        </div>
+            <Overview />
+          </TabPane>
+          <TabPane
+            tab={
+              <Button
+                className={`flex font-light items-center text-lg px-10 py-5 rounded-xl 
+              ${activeKey === '2' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
+                type={activeKey === '2' ? 'primary' : 'default'}
+              >
+                Course
+              </Button>
+            }
+            key="2"
+          >
+            <Section form={form} />
+          </TabPane>
+          <TabPane
+            tab={
+              <Button
+                className={`flex font-light items-center text-lg px-10 py-5 rounded-xl 
+                ${activeKey === '3' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
+                type={activeKey === '3' ? 'primary' : 'default'}
+              >
+                Statistic
+              </Button>
+            }
+            key="3"
+          >
+            <Statistic />
+          </TabPane>
+        </Tabs>
 
-        <div className="flex gap-4">
-          <Button type="primary" onClick={handleSave}>
-            Save
-          </Button>
+        <div className="flex justify-between mt-8">
+          <div className="flex gap-4">
+            <Button type="primary" danger onClick={handleDelete}>
+              Delete
+            </Button>
 
-          <Button type="primary" onClick={handleSaveAndPublish}>
-            Save and publish
-          </Button>
+            <Button
+              className="text-primary border-primary"
+              onClick={() => {
+                navigate(TEACHER_ROUTES.courses)
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+
+          <div className="flex gap-4">
+            <Button type="primary" onClick={handleSave}>
+              Save
+            </Button>
+
+            <Button type="primary" onClick={handleSaveAndPublish}>
+              Save and publish
+            </Button>
+          </div>
         </div>
-      </div>
+      </Form>
     </div>
   )
 }

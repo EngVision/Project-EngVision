@@ -2,7 +2,7 @@ import { Button } from 'antd'
 import React from 'react'
 
 import { useAppDispatch } from '../../hooks/redux'
-import { setUserAccountId } from '../../redux/app/slice'
+import { setRole, setUserAccountId } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 
 const LogoutButton = () => {
@@ -13,6 +13,7 @@ const LogoutButton = () => {
       await authApi.logout()
       window.location.reload()
       dispatch(setUserAccountId(''))
+      dispatch(setRole(''))
     } catch (error) {
       console.log('Error: ', error)
     }
