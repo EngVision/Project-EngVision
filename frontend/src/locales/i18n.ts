@@ -4,6 +4,9 @@ import { initReactI18next } from 'react-i18next'
 import EN from './EN/en.json'
 import VN from './VN/vn.json'
 
+import appSlice from '../redux/app/slice'
+const languages = localStorage.getItem('locales')
+
 const resources = {
   en: {
     translation: EN,
@@ -15,7 +18,7 @@ const resources = {
 
 i18n.use(initReactI18next).init({
   resources,
-  lng: 'en',
+  lng: languages || 'en',
   fallbackLng: 'en',
   interpolation: {
     escapeValue: false,

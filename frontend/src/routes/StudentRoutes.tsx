@@ -1,4 +1,3 @@
-import { Appearance } from '../pages/Appearance'
 import Chat from '../pages/Chat'
 import CourseDetailsPage from '../pages/CourseDetails'
 import Discover from '../pages/Discover'
@@ -9,7 +8,6 @@ import Home from '../pages/Home'
 import MakeSentences from '../pages/Lesson/MakeSentences'
 import MultipleChoice from '../pages/Lesson/MultipleChoice'
 import MyHub from '../pages/MyHub'
-import Settings from '../pages/Settings'
 import Statistic from '../pages/Statistic'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { PRIVATE_ROUTES, STUDENT_ROUTES } from '../utils/constants'
@@ -51,7 +49,7 @@ const studentRoutes: RouteElement[] = [
     path: PRIVATE_ROUTES.makeSentence,
   },
   {
-    element: Settings,
+    element: UpdateProfile,
     path: PRIVATE_ROUTES.settings,
   },
   {
@@ -74,10 +72,6 @@ const studentRoutes: RouteElement[] = [
   {
     element: MultipleChoice,
     path: PRIVATE_ROUTES.multipleChoice,
-  },
-  {
-    element: Appearance,
-    path: STUDENT_ROUTES.appearance,
   },
   {
     element: UpdateProfile,

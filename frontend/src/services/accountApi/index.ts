@@ -6,6 +6,7 @@ import type {
   ResetForgottenPassword,
   ResetPasswordCode,
   ProfileParams,
+  ChangePassword,
 } from './types'
 
 const PREFIX = 'account/'
@@ -48,6 +49,11 @@ const accountApi = {
 
   updateWhenSignUp: async (data: any) => {
     const res: ResponseData = await axiosClient.post(PREFIX, data)
+    return res
+  },
+
+  changePassword: async (data: ChangePassword) => {
+    const res: ResponseData = await axiosClient.put(`${PREFIX}password`, data)
     return res
   },
 }
