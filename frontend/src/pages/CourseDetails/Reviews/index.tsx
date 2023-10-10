@@ -30,7 +30,7 @@ const Reviews = (course: CourseDetails) => {
       <div className="mb-4">
         <h3 className="text-2xl text-[#2769E7] mb-6">Reviews</h3>
       </div>
-      {course.isAttended && (
+      {course.isAttended && !course.isReviewed && (
         <div className="mb-8">
           <Form
             name="validateOnly"
