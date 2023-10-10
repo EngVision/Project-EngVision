@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { CurrentUser } from 'src/common/decorators';
+import { ApiResponseData, CurrentUser } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
 import { AtGuard, RoleGuard } from 'src/common/guards';
 import { QuestionResult } from '../assignments/schemas/assignment.schema';
@@ -33,6 +33,7 @@ export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 
   @Post()
+  @ApiResponseData(ExerciseDto)
   @UseGuards(AtGuard, RoleGuard(Role.Teacher))
   async create(
     @CurrentUser() user: JwtPayload,

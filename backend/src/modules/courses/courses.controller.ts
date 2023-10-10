@@ -13,36 +13,37 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CoursesService } from './courses.service';
-import { AtGuard, RoleGuard } from 'src/common/guards';
 import { Response } from 'express';
-import { courseIdDto } from './dto/course-id.dto';
-import { Role, StatusCourseSearch } from 'src/common/enums';
-import { CreateReviewDto } from '../reviews/dto/create-review.dto';
+import { CurrentUser } from 'src/common/decorators';
 import {
   ApiResponseData,
   ApiResponseList,
 } from 'src/common/decorators/api-response-data.decorator';
-import { ReviewDto } from '../reviews/dto/review.dto';
 import { GetResponse } from 'src/common/dto';
-import { CurrentUser } from 'src/common/decorators';
-import { JwtPayload } from '../auth/types';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
+import { Role, StatusCourseSearch } from 'src/common/enums';
+import { AtGuard, RoleGuard } from 'src/common/guards';
+import { JwtPayload } from '../auth/types';
+import { CreateExerciseDto } from '../exercises/dto';
+import { CreateReviewDto } from '../reviews/dto/create-review.dto';
+import { ReviewDto } from '../reviews/dto/review.dto';
+import { CoursesService } from './courses.service';
 import {
-  UpdateLessonDto,
+  CourseDetailDto,
   CourseDto,
+  CourseSectionIdDto,
+  CourseSectionLessonIdDto,
   CreateCourseDto,
   CreateLessonDto,
   CreateSectionDto,
-  SearchCourseDto,
-  UpdateCourseDto,
-  CourseDetailDto,
-  CourseSectionIdDto,
-  UpdateSectionDto,
-  CourseSectionLessonIdDto,
   LessonDto,
   LessonExerciseIdDto,
+  SearchCourseDto,
+  UpdateCourseDto,
+  UpdateLessonDto,
+  UpdateSectionDto,
 } from './dto';
+import { courseIdDto } from './dto/course-id.dto';
 
 @ApiTags('Courses')
 @Controller('courses')
@@ -344,6 +345,29 @@ export class CoursesController {
         data: lesson,
         dataType: LessonDto,
         message: 'Get lesson successful',
+      }),
+    );
+  }
+
+  @Post('/lessons/:lessonId/exercises')
+  @ApiResponseData(CourseDetailDto)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async createExercise(
+    @CurrentUser() user: JwtPayload,
+    @Param('lessonId') lessonId: string,
+    @Body('exerciseId') exerciseId: string,
+    @Res() res: Response,
+  ) {
+    const course = await this.coursesService.addExercise(
+      exerciseId,
+      lessonId,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        data: course,
+        dataType: CourseDetailDto,
       }),
     );
   }
