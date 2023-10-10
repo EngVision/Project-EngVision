@@ -6,7 +6,6 @@ import { CourseDetails } from '../../../services/coursesApi/types'
 import { AssignmentResponse } from '../../../services/assignmentApi/types'
 import assignmentApi from '../../../services/assignmentApi'
 import { useNavigate } from 'react-router-dom'
-import Lesson from '../../Teacher/CourseDetail/Section/Lesson'
 const { Panel } = Collapse
 const CourseContent = (course: CourseDetails) => {
   const [assignments, setAssignments] = useState<AssignmentResponse[]>([])
@@ -32,21 +31,22 @@ const CourseContent = (course: CourseDetails) => {
     }
   })
 
-  course.sections.forEach((section) => {
+  course.sections?.forEach((section) => {
     section.completed = true
     let countLessonCompleted: number = 0
-
+    if (section.lessons === undefined) return
     if (section.lessons.length === 0) {
       section.completed = false
     } else {
       section.lessons.forEach((lesson) => {
+        if (lesson.exercises === undefined) return
         lesson.completed = true
         let countExerciseCompleted: number = 0
 
         if (lesson.exercises.length === 0) {
           lesson.completed = false
         } else {
-          lesson?.exercises?.forEach((exercise) => {
+          lesson.exercises?.forEach((exercise) => {
             if (completedExerciseIds.includes(exercise.id)) {
               exercise.completed = true
               countExerciseCompleted++
@@ -91,11 +91,14 @@ const CourseContent = (course: CourseDetails) => {
               <Panel
                 header={
                   <div className="flex items-center text-xl">
-                    {section.completed && section.lessons.length ? (
+                    {section.completed &&
+                    section.lessons?.length &&
+                    course.isAttended ? (
                       <TickCircle className="mr-2" width={24} height={24} />
                     ) : (
                       <Circle className="mr-2" width={24} height={24} />
                     )}
+
                     <div className="mr-2">Section {sectionIndex}:</div>
                     <span>{section.title}</span>
                   </div>
@@ -108,7 +111,7 @@ const CourseContent = (course: CourseDetails) => {
                 key={sectionIndex.toString()}
               >
                 {/* Lessons */}
-                {section.lessons.map((lesson, lessonIndex) => (
+                {section.lessons?.map((lesson, lessonIndex) => (
                   <Collapse
                     collapsible={course.isAttended ? 'header' : 'disabled'}
                     className="bg-[#FFFCF7] pl-4"
@@ -120,7 +123,7 @@ const CourseContent = (course: CourseDetails) => {
                     <Panel
                       header={
                         <div className="flex items-center text-lg">
-                          {lesson.completed && lesson.exercises.length ? (
+                          {lesson.completed && lesson.exercises?.length ? (
                             <TickCircle
                               className="mr-2"
                               width={24}
@@ -134,14 +137,16 @@ const CourseContent = (course: CourseDetails) => {
                         </div>
                       }
                       extra={
-                        <div className="text-xs text-gray-500">
-                          {`${lesson.totalExerciseCompleted} / ${lesson.exercises.length}`}
-                        </div>
+                        lesson.exercises?.length > 0 && (
+                          <div className="text-xs text-gray-500">
+                            {`${lesson.totalExerciseCompleted} / ${lesson.exercises?.length}`}
+                          </div>
+                        )
                       }
                       key={lessonIndex.toString()}
                     >
                       {/* Exercise */}
-                      {lesson?.exercises?.map((exercise, exerciseIndex) => (
+                      {lesson.exercises?.map((exercise, exerciseIndex) => (
                         <div
                           key={exerciseIndex.toString()}
                           className="pl-10 pr-24"

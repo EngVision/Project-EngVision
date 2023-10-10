@@ -14,21 +14,19 @@ const CourseDetailsPage = () => {
   const { courseId = '' } = useParams<{ courseId: string }>()
   const [courseDetails, setCourseDetails] = useState<CourseDetails | null>(null)
   const [activeKey, setActiveKey] = useState<string>('1')
-
-  useEffect(() => {
-    const fetchCourseDetails = async () => {
-      try {
-        if (courseId) {
-          const courses: any = await coursesApi.getCourseDetails(courseId)
-          setCourseDetails(courses.data)
-        }
-      } catch (error) {
-        console.error('Error fetching courses:', error)
+  const fetchCourseDetails = async () => {
+    try {
+      if (courseId) {
+        const courses: any = await coursesApi.getCourseDetails(courseId)
+        setCourseDetails(courses.data)
       }
+    } catch (error) {
+      console.error('Error fetching courses:', error)
     }
-
+  }
+  useEffect(() => {
     fetchCourseDetails()
-  }, [courseId])
+  }, [])
 
   const handleTabChange = (key: string) => {
     setActiveKey(key)
@@ -36,7 +34,7 @@ const CourseDetailsPage = () => {
   const handleAttendCourse = async () => {
     try {
       await coursesApi.postAttend(courseId)
-      window.location.reload()
+      fetchCourseDetails()
     } catch (error) {
       console.error('Error attending course:', error)
     }
@@ -128,7 +126,7 @@ const CourseDetailsPage = () => {
           }
           key="3"
         >
-          <Reviews {...courseDetails} />
+          <Reviews course={courseDetails} onReviewSubmit={fetchCourseDetails} />
         </TabPane>
       </Tabs>
     </div>
