@@ -11,6 +11,7 @@ import Statistic from '../pages/Statistic'
 import TeacherCourseDetail from '../pages/Teacher/CourseDetail'
 import TeacherCourses from '../pages/Teacher/Courses'
 import TeacherCreateCourse from '../pages/Teacher/CreateCourse'
+import LessonDetail from '../pages/Teacher/LessonDetail'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { PRIVATE_ROUTES, TEACHER_ROUTES } from '../utils/constants'
 
@@ -83,6 +84,10 @@ const teacherRoutes: RouteElement[] = [
   {
     element: UpdateProfile,
     path: PRIVATE_ROUTES.updateProfile,
+  },
+  {
+    element: LessonDetail,
+    path: TEACHER_ROUTES.lessonDetail,
   },
 ]
 

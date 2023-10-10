@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Button, Collapse, Form, Space, Tooltip } from 'antd'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import {
@@ -8,6 +9,7 @@ import {
 } from '../../../components/Icons'
 import CustomInput from '../../../components/common/CustomInput'
 import { FormInstance } from 'antd/lib/form/Form'
+import { useNavigate } from 'react-router-dom'
 
 const { Panel } = Collapse
 
@@ -16,6 +18,8 @@ interface SectionProps {
 }
 
 const Section = ({ form }: SectionProps) => {
+  const navigate = useNavigate()
+
   const onDragEnd = (result: any, move: (from: number, to: number) => void) => {
     if (!result.destination) return
 
@@ -86,7 +90,14 @@ const Section = ({ form }: SectionProps) => {
 
                                           <div className="flex gap-4">
                                             <Tooltip title="Edit lesson">
-                                              <div className="flex">
+                                              <div
+                                                className="flex"
+                                                onClick={() => {
+                                                  const lesson = form.getFieldValue('sections')[field.name].lessons[subField.name]
+                                                  navigate('lessons/' + lesson.id)
+                                                }}
+                                                role="presentation"
+                                              >
                                                 <PencilLineIcon
                                                   className="hover:cursor-pointer"
                                                   width={20}
@@ -112,14 +123,7 @@ const Section = ({ form }: SectionProps) => {
                                           <Form.Item
                                             noStyle
                                             name={[subField.name, 'exercises']}
-                                          >
-                                            {/* // TODO: exercises */}
-                                            {JSON.stringify(
-                                              form.getFieldValue(
-                                                'sections[field.name].lessons[subField.name].exercises',
-                                              ),
-                                            )}
-                                          </Form.Item>
+                                          ></Form.Item>
                                         </Space>
                                       ))}
                                       <div className="flex gap-4 absolute right-0 top-[-48px]">

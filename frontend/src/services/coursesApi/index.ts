@@ -6,6 +6,7 @@ import { GetCourseProps } from './types'
 const PREFIX = 'courses/'
 
 const coursesApi = {
+  // Course
   getCourseDetails: async (coursesId: string) => {
     try {
       const res: ResponseData = await axiosClient.get(`${PREFIX}${coursesId}`)

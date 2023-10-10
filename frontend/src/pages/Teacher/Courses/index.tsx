@@ -65,7 +65,7 @@ const Courses: React.FC = () => {
 
   return (
     <div>
-      <h3 className="text-primary text-4xl mb-8">My courses</h3>
+      <h3 className="text-primary text-3xl mb-8">My courses</h3>
 
       <div className="flex justify-between mb-8">
         <div className="flex gap-4">
