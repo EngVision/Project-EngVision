@@ -11,23 +11,11 @@ interface ExerciseType {
   description: string
 }
 
-const ExerciseTable = () => {
-  // dummy data
-  const exercises: ExerciseType[] = [
-    {
-      key: Math.random(),
-      id: Math.random().toString(),
-      title: 'This is title 1',
-      description: 'Description of title 1',
-    },
-    {
-      key: Math.random(),
-      id: Math.random().toString(),
-      title: 'This is title 2',
-      description: 'Description of title 2',
-    },
-  ]
+interface ExerciseTableProps {
+  exerciseList: ExerciseType[]
+}
 
+const ExerciseTable = ({ exerciseList }: ExerciseTableProps) => {
   const columns: any[] = [
     {
       title: 'Title',
@@ -42,7 +30,7 @@ const ExerciseTable = () => {
     },
     {
       title: (
-        <Link to="/">
+        <Link to="exercises">
           <Button type="primary" className="float-right">
             Add new
           </Button>
@@ -64,7 +52,7 @@ const ExerciseTable = () => {
     <div>
       <h4 className="mb-4 text-2xl">Exercises</h4>
       <Table
-        dataSource={exercises}
+        dataSource={exerciseList}
         columns={columns}
         pagination={false}
         className="rounded-lg overflow-hidden"

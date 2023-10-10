@@ -69,15 +69,11 @@ code {
 }
 
 .ant-tabs-content-holder {
-  overflow: auto !important
+  overflow: auto !important;
 }
 
-.ant-form-item {
-  margin-bottom: 0 !important
-}
-
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;

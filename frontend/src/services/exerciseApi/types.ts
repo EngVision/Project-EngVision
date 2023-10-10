@@ -20,6 +20,7 @@ export interface ExerciseSchema {
   tags?: ExerciseTag[]
   level?: CEFRLevel
   content: QuestionPayload[]
+  id?: string
 }
 
 export interface SubmitAnswerResponse {

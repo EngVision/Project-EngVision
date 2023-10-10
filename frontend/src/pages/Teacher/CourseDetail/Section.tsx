@@ -93,8 +93,15 @@ const Section = ({ form }: SectionProps) => {
                                               <div
                                                 className="flex"
                                                 onClick={() => {
-                                                  const lesson = form.getFieldValue('sections')[field.name].lessons[subField.name]
-                                                  navigate('lessons/' + lesson.id)
+                                                  const lesson =
+                                                    form.getFieldValue(
+                                                      'sections',
+                                                    )[field.name].lessons[
+                                                      subField.name
+                                                    ]
+                                                  navigate(
+                                                    'lessons/' + lesson.id,
+                                                  )
                                                 }}
                                                 role="presentation"
                                               >

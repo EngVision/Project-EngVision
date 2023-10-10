@@ -50,6 +50,8 @@ export const TEACHER_ROUTES = {
   assignmentExam: '/assignment-exam',
 
   lessonDetail: '/courses/:courseId/lessons/:lessonId',
+  createExercise: '/courses/:courseId/lessons/:lessonId/exercises',
+  editExercise: '/courses/:courseId/lessons/:lessonId/exercises/:exerciseId',
 }
 
 export const ADMIN_ROUTES = {

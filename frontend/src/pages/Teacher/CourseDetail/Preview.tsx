@@ -42,7 +42,7 @@ const Preview = ({ form }: PreviewProps) => {
 
         <div className="flex items-center gap-8">
           <div className="flex flex-col items-center">
-            <Form.Item name="price">
+            <Form.Item name="price" noStyle>
               <PreviewInput className="text-3xl text-primary text-center" />
             </Form.Item>
             <span className="text-xs text-textSubtle">Course price</span>
@@ -51,7 +51,7 @@ const Preview = ({ form }: PreviewProps) => {
           <div className="w-[2px] h-5 bg-slate-400"></div>
 
           <div className="flex flex-col items-center">
-            <Form.Item name="price">
+            <Form.Item name="price" noStyle>
               <PreviewInput className="text-3xl text-primary text-center" />
             </Form.Item>
             <span className="text-xs text-textSubtle">Revenue</span>

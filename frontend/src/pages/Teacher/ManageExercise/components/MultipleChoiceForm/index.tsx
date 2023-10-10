@@ -1,12 +1,12 @@
 import { Button, Checkbox, Divider, Form, Input, Select } from 'antd'
 import { FormSubmit } from '../..'
-import CustomUpload from '../../../../components/CustomUpload'
-import { CEFRLevel, ExerciseTag } from '../../../../utils/constants'
-import enumToSelectOptions from '../../../../utils/enumsToSelectOptions'
+import CustomUpload from '../../../../../components/CustomUpload'
+import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
+import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
 import {
   ExerciseSchema,
   QuestionPayload,
-} from '../../../../services/exerciseApi/types'
+} from '../../../../../services/exerciseApi/types'
 
 interface AnswerFormProps {
   index: number
@@ -72,14 +72,6 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             autoSize={{ minRows: 2, maxRows: 4 }}
             placeholder="Question"
           />
-        </Form.Item>
-        <Form.Item
-          className="max-w-[100px]"
-          name={[index, 'answerImage']}
-          valuePropName="fileList"
-          noStyle
-        >
-          <CustomUpload />
         </Form.Item>
       </div>
       <Form.Item label="Explanation" name={[index, 'explanation']}>

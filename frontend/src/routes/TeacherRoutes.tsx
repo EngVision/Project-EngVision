@@ -5,13 +5,13 @@ import HelpCenter from '../pages/HelpCenter'
 import Home from '../pages/Home'
 import MakeSentences from '../pages/Lesson/MakeSentences'
 import MultipleChoice from '../pages/Lesson/MultipleChoice'
-import ManageExercise from '../pages/ManageExercise'
 import Settings from '../pages/Settings'
 import Statistic from '../pages/Statistic'
 import TeacherCourseDetail from '../pages/Teacher/CourseDetail'
 import TeacherCourses from '../pages/Teacher/Courses'
 import TeacherCreateCourse from '../pages/Teacher/CreateCourse'
 import LessonDetail from '../pages/Teacher/LessonDetail'
+import ManageExercise from '../pages/Teacher/ManageExercise'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { PRIVATE_ROUTES, TEACHER_ROUTES } from '../utils/constants'
 
@@ -88,6 +88,14 @@ const teacherRoutes: RouteElement[] = [
   {
     element: LessonDetail,
     path: TEACHER_ROUTES.lessonDetail,
+  },
+  {
+    element: ManageExercise,
+    path: TEACHER_ROUTES.createExercise,
+  },
+  {
+    element: ManageExercise,
+    path: TEACHER_ROUTES.editExercise,
   },
 ]
 

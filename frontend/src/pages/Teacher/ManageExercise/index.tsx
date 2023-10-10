@@ -8,13 +8,14 @@ import {
   message,
 } from 'antd'
 import { useEffect, useRef } from 'react'
-import exerciseApi from '../../services/exerciseApi'
-import { CEFRLevel, ExerciseTag, ExerciseType } from '../../utils/constants'
-import enumToSelectOptions from '../../utils/enumsToSelectOptions'
 import ConstructedResponseForm from './components/ConstructedResponseForm'
 import MultipleChoiceForm from './components/MultipleChoiceForm'
-import { ExerciseSchema } from '../../services/exerciseApi/types'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { CEFRLevel, ExerciseTag, ExerciseType } from '../../../utils/constants'
+import enumToSelectOptions from '../../../utils/enumsToSelectOptions'
+import { ExerciseSchema } from '../../../services/exerciseApi/types'
+import exerciseApi from '../../../services/exerciseApi'
+import coursesApi from '../../../services/coursesApi'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -115,15 +116,17 @@ function ManageExercise() {
   const [form] = Form.useForm<FormSchema>()
   const type = Form.useWatch('type', form)
 
-  const { id } = useParams()
+  const navigate = useNavigate()
+
+  const { lessonId, exerciseId } = useParams()
 
   useEffect(() => {
     getExercise()
   }, [])
 
   const getExercise = async () => {
-    if (id) {
-      const res = await exerciseApi.getExercise(id)
+    if (exerciseId) {
+      const res = await exerciseApi.getExercise(exerciseId)
 
       setInitialValues(form as FormSubmit, res)
     }
@@ -149,17 +152,23 @@ function ManageExercise() {
         type: 'loading',
       })
 
-      if (id) {
-        const res = await exerciseApi.updateExercise(id, values)
+      if (exerciseId) {
+        const res = await exerciseApi.updateExercise(exerciseId, values)
 
         setInitialValues(form as FormSubmit, res)
       } else {
-        await exerciseApi.createExercise(values)
+        const { id } = await exerciseApi.createExercise(values)
+
+        if (lessonId && id) {
+          await coursesApi.addExercise(lessonId, id)
+
+          navigate('..', { relative: 'path' })
+        }
       }
 
       message.open({
         key: 'submitMessage',
-        content: id ? 'Saved' : 'Created',
+        content: exerciseId ? 'Saved' : 'Created',
         type: 'success',
       })
     } catch (error) {
@@ -199,7 +208,10 @@ function ManageExercise() {
         <ExerciseForm type={type} form={form as FormSubmit} />
         <div style={{ float: 'left', clear: 'both' }} ref={bottomDivRef}></div>
       </div>
-      <div className="flex flex-col gap-4 pt-4 px-8 mr-4">
+      <div
+        className="flex flex-col gap-4 pt-4 px-8 mr-4 z-10"
+        style={{ boxShadow: '0px -15px 10px -20px' }}
+      >
         {type && (
           <Form.Item noStyle>
             <Button
@@ -214,7 +226,7 @@ function ManageExercise() {
         )}
         <Form.Item noStyle>
           <Button type="primary" htmlType="submit" block>
-            {id ? 'Save' : 'Create'}
+            {exerciseId ? 'Save' : 'Create'}
           </Button>
         </Form.Item>
       </div>

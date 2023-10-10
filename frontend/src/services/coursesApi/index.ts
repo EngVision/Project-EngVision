@@ -82,6 +82,31 @@ const coursesApi = {
       throw error
     }
   },
+  addExercise: async (lessonId: string, exerciseId: string) => {
+    try {
+      const res = await axiosClient.post(
+        `${PREFIX}lessons/${lessonId}/exercises`,
+        {
+          exerciseId,
+        },
+      )
+      return res
+    } catch (error) {
+      console.error('Error post attend:', error)
+      throw error
+    }
+  },
+  removeExercise: async (lessonId: string, exerciseId: string) => {
+    try {
+      const res = await axiosClient.delete(
+        `${PREFIX}lessons/${lessonId}/exercises${exerciseId}`,
+      )
+      return res
+    } catch (error) {
+      console.error('Error post attend:', error)
+      throw error
+    }
+  },
 }
 
 export default coursesApi

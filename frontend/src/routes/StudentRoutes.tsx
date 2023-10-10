@@ -8,7 +8,6 @@ import HelpCenter from '../pages/HelpCenter'
 import Home from '../pages/Home'
 import MakeSentences from '../pages/Lesson/MakeSentences'
 import MultipleChoice from '../pages/Lesson/MultipleChoice'
-import ManageExercise from '../pages/ManageExercise'
 import MyHub from '../pages/MyHub'
 import Settings from '../pages/Settings'
 import Statistic from '../pages/Statistic'
@@ -34,14 +33,6 @@ const studentRoutes: RouteElement[] = [
     element: Exercise,
     layout: null,
     path: PRIVATE_ROUTES.exercise,
-  },
-  {
-    element: ManageExercise,
-    path: PRIVATE_ROUTES.createExercise,
-  },
-  {
-    element: ManageExercise,
-    path: PRIVATE_ROUTES.editExercise,
   },
   {
     element: Discover,
