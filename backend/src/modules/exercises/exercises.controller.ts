@@ -94,7 +94,11 @@ export class ExercisesController {
     @Body() updateExerciseDto: UpdateExerciseDto,
     @Res() res: Response,
   ) {
-    const exercise = await this.exercisesService.update(id, updateExerciseDto);
+    const exercise = await this.exercisesService.update(
+      id,
+      updateExerciseDto,
+      user.sub,
+    );
 
     return res.status(HttpStatus.OK).send(
       GetResponse({
@@ -106,8 +110,13 @@ export class ExercisesController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Res() res: Response) {
-    await this.exercisesService.remove(id);
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async remove(
+    @CurrentUser() user: JwtPayload,
+    @Param('id') id: string,
+    @Res() res: Response,
+  ) {
+    await this.exercisesService.remove(id, user.sub);
 
     return res
       .status(HttpStatus.OK)

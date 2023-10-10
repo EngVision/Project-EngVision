@@ -56,8 +56,13 @@ export class ExercisesService {
   async update(
     id: string,
     updateExerciseDto: UpdateExerciseDto,
+    userId: string,
   ): Promise<ExerciseDocument> {
     const exercise = await this.exerciseModel.findById(id);
+
+    if (!exercise || exercise.creator !== userId) {
+      throw new NotFoundException('Exercise not found');
+    }
 
     const service = await this.exerciseContentServiceFactory.createService(
       exercise.type,
@@ -86,14 +91,19 @@ export class ExercisesService {
     return updatedExercise.populate('content');
   }
 
-  async remove(id: string): Promise<ExerciseDocument> {
-    const exercise = await this.exerciseModel.findByIdAndDelete(id);
+  async remove(id: string, userId: string): Promise<void> {
+    const exercise = await this.exerciseModel.findById(id);
 
-    if (!exercise) {
-      throw new BadRequestException('Exercise not found');
+    if (!exercise || exercise.creator.toString() !== userId) {
+      throw new NotFoundException('Exercise not found');
     }
 
-    return exercise;
+    const service = await this.exerciseContentServiceFactory.createService(
+      exercise.type,
+    );
+
+    await service.deleteContent(exercise.content);
+    await exercise.deleteOne();
   }
 
   async submitAnswer(

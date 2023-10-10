@@ -6,7 +6,7 @@ import { ExerciseQuestionDto } from './dto/exercise-content.dto';
 import { Types } from 'mongoose';
 
 export abstract class ExerciseContentService {
-  async validate(
+  protected async validate(
     questionList: ExerciseQuestionDto[],
     dataType: any,
   ): Promise<ExerciseQuestionDto[]> {
@@ -28,7 +28,7 @@ export abstract class ExerciseContentService {
     return questionList;
   }
 
-  getUpdateBulkOps(updateValue: any[], removedQuestions: string[]): any {
+  protected updateBulkOps(updateValue: any[], removedQuestions: string[]): any {
     const bulkOps: any[] = updateValue.map(({ id, ...value }) => {
       if (id) {
         return {
@@ -44,15 +44,19 @@ export abstract class ExerciseContentService {
       }
     });
 
-    bulkOps.push({
+    bulkOps.push(this.deleteBulkOps(removedQuestions));
+
+    return bulkOps;
+  }
+
+  protected deleteBulkOps(removedQuestions: string[]): any {
+    return {
       deleteMany: {
         filter: {
           _id: { $in: removedQuestions.map(id => new Types.ObjectId(id)) },
         },
       },
-    });
-
-    return bulkOps;
+    };
   }
 
   abstract createContent(
@@ -63,6 +67,8 @@ export abstract class ExerciseContentService {
     questionListDto: ExerciseQuestionDto[],
     removedQuestion: string[],
   ): Promise<string[]>;
+
+  abstract deleteContent(removedQuestion: string[]): Promise<void>;
 
   abstract checkAnswer(id: string, answer: any): Promise<QuestionResult>;
 

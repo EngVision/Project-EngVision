@@ -45,6 +45,10 @@ export class FillBlankService extends ExerciseContentService {
     throw new Error('Method not implemented.');
   }
 
+  async deleteContent(removedQuestion: string[]): Promise<void> {
+    await this.fillBlankModel.bulkWrite([this.deleteBulkOps(removedQuestion)]);
+  }
+
   async checkAnswer(id: string, answer: string): Promise<QuestionResult> {
     if (typeof answer !== 'string') {
       throw new BadRequestException('Answer must be a string');
