@@ -1,28 +1,26 @@
-import { CEFRLevel, ExerciseTag, ExerciseType } from '../../utils/constants'
 import axiosClient from '../axiosClient'
 
-import type { SubmitAnswerResponse, ExerciseResponse } from './types'
+import type { ExerciseSchema, SubmitAnswerResponse } from './types'
 
 const PREFIX = 'exercises'
 
-interface ExercisePayload {
-  type: ExerciseType
-  title: string
-  description?: string
-  deadline?: Date
-  tags?: ExerciseTag[]
-  level?: CEFRLevel
-  content: any[]
-}
-
 const exerciseApi = {
-  createExercise: async (data: ExercisePayload): Promise<ExerciseResponse> => {
+  createExercise: async (data: ExerciseSchema): Promise<ExerciseSchema> => {
     const res = await axiosClient.post(`${PREFIX}`, data)
 
     return res.data
   },
 
-  getExercise: async (id: string): Promise<ExerciseResponse> => {
+  updateExercise: async (
+    id: string,
+    data: ExerciseSchema,
+  ): Promise<ExerciseSchema> => {
+    const res = await axiosClient.patch(`${PREFIX}/${id}`, data)
+
+    return res.data
+  },
+
+  getExercise: async (id: string): Promise<ExerciseSchema> => {
     const res = await axiosClient.get(`${PREFIX}/${id}`)
 
     return res.data

@@ -33,19 +33,25 @@ export interface Review {
   comment: string
   updatedAt: string
 }
-
-export interface Lesson {
-  id?: string
+export interface Exercise {
+  id: string
   title: string
-  exercises: string[]
   completed: boolean
+}
+export interface Lesson {
+  id: string
+  title: string
+  exercises: Exercise[]
+  completed: boolean
+  totalExerciseCompleted: number
 }
 
 export interface Section {
-  id?: string
+  id: string
   title: string
   lessons: Lesson[]
   completed: boolean
+  totalLessonCompleted: number
 }
 
 export interface CourseDetails {
@@ -70,6 +76,7 @@ export interface CourseDetails {
   avgStar: number
   updatedAt: string
   isAttended: boolean
+  isReviewed: boolean
 }
 
 export interface ReviewParams {

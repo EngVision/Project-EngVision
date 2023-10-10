@@ -22,7 +22,7 @@ import { JwtPayload } from '../auth/types';
 import { FilesService } from './files.service';
 import { FileValidationErrors } from 'src/common/enums';
 import { GetResponse } from 'src/common/dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AtGuard } from 'src/common/guards';
 import { createReadStream } from 'fs';
 import { join } from 'path';

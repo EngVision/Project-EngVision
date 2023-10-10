@@ -17,8 +17,6 @@ const setupAxiosInterceptor = () => {
         .find((row) => row.startsWith('refresh_token='))
         ?.split('=')[1]
 
-      console.log(error)
-
       if (error.response?.status !== 401 || !refreshToken) {
         return Promise.reject(error.response)
       }

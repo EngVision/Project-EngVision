@@ -18,6 +18,7 @@ export const GetResponse = ({
   data = null,
   message = null,
   success = true,
+  dtoOptions = {},
 }: ResponseDataParams) => {
   let transformData = data;
 
@@ -32,7 +33,9 @@ export const GetResponse = ({
   const response = new ResponseDto<any>(dataType, {
     success,
     message,
-    data: dataType ? plainToInstance(dataType, transformData) : transformData,
+    data: dataType
+      ? plainToInstance(dataType, transformData, dtoOptions)
+      : transformData,
   });
 
   return response;

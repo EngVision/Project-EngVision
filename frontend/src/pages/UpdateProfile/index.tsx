@@ -21,8 +21,7 @@ import type {
   ProfileParams,
 } from '../../services/accountApi/types'
 import authApi from '../../services/authApi'
-import { getFileUrl } from '../../utils/common'
-import { ROUTES } from '../../utils/constants'
+import { PRIVATE_ROUTES } from '../../utils/constants'
 
 export const UpdateProfile = () => {
   const { TextArea } = Input
@@ -235,7 +234,7 @@ export const UpdateProfile = () => {
           />
           <div className="mt-6">
             <Space className="flex justify-end">
-              <Link to={ROUTES.home}>
+              <Link to={PRIVATE_ROUTES.home}>
                 <Button className="h-10 w-20">Cancel</Button>
               </Link>
               <Button

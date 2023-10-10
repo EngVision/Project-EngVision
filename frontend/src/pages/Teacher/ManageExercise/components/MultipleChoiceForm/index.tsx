@@ -1,10 +1,12 @@
 import { Button, Checkbox, Divider, Form, Input, Select } from 'antd'
-import { CEFRLevel, ExerciseTag } from '../../../../utils/constants'
-import enumToSelectOptions from '../../../../utils/enumsToSelectOptions'
-// eslint-disable-next-line import/no-cycle
-import { useRef } from 'react'
 import { FormSubmit } from '../..'
-import CustomUpload from '../../../../components/CustomUpload'
+import CustomUpload from '../../../../../components/CustomUpload'
+import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
+import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
+import {
+  ExerciseSchema,
+  QuestionPayload,
+} from '../../../../../services/exerciseApi/types'
 
 interface AnswerFormProps {
   index: number
@@ -58,16 +60,20 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
           </Button>
         )}
       </div>
-      <Form.Item
-        label="Question"
-        name={[index, 'questionText']}
-        rules={[{ required: true }]}
-      >
-        <Input.TextArea
-          autoSize={{ minRows: 2, maxRows: 4 }}
-          placeholder="Question"
-        />
-      </Form.Item>
+      <div className="flex">
+        <Form.Item
+          className="flex-1"
+          label="Question"
+          name={[index, 'questionText']}
+          rules={[{ required: true }]}
+        >
+          <Input.TextArea
+            className="h-full"
+            autoSize={{ minRows: 2, maxRows: 4 }}
+            placeholder="Question"
+          />
+        </Form.Item>
+      </div>
       <Form.Item label="Explanation" name={[index, 'explanation']}>
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 4 }}
@@ -100,13 +106,6 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             />
           </Form.Item>
         </div>
-        <Form.Item
-          label="Random answer"
-          name={[index, 'randomAnswer']}
-          valuePropName="checked"
-        >
-          <Checkbox>Random</Checkbox>
-        </Form.Item>
       </div>
       <p className="my-2">Answers</p>
       <Form.List name={[index, 'answers']} initialValue={[{}]}>
@@ -139,29 +138,29 @@ interface QuestionFormSchema {
   questionLevel: CEFRLevel
   explanation: string
   answers: AnswerFormSchema[]
+  id?: string
 }
 
 interface AnswerFormSchema {
   id: number
   answerText: string
-  answerImage: string
+  answerImage: string | null
   correctAnswer: boolean
 }
 
-interface MultipleChoicePayload {
+interface MultipleChoicePayload extends QuestionPayload {
   question: {
     text: string
     answers: {
       id: number
       text: string
+      image: string | null
     }[]
   }
   correctAnswer: {
     detail: number[]
     explanation: string
   }
-  tags: ExerciseTag[]
-  level: CEFRLevel
 }
 
 const transformSubmitData = (exercise: any) => {
@@ -173,6 +172,7 @@ const transformSubmitData = (exercise: any) => {
 
   exercise.content = content.map((question: QuestionFormSchema) => {
     const transformQuestion: MultipleChoicePayload = {
+      id: question.id,
       tags: question.questionTags,
       level: question.questionLevel,
       question: {
@@ -195,47 +195,53 @@ const transformSubmitData = (exercise: any) => {
   })
 }
 
+function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
+  const { content } = exercise
+
+  const transformedContent = content.map((q: MultipleChoicePayload) => {
+    const questionForm: QuestionFormSchema = {
+      id: q.id,
+      questionText: q.question.text,
+      questionTags: q.tags,
+      questionLevel: q.level,
+      explanation: q.correctAnswer?.explanation,
+      answers: q.question.answers.map(
+        (ans): AnswerFormSchema => ({
+          id: ans.id,
+          answerText: ans.text,
+          answerImage: ans.image,
+          correctAnswer: q.correctAnswer.detail.includes(ans.id),
+        }),
+      ),
+    }
+
+    return questionForm
+  })
+
+  this.setFieldValue('content', transformedContent)
+}
+
 function MultipleChoiceForm({ form }: { form: FormSubmit }) {
-  const divRef = useRef<null | HTMLDivElement>(null)
   form.transform = transformSubmitData
+  form.setInitialContent = setInitialContent
 
   return (
     <>
       <Form.List name="content" initialValue={[{}]}>
-        {(fields, { add, remove }) => (
-          <>
-            {fields.map(({ key, name }) => (
-              <div key={key}>
-                <QuestionForm
-                  index={name}
-                  remove={fields.length > 1 ? remove : null}
-                />
-                <Divider />
-              </div>
-            ))}
-            <Form.Item noStyle>
-              <Button
-                className="sticky bottom-0"
-                type="dashed"
-                onClick={() => {
-                  add()
-                  setTimeout(() => {
-                    divRef?.current?.scrollIntoView({
-                      behavior: 'smooth',
-                      block: 'end',
-                    })
-                  }, 0)
-                }}
-                block
-                icon={'+'}
-              >
-                Add question
-              </Button>
-            </Form.Item>
-          </>
-        )}
+        {(fields, { add, remove }) => {
+          form.addQuestion = add
+
+          return fields.map(({ key, name }) => (
+            <div key={key}>
+              <QuestionForm
+                index={name}
+                remove={fields.length > 1 ? remove : null}
+              />
+              <Divider />
+            </div>
+          ))
+        }}
       </Form.List>
-      <div style={{ float: 'left', clear: 'both' }} ref={divRef}></div>
     </>
   )
 }

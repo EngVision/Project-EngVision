@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   ArrayMinSize,
   IsArray,
@@ -9,6 +9,10 @@ import {
 import { CEFRLevel, ExerciseTag } from 'src/common/enums';
 
 export class ExerciseQuestionDto {
+  @IsOptional()
+  @ApiPropertyOptional({ type: String, description: 'Question id' })
+  id?: string;
+
   @IsDefined()
   @ApiProperty({ type: Object, description: 'Question' })
   question: any;

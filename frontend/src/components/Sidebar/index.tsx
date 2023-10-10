@@ -1,13 +1,12 @@
 import React from 'react'
 
 import Menu from './Menu'
+import { LogoIcon } from '../Icons'
 
 const Sidebar = () => {
   return (
-    <div className="w-sidebarWidth bg-[#FFFCF7] px-[32px] flex flex-col h-[100vh]">
-      <h2 className="text-primary font-bold text-4xl w-full py-[32px]">
-        EngVision
-      </h2>
+    <div className="w-sidebarWidth bg-[#FFFCF7] p-8 flex flex-col h-[100vh] gap-2">
+      <LogoIcon />
 
       <Menu />
     </div>

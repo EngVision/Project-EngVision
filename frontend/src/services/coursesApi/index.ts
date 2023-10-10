@@ -5,6 +5,7 @@ import type { ReviewParams } from './types'
 const PREFIX = 'courses/'
 
 const coursesApi = {
+  // Course
   getCourseDetails: async (coursesId: string) => {
     try {
       const res: ResponseData = await axiosClient.get(`${PREFIX}${coursesId}`)
@@ -43,6 +44,15 @@ const coursesApi = {
       throw error
     }
   },
+  publish: async (id: string) => {
+    try {
+      const res: ResponseData = await axiosClient.post(`${PREFIX}${id}/publish`)
+      return res
+    } catch (error) {
+      console.error('Error publish course:', error)
+      throw error
+    }
+  },
   delete: async (id: string) => {
     try {
       const res: ResponseData = await axiosClient.delete(`${PREFIX}${id}`)
@@ -65,6 +75,31 @@ const coursesApi = {
   postAttend: async (courseId: string) => {
     try {
       const res = await axiosClient.post(`${PREFIX}${courseId}/attend`)
+      return res
+    } catch (error) {
+      console.error('Error post attend:', error)
+      throw error
+    }
+  },
+  addExercise: async (lessonId: string, exerciseId: string) => {
+    try {
+      const res = await axiosClient.post(
+        `${PREFIX}lessons/${lessonId}/exercises`,
+        {
+          exerciseId,
+        },
+      )
+      return res
+    } catch (error) {
+      console.error('Error post attend:', error)
+      throw error
+    }
+  },
+  removeExercise: async (lessonId: string, exerciseId: string) => {
+    try {
+      const res = await axiosClient.delete(
+        `${PREFIX}lessons/${lessonId}/exercises${exerciseId}`,
+      )
       return res
     } catch (error) {
       console.error('Error post attend:', error)

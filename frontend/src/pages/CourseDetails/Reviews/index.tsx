@@ -7,18 +7,21 @@ import {
   ReviewParams,
 } from '../../../services/coursesApi/types'
 
-const Reviews = (course: CourseDetails) => {
-  const { TextArea } = Input
+interface ReviewsProps {
+  course: CourseDetails
+  onReviewSubmit: () => Promise<void>
+}
 
+const Reviews: React.FC<ReviewsProps> = ({ course, onReviewSubmit }) => {
+  const { TextArea } = Input
   const onFinish = async (values: ReviewParams) => {
-    console.log('Success:', values)
     try {
       const review = values
       await coursesApi.postReview(course.id, review)
     } catch (error) {
       throw error
     }
-    window.location.reload()
+    onReviewSubmit()
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -30,7 +33,7 @@ const Reviews = (course: CourseDetails) => {
       <div className="mb-4">
         <h3 className="text-2xl text-[#2769E7] mb-6">Reviews</h3>
       </div>
-      {course.isAttended && (
+      {course.isAttended && !course.isReviewed && (
         <div className="mb-8">
           <Form
             name="validateOnly"

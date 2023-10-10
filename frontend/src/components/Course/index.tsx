@@ -9,9 +9,10 @@ import {
   VideoPlayIcon,
 } from '../Icons'
 import { useNavigate } from 'react-router-dom'
+import { CourseDetails } from '../../services/coursesApi/types'
 
 interface CourseProps {
-  course: any
+  course: CourseDetails
 }
 
 const Course = ({ course }: CourseProps) => {

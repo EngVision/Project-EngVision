@@ -1,26 +1,23 @@
-export const ROUTES = {
-  // Menu
-  home: '/',
-  myHub: '/my-hub',
-  exam: '/exam',
-  discover: '/discover',
-  statistic: '/statistic',
-  chat: '/chat',
-  settings: '/settings',
-  helpCenter: '/help-center',
-
+export const PUBLIC_ROUTES = {
   // Auth
   signIn: '/sign-in',
   signUp: '/sign-up',
   signUpTeacher: '/sign-up/teacher',
   ssoSuccess: '/sso-success',
   createProfile: '/create-profile',
-  updateProfile: '/settings/update-profile',
-  appearance: '/settings/appearance',
-
-  search: '/search',
   resetForgotPassword: '/reset-password/:resetPasswordCode',
   sendMailResetPassword: '/forgot-password',
+}
+
+export const PRIVATE_ROUTES = {
+  // Menu
+  home: '/',
+  statistic: '/statistic',
+  chat: '/chat',
+  settings: '/settings',
+  helpCenter: '/help-center',
+
+  updateProfile: '/update-profile',
 
   // Exercise
   exercise: '/exercise/:id',
@@ -30,12 +27,40 @@ export const ROUTES = {
   // lesson
   makeSentence: '/lesson/make-sentence',
   multipleChoice: '/lesson/multiple-choice',
+}
+
+export const STUDENT_ROUTES = {
+  // Menu
+  myHub: '/my-hub',
+  exam: '/exam',
+  discover: '/discover',
+
+  appearance: '/appearance',
 
   courses: '/discover',
   courseDetails: '/discover/:courseId',
-  teacherCourses: '/teacher/courses',
-  teacherCourseDetail: '/teacher/courses/:courseId',
-  teacherCreateCourse: '/teacher/courses/new',
+}
+
+export const TEACHER_ROUTES = {
+  // Menu
+  courses: '/courses',
+  courseDetail: '/courses/:courseId',
+  createCourse: '/courses/new',
+
+  assignmentExam: '/assignment-exam',
+
+  lessonDetail: '/courses/:courseId/lessons/:lessonId',
+  createExercise: '/courses/:courseId/lessons/:lessonId/exercises',
+  editExercise: '/courses/:courseId/lessons/:lessonId/exercises/:exerciseId',
+}
+
+export const ADMIN_ROUTES = {
+  // Menu
+  courses: '/courses',
+  courseDetail: '/courses/:courseId',
+  createCourse: '/courses/new',
+
+  assignmentExam: '/assignment-exam',
 }
 
 export const ROLES = {
@@ -112,11 +137,11 @@ export const SEARCH_OPTIONS = {
 
 export const UPLOAD_FILE_URL = `${import.meta.env.VITE_BASE_URL}/files`
 
-export const COURSE_STATUS = {
-  draft: 'Draft',
-  published: 'Published',
-  all: 'All',
-  attended: 'Attended',
+export enum COURSE_STATUS {
+  draft = 'Draft',
+  published = 'Published',
+  all = 'All',
+  attended = 'Attended',
 }
 
 export const TEACHER_COURSE_TABS = {

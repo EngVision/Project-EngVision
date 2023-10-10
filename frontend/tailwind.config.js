@@ -42,7 +42,7 @@ module.exports = {
       },
       spacing: {
         headerHeight: 60,
-        sidebarWidth: 300,
+        sidebarWidth: 320,
       },
     },
   },

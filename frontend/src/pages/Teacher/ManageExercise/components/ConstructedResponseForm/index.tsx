@@ -1,10 +1,9 @@
 import { Button, Checkbox, Divider, Form, Input, Select, Upload } from 'antd'
-import { CEFRLevel, ExerciseTag } from '../../../../utils/constants'
-import enumToSelectOptions from '../../../../utils/enumsToSelectOptions'
-// eslint-disable-next-line import/no-cycle
 import { FormSubmit } from '../..'
 import TextArea from 'antd/es/input/TextArea'
 import { useState } from 'react'
+import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
+import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
 
 interface QuestionFormProps {
   index: number

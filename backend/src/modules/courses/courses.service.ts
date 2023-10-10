@@ -24,6 +24,7 @@ import {
 } from './dto';
 import { Role, StatusCourseSearch } from 'src/common/enums';
 import { JwtPayload } from '../auth/types';
+import { ExercisesService } from '../exercises/exercises.service';
 
 @Injectable()
 export class CoursesService {
@@ -32,6 +33,7 @@ export class CoursesService {
     private readonly courseModel: Model<CourseDocument>,
     private readonly reviewsService: ReviewsService,
     private readonly filesService: FilesService,
+    private readonly exercisesService: ExercisesService,
   ) {}
 
   async createCourse(course: CreateCourseDto, user: JwtPayload) {
@@ -418,11 +420,7 @@ export class CoursesService {
     return course;
   }
 
-  async createExercise(
-    exerciseId: string,
-    lessonId: string,
-    teacherId: string,
-  ) {
+  async addExercise(exerciseId: string, lessonId: string, teacherId: string) {
     const course = await this.courseModel.findOneAndUpdate(
       {
         teacher: teacherId,
@@ -454,6 +452,8 @@ export class CoursesService {
       { $pull: { 'sections.$.lessons.$[index].exercises': exerciseId } },
       { arrayFilters: [{ 'index._id': lessonId }], new: true },
     );
+
+    await this.exercisesService.remove(exerciseId, teacherId);
 
     if (!course)
       throw new BadRequestException(

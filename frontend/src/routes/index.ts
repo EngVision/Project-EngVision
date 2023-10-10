@@ -13,7 +13,7 @@ import MyHub from '../pages/MyHub'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
 import Search from '../pages/Search'
 import SendMailResetPassword from '../pages/SendMailResetPassword'
-import SettingBar from '../components/SettingBar'
+
 import SignIn from '../pages/SignIn'
 import SSOSuccess from '../pages/SignIn/components/SSOSuccess'
 import SignUp from '../pages/SignUp'

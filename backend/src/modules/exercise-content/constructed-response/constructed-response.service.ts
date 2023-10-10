@@ -30,6 +30,18 @@ export class ConstructedResponseService extends ExerciseContentService {
 
     return questionList.map(q => q.id);
   }
+
+  updateContent(
+    questionListDto: ExerciseQuestionDto[],
+    removedQuestions: string[],
+  ): Promise<string[]> {
+    throw new Error('Method not implemented.');
+  }
+
+  deleteContent(removedQuestion: string[]): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+
   checkAnswer(id: string, answer: any): Promise<QuestionResult> {
     throw new Error('Method not implemented.');
   }

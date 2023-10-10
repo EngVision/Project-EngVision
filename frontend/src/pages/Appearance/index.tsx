@@ -1,25 +1,13 @@
-import {
-  Avatar,
-  Button,
-  Divider,
-  Form,
-  Image,
-  Space,
-  Upload,
-  Switch,
-  Select,
-} from 'antd'
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
+import { Avatar, Button, Divider, Form, Image, Space, Upload } from 'antd'
+import type { UploadProps } from 'antd/lib/upload'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import type { ProfileParams } from '../../services/accountApi/types'
 import authApi from '../../services/authApi'
+import fileApi from '../../services/fileApi'
 import { getFileUrl } from '../../utils/common'
-import { ROUTES } from '../../utils/constants'
-import accountApi from '../../services/accountApi'
-import { toggleDarkMode, toggleLocales } from '../../redux/app/slice'
-import { useAppDispatch } from '../../hooks/redux'
+import { PRIVATE_ROUTES } from '../../utils/constants'
 
 export const Appearance = () => {
   const [account, setAccount] = useState<ProfileParams>()
@@ -128,7 +116,7 @@ export const Appearance = () => {
           <div className="m-6">
             <Divider className="mt-12 mb-6" />
             <Space className="flex justify-end">
-              <Link to={ROUTES.home}>
+              <Link to={PRIVATE_ROUTES.home}>
                 <Button className="h-10 w-20">Cancel</Button>
               </Link>
               <Button

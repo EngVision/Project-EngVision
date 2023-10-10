@@ -1,12 +1,9 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import { MenuItemType } from '../types'
 
 type Props = {
-  item: {
-    icon: React.ReactNode
-    path: string
-    title: string
-  }
+  item: MenuItemType
 }
 
 const MenuItem = ({ item }: Props) => {
@@ -14,7 +11,7 @@ const MenuItem = ({ item }: Props) => {
     <NavLink
       to={item.path}
       className={({ isActive }) =>
-        `flex gap-2 text-base font-semibold p-4 rounded-[12px] hover:bg-bgNeutral 
+        `flex gap-4 text-base font-semibold p-4 rounded-[12px] hover:bg-bgNeutral 
         ${isActive ? '!bg-primary text-white' : ''}`
       }
     >

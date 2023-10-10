@@ -4,20 +4,23 @@ import type {
   ExerciseType,
 } from '../../utils/constants'
 
-export interface Question {
-  id: string
-  question: any
+export interface QuestionPayload {
+  id?: string
   tags: ExerciseTag[]
   level: CEFRLevel
+  question: any
+  correctAnswer: any
 }
 
-export interface ExerciseResponse {
-  title: string
-  description: string
-  tags: ExerciseTag[]
-  level: CEFRLevel
+export interface ExerciseSchema {
   type: ExerciseType
-  content: Question[]
+  title: string
+  description?: string
+  deadline?: Date
+  tags?: ExerciseTag[]
+  level?: CEFRLevel
+  content: QuestionPayload[]
+  id?: string
 }
 
 export interface SubmitAnswerResponse {

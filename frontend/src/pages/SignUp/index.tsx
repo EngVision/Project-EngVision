@@ -4,10 +4,10 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import { useAppDispatch } from '../../hooks/redux'
-import { setUserAccountId } from '../../redux/app/slice'
+import { setRole, setUserAccountId } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignUpParams } from '../../services/authApi/types'
-import { ROLES, ROUTES } from '../../utils/constants'
+import { ROLES, PRIVATE_ROUTES, PUBLIC_ROUTES } from '../../utils/constants'
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate()
@@ -22,7 +22,8 @@ const SignUp: React.FC = () => {
         role: ROLES.student.value,
       })
       dispatch(setUserAccountId(data.id))
-      navigate(ROUTES.home)
+      dispatch(setRole(data.role))
+      navigate(PRIVATE_ROUTES.home)
     } catch (error) {
       setError(error.response.data.message)
     }
@@ -33,7 +34,8 @@ const SignUp: React.FC = () => {
       const { data } = await authApi.fetchAuthUser()
 
       dispatch(setUserAccountId(data.id))
-      navigate(ROUTES.createProfile)
+      dispatch(setRole(data.role))
+      navigate(PUBLIC_ROUTES.createProfile)
       clearInterval(timer)
     } catch (error) {
       console.log('error: ', error)
@@ -229,7 +231,10 @@ const SignUp: React.FC = () => {
 
         <p className="text-center text-textSubtle">
           Have an account?
-          <Link to={ROUTES.signIn} className="font-semibold text-primary pl-2">
+          <Link
+            to={PUBLIC_ROUTES.signIn}
+            className="font-semibold text-primary pl-2"
+          >
             Sign In
           </Link>
         </p>
@@ -237,7 +242,7 @@ const SignUp: React.FC = () => {
         <p className="text-center text-textSubtle">
           Are you a teacher?
           <Link
-            to={ROUTES.signUpTeacher}
+            to={PUBLIC_ROUTES.signUpTeacher}
             className="font-semibold text-primary pl-2"
           >
             Teacher Sign Up

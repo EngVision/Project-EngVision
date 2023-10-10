@@ -5,6 +5,7 @@ import { QuestionResult } from 'src/modules/assignments/schemas/assignment.schem
 import { ExerciseContentService } from '../base-exercise-content.service';
 import { CreateFillBlankDto } from './dto/create-fill-blank.dto';
 import { FillBlank } from './schemas/fill-blank.schema';
+import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 
 @Injectable()
 export class FillBlankService extends ExerciseContentService {
@@ -35,6 +36,17 @@ export class FillBlankService extends ExerciseContentService {
     const questionList = await this.fillBlankModel.insertMany(validatedContent);
 
     return questionList.map(q => q.id);
+  }
+
+  updateContent(
+    questionListDto: ExerciseQuestionDto[],
+    removedQuestions: string[],
+  ): Promise<string[]> {
+    throw new Error('Method not implemented.');
+  }
+
+  async deleteContent(removedQuestion: string[]): Promise<void> {
+    await this.fillBlankModel.bulkWrite([this.deleteBulkOps(removedQuestion)]);
   }
 
   async checkAnswer(id: string, answer: string): Promise<QuestionResult> {
