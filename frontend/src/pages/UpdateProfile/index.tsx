@@ -3,13 +3,11 @@ import {
   Button,
   Collapse,
   CollapseProps,
-  Divider,
   Form,
   Image,
   Input,
   Select,
   Space,
-  message,
 } from 'antd'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -21,6 +19,7 @@ import type {
   ProfileParams,
 } from '../../services/accountApi/types'
 import authApi from '../../services/authApi'
+import { getFileUrl } from '../../utils/common'
 import { PRIVATE_ROUTES } from '../../utils/constants'
 
 export const UpdateProfile = () => {
