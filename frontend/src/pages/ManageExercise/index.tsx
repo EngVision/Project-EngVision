@@ -13,7 +13,7 @@ import { CEFRLevel, ExerciseTag, ExerciseType } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
 import ConstructedResponseForm from './components/ConstructedResponseForm'
 import MultipleChoiceForm from './components/MultipleChoiceForm'
-import { ExercisePayload } from '../../services/exerciseApi/types'
+import { ExerciseSchema } from '../../services/exerciseApi/types'
 import { useParams } from 'react-router-dom'
 
 interface GeneralInfo {
@@ -101,8 +101,8 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
 }
 
 export interface FormSubmit extends FormInstance {
-  transform: (values: ExercisePayload) => void
-  setInitialContent: (values: ExercisePayload) => void
+  transform: (values: ExerciseSchema) => void
+  setInitialContent: (values: ExerciseSchema) => void
   addQuestion: () => void
 }
 
@@ -117,59 +117,59 @@ function ManageExercise() {
 
   const { id } = useParams()
 
-  console.log(id)
-
   useEffect(() => {
-    getExercise(form as FormSubmit)
+    getExercise()
   }, [])
 
-  const getExercise = async (formSubmit: FormSubmit) => {
+  const getExercise = async () => {
     if (id) {
       const res = await exerciseApi.getExercise(id)
-      console.log(res)
 
-      formSubmit.setFieldsValue({
-        ...res,
-      })
-
-      setTimeout(() => {
-        formSubmit.setInitialContent(res)
-      }, 100)
+      setInitialValues(form as FormSubmit, res)
     }
   }
 
-  const onSubmit = async (values: ExercisePayload, formSubmit: FormSubmit) => {
+  const setInitialValues = (formSubmit: FormSubmit, value: ExerciseSchema) => {
+    formSubmit.setFieldsValue({
+      ...value,
+    })
+
+    setTimeout(() => {
+      formSubmit.setInitialContent(value)
+    }, 100)
+  }
+
+  const onSubmit = async (values: ExerciseSchema, formSubmit: FormSubmit) => {
     formSubmit.transform(values)
-    console.log(values)
 
-    // if (id) {
-    // const res = await exerciseApi.updateExercise(id, values)
+    try {
+      message.open({
+        key: 'submitMessage',
+        content: 'loading',
+        type: 'loading',
+      })
 
-    // console.log(res)
-    // }
+      if (id) {
+        const res = await exerciseApi.updateExercise(id, values)
 
-    // try {
-    //   message.open({
-    //     key: 'submitMessage',
-    //     content: 'loading',
-    //     type: 'loading',
-    //   })
+        setInitialValues(form as FormSubmit, res)
+      } else {
+        await exerciseApi.createExercise(values)
+      }
 
-    //   await exerciseApi.createExercise(values)
-
-    //   message.open({
-    //     key: 'submitMessage',
-    //     content: 'done',
-    //     type: 'success',
-    //   })
-    // } catch (error) {
-    //   console.log(error)
-    //   message.open({
-    //     key: 'submitMessage',
-    //     content: error.response?.data?.message,
-    //     type: 'error',
-    //   })
-    // }
+      message.open({
+        key: 'submitMessage',
+        content: id ? 'Saved' : 'Created',
+        type: 'success',
+      })
+    } catch (error) {
+      console.log(error)
+      message.open({
+        key: 'submitMessage',
+        content: error.response?.data?.message,
+        type: 'error',
+      })
+    }
   }
 
   const addQuestion = (formSubmit: FormSubmit) => {

@@ -1,15 +1,11 @@
 import axiosClient from '../axiosClient'
 
-import type {
-  ExercisePayload,
-  ExerciseResponse,
-  SubmitAnswerResponse,
-} from './types'
+import type { ExerciseSchema, SubmitAnswerResponse } from './types'
 
 const PREFIX = 'exercises'
 
 const exerciseApi = {
-  createExercise: async (data: ExercisePayload): Promise<ExerciseResponse> => {
+  createExercise: async (data: ExerciseSchema): Promise<ExerciseSchema> => {
     const res = await axiosClient.post(`${PREFIX}`, data)
 
     return res.data
@@ -17,14 +13,14 @@ const exerciseApi = {
 
   updateExercise: async (
     id: string,
-    data: ExercisePayload,
-  ): Promise<ExerciseResponse> => {
+    data: ExerciseSchema,
+  ): Promise<ExerciseSchema> => {
     const res = await axiosClient.patch(`${PREFIX}/${id}`, data)
 
     return res.data
   },
 
-  getExercise: async (id: string): Promise<ExerciseResponse> => {
+  getExercise: async (id: string): Promise<ExerciseSchema> => {
     const res = await axiosClient.get(`${PREFIX}/${id}`)
 
     return res.data

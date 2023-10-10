@@ -4,7 +4,7 @@ import CustomUpload from '../../../../components/CustomUpload'
 import { CEFRLevel, ExerciseTag } from '../../../../utils/constants'
 import enumToSelectOptions from '../../../../utils/enumsToSelectOptions'
 import {
-  ExercisePayload,
+  ExerciseSchema,
   QuestionPayload,
 } from '../../../../services/exerciseApi/types'
 
@@ -29,7 +29,7 @@ const AnswerForm = ({ index, remove }: AnswerFormProps) => {
           name={[index, 'answerImage']}
           valuePropName="fileList"
         >
-          <CustomUpload accept="audio" />
+          <CustomUpload />
         </Form.Item>
       </div>
       <Form.Item name={[index, 'correctAnswer']} valuePropName="checked">
@@ -60,16 +60,28 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
           </Button>
         )}
       </div>
-      <Form.Item
-        label="Question"
-        name={[index, 'questionText']}
-        rules={[{ required: true }]}
-      >
-        <Input.TextArea
-          autoSize={{ minRows: 2, maxRows: 4 }}
-          placeholder="Question"
-        />
-      </Form.Item>
+      <div className="flex">
+        <Form.Item
+          className="flex-1"
+          label="Question"
+          name={[index, 'questionText']}
+          rules={[{ required: true }]}
+        >
+          <Input.TextArea
+            className="h-full"
+            autoSize={{ minRows: 2, maxRows: 4 }}
+            placeholder="Question"
+          />
+        </Form.Item>
+        <Form.Item
+          className="max-w-[100px]"
+          name={[index, 'answerImage']}
+          valuePropName="fileList"
+          noStyle
+        >
+          <CustomUpload />
+        </Form.Item>
+      </div>
       <Form.Item label="Explanation" name={[index, 'explanation']}>
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 4 }}
@@ -102,13 +114,6 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             />
           </Form.Item>
         </div>
-        <Form.Item
-          label="Random answer"
-          name={[index, 'randomAnswer']}
-          valuePropName="checked"
-        >
-          <Checkbox>Random</Checkbox>
-        </Form.Item>
       </div>
       <p className="my-2">Answers</p>
       <Form.List name={[index, 'answers']} initialValue={[{}]}>
@@ -198,7 +203,7 @@ const transformSubmitData = (exercise: any) => {
   })
 }
 
-function setInitialContent(this: FormSubmit, exercise: ExercisePayload) {
+function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
   const { content } = exercise
 
   const transformedContent = content.map((q: MultipleChoicePayload) => {

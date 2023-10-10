@@ -12,7 +12,7 @@ export interface QuestionPayload {
   correctAnswer: any
 }
 
-export interface ExercisePayload {
+export interface ExerciseSchema {
   type: ExerciseType
   title: string
   description?: string
@@ -20,22 +20,6 @@ export interface ExercisePayload {
   tags?: ExerciseTag[]
   level?: CEFRLevel
   content: QuestionPayload[]
-}
-
-export interface Question {
-  id: string
-  question: any
-  tags: ExerciseTag[]
-  level: CEFRLevel
-}
-
-export interface ExerciseResponse {
-  title: string
-  description: string
-  tags: ExerciseTag[]
-  level: CEFRLevel
-  type: ExerciseType
-  content: Question[]
 }
 
 export interface SubmitAnswerResponse {
