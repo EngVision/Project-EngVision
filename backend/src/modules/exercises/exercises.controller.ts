@@ -48,12 +48,21 @@ export class ExercisesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Res() res: Response) {
+  @UseGuards(AtGuard)
+  async findOne(
+    @CurrentUser() user: JwtPayload,
+    @Param('id') id: string,
+    @Res() res: Response,
+  ) {
     const exercise = await this.exercisesService.findOne(id);
 
-    return res
-      .status(HttpStatus.OK)
-      .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        dataType: ExerciseDto,
+        data: exercise,
+        dtoOptions: { groups: user.roles },
+      }),
+    );
   }
 
   @Post(':exerciseId/submit-answer/:questionId')
@@ -78,16 +87,22 @@ export class ExercisesController {
   }
 
   @Patch(':id')
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
   async update(
+    @CurrentUser() user: JwtPayload,
     @Param('id') id: string,
     @Body() updateExerciseDto: UpdateExerciseDto,
     @Res() res: Response,
   ) {
     const exercise = await this.exercisesService.update(id, updateExerciseDto);
 
-    return res
-      .status(HttpStatus.OK)
-      .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        dataType: ExerciseDto,
+        data: exercise,
+        dtoOptions: { groups: user.roles },
+      }),
+    );
   }
 
   @Delete(':id')

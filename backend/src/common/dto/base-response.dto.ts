@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
+import { Role } from '../enums';
 
 export class BaseResponseDto<TData> {
   @Exclude()
@@ -24,4 +25,7 @@ export interface ResponseParams {
   dataType?: any;
   message?: string;
   success?: boolean;
+  dtoOptions?: {
+    groups?: Role[];
+  };
 }
