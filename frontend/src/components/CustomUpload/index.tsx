@@ -27,24 +27,26 @@ function CustomUpload({
   const [currFileId, setCurrFileId] = useState<string | null>(null)
 
   useEffect(() => {
-    const initialValue: UploadFile[] = []
-    if (Array.isArray(value)) {
-      initialValue.push(
-        ...value.map((v) => ({
-          uid: v,
-          name: v,
-          url: `${import.meta.env.VITE_SERVER_FILES_URL}${v}`,
-        })),
-      )
-    } else {
-      initialValue.push({
-        uid: value,
-        name: value,
-        url: `${import.meta.env.VITE_SERVER_FILES_URL}${value}`,
-      })
-    }
+    if (value) {
+      const initialValue: UploadFile[] = []
+      if (Array.isArray(value)) {
+        initialValue.push(
+          ...value.map((v) => ({
+            uid: v,
+            name: v,
+            url: `${import.meta.env.VITE_SERVER_FILES_URL}${v}`,
+          })),
+        )
+      } else {
+        initialValue.push({
+          uid: value,
+          name: value,
+          url: `${import.meta.env.VITE_SERVER_FILES_URL}${value}`,
+        })
+      }
 
-    setFileList(initialValue)
+      setFileList(initialValue)
+    }
   }, [])
 
   const handleCancel = () => setPreviewOpen(false)
@@ -100,8 +102,6 @@ function CustomUpload({
       message.error(String(error))
     }
   }
-
-  console.log(fileList)
 
   const handleRemove: UploadProps['onRemove'] = async (file) => {
     try {

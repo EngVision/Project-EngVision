@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QuestionResult } from 'src/modules/assignments/schemas/assignment.schema';
 import { ExerciseContentService } from '../base-exercise-content.service';
+import { UpdateMultipleChoiceDto } from './dto';
 import { CreateMultipleChoiceDto } from './dto/create-multiple-choice.dto';
 import { MultipleChoice } from './schemas/multiple-choice.schema';
 
@@ -30,6 +31,34 @@ export class MultipleChoiceService extends ExerciseContentService {
     );
 
     return questionList.map(q => q.id);
+  }
+
+  async updateContent(
+    updateQuestionListDto: UpdateMultipleChoiceDto[],
+    removedQuestions: string[],
+  ): Promise<string[]> {
+    const validatedContent = await this.validate(
+      updateQuestionListDto,
+      UpdateMultipleChoiceDto,
+    );
+
+    this.setDefaultExplain(validatedContent);
+    this.setIsMultipleCorrectAnswer(validatedContent);
+
+    const bulkOps = this.updateBulkOps(validatedContent, removedQuestions);
+
+    const res = await this.multipleChoiceModel.bulkWrite(bulkOps);
+
+    return [
+      ...validatedContent.map(({ id }) => id).filter(id => !!id),
+      ...Object.values(res.insertedIds).map(id => id.toString()),
+    ];
+  }
+
+  async deleteContent(removedQuestion: string[]): Promise<void> {
+    await this.multipleChoiceModel.bulkWrite([
+      this.deleteBulkOps(removedQuestion),
+    ]);
   }
 
   async checkAnswer(id: string, answer: number[]): Promise<QuestionResult> {

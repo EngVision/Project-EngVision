@@ -13,6 +13,7 @@ const LessonDetail = () => {
     try {
       if (lessonId) {
         const { data } = await lessonApi.getLesson(lessonId)
+
         setLesson(data)
       }
     } catch (error) {
@@ -26,8 +27,8 @@ const LessonDetail = () => {
 
   return (
     <div>
-      {/* <h2 className="mb-8">{lesson?.title}</h2> */}
-      <ExerciseTable />
+      <h2 className="mb-8">{lesson?.title}</h2>
+      <ExerciseTable exerciseList={lesson?.exercises ?? []} />
     </div>
   )
 }
