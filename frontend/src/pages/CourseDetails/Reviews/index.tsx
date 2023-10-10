@@ -7,18 +7,21 @@ import {
   ReviewParams,
 } from '../../../services/coursesApi/types'
 
-const Reviews = (course: CourseDetails) => {
-  const { TextArea } = Input
+interface ReviewsProps {
+  course: CourseDetails
+  onReviewSubmit: () => Promise<void>
+}
 
+const Reviews: React.FC<ReviewsProps> = ({ course, onReviewSubmit }) => {
+  const { TextArea } = Input
   const onFinish = async (values: ReviewParams) => {
-    console.log('Success:', values)
     try {
       const review = values
       await coursesApi.postReview(course.id, review)
     } catch (error) {
       throw error
     }
-    window.location.reload()
+    onReviewSubmit()
   }
 
   const onFinishFailed = (errorInfo: any) => {
