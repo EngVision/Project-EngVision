@@ -6,7 +6,7 @@ import { useAppDispatch } from '../../hooks/redux'
 import accountApi from '../../services/accountApi'
 import authApi from '../../services/authApi'
 import type { SignUpParams } from '../../services/authApi/types'
-import { GENDERS, ROUTES } from '../../utils/constants'
+import { GENDERS, PRIVATE_ROUTES } from '../../utils/constants'
 
 const CreateProfile = () => {
   const navigate = useNavigate()
@@ -29,7 +29,7 @@ const CreateProfile = () => {
       const res = await accountApi.updateWhenSignUp(temp)
       console.log('🚀 ~ file: index.tsx:30 ~ onFinish ~ res:', res)
 
-      navigate(ROUTES.home)
+      navigate(PRIVATE_ROUTES.home)
     } catch (error) {
       setError(error.response.data.message)
     }

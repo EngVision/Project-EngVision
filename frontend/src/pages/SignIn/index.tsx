@@ -4,10 +4,10 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import { useAppDispatch } from '../../hooks/redux'
-import { setUserAccountId } from '../../redux/app/slice'
+import { setRole, setUserAccountId } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
-import { ROUTES } from '../../utils/constants'
+import { PRIVATE_ROUTES, PUBLIC_ROUTES } from '../../utils/constants'
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate()
@@ -19,7 +19,8 @@ const SignIn: React.FC = () => {
     try {
       const { data } = await authApi.signIn(values)
       dispatch(setUserAccountId(data.id))
-      navigate(ROUTES.home)
+      dispatch(setRole(data.role))
+      navigate(PRIVATE_ROUTES.home)
     } catch (error) {
       setError(error.response.data.message)
     }
@@ -30,7 +31,8 @@ const SignIn: React.FC = () => {
       const { data } = await authApi.fetchAuthUser()
 
       dispatch(setUserAccountId(data.id))
-      navigate(ROUTES.home)
+      dispatch(setRole(data.role))
+      navigate(PRIVATE_ROUTES.home)
       clearInterval(timer)
     } catch (error) {
       console.log('error: ', error)
@@ -147,7 +149,7 @@ const SignIn: React.FC = () => {
 
           <p
             className="text-[#0073EA] font-semibold text-right cursor-pointer my-[28px]"
-            onClick={() => navigate(ROUTES.sendMailResetPassword)}
+            onClick={() => navigate(PUBLIC_ROUTES.sendMailResetPassword)}
             role="presentation"
           >
             Forgot password?

@@ -6,6 +6,7 @@ import { GetCourseProps } from './types'
 const PREFIX = 'courses/'
 
 const coursesApi = {
+  // Course
   getCourseDetails: async (coursesId: string) => {
     try {
       const res: ResponseData = await axiosClient.get(`${PREFIX}${coursesId}`)
@@ -41,6 +42,15 @@ const coursesApi = {
       return res
     } catch (error) {
       console.error('Error update course:', error)
+      throw error
+    }
+  },
+  publish: async (id: string) => {
+    try {
+      const res: ResponseData = await axiosClient.post(`${PREFIX}${id}/publish`)
+      return res
+    } catch (error) {
+      console.error('Error publish course:', error)
       throw error
     }
   },
