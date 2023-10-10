@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import accountApi from '../../services/accountApi'
 import type { Email } from '../../services/accountApi/types'
-import { ROUTES } from '../../utils/constants'
+import { PUBLIC_ROUTES } from '../../utils/constants'
 
 const SendMailResetPassword: React.FC = () => {
   const [error, setError] = useState<string>('')
@@ -96,7 +96,7 @@ const SendMailResetPassword: React.FC = () => {
 
             <p
               className="text-[#0073EA] text-xl font-semibold text-center cursor-pointer my-[28px]"
-              onClick={() => navigate(ROUTES.signIn)}
+              onClick={() => navigate(PUBLIC_ROUTES.signIn)}
               role="presentation"
             >
               Return to Sign In?

@@ -1,7 +1,7 @@
 import { Button, Card, Popover } from 'antd'
 import { StarIcon, VideoPlayIcon } from '../Icons'
 import { Link } from 'react-router-dom'
-import { ROUTES, Level } from '../../utils/constants'
+import { Level, STUDENT_ROUTES } from '../../utils/constants'
 
 export const CourseCard = (course: any) => {
   const { Meta } = Card
@@ -17,7 +17,7 @@ export const CourseCard = (course: any) => {
   )
 
   return (
-    <Link to={ROUTES.discover + '/' + course.course.id}>
+    <Link to={STUDENT_ROUTES.discover + '/' + course.course.id}>
       <Card
         className="w-[100%]"
         hoverable

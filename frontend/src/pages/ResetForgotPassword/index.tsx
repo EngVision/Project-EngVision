@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import accountApi from '../../services/accountApi'
-import { ROUTES } from '../../utils/constants'
+import { PUBLIC_ROUTES } from '../../utils/constants'
 
 const ResetForgotPassword: React.FC = () => {
   const { resetPasswordCode } = useParams()
@@ -22,7 +22,7 @@ const ResetForgotPassword: React.FC = () => {
     })
 
     if (!res.success) {
-      navigate(ROUTES.sendMailResetPassword)
+      navigate(PUBLIC_ROUTES.sendMailResetPassword)
     }
     setValidatedUrl(res.success)
   }
@@ -45,7 +45,7 @@ const ResetForgotPassword: React.FC = () => {
           description: rs.message,
         })
         setTimeout(() => {
-          navigate(ROUTES.signIn)
+          navigate(PUBLIC_ROUTES.signIn)
         }, 2000)
       }
     } catch (error) {
@@ -143,7 +143,7 @@ const ResetForgotPassword: React.FC = () => {
 
             <p
               className="text-[#0073EA] text-xl font-semibold text-center cursor-pointer my-[28px]"
-              onClick={() => navigate(ROUTES.signIn)}
+              onClick={() => navigate(PUBLIC_ROUTES.signIn)}
               role="presentation"
             >
               Return to Sign In?

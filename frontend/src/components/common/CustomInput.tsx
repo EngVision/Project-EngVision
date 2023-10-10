@@ -1,49 +1,19 @@
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef } from 'react'
 
-interface CustomInputProps {
-  placeholder?: string
-  defaultValue?: string
-}
-
-const CustomInput = (
-  { placeholder, defaultValue }: CustomInputProps,
-  ref: React.Ref<HTMLInputElement>,
-) => {
-  const [isFocused, setIsFocused] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
-
-  const handleBlur = () => {
-    setIsFocused(false)
-  }
-
-  const handleFocus = () => {
-    setIsFocused(true)
-  }
-
-  const handleMouseEnter = () => {
-    setIsHovered(true)
-  }
-
-  const handleMouseLeave = () => {
-    setIsHovered(false)
-  }
-
+const CustomInput = (props: any, ref: React.Ref<HTMLInputElement>) => {
   return (
     <input
       ref={ref}
+      {...props}
       type="text"
-      placeholder={placeholder}
-      defaultValue={defaultValue}
-      onBlur={handleBlur}
-      onFocus={handleFocus}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={(e) => e.stopPropagation()}
-      className={` h-9 bg-transparent rounded-lg
-      ${isHovered && !isFocused ? '!bg-bgNeutral' : ''} 
-      ${isFocused ? '!border-grey-300' : ''}`}
+      onClick={(e) => {
+        e.stopPropagation()
+        if (props.onClick) props.onClick(e)
+      }}
+      className={`${props?.className || ''}
+         h-9 px-3 bg-transparent rounded-lg border-none hover:!bg-bgNeutral focus:!border-grey-300 focus:!shadow-none`}
     />
   )
 }
 
-export default forwardRef<HTMLInputElement, CustomInputProps>(CustomInput)
+export default forwardRef<HTMLInputElement, any>(CustomInput)
