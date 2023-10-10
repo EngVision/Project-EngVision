@@ -1,4 +1,3 @@
-import { CloseOutlined } from '@ant-design/icons'
 import { Switch } from 'antd'
 import { useAppDispatch } from '../../hooks/redux'
 import { toggleDarkMode } from '../../redux/app/slice'
@@ -18,7 +17,6 @@ const DarkModeButton = () => {
       checkedChildren={<Sun width={20} height={20} />}
       unCheckedChildren={<Moon width={20} height={20} />}
       defaultChecked
-      autoFocus
       onChange={(checked) => handleChangeTheme(checked)}
     />
   )

@@ -226,6 +226,7 @@ export const UpdateProfile = () => {
         >
           <Collapse
             items={items}
+            bordered={false}
             defaultActiveKey={['1']}
             onChange={(value) => {
               setKeyCollapse(value)

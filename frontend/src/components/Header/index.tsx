@@ -1,14 +1,13 @@
 import { Avatar } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { NotificationIcon } from '../Icons'
 
-import Search from './Search'
 import { ProfileParams } from '../../services/accountApi/types'
 import authApi from '../../services/authApi'
 import { getFileUrl } from '../../utils/common'
-import LocalesButton from './LocalesButton'
 import DarkModeButton from './DarkModeButton'
+import Search from './Search'
 
 const Header = () => {
   const [account, setAccount] = useState<ProfileParams>()
