@@ -1,4 +1,4 @@
-import { Button, Tabs, Form } from 'antd'
+import { Button, Tabs, Form, message } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -32,6 +32,7 @@ const TeacherCourseDetail = () => {
 
     try {
       await coursesApi.update(courseId || '', newCourse)
+      message.success(`Update successfully.`)
     } catch (error) {
       console.log('error: ', error)
     }
@@ -51,6 +52,7 @@ const TeacherCourseDetail = () => {
 
       await coursesApi.update(courseId || '', newCourse)
       await coursesApi.publish(courseId || '')
+      message.success(`Update and publish successfully.`)
     } catch (error) {
       console.log('error: ', error)
     }
@@ -59,6 +61,7 @@ const TeacherCourseDetail = () => {
   const handleDelete = async () => {
     try {
       await coursesApi.delete(courseId || '')
+      message.success(`Delete successfully.`)
       navigate(TEACHER_ROUTES.courses)
     } catch (error) {
       console.log('error: ', error)

@@ -1,8 +1,10 @@
-import { Button, Form, Input, Select, Upload } from 'antd'
+import { Button, Form, Input, Select, message } from 'antd'
 import { Link } from 'react-router-dom'
+import CustomUpload from '../../../components/CustomUpload'
 import coursesApi from '../../../services/coursesApi'
 import { CEFRLevel, TEACHER_ROUTES } from '../../../utils/constants'
-import { PlusIcon } from '../../../components/Icons'
+import { useAppDispatch } from '../../../hooks/redux'
+import { addNewCourse } from '../../../redux/course/slice'
 
 type FieldType = {
   title: string
@@ -19,6 +21,8 @@ interface TeacherCreateCourseProps {
 const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
   onClose,
 }) => {
+  const dispatch = useAppDispatch()
+
   const handleSave = async (values: FieldType) => {
     const newCourse = {
       ...values,
@@ -26,6 +30,8 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
       thumbnail: values.thumbnail,
     }
     await coursesApi.create(newCourse)
+    dispatch(addNewCourse(newCourse))
+    message.success(`Create successfully.`)
     onClose()
   }
 
@@ -108,16 +114,7 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
             rules={[{ required: true, message: 'Please upload thumbnail!' }]}
             getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
           >
-            <Upload
-              action={`${import.meta.env.VITE_BASE_URL}files`}
-              withCredentials
-              listType="picture-card"
-            >
-              <div>
-                <PlusIcon />
-                <div style={{ marginTop: 8 }}>Upload</div>
-              </div>
-            </Upload>
+            <CustomUpload type="picture" />
           </Form.Item>
 
           <div className="flex gap-4 mt-8 justify-end">

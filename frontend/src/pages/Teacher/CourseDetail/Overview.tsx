@@ -1,7 +1,6 @@
-import React from 'react'
-import { Form, Input, Select, Upload } from 'antd'
+import { Form, Input, Select } from 'antd'
+import CustomUpload from '../../../components/CustomUpload'
 import { CEFRLevel } from '../../../utils/constants'
-import { PlusIcon } from '../../../components/Icons'
 
 type FieldType = {
   title: string
@@ -83,17 +82,9 @@ const Overview = () => {
         label="Thumbnail"
         getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
         rules={[{ required: true, message: 'Please input thumbnail!' }]}
+        valuePropName="fileList"
       >
-        <Upload
-          action={`${import.meta.env.VITE_BASE_URL}files`}
-          withCredentials
-          listType="picture-card"
-        >
-          <div>
-            <PlusIcon />
-            <div style={{ marginTop: 8 }}>Upload</div>
-          </div>
-        </Upload>
+        <CustomUpload type="picture" />
       </Form.Item>
     </div>
   )

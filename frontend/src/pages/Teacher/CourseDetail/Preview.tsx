@@ -1,24 +1,21 @@
 import { Form } from 'antd'
 import { StarIcon } from '../../../components/Icons'
 import PreviewInput from '../../../components/common/PreviewInput'
-import { FormInstance } from 'antd/lib/form/Form'
+import { FormInstance, useWatch } from 'antd/lib/form/Form'
 
 interface PreviewProps {
   form: FormInstance
 }
 
 const Preview = ({ form }: PreviewProps) => {
+  const thumbnail = useWatch('thumbnail', form)
   return (
     <div className="flex gap-4 h-[12rem] select-none">
-      <Form.Item name="thumbnail">
-        <img
-          className="object-cover w-[300px] h-[12rem] rounded-md"
-          src={`${import.meta.env.VITE_SERVER_FILES_URL}${form.getFieldValue(
-            'thumbnail',
-          )}`}
-          alt="thumbnail"
-        />
-      </Form.Item>
+      <img
+        className="object-cover w-[300px] h-[12rem] rounded-md"
+        src={`${import.meta.env.VITE_SERVER_FILES_URL}${thumbnail}`}
+        alt="thumbnail"
+      />
       <div className="flex flex-col h-full justify-between flex-1">
         <div className="flex text-sm">
           <div className="mr-6">

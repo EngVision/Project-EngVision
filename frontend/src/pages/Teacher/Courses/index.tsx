@@ -3,22 +3,19 @@ import React, { useEffect, useMemo, useState } from 'react'
 
 import Course from '../../../components/Course'
 import { PlusIcon } from '../../../components/Icons'
-import coursesApi from '../../../services/coursesApi'
-import { COURSE_STATUS } from '../../../utils/constants'
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
-import { setCourseStatus } from '../../../redux/course/slice'
-import TeacherCreateCourse from '../CreateCourse'
-import { CourseDetails } from '../../../services/coursesApi/types'
-import FilterDropdown from './FilterDropdown'
-import SortDropdown from './SortDropdown'
+import { setCourseList, setCourseStatus } from '../../../redux/course/slice'
+import coursesApi from '../../../services/coursesApi'
 import { sortCoursesByTitle } from '../../../utils/common'
+import { COURSE_STATUS } from '../../../utils/constants'
+import TeacherCreateCourse from '../CreateCourse'
 
 const Courses: React.FC = () => {
   const dispatch = useAppDispatch()
+  const courses = useAppSelector((state) => state.course.list)
   const status = useAppSelector((state) => state.course.status)
   const sortOption = useAppSelector((state) => state.course.sortOption)
 
-  const [courses, setCourses] = useState<CourseDetails[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const filteredCourses = useMemo(
@@ -28,8 +25,19 @@ const Courses: React.FC = () => {
 
   const getCourses = async () => {
     try {
-      const { data } = await coursesApi.getCourses({ status })
-      setCourses(data)
+      // TODO: Improve get all courses of current teacher
+      if (status === COURSE_STATUS.all) {
+        const [publishedCourses, draftCourses] = await Promise.all([
+          coursesApi.getCourses({ status: COURSE_STATUS.published }),
+          coursesApi.getCourses({ status: COURSE_STATUS.draft }),
+        ])
+        dispatch(
+          setCourseList([...publishedCourses.data, ...draftCourses.data]),
+        )
+      } else {
+        const { data } = await coursesApi.getCourses({ status })
+        dispatch(setCourseList(data))
+      }
     } catch (error) {
       console.log('error: ', error)
     }
@@ -49,7 +57,6 @@ const Courses: React.FC = () => {
 
   const handleCancelCreateForm = () => {
     setIsModalOpen(false)
-    getCourses()
   }
 
   useEffect(() => {
@@ -62,6 +69,17 @@ const Courses: React.FC = () => {
 
       <div className="flex justify-between mb-8">
         <div className="flex gap-4">
+          <Button
+            type={status === COURSE_STATUS.all ? 'primary' : 'default'}
+            className={
+              status === COURSE_STATUS.all ? '' : 'border-primary text-primary'
+            }
+            onClick={() => {
+              dispatch(setCourseStatus(COURSE_STATUS.all))
+            }}
+          >
+            All
+          </Button>
           <Button
             type={status === COURSE_STATUS.published ? 'primary' : 'default'}
             className={
@@ -91,8 +109,9 @@ const Courses: React.FC = () => {
         </div>
 
         <div className="flex gap-4">
-          <FilterDropdown />
-          <SortDropdown />
+          {/* This feature not supported yet */}
+          {/* <FilterDropdown />
+          <SortDropdown /> */}
 
           <div>
             <Button
@@ -103,12 +122,14 @@ const Courses: React.FC = () => {
             >
               New course
             </Button>
+
             <Modal
               open={isModalOpen}
               onOk={handleOk}
               onCancel={handleCancel}
               footer={null}
               width={800}
+              destroyOnClose
             >
               <TeacherCreateCourse onClose={handleCancelCreateForm} />
             </Modal>
