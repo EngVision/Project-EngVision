@@ -6,6 +6,7 @@ import { CourseDetails } from '../../../services/coursesApi/types'
 import { AssignmentResponse } from '../../../services/assignmentApi/types'
 import assignmentApi from '../../../services/assignmentApi'
 import { useNavigate } from 'react-router-dom'
+import Lesson from '../../Teacher/CourseDetail/Section/Lesson'
 const { Panel } = Collapse
 const CourseContent = (course: CourseDetails) => {
   const [assignments, setAssignments] = useState<AssignmentResponse[]>([])
@@ -14,11 +15,15 @@ const CourseContent = (course: CourseDetails) => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const fetchAssignments = async () => {
-      const data = await assignmentApi.getAssignments()
-      setAssignments(data)
+    try {
+      const fetchAssignments = async () => {
+        const data = await assignmentApi.getAssignments()
+        setAssignments(data)
+      }
+      fetchAssignments()
+    } catch (error) {
+      console.error('Error fetching assignments:', error)
     }
-    fetchAssignments()
   }, [])
 
   assignments.forEach((assignment) => {
@@ -27,34 +32,45 @@ const CourseContent = (course: CourseDetails) => {
     }
   })
 
-  function allInArray(array1: string[], array2: string[]) {
-    if (array1.length === 0 || array2.length === 0) return false
-    // Convert array2 to Set for faster lookup
-    const set2 = new Set(array2)
-
-    // Use every() to check if every item in array1 is in set2
-    return array1.every((x) => set2.has(x))
-  }
-
   course.sections.forEach((section) => {
-    let sectionCompleted: boolean = true
+    section.completed = true
+    let countLessonCompleted: number = 0
+
     if (section.lessons.length === 0) {
-      sectionCompleted = false
+      section.completed = false
     } else {
       section.lessons.forEach((lesson) => {
-        if (allInArray(lesson.exercises, completedExerciseIds)) {
-          lesson.completed = true
+        lesson.completed = true
+        let countExerciseCompleted: number = 0
+
+        if (lesson.exercises.length === 0) {
+          lesson.completed = false
+        } else {
+          lesson?.exercises?.forEach((exercise) => {
+            if (completedExerciseIds.includes(exercise.id)) {
+              exercise.completed = true
+              countExerciseCompleted++
+            } else {
+              exercise.completed = false
+              lesson.completed = false
+            }
+          })
+        }
+
+        if (lesson.completed) {
+          countLessonCompleted++
         } else {
           lesson.completed = false
-          sectionCompleted = false
+          section.completed = false
         }
+        lesson.totalExerciseCompleted = countExerciseCompleted
       })
     }
-    if (sectionCompleted) {
-      section.completed = true
-    } else {
+
+    if (!section.completed) {
       section.completed = false
     }
+    section.totalLessonCompleted = countLessonCompleted
   })
   return (
     <div>
@@ -75,7 +91,7 @@ const CourseContent = (course: CourseDetails) => {
               <Panel
                 header={
                   <div className="flex items-center text-xl">
-                    {section.completed ? (
+                    {section.completed && section.lessons.length ? (
                       <TickCircle className="mr-2" width={24} height={24} />
                     ) : (
                       <Circle className="mr-2" width={24} height={24} />
@@ -84,11 +100,17 @@ const CourseContent = (course: CourseDetails) => {
                     <span>{section.title}</span>
                   </div>
                 }
+                extra={
+                  <div className="text-xs text-gray-500">
+                    {section.totalLessonCompleted} / {section.lessons.length}
+                  </div>
+                }
                 key={sectionIndex.toString()}
               >
                 {/* Lessons */}
                 {section.lessons.map((lesson, lessonIndex) => (
                   <Collapse
+                    collapsible={course.isAttended ? 'header' : 'disabled'}
                     className="bg-[#FFFCF7] pl-4"
                     accordion={true} // Set accordion for each panel
                     bordered={false} // Remove borders if desired
@@ -98,7 +120,7 @@ const CourseContent = (course: CourseDetails) => {
                     <Panel
                       header={
                         <div className="flex items-center text-lg">
-                          {lesson.completed ? (
+                          {lesson.completed && lesson.exercises.length ? (
                             <TickCircle
                               className="mr-2"
                               width={24}
@@ -107,28 +129,33 @@ const CourseContent = (course: CourseDetails) => {
                           ) : (
                             <Circle className="mr-2" width={24} height={24} />
                           )}
-                          <div className="mr-2">Lesson {lessonIndex}:</div>
+                          <div className="mr-2">Lesson {lessonIndex + 1}:</div>
                           <span>{lesson.title}</span>
+                        </div>
+                      }
+                      extra={
+                        <div className="text-xs text-gray-500">
+                          {`${lesson.totalExerciseCompleted} / ${lesson.exercises.length}`}
                         </div>
                       }
                       key={lessonIndex.toString()}
                     >
                       {/* Exercise */}
-                      {lesson.exercises.map((exercise, exerciseIndex) => (
+                      {lesson?.exercises?.map((exercise, exerciseIndex) => (
                         <div
                           key={exerciseIndex.toString()}
                           className="pl-10 pr-24"
                         >
                           <div className="flex items-center justify-between mb-4 hover:bg-white hover:outline-dashed hover:outline-[1px] hover:outline-[#2769E7] py-2 px-2 rounded-lg">
                             <div className="flex items-center cursor-pointer">
-                              {completedExerciseIds.includes(exercise) ? (
+                              {completedExerciseIds.includes(exercise.id) ? (
                                 <TickCircle
                                   className="mr-2"
                                   width={24}
                                   height={24}
                                 />
                               ) : (
-                                <TickCircle
+                                <Circle
                                   className="mr-2"
                                   width={24}
                                   height={24}
@@ -136,11 +163,13 @@ const CourseContent = (course: CourseDetails) => {
                               )}
 
                               <div className="font-bold text-lg">
-                                Exercise {exerciseIndex}
+                                Exercise: {exercise.title}
                               </div>
                             </div>
                             <Button
-                              onClick={() => navigate(`/exercise/${exercise}`)}
+                              onClick={() =>
+                                navigate(`/exercise/${exercise.id}`)
+                              }
                               type="primary"
                               className="rounded-xl text-lg leading-5 px-6 h-full py-2"
                             >
