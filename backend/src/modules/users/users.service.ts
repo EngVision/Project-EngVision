@@ -104,13 +104,15 @@ export class UsersService {
   ): Promise<void> {
     const user = await this.getById(id);
 
-    if (user && (await user.validatePassword(updatePasswordDto.oldPassword))) {
-      user.password = updatePasswordDto.password;
-
-      await user.save();
+    if (
+      !user ||
+      !(await user.validatePassword(updatePasswordDto.oldPassword))
+    ) {
+      throw new BadRequestException('Old password is incorrect');
     }
 
-    throw new BadRequestException('Old password is incorrect');
+    user.password = updatePasswordDto.password;
+    await user.save();
   }
 
   /* Reset password */
