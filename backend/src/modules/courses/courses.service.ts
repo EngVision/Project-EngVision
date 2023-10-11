@@ -22,7 +22,7 @@ import {
   UpdateCourseDto,
   CourseDetailDto,
 } from './dto';
-import { Role, StatusCourseSearch } from 'src/common/enums';
+import { Order, Role, SortBy, StatusCourseSearch } from 'src/common/enums';
 import { JwtPayload } from '../auth/types';
 import { ExercisesService } from '../exercises/exercises.service';
 
@@ -43,27 +43,29 @@ export class CoursesService {
   }
 
   // + sum people enroll + filter tags
-  async getAll(data: SearchCourseDto, userId: string) {
+  async getAll(data: SearchCourseDto, user: JwtPayload) {
     const keyword = { $regex: new RegExp(data.keyword, 'i') };
     const dataFilter: mongoose.FilterQuery<any> = {};
+    const sort: mongoose.FilterQuery<any> = {};
 
     switch (data.status) {
       case StatusCourseSearch.All:
-        dataFilter.isPublished = { $eq: true };
+        if (user.roles.includes(Role.Student))
+          dataFilter.isPublished = { $eq: true };
         break;
       case StatusCourseSearch.Attended:
         dataFilter.isPublished = { $eq: true };
         dataFilter.attendanceList = {
-          $elemMatch: { $eq: new Types.ObjectId(userId) },
+          $elemMatch: { $eq: new Types.ObjectId(user.sub) },
         };
         break;
       case StatusCourseSearch.Draft:
         dataFilter.isPublished = { $eq: false };
-        dataFilter['teacher._id'] = { $eq: new Types.ObjectId(userId) };
+        dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
         break;
       case StatusCourseSearch.Published:
         dataFilter.isPublished = { $eq: true };
-        dataFilter['teacher._id'] = { $eq: new Types.ObjectId(userId) };
+        dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
         break;
     }
 
@@ -77,6 +79,17 @@ export class CoursesService {
       dataFilter.price = {};
       if (data.priceMin) dataFilter.price.$gte = data.priceMin;
       if (data.priceMax) dataFilter.price.$lte = data.priceMax;
+    }
+
+    switch (data.sortBy) {
+      case SortBy.time:
+        sort.createdAt = data.order === Order.asc ? 1 : -1;
+        break;
+      case SortBy.price:
+        sort.price = data.order === Order.asc ? 1 : -1;
+        break;
+      default:
+        sort.createdAt = -1;
     }
 
     const result = await this.courseModel.aggregate([
@@ -122,6 +135,7 @@ export class CoursesService {
           ],
         },
       },
+      { $sort: sort },
       {
         $facet: {
           courses: [
@@ -187,6 +201,7 @@ export class CoursesService {
         .populate('teacher')
         .populate({
           path: 'reviews',
+          options: { sort: { createdAt: -1 } },
           populate: { path: 'user' },
         });
 
@@ -208,6 +223,7 @@ export class CoursesService {
         .populate('teacher')
         .populate({
           path: 'reviews',
+          options: { sort: { createdAt: -1 } },
           populate: { path: 'user' },
         })
         .populate('sections.lessons.exercises', 'id title');

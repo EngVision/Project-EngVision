@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
-import { useAppDispatch, useAppSelector } from '../../hooks/redux'
+import { useAppDispatch } from '../../hooks/redux'
 import { setRole, setUserAccountId } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
@@ -12,7 +12,6 @@ import { PUBLIC_ROUTES } from '../../utils/constants'
 const SignIn: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const userAccountId = useAppSelector((state) => state.app.userAccountId)
 
   const [error, setError] = useState<string>('')
 
@@ -26,9 +25,25 @@ const SignIn: React.FC = () => {
     }
   }
 
+  const fetchAuthUser = async () => {
+    try {
+      const { data } = await authApi.fetchAuthUser()
+
+      dispatch(setUserAccountId(data.id))
+      dispatch(setRole(data.role))
+    } catch (error) {
+      console.log('error: ', error)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('storage', fetchAuthUser)
+    return () => window.removeEventListener('storage', fetchAuthUser)
+  }, [])
+
   const signInWithGoogle = async () => {
     window.open(
-      `http://localhost:3000/SSOSuccess`,
+      `${import.meta.env.VITE_BASE_URL}auth/google/login`,
       '_blank',
       'width=500,height=600,left=400,top=200',
     )
@@ -41,12 +56,6 @@ const SignIn: React.FC = () => {
       'width=500,height=600,left=400,top=200',
     )
   }
-
-  useEffect(() => {
-    // if (userAccountId) {
-    //   navigate(PRIVATE_ROUTES.home)
-    // }
-  }, [userAccountId])
 
   const SIGN_IN_VENDORS = [
     {

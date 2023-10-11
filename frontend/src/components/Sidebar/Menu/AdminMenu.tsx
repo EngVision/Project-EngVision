@@ -5,6 +5,7 @@ import {
   DashboardIcon,
   MessageIcon,
   NoteIcon,
+  UsersIcon,
 } from '../../Icons'
 
 import { MenuItemType } from '../types'
@@ -35,6 +36,11 @@ const ADMIN_MENU_ITEMS: MenuItemType[] = [
     icon: <MessageIcon />,
     path: PRIVATE_ROUTES.chat,
     title: 'Chats',
+  },
+  {
+    icon: <UsersIcon />,
+    path: PRIVATE_ROUTES.manageUsers,
+    title: 'Users',
   },
 ]
 

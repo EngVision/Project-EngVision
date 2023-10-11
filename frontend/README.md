@@ -35,3 +35,9 @@ yarn prettier        # run prettier for json|yml|css|md|mdx files
 yarn clean           # remove 'node_modules' 'yarn.lock' 'dist' completely
 yarn serve           # launch server for production bundle in local
 ```
+
+## Run via docker
+
+```sh
+docker build -t engvision/fe .
+```
