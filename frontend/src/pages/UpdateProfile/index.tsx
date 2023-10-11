@@ -171,7 +171,7 @@ export const UpdateProfile = () => {
                 label="Retype Password"
               >
                 <Input.Password
-                  placeholder="Enter retype old password"
+                  placeholder="Enter retype new password"
                   size="large"
                   className="border-slate-300 hover:border-slate-40 rounded-md shadow-sm"
                 />
