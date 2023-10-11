@@ -26,9 +26,11 @@ const appSlice = createSlice({
     },
     toggleDarkMode: (state) => {
       state.darkMode = !state.darkMode
+      localStorage.setItem('darkMode', state.darkMode.toString())
     },
     toggleLocales: (state, action) => {
       state.locales = action.payload
+      localStorage.setItem('locales', state.locales)
     },
   },
 })
