@@ -1,13 +1,14 @@
 import {
   Avatar,
   Button,
-  Collapse,
-  CollapseProps,
   Form,
   Image,
   Input,
   Select,
   Space,
+  Tabs,
+  TabsProps,
+  notification,
 } from 'antd'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -22,11 +23,20 @@ import authApi from '../../services/authApi'
 import { getFileUrl } from '../../utils/common'
 import { PRIVATE_ROUTES } from '../../utils/constants'
 
+type NotificationType = 'success' | 'info' | 'warning' | 'error'
+
 export const UpdateProfile = () => {
   const { TextArea } = Input
   const [account, setAccount] = useState<ProfileParams>()
   const [avatar, setAvatar] = useState('' as any)
   const [keyCollapse, setKeyCollapse] = useState('' as any)
+  const [api, contextHolder] = notification.useNotification()
+
+  const gender = [
+    { value: 'Male', label: 'Male' },
+    { value: 'Female', label: 'Female' },
+    { value: 'Other', label: 'Other' },
+  ]
 
   useEffect(() => {
     const fetchAccount = async () => {
@@ -42,13 +52,54 @@ export const UpdateProfile = () => {
     fetchAccount()
   }, [])
 
-  const gender = [
-    { value: 'Male', label: 'Male' },
-    { value: 'Female', label: 'Female' },
-    { value: 'Other', label: 'Other' },
-  ]
+  const openNotificationWithIcon = (
+    type: NotificationType,
+    description: string,
+  ) => {
+    api[type](
+      type === 'success'
+        ? {
+            message: 'Successfully',
+            description: [description],
+          }
+        : {
+            message: 'Failed',
+            description: [description],
+          },
+    )
+  }
 
-  const items: CollapseProps['items'] = [
+  const onFinish = async (values: ProfileParams) => {
+    const password: ChangePassword = values
+    if (avatar) values.avatar = avatar
+
+    try {
+      if (
+        keyCollapse.includes('1') ||
+        keyCollapse.includes('2') ||
+        !keyCollapse
+      ) {
+        await accountApi.update(values)
+        openNotificationWithIcon('success', 'Update profile successfully.')
+      }
+      if (
+        keyCollapse.includes('3') &&
+        values.password === values.retypePassword
+      ) {
+        await accountApi.changePassword(password)
+        openNotificationWithIcon('success', 'Change password successfully.')
+      }
+    } catch (error) {
+      openNotificationWithIcon('error', 'Change password failed.')
+      throw error
+    }
+  }
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo)
+  }
+
+  const items: TabsProps['items'] = [
     {
       key: '1',
       label: 'Profile',
@@ -57,15 +108,14 @@ export const UpdateProfile = () => {
           {account && (
             <div>
               <Form.Item<ProfileParams> name="avatar" valuePropName="fileList">
-                {account.avatar && (
+                {account.avatar ? (
                   <Image
                     className="mr-5 rounded-full"
                     style={{ width: 200, height: 200 }}
                     src={getFileUrl(account?.avatar)}
                     alt="avatar"
                   />
-                )}
-                {!account?.avatar && (
+                ) : (
                   <Avatar size={300} className="p-5 rounded-sm"></Avatar>
                 )}
 
@@ -76,7 +126,7 @@ export const UpdateProfile = () => {
                 />
               </Form.Item>
 
-              <Space className="flex justify-between">
+              <Space className="flex max-xl:flex-col justify-between">
                 <Form.Item<ProfileParams> name="firstName" label="First Name">
                   <Input
                     defaultValue={account.firstName}
@@ -118,7 +168,7 @@ export const UpdateProfile = () => {
         <p>
           {account && (
             <div>
-              <Space className="flex justify-between">
+              <Space className="flex max-xl:flex-col justify-between">
                 <Form.Item<ProfileParams>
                   name="gender"
                   label="Gender"
@@ -183,39 +233,9 @@ export const UpdateProfile = () => {
     },
   ]
 
-  const onFinish = async (values: ProfileParams) => {
-    console.log('Success:', values)
-    const password: ChangePassword = values
-    if (avatar) values.avatar = avatar
-    console.log(keyCollapse)
-
-    try {
-      if (
-        keyCollapse.includes('1') ||
-        keyCollapse.includes('2') ||
-        !keyCollapse
-      ) {
-        await accountApi.update(values)
-      }
-      if (
-        keyCollapse.includes('3') &&
-        values.password === values.retypePassword
-      ) {
-        await accountApi.changePassword(password)
-      }
-    } catch (error) {
-      console.error('Error updating profile:', error)
-      throw error
-    }
-    location.reload()
-  }
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo)
-  }
-
   return (
     <div>
+      {contextHolder}
       {account && (
         <Form
           name="validateOnly"
@@ -224,13 +244,10 @@ export const UpdateProfile = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
-          <Collapse
+          <Tabs
+            defaultActiveKey="1"
             items={items}
-            bordered={false}
-            defaultActiveKey={['1']}
-            onChange={(value) => {
-              setKeyCollapse(value)
-            }}
+            onChange={(e) => setKeyCollapse(e)}
           />
           <div className="mt-6">
             <Space className="flex justify-end">

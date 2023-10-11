@@ -3,14 +3,14 @@ import { createSlice } from '@reduxjs/toolkit'
 interface AppState {
   userAccountId?: string
   role: 'Student' | 'Teacher' | 'Admin' | ''
-  darkMode: boolean | string
+  theme: string
   locales: string
 }
 
 const initialState: AppState = {
   userAccountId: '',
   role: '',
-  darkMode: localStorage.getItem('darkMode') || false,
+  theme: localStorage.getItem('theme') || 'light',
   locales: localStorage.getItem('locales') || 'en',
 }
 
@@ -24,9 +24,9 @@ const appSlice = createSlice({
     setRole: (state, action) => {
       state.role = action.payload
     },
-    toggleDarkMode: (state) => {
-      state.darkMode = !state.darkMode
-      localStorage.setItem('darkMode', state.darkMode.toString())
+    toggleDarkMode: (state, action) => {
+      state.theme = action.payload
+      localStorage.setItem('theme', state.theme)
     },
     toggleLocales: (state, action) => {
       state.locales = action.payload
