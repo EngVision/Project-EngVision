@@ -1,11 +1,9 @@
-import React from 'react'
-
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
 
-import type { LayoutProps } from './types'
+import { Outlet } from 'react-router-dom'
 
-const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
+const DefaultLayout = () => {
   return (
     <div className="flex flex-row bg-[#F3EFE2] h-[100vh]">
       <Sidebar />
@@ -14,7 +12,7 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
           <Header />
         </div>
         <div className="px-8 pb-8 flex-1 overflow-y-auto bg-bgNeutral">
-          {children}
+          <Outlet />
         </div>
       </div>
     </div>
