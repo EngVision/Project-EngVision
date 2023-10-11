@@ -27,7 +27,7 @@ export class User {
   password?: string;
 
   @Prop({ enum: Role, required: true, default: Role.Student })
-  role: Role;
+  role?: Role;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name })
   avatar?: string;

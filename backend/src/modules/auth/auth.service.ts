@@ -144,10 +144,7 @@ export class AuthService {
 
     if (!user) {
       const newUser = await this.usersService.createWithSSO({
-        email: req.user.email,
-        firstName: req.user.firstName,
-        lastName: req.user.lastName,
-        avatar: req.user.avatar,
+        ...req.user,
         role: req.user.role || Role.Student,
       });
 
