@@ -29,8 +29,8 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
       price: parseFloat(values.price),
       thumbnail: values.thumbnail,
     }
-    await coursesApi.create(newCourse)
-    dispatch(addNewCourse(newCourse))
+    const { data } = await coursesApi.create(newCourse)
+    dispatch(addNewCourse({ ...newCourse, id: data.id }))
     message.success(`Create successfully.`)
     onClose()
   }

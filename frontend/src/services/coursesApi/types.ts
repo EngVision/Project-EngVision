@@ -1,3 +1,5 @@
+import { COURSE_STATUS } from '../../utils/constants'
+
 export interface CourseParams {
   id: string
   title: string
@@ -85,5 +87,5 @@ export interface ReviewParams {
 }
 
 export interface GetCourseProps {
-  status: 'All' | 'Attended' | 'Published' | 'Draft'
+  status: COURSE_STATUS | ''
 }
