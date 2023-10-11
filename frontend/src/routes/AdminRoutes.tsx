@@ -3,6 +3,7 @@ import Exam from '../pages/Exam'
 import HelpCenter from '../pages/HelpCenter'
 import Home from '../pages/Home'
 import MakeSentences from '../pages/Lesson/MakeSentences'
+import ManageUsers from '../pages/ManageUsers'
 import MyHub from '../pages/MyHub'
 import Settings from '../pages/Settings'
 import Statistic from '../pages/Statistic'
@@ -31,6 +32,10 @@ const adminRoutes: RouteElement[] = [
   {
     element: Chat,
     path: PRIVATE_ROUTES.chat,
+  },
+  {
+    element: ManageUsers,
+    path: ADMIN_ROUTES.manageUsers,
   },
   {
     element: MakeSentences,

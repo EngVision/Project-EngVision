@@ -14,6 +14,7 @@ export const PRIVATE_ROUTES = {
   home: '/',
   statistic: '/statistic',
   chat: '/chat',
+  manageUsers: '/manage-users',
   settings: '/settings',
   helpCenter: '/help-center',
 
@@ -59,6 +60,7 @@ export const ADMIN_ROUTES = {
   courses: '/courses',
   courseDetail: '/courses/:courseId',
   createCourse: '/courses/new',
+  manageUsers: '/manage-users',
 
   assignmentExam: '/assignment-exam',
 }

@@ -7,9 +7,17 @@ import {
   IsNumber,
   IsOptional,
 } from 'class-validator';
-import { StatusCourseSearch } from 'src/common/enums';
+import { Order, SortBy, StatusCourseSearch } from 'src/common/enums';
 
 export class SearchCourseDto {
+  @IsNotEmpty()
+  @IsEnum(StatusCourseSearch)
+  @ApiPropertyOptional({
+    enum: StatusCourseSearch,
+    description: 'Status courses',
+  })
+  status?: StatusCourseSearch;
+
   @IsOptional()
   @ApiPropertyOptional({ type: String, description: 'Title' })
   keyword?: string;
@@ -43,6 +51,20 @@ export class SearchCourseDto {
   priceMax?: number;
 
   @IsOptional()
+  @IsEnum(SortBy)
+  @ApiPropertyOptional({ type: String, description: 'Sort by (default time)' })
+  sortBy?: string;
+
+  @IsOptional()
+  @IsEnum(Order)
+  @ApiPropertyOptional({
+    type: String,
+    description:
+      'order (asc for low(old) to high(new), desc for high(new) to low(old))',
+  })
+  order?: string;
+
+  @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @ApiPropertyOptional({ type: Number, description: 'Page' })
@@ -53,12 +75,4 @@ export class SearchCourseDto {
   @IsNumber()
   @ApiPropertyOptional({ type: Number, description: 'Limit' })
   limit?: number;
-
-  @IsNotEmpty()
-  @IsEnum(StatusCourseSearch)
-  @ApiPropertyOptional({
-    enum: StatusCourseSearch,
-    description: 'Status courses',
-  })
-  status?: StatusCourseSearch;
 }

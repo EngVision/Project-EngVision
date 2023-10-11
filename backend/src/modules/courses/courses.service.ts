@@ -22,7 +22,7 @@ import {
   UpdateCourseDto,
   CourseDetailDto,
 } from './dto';
-import { Role, StatusCourseSearch } from 'src/common/enums';
+import { Order, Role, SortBy, StatusCourseSearch } from 'src/common/enums';
 import { JwtPayload } from '../auth/types';
 import { ExercisesService } from '../exercises/exercises.service';
 
@@ -46,6 +46,7 @@ export class CoursesService {
   async getAll(data: SearchCourseDto, userId: string) {
     const keyword = { $regex: new RegExp(data.keyword, 'i') };
     const dataFilter: mongoose.FilterQuery<any> = {};
+    const sort: mongoose.FilterQuery<any> = {};
 
     switch (data.status) {
       case StatusCourseSearch.All:
@@ -77,6 +78,17 @@ export class CoursesService {
       dataFilter.price = {};
       if (data.priceMin) dataFilter.price.$gte = data.priceMin;
       if (data.priceMax) dataFilter.price.$lte = data.priceMax;
+    }
+
+    switch (data.sortBy) {
+      case SortBy.time:
+        sort.createdAt = data.order === Order.asc ? 1 : -1;
+        break;
+      case SortBy.price:
+        sort.price = data.order === Order.asc ? 1 : -1;
+        break;
+      default:
+        sort.createdAt = -1;
     }
 
     const result = await this.courseModel.aggregate([
@@ -122,6 +134,7 @@ export class CoursesService {
           ],
         },
       },
+      { $sort: sort },
       {
         $facet: {
           courses: [
@@ -187,6 +200,7 @@ export class CoursesService {
         .populate('teacher')
         .populate({
           path: 'reviews',
+          options: { sort: { createdAt: -1 } },
           populate: { path: 'user' },
         });
 
@@ -208,6 +222,7 @@ export class CoursesService {
         .populate('teacher')
         .populate({
           path: 'reviews',
+          options: { sort: { createdAt: -1 } },
           populate: { path: 'user' },
         })
         .populate('sections.lessons.exercises', 'id title');
