@@ -10,6 +10,7 @@ import {
 } from '../Icons'
 import { useNavigate } from 'react-router-dom'
 import { CourseDetails } from '../../services/coursesApi/types'
+import CustomImage from '../common/CustomImage'
 
 interface CourseProps {
   course: CourseDetails
@@ -22,11 +23,9 @@ const Course = ({ course }: CourseProps) => {
     <Card
       className="w-full"
       cover={
-        <img
-          alt="example"
+        <CustomImage
           src={`${import.meta.env.VITE_SERVER_FILES_URL}${course.thumbnail}`}
           onClick={() => navigate(course.id)}
-          role="presentation"
           className="cursor-pointer h-[200px]"
         />
       }

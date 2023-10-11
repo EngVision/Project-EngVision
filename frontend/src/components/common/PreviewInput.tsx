@@ -5,6 +5,7 @@ const PreviewInput = (props: any, ref: React.Ref<HTMLInputElement>) => {
     <input
       ref={ref}
       {...props}
+      value={props.value || ''}
       type="text"
       onClick={(e) => {
         e.stopPropagation()
