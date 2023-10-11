@@ -43,28 +43,29 @@ export class CoursesService {
   }
 
   // + sum people enroll + filter tags
-  async getAll(data: SearchCourseDto, userId: string) {
+  async getAll(data: SearchCourseDto, user: JwtPayload) {
     const keyword = { $regex: new RegExp(data.keyword, 'i') };
     const dataFilter: mongoose.FilterQuery<any> = {};
     const sort: mongoose.FilterQuery<any> = {};
 
     switch (data.status) {
       case StatusCourseSearch.All:
-        dataFilter.isPublished = { $eq: true };
+        if (user.roles.includes(Role.Student))
+          dataFilter.isPublished = { $eq: true };
         break;
       case StatusCourseSearch.Attended:
         dataFilter.isPublished = { $eq: true };
         dataFilter.attendanceList = {
-          $elemMatch: { $eq: new Types.ObjectId(userId) },
+          $elemMatch: { $eq: new Types.ObjectId(user.sub) },
         };
         break;
       case StatusCourseSearch.Draft:
         dataFilter.isPublished = { $eq: false };
-        dataFilter['teacher._id'] = { $eq: new Types.ObjectId(userId) };
+        dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
         break;
       case StatusCourseSearch.Published:
         dataFilter.isPublished = { $eq: true };
-        dataFilter['teacher._id'] = { $eq: new Types.ObjectId(userId) };
+        dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
         break;
     }
 

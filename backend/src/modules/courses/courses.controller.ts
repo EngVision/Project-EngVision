@@ -77,8 +77,7 @@ export class CoursesController {
   ) {
     if (
       (user.roles.includes(Role.Teacher) &&
-        (query.status === StatusCourseSearch.Attended ||
-          query.status === StatusCourseSearch.All)) ||
+        query.status === StatusCourseSearch.Attended) ||
       (user.roles.includes(Role.Student) &&
         (query.status === StatusCourseSearch.Published ||
           query.status === StatusCourseSearch.Draft))
@@ -86,7 +85,7 @@ export class CoursesController {
       throw new ConflictException('Your query has conflicts');
     }
 
-    const [courses, total] = await this.coursesService.getAll(query, user.sub);
+    const [courses, total] = await this.coursesService.getAll(query, user);
 
     return res.status(HttpStatus.OK).send(
       GetResponseList({
