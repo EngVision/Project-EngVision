@@ -8,30 +8,24 @@ import Overview from './Overview'
 import Section from './Section'
 import Preview from './Preview'
 import Statistic from './Statistic'
-import { CourseDetails } from '../../../services/coursesApi/types'
 import { TEACHER_ROUTES } from '../../../utils/constants'
-import { removeKeys } from '../../../utils/common'
 const { TabPane } = Tabs
 
 const TeacherCourseDetail = () => {
   const { courseId } = useParams()
-  const [course, setCourse] = useState<CourseDetails | null>(null)
   const [form] = Form.useForm()
   const navigate = useNavigate()
 
   const handleSave = async () => {
     const formValues = form.getFieldsValue()
-    const newCourse = removeKeys(
-      {
-        ...course,
-        ...formValues,
-        price: parseFloat(formValues.price),
-      },
-      ['teacher'],
-    )
+    const newCourse = {
+      ...formValues,
+      price: parseFloat(formValues.price),
+    }
 
     try {
-      await coursesApi.update(courseId || '', newCourse)
+      const { data } = await coursesApi.update(courseId || '', newCourse)
+      form.setFieldsValue(data)
       message.success(`Update successfully.`)
     } catch (error) {
       console.log('error: ', error)
@@ -41,17 +35,13 @@ const TeacherCourseDetail = () => {
   const handleSaveAndPublish = async () => {
     try {
       const formValues = form.getFieldsValue()
-      const newCourse = removeKeys(
-        {
-          ...course,
-          ...formValues,
-          price: parseFloat(formValues.price),
-        },
-        ['teacher'],
-      )
+      const newCourse = {
+        ...formValues,
+        price: parseFloat(formValues.price),
+      }
 
-      await coursesApi.update(courseId || '', newCourse)
-      await coursesApi.publish(courseId || '')
+      const { data } = await coursesApi.update(courseId || '', newCourse)
+      form.setFieldsValue(data)
       message.success(`Update and publish successfully.`)
     } catch (error) {
       console.log('error: ', error)
@@ -75,10 +65,8 @@ const TeacherCourseDetail = () => {
 
   const fetchCourseDetails = async () => {
     try {
-      if (courseId) {
-        const { data } = await coursesApi.getCourseDetails(courseId)
-        setCourse(data)
-      }
+      const { data } = await coursesApi.getCourseDetails(courseId || '')
+      form.setFieldsValue(data)
     } catch (error) {
       console.log('error: ', error)
     }
@@ -88,20 +76,10 @@ const TeacherCourseDetail = () => {
     fetchCourseDetails()
   }, [])
 
-  if (!course) return null
-
   return (
     <div className="flex flex-col bg-[#FFFCF7] p-[1.5rem] rounded-md h-full">
       <Form
         name="teacher_course_overview"
-        initialValues={{
-          title: course.title,
-          about: course.about,
-          price: course.price,
-          level: course.level,
-          thumbnail: course.thumbnail,
-          sections: course.sections,
-        }}
         autoComplete="off"
         layout="vertical"
         form={form}

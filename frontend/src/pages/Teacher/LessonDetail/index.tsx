@@ -7,7 +7,6 @@ import { LessonType } from '../../../services/lessonApi/type'
 const LessonDetail = () => {
   const { lessonId } = useParams()
   const [lesson, setLesson] = useState<LessonType>()
-  console.log('🚀 ~ file: index.tsx:9 ~ LessonDetail ~ lesson:', lesson)
 
   const getLesson = async () => {
     try {

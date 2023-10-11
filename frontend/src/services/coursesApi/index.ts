@@ -1,6 +1,6 @@
 import axiosClient from '../axiosClient'
 import type { ResponseData } from '../types'
-import type { ReviewParams } from './types'
+import type { GetCourseProps, ReviewParams } from './types'
 
 const PREFIX = 'courses/'
 
@@ -15,7 +15,7 @@ const coursesApi = {
       throw error
     }
   },
-  getCourses: async (status: any) => {
+  getCourses: async ({ status }: GetCourseProps) => {
     try {
       const res: ResponseData = await axiosClient.get(
         `${PREFIX}?status=${status}`,

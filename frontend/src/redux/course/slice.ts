@@ -10,7 +10,7 @@ interface CourseState {
 
 const initialState: CourseState = {
   list: [],
-  status: COURSE_STATUS.published,
+  status: COURSE_STATUS.all,
   sortOption: '',
 }
 
