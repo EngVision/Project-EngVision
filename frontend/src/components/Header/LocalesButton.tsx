@@ -5,16 +5,19 @@ import Gobal from '../Icons/Gobal'
 
 const LocalesButton = () => {
   const dispatch = useAppDispatch()
+  const defaultValue = localStorage.getItem('locales')
+
   const handleChangeLocales = (value: any) => {
     if (value) {
-      dispatch(toggleLocales(value.toString().toLowerCase()))
+      dispatch(toggleLocales(value))
+      location.reload()
     }
   }
 
   return (
     <Select
       suffixIcon={<Gobal />}
-      defaultValue="en"
+      defaultValue={defaultValue}
       style={{ width: 120 }}
       onChange={(value) => handleChangeLocales(value)}
       options={[

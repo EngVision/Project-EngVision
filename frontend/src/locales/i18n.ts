@@ -4,7 +4,6 @@ import { initReactI18next } from 'react-i18next'
 import EN from './EN/en.json'
 import VN from './VN/vn.json'
 
-import appSlice from '../redux/app/slice'
 const languages = localStorage.getItem('locales')
 
 const resources = {
