@@ -24,7 +24,6 @@ import { GetResponseList } from 'src/common/dto/paginated-response.dto';
 import { Role, StatusCourseSearch } from 'src/common/enums';
 import { AtGuard, RoleGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
-import { CreateExerciseDto } from '../exercises/dto';
 import { CreateReviewDto } from '../reviews/dto/create-review.dto';
 import { ReviewDto } from '../reviews/dto/review.dto';
 import { CoursesService } from './courses.service';
