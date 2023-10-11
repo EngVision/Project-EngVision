@@ -137,7 +137,7 @@ const Courses: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-x-8 gap-y-6">
+      <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
         {filteredCourses.length > 0 ? (
           filteredCourses.map((course) => (
             <Course key={course.id} course={course} />

@@ -11,13 +11,13 @@ interface PreviewProps {
 const Preview = ({ form }: PreviewProps) => {
   const thumbnail = useWatch('thumbnail', form)
   return (
-    <div className="flex gap-4 h-[12rem] select-none">
+    <div className="flex flex-col gap-4 min-h-[12rem] select-none lg:flex-row">
       <CustomImage
-        className="object-cover w-[300px] h-[12rem] rounded-md"
+        className="object-cover min-w-[300px] h-[12rem] rounded-md"
         src={`${import.meta.env.VITE_SERVER_FILES_URL}${thumbnail}`}
       />
-      <div className="flex flex-col h-full justify-between flex-1">
-        <div className="flex text-sm">
+      <div className="flex flex-col h-full justify-between flex-1 gap-2">
+        <div className="flex text-sm justify-between">
           <div className="mr-6">
             Publish: <span className="font-bold">10/12/2021</span>
           </div>
@@ -26,12 +26,12 @@ const Preview = ({ form }: PreviewProps) => {
           </div>
         </div>
 
-        <Form.Item name="title">
+        <Form.Item name="title" noStyle>
           <PreviewInput className="font-semibold text-2xl" />
         </Form.Item>
 
-        <Form.Item name="about">
-          <PreviewInput />
+        <Form.Item name="about" noStyle>
+          <PreviewInput className="text-base" />
         </Form.Item>
 
         <div className="flex items-center leading-6">
@@ -45,7 +45,9 @@ const Preview = ({ form }: PreviewProps) => {
             <Form.Item name="price" noStyle>
               <PreviewInput className="text-3xl text-primary text-center" />
             </Form.Item>
-            <span className="text-xs text-textSubtle">Course price</span>
+            <span className="text-xs text-textSubtle text-center">
+              Course price
+            </span>
           </div>
 
           <div className="w-[2px] h-5 bg-slate-400"></div>
@@ -54,7 +56,7 @@ const Preview = ({ form }: PreviewProps) => {
             <Form.Item name="price" noStyle>
               <PreviewInput className="text-3xl text-primary text-center" />
             </Form.Item>
-            <span className="text-xs text-textSubtle">Revenue</span>
+            <span className="text-xs text-textSubtle text-center">Revenue</span>
           </div>
         </div>
       </div>

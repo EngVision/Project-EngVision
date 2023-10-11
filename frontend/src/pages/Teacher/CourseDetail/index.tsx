@@ -40,7 +40,10 @@ const TeacherCourseDetail = () => {
         price: parseFloat(formValues.price),
       }
 
-      const { data } = await coursesApi.update(courseId || '', newCourse)
+      const [{ data }] = await Promise.all([
+        coursesApi.update(courseId || '', newCourse),
+        coursesApi.publish(courseId || ''),
+      ])
       form.setFieldsValue(data)
       message.success(`Update and publish successfully.`)
     } catch (error) {
@@ -83,7 +86,7 @@ const TeacherCourseDetail = () => {
         autoComplete="off"
         layout="vertical"
         form={form}
-        className="h-full flex flex-col gap-6"
+        className="h-full flex flex-col gap-2"
       >
         <Preview form={form} />
 
