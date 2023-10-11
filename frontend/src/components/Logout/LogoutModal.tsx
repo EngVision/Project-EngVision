@@ -9,8 +9,9 @@ import {
 } from '../../redux/app/slice'
 import { useMutation } from '@tanstack/react-query'
 import authApi from '../../services/authApi'
-
+import { useTranslation } from 'react-i18next'
 const LogoutModal = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   const dispatch = useAppDispatch()
   const showingLogoutModal = useAppSelector(
     (state) => state.app.showingLogoutModal,
@@ -46,12 +47,12 @@ const LogoutModal = () => {
         <>
           <CancelBtn />
           <Button danger type="primary" onClick={handleLogout}>
-            Logout
+            {t('Logout')}
           </Button>
         </>
       )}
     >
-      Are you sure you want to logout?
+      {t('Are you sure you want to logout?')}
     </Modal>
   )
 }

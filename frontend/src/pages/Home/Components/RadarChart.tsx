@@ -10,6 +10,7 @@ import {
 import { useState } from 'react'
 import { Radar } from 'react-chartjs-2'
 import { useAppSelector } from '../../../hooks/redux'
+import { useTranslation } from 'react-i18next'
 
 ChartJS.register(
   RadialLinearScale,
@@ -47,6 +48,7 @@ type GradientColors = {
 }
 
 const RadarChart = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Home' })
   const isDarkMode = useAppSelector((state) => state.app.darkMode)
   const userLevel = useAppSelector((state) => state.app.currentLevel)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
@@ -176,7 +178,7 @@ const RadarChart = () => {
   return (
     <div className="bg-surface rounded-2xl flex justify-center mb-8 p-5">
       <div style={{ width: '70%' }}>
-        <p className="text-2xl font-bold ">Your Skills</p>
+        <p className="text-2xl font-bold ">{t('Your Skills')}</p>
         <div className="w-[80%] h-[90%] mx-auto">
           <Radar data={data} options={options} />
         </div>

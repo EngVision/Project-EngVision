@@ -6,12 +6,13 @@ import { useNavigate } from 'react-router-dom'
 import { CourseDetails } from '../../services/coursesApi/types'
 import CustomImage from '../common/CustomImage'
 import { LEVELS, UPLOAD_FILE_URL } from '../../utils/constants'
-
+import { useTranslation } from 'react-i18next'
 interface CourseProps {
   course: CourseDetails
 }
 
 const Course = ({ course }: CourseProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   const navigate = useNavigate()
   const level = LEVELS.find((l) => l.level === course.level)
 
@@ -34,7 +35,9 @@ const Course = ({ course }: CourseProps) => {
       <div className="flex justify-between text-xs">
         <div className="flex items-center">
           <VideoPlayIcon className="pr-1" />
-          <p>{course.totalLessons} Lessons</p>
+          <p>
+            {course.totalLessons} {t('Lessons')}
+          </p>
         </div>
       </div>
 
@@ -49,7 +52,7 @@ const Course = ({ course }: CourseProps) => {
         <div className="flex items-center gap-1">
           <PeopleIcon width={20} height={20} />
           <p className="text-blue-700">{course.attendance}+</p>
-          <p>Students</p>
+          <p>{t('Students')}</p>
         </div>
       </div>
 

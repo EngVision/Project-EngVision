@@ -128,12 +128,12 @@ function WordSearch(props: WordSearchProps) {
   }, [selectedWords])
 
   return (
-    <div className="flex flex-col items-center min-w-[800px] w-fit mx-auto">
+    <div className="flex flex-col items-center w-fit mx-auto">
       <h4 className="text-primary mb-5 text-xl self-start font-semibold">
         {text}
       </h4>
 
-      <div className="flex gap-8 justify-between mt-4 w-full">
+      <div className="flex flex-col-reverse gap-8 mt-4 w-full lg:flex-row">
         <div className="tw-flex tw-flex-wrap tw-justify-around tw-w-full tw-justify-items-center tw-mt-5 tw-justify-center">
           <Form.Item name="answer">
             <Grid
@@ -145,9 +145,9 @@ function WordSearch(props: WordSearchProps) {
         </div>
 
         <div className="border border-solid border-primary rounded-lg h-fit">
-          <span className="text-white text-base px-6 py-2 bg-primary rounded-t-lg">
+          <div className="text-white text-center text-base px-6 py-2 bg-primary rounded-t-md">
             Find below words in the table
-          </span>
+          </div>
 
           <div className="mt-2">
             {words.map((word, index) => (

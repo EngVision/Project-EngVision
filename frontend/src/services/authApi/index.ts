@@ -26,6 +26,9 @@ const authApi = {
     const res: ResponseData = await axiosClient.post(`${PREFIX}logout`)
     return res.data
   },
+  refreshToken: async () => {
+    await axiosClient.get(`${PREFIX}refresh`)
+  },
 }
 
 export default authApi

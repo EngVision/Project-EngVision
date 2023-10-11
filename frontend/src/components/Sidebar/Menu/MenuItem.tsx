@@ -5,12 +5,13 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
 import { setShowLogoutModal } from '../../../redux/app/slice'
 import LogoutModal from '../../Logout/LogoutModal'
 import { Tooltip } from 'antd'
-
+import { useTranslation } from 'react-i18next'
 type Props = {
   item: MenuItemType
 }
 
 const MenuItem = ({ item }: Props) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   const dispatch = useAppDispatch()
   const isCollapsed = useAppSelector((state) => state.app.isSidebarCollapsed)
 
@@ -51,7 +52,7 @@ const MenuItem = ({ item }: Props) => {
       }
     >
       <div className="flex items-center w-[24px]">{item.icon}</div>
-      {isCollapsed ? '' : <span>{item.title}</span>}
+      {isCollapsed ? '' : <span>{t(item.title)}</span>}
     </NavLink>
   ) : (
     <span

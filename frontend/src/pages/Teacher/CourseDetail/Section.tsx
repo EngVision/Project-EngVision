@@ -11,13 +11,14 @@ import {
   Tooltip,
   Upload,
   message,
+  Space,
 } from 'antd'
 import { UploadChangeParam } from 'antd/es/upload'
 import { MenuProps, UploadFile } from 'antd/lib'
 import { FormInstance, useWatch } from 'antd/lib/form/Form'
 import { useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   MenuIcon,
   PencilLineIcon,
@@ -27,6 +28,7 @@ import {
 import CustomInput from '../../../components/common/CustomInput'
 import { lessonApi } from '../../../services/lessonApi'
 import AddLessonModel from './AddLessonModel'
+import authApi from '../../../services/authApi'
 
 const { Panel } = Collapse
 
@@ -107,6 +109,14 @@ const Section = ({ form }: SectionProps) => {
     }
   }
 
+  const exportLesson = async (lessonId: string) => {
+    await authApi.refreshToken()
+    window.open(
+      `${import.meta.env.VITE_BASE_URL}lessons/${lessonId}/export`,
+      '_self',
+    )
+  }
+
   return (
     <Form.List name="sections">
       {(fields, { add, move, remove }) => (
@@ -139,7 +149,6 @@ const Section = ({ form }: SectionProps) => {
                                 className={isActive ? '' : 'opacity-40'}
                               />
                             )}
-                            onChange={() => setAutoFocus(false)}
                             defaultActiveKey={['0']}
                           >
                             <Panel
@@ -147,16 +156,15 @@ const Section = ({ form }: SectionProps) => {
                               header={
                                 <Form.Item
                                   name={[field.name, 'title']}
-                                  className="mb-0 w-full"
+                                  className="mb-0 w-fit"
                                 >
                                   <CustomInput
                                     placeholder="New section"
-                                    className="pr-16"
                                     disabled={isCurriculum}
                                   />
                                 </Form.Item>
                               }
-                              className="!border-dashed border-2 !border-b-2 !border-wolfGrey !rounded-lg"
+                              className="mb-4 !border-dashed border-2 !border-b-2 !border-gray-300 !rounded-lg"
                             >
                               <Form.Item>
                                 <Form.List name={[field.name, 'lessons']}>
@@ -169,15 +177,15 @@ const Section = ({ form }: SectionProps) => {
                                           ].lessons[subField.name].id
 
                                         return (
-                                          <div
+                                          <Space
                                             key={subField.key}
-                                            className="ml-8 flex"
+                                            className="ml-8 flex justify-between"
                                           >
                                             <div className="flex-1 flex items-center gap-2">
                                               <MenuIcon />
                                               <Form.Item
+                                                noStyle
                                                 name={[subField.name, 'title']}
-                                                className="mb-0 flex-1"
                                               >
                                                 <CustomInput
                                                   placeholder="New lesson"
@@ -186,7 +194,7 @@ const Section = ({ form }: SectionProps) => {
                                               </Form.Item>
                                             </div>
 
-                                            <div className="flex gap-4 items-center">
+                                            <div className="flex gap-4">
                                               {lessonId ? (
                                                 <Tooltip title="Edit lesson">
                                                   <Link
@@ -210,7 +218,6 @@ const Section = ({ form }: SectionProps) => {
                                                   </div>
                                                 </Tooltip>
                                               )}
-
                                               <Tooltip title="Delete lesson">
                                                 <div className="flex">
                                                   <TrashIcon
@@ -227,23 +234,21 @@ const Section = ({ form }: SectionProps) => {
                                               </Tooltip>
 
                                               <Tooltip title="Export lesson">
-                                                <div className="flex">
-                                                  <Link
-                                                    to={`${
-                                                      import.meta.env
-                                                        .VITE_BASE_URL
-                                                    }lessons/${lessonId}/export`}
-                                                  >
-                                                    <ExportOutlined
-                                                      className={
-                                                        lessonId
-                                                          ? 'hover:cursor-pointer'
-                                                          : 'opacity-40 hover:cursor-not-allowed'
-                                                      }
-                                                      width={20}
-                                                      height={20}
-                                                    />
-                                                  </Link>
+                                                <div
+                                                  className="flex"
+                                                  onClick={() =>
+                                                    exportLesson(lessonId)
+                                                  }
+                                                >
+                                                  <ExportOutlined
+                                                    className={
+                                                      lessonId
+                                                        ? 'hover:cursor-pointer'
+                                                        : 'opacity-40 hover:cursor-not-allowed'
+                                                    }
+                                                    width={20}
+                                                    height={20}
+                                                  />
                                                 </div>
                                               </Tooltip>
                                             </div>
@@ -255,7 +260,7 @@ const Section = ({ form }: SectionProps) => {
                                                 'exercises',
                                               ]}
                                             ></Form.Item>
-                                          </div>
+                                          </Space>
                                         )
                                       })}
                                       <div className="flex gap-4 absolute right-0 top-[-48px]">
@@ -360,7 +365,7 @@ const Section = ({ form }: SectionProps) => {
                 })
               }
               type="primary"
-              className="w-full h-10"
+              className="mt-4 w-full h-10"
               disabled={isCurriculum}
             >
               Add section

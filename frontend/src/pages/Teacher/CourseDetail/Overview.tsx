@@ -11,17 +11,12 @@ type FieldType = {
   thumbnail: string
 }
 
-interface OverviewProps {
-  handleChangeThumbnail: () => void
-}
-
-const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
+const Overview = () => {
   const form = Form.useFormInstance()
   const isAdminCurriculum = useWatch('isAdminCurriculum', form)
-  console.log(isAdminCurriculum)
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
       <h4 className="text-primary text-2xl font-semibold">General</h4>
 
       <Form.Item<FieldType>
@@ -50,7 +45,7 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
         />
       </Form.Item>
 
-      <div className="flex flex-col gap-4 lg:flex-row">
+      <div className="flex gap-4">
         <Form.Item<FieldType>
           name="price"
           label="Price"
@@ -90,8 +85,14 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
         </Form.Item>
       </div>
 
-      <Form.Item name="thumbnail" label="Thumbnail">
-        <CustomUpload type="picture" onRemove={handleChangeThumbnail} />
+      <Form.Item
+        name="thumbnail"
+        label="Thumbnail"
+        getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
+        rules={[{ required: true, message: 'Please input thumbnail!' }]}
+        valuePropName="fileList"
+      >
+        <CustomUpload type="picture" />
       </Form.Item>
     </div>
   )

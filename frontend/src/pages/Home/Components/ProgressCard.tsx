@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import { Button, Progress } from 'antd'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import BookSquare from '../../../components/Icons/BookSquare'
 import AppLoading from '../../../components/common/AppLoading'
 import coursesApi from '../../../services/coursesApi'
 import { ObjectId } from '../../../services/examSubmissionApi/type'
 import submissionApi from '../../../services/submissionApi'
-
 const ProgressCard = (course: any) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Home' })
   const navigate = useNavigate()
 
   const { data: rawCourseExercise, isLoading: isLoadingRawCourseExercise } =
@@ -80,7 +81,7 @@ const ProgressCard = (course: any) => {
           className="bg-green-500 text-white rounded-xl"
           onClick={() => navigate(`./my-hub/${course.course.id}`)}
         >
-          Continue
+          {t('Continue')}
         </Button>
       </div>
     </div>

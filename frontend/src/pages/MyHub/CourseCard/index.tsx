@@ -5,13 +5,14 @@ import { LEVELS, UPLOAD_FILE_URL } from '../../../utils/constants'
 import CustomImage from '../../../components/common/CustomImage'
 import { CourseDetails } from '../../../services/coursesApi/types'
 import { SubmissionResponse } from '../../../services/submissionApi/types'
-
+import { useTranslation } from 'react-i18next'
 interface CourseProps {
   course: CourseDetails
   submissionArray: SubmissionResponse[]
 }
 
 const CourseCard = ({ course, submissionArray }: CourseProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   const navigate = useNavigate()
   const level = LEVELS.find((l) => l.level === course.level)
 
@@ -61,12 +62,16 @@ const CourseCard = ({ course, submissionArray }: CourseProps) => {
       <div className="flex justify-between text-xs my-3">
         <div className="flex items-center">
           <PeopleIcon width={20} height={20} className="pr-1" />
-          <p>{course.attendance} students</p>
+          <p>
+            {course.attendance} {t('students')}
+          </p>
         </div>
 
         <div className="flex items-center">
           <VideoPlayIcon className="pr-1" />
-          <p>{course.totalLessons} lessons</p>
+          <p>
+            {course.totalLessons} {t('lessons')}
+          </p>
         </div>
       </div>
 
