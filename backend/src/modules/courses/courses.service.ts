@@ -52,6 +52,9 @@ export class CoursesService {
       case StatusCourseSearch.All:
         if (user.roles.includes(Role.Student))
           dataFilter.isPublished = { $eq: true };
+        else if (user.roles.includes(Role.Teacher)) {
+          dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
+        }
         break;
       case StatusCourseSearch.Attended:
         dataFilter.isPublished = { $eq: true };
@@ -191,10 +194,11 @@ export class CoursesService {
       throw new ForbiddenException('Access denied');
     }
 
-    // Student not attend course yet
+    // Student not attend course yet or course's teacher
     if (
-      user.roles.includes(Role.Student) &&
-      !courseCheck.attendanceList.includes(user.sub)
+      (user.roles.includes(Role.Student) &&
+        !courseCheck.attendanceList.includes(user.sub)) ||
+      user.roles.includes(Role.Teacher)
     ) {
       course = await this.courseModel
         .findOne({ _id: id })
@@ -212,11 +216,13 @@ export class CoursesService {
 
       courseMap.sections.forEach(section => {
         section.lessons.forEach(lesson => {
-          delete lesson.exercises;
+          lesson.exercises = lesson.exercises.map(
+            exercise => exercise.id,
+          ) as any;
         });
       });
     }
-    // Student enrolled or teacher's course or admin
+    // Student enrolled or admin
     else {
       course = await this.courseModel
         .findOne({ _id: id })

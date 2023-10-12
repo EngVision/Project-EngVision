@@ -1,18 +1,23 @@
-import { Button, Checkbox, Divider, Form, Input, Select, Upload } from 'antd'
+import { Button, Checkbox, Divider, Form, Input, Select } from 'antd'
 import { FormSubmit } from '../..'
 import TextArea from 'antd/es/input/TextArea'
 import { useState } from 'react'
 import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
 import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
+import {
+  ExerciseSchema,
+  QuestionPayload,
+} from '../../../../../services/exerciseApi/types'
+import CustomUpload from '../../../../../components/CustomUpload'
 
 interface QuestionFormProps {
+  strict: boolean
   index: number
   remove: ((index: number) => void) | null
 }
 
-const QuestionForm = ({ index, remove }: QuestionFormProps) => {
-  const [isStrict, setStrict] = useState<boolean>(false)
-
+const QuestionForm = ({ strict, index, remove }: QuestionFormProps) => {
+  const [isStrict, setStrict] = useState<boolean>(strict)
   return (
     <>
       <div className="flex items-center justify-between gap-4">
@@ -37,47 +42,22 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
       <div className="flex gap-4 w-full">
         <div className="flex-1">
           <Form.Item
+            label="Question image"
             className="max-w-[200px]"
             name={[index, 'questionImage']}
-            label="Question image"
-            valuePropName="file"
-            getValueFromEvent={(event) => {
-              return event.file.status === 'done'
-                ? event.file.response?.data.fileId
-                : null
-            }}
+            valuePropName="fileList"
           >
-            <Upload
-              action={`${import.meta.env.VITE_BASE_URL}/files`}
-              withCredentials
-              maxCount={1}
-              accept="image/*"
-            >
-              <Button>Upload image</Button>
-            </Upload>
+            <CustomUpload />
           </Form.Item>
         </div>
         <div className="flex-1">
           <Form.Item
+            label="Question audio"
             className="max-w-[200px]"
             name={[index, 'questionAudio']}
-            label="Question audio"
-            valuePropName="file"
-            getValueFromEvent={(event) => {
-              return event.file.status === 'done'
-                ? event.file.response?.data.fileId
-                : null
-            }}
+            valuePropName="fileList"
           >
-            <Upload
-              className="flex-1"
-              action={`${import.meta.env.VITE_BASE_URL}/files`}
-              withCredentials
-              maxCount={1}
-              accept="audio/*"
-            >
-              <Button>Upload audio</Button>
-            </Upload>
+            <CustomUpload accept="audio" />
           </Form.Item>
         </div>
       </div>
@@ -156,13 +136,14 @@ interface QuestionFormSchema {
   explanation: string
   answer: string
   strict: boolean
+  id?: string
 }
 
-interface ConstructedResponsePayload {
+interface ConstructedResponsePayload extends QuestionPayload {
   question: {
     text: string
-    image: string | null
-    audio: string | null
+    image: string
+    audio: string
   }
   correctAnswer: {
     detail: string | null
@@ -194,40 +175,55 @@ const transformSubmitData = (exercise: any) => {
   })
 }
 
+function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
+  const { content } = exercise
+
+  const transformedContent = content.map((q: ConstructedResponsePayload) => {
+    const questionForm: QuestionFormSchema = {
+      id: q.id,
+      questionText: q.question.text,
+      questionImage: q.question.image,
+      questionAudio: q.question.audio,
+      questionTags: q.tags,
+      questionLevel: q.level,
+      explanation: q.correctAnswer?.explanation,
+      answer: q.correctAnswer?.detail ? q.correctAnswer?.detail : '',
+      strict: q.correctAnswer?.detail ? false : true,
+    }
+    return questionForm
+  })
+
+  this.setFieldValue('content', transformedContent)
+}
+
 function ConstructedResponseForm({ form }: { form: FormSubmit }) {
   form.transform = transformSubmitData
+  form.setInitialContent = setInitialContent
 
   return (
     <>
       <Form.List name="content" initialValue={[{}]}>
-        {(fields, { add, remove }) => (
-          <>
-            {fields.map(({ key, name }) => (
-              <div key={key}>
-                <QuestionForm
-                  index={name}
-                  remove={fields.length > 1 ? remove : null}
-                />
-                <Divider />
-              </div>
-            ))}
-            <Form.Item>
-              <Button
-                type="dashed"
-                onClick={() => {
-                  add()
-                }}
-                block
-                icon={'+'}
-              >
-                Add question
-              </Button>
-            </Form.Item>
-          </>
-        )}
+        {(fields, { add, remove }) => {
+          form.addQuestion = add
+
+          return fields.map(({ key, name }) => (
+            <div key={key}>
+              <QuestionForm
+                strict={
+                  form.getFieldValue('content')?.[name]?.correctAnswer
+                    ?.detail === null
+                    ? true
+                    : false
+                }
+                index={name}
+                remove={fields.length > 1 ? remove : null}
+              />
+              <Divider />
+            </div>
+          ))
+        }}
       </Form.List>
     </>
   )
 }
-
 export default ConstructedResponseForm
