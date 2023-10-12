@@ -1,58 +1,67 @@
-import Chat from '../pages/Chat'
+import { RouteObject } from 'react-router-dom'
+import DefaultLayout from '../layouts/DefaultLayout'
 import Exam from '../pages/Exam'
-import HelpCenter from '../pages/HelpCenter'
-import Home from '../pages/Home'
-import MakeSentences from '../pages/Lesson/MakeSentences'
-import ManageUsers from '../pages/ManageUsers'
-import MyHub from '../pages/MyHub'
-import Settings from '../pages/Settings'
+import Exercise from '../pages/Exercise'
 import Statistic from '../pages/Statistic'
-import { ADMIN_ROUTES, PRIVATE_ROUTES } from '../utils/constants'
+import TeacherCourseDetail from '../pages/Teacher/CourseDetail'
+import TeacherCourses from '../pages/Teacher/Courses'
+import LessonDetail from '../pages/Teacher/LessonDetail'
+import ManageExercise from '../pages/Teacher/ManageExercise'
+import { PRIVATE_ROUTES, TEACHER_ROUTES } from '../utils/constants'
 
-import RoleRoutes from './RoleRoutes'
-import type { RouteElement } from './types'
-
-const adminRoutes: RouteElement[] = [
+const adminRoutes: RouteObject[] = [
   {
-    element: Home,
-    path: PRIVATE_ROUTES.home,
+    element: <DefaultLayout />,
+    children: [
+      {
+        element: <Exam />,
+        path: TEACHER_ROUTES.assignmentExam,
+      },
+      {
+        path: 'courses',
+        children: [
+          {
+            element: <TeacherCourses />,
+            path: '',
+          },
+          {
+            element: <TeacherCourseDetail />,
+            path: ':courseId',
+          },
+          {
+            path: 'lessons',
+            children: [
+              {
+                element: <LessonDetail />,
+                path: ':lessonId',
+              },
+              {
+                path: 'exercises',
+                children: [
+                  {
+                    element: <ManageExercise />,
+                    path: '',
+                  },
+                  {
+                    element: <ManageExercise />,
+                    path: ':exerciseId',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        element: <Statistic />,
+        path: PRIVATE_ROUTES.statistic,
+      },
+    ],
   },
   {
-    element: MyHub,
-    path: ADMIN_ROUTES.courses,
-  },
-  {
-    element: Exam,
-    path: ADMIN_ROUTES.assignmentExam,
-  },
-  {
-    element: Statistic,
-    path: PRIVATE_ROUTES.statistic,
-  },
-  {
-    element: Chat,
-    path: PRIVATE_ROUTES.chat,
-  },
-  {
-    element: ManageUsers,
-    path: ADMIN_ROUTES.manageUsers,
-  },
-  {
-    element: MakeSentences,
-    path: PRIVATE_ROUTES.makeSentence,
-  },
-  {
-    element: Settings,
-    path: PRIVATE_ROUTES.settings,
-  },
-  {
-    element: HelpCenter,
-    path: PRIVATE_ROUTES.helpCenter,
+    element: <Exercise />,
+    path: PRIVATE_ROUTES.exercise,
   },
 ]
 
-const AdminRoutes = () => {
-  return <RoleRoutes routes={adminRoutes} />
-}
-
-export default AdminRoutes
+export default adminRoutes

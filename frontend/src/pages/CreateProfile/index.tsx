@@ -1,35 +1,38 @@
-import { Button, Form, Checkbox, Input, Select } from 'antd'
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Button, Checkbox, Form, Input, Select } from 'antd'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
-import { useAppDispatch } from '../../hooks/redux'
+import { useForm } from 'antd/es/form/Form'
 import accountApi from '../../services/accountApi'
 import authApi from '../../services/authApi'
 import type { SignUpParams } from '../../services/authApi/types'
-import { GENDERS, PRIVATE_ROUTES } from '../../utils/constants'
+import { GENDERS } from '../../utils/constants'
 
 const CreateProfile = () => {
-  const navigate = useNavigate()
-  const dispatch = useAppDispatch()
+  const [form] = useForm<SignUpParams>()
 
   const [error, setError] = useState<string>('')
 
+  const getUser = async () => {
+    const { data } = await authApi.fetchAuthUser()
+
+    console.log(data)
+
+    form.setFieldsValue({
+      ...data,
+    })
+  }
+
+  useEffect(() => {
+    getUser()
+  }, [])
+
   const onFinish = async (values: SignUpParams) => {
-    const temp = {
-      password: 'Kietle123@',
-      avatar: '650adeb3d99e55d737d88f99',
-      gender: 'Male',
-      phone: '1234567890',
-      about: 'string',
-      country: 'string',
-      role: 'Student',
-    }
-    console.log('🚀 ~ file: index.tsx:17 ~ onFinish ~ values:', values)
     try {
-      const res = await accountApi.updateWhenSignUp(temp)
+      const res = await accountApi.updateWhenSignUp(values)
       console.log('🚀 ~ file: index.tsx:30 ~ onFinish ~ res:', res)
 
-      navigate(PRIVATE_ROUTES.home)
+      window.close()
     } catch (error) {
       setError(error.response.data.message)
     }
@@ -47,6 +50,7 @@ const CreateProfile = () => {
       </div>
 
       <Form
+        form={form}
         name="basic"
         style={{ maxWidth: 600 }}
         initialValues={{ accepted: false }}

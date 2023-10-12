@@ -5,6 +5,7 @@ import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { Injectable } from '@nestjs/common';
 import { Tokens } from '../types';
 import { User } from 'src/modules/users/schemas/user.schema';
+import { Gender } from 'src/common/enums';
 
 config();
 
@@ -16,12 +17,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: `${process.env.SERVER_URL}/api/auth/google/login`,
       scope: ['email', 'profile'],
-      passReqToCallback: true,
     });
   }
 
   async validate(
-    req: Request,
     accessToken: string,
     refreshToken: string,
     profile: any,
@@ -34,10 +33,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       firstName: name.givenName,
       lastName: name.familyName,
       avatar: photos[0].value,
-      role: req.body['role'],
+      gender: Gender.Other,
       accessToken,
       refreshToken,
     };
+
+    console.log(user);
 
     done(null, user);
   }

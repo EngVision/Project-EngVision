@@ -1,17 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 interface AppState {
-  userAccountId?: string
-  role: 'Student' | 'Teacher' | 'Admin' | ''
-  theme: string
+  userAccountId: string | null
+  role: 'Student' | 'Teacher' | 'Admin' | null
+  darkMode: boolean | string
   locales: string
 }
 
 const initialState: AppState = {
-  userAccountId: '',
-  role: '',
-  theme: localStorage.getItem('theme') || 'light',
-  locales: localStorage.getItem('locales') || 'en',
+  userAccountId: null,
+  role: null,
+  darkMode: false,
+  locales: 'en',
 }
 
 const appSlice = createSlice({
@@ -24,13 +24,11 @@ const appSlice = createSlice({
     setRole: (state, action) => {
       state.role = action.payload
     },
-    toggleDarkMode: (state, action) => {
-      state.theme = action.payload
-      localStorage.setItem('theme', state.theme)
+    toggleDarkMode: (state) => {
+      state.darkMode = !state.darkMode
     },
     toggleLocales: (state, action) => {
       state.locales = action.payload
-      localStorage.setItem('locales', state.locales)
     },
   },
 })

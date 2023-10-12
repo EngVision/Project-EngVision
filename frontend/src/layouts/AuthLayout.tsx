@@ -1,12 +1,16 @@
-import React from 'react'
+import { Navigate, Outlet } from 'react-router-dom'
+import { useAppSelector } from '../hooks/redux'
+import { PRIVATE_ROUTES } from '../utils/constants'
 
-import type { LayoutProps } from './types'
+const AuthLayout = () => {
+  const isLogin = !!useAppSelector((state) => state.app.userAccountId)
 
-const AuthLayout: React.FC<LayoutProps> = ({ children }) => {
-  return (
+  return !isLogin ? (
     <div className="w-[100vw] h-[100vh] flex items-center justify-center bg-slate-300">
-      {children}
+      <Outlet />
     </div>
+  ) : (
+    <Navigate to={PRIVATE_ROUTES.home} />
   )
 }
 

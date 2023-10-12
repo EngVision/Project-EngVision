@@ -1,5 +1,5 @@
 import { Button, Form, Input } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
@@ -7,7 +7,7 @@ import { useAppDispatch } from '../../hooks/redux'
 import { setRole, setUserAccountId } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
-import { PRIVATE_ROUTES, PUBLIC_ROUTES } from '../../utils/constants'
+import { PUBLIC_ROUTES } from '../../utils/constants'
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate()
@@ -20,59 +20,41 @@ const SignIn: React.FC = () => {
       const { data } = await authApi.signIn(values)
       dispatch(setUserAccountId(data.id))
       dispatch(setRole(data.role))
-      navigate(PRIVATE_ROUTES.home)
     } catch (error) {
       setError(error.response.data.message)
     }
   }
 
-  const fetchAuthUser = async (timer: ReturnType<typeof setInterval>) => {
+  const fetchAuthUser = async () => {
     try {
       const { data } = await authApi.fetchAuthUser()
 
       dispatch(setUserAccountId(data.id))
       dispatch(setRole(data.role))
-      navigate(PRIVATE_ROUTES.home)
-      clearInterval(timer)
     } catch (error) {
       console.log('error: ', error)
     }
   }
 
-  const signInWithGoogle = async () => {
-    let timer: ReturnType<typeof setInterval>
+  useEffect(() => {
+    window.addEventListener('storage', fetchAuthUser)
+    return () => window.removeEventListener('storage', fetchAuthUser)
+  }, [])
 
-    const newWindow = window.open(
+  const signInWithGoogle = async () => {
+    window.open(
       `${import.meta.env.VITE_BASE_URL}auth/google/login`,
       '_blank',
       'width=500,height=600,left=400,top=200',
     )
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser(timer)
-        }
-      }, 1000)
-    }
   }
 
   const signInWithFacebook = async () => {
-    let timer: ReturnType<typeof setInterval>
-
-    const newWindow = window.open(
+    window.open(
       `${import.meta.env.VITE_BASE_URL}auth/facebook/login`,
       '_blank',
       'width=500,height=600,left=400,top=200',
     )
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser(timer)
-        }
-      }, 1000)
-    }
   }
 
   const SIGN_IN_VENDORS = [

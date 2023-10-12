@@ -7,7 +7,6 @@ const PREFIX = 'auth/'
 
 const authApi = {
   fetchAuthUser: async () => {
-    if (!localStorage.getItem('locales')) localStorage.setItem('locales', 'en')
     const res: ResponseData = await axiosClient.get(`${PREFIX}me`)
     return res
   },

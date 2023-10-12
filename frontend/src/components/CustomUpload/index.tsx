@@ -2,6 +2,7 @@ import { UploadOutlined } from '@ant-design/icons'
 import { Button, Modal, Upload, UploadFile, UploadProps, message } from 'antd'
 import { useEffect, useState } from 'react'
 import fileApi from '../../services/fileApi'
+import { getFileUrl } from '../../utils/common'
 
 const MAX_COUNT = 20
 
@@ -11,9 +12,11 @@ interface CustomUploadProps {
   multiple?: boolean
   type?: UploadProps['listType']
   accept?: 'image' | 'audio' | 'video'
+  className?: string
 }
 
 function CustomUpload({
+  className,
   fileList: value = [],
   onChange,
   type = 'text',
@@ -34,14 +37,14 @@ function CustomUpload({
           ...value.map((v) => ({
             uid: v,
             name: v,
-            url: `${import.meta.env.VITE_SERVER_FILES_URL}${v}`,
+            url: getFileUrl(v),
           })),
         )
       } else {
         initialValue.push({
           uid: value,
           name: value,
-          url: `${import.meta.env.VITE_SERVER_FILES_URL}${value}`,
+          url: getFileUrl(value),
         })
       }
 
@@ -53,7 +56,7 @@ function CustomUpload({
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url) {
-      file.url = `${import.meta.env.VITE_SERVER_FILES_URL}${file.uid}`
+      file.url = getFileUrl(file.uid)
     }
 
     setPreviewImage(file.url)
@@ -73,7 +76,7 @@ function CustomUpload({
       if (status === 'done') {
         const { fileId } = file.response.data
         file.uid = fileId
-        file.url = `${import.meta.env.VITE_SERVER_FILES_URL}${file.uid}`
+        file.url = getFileUrl(file.uid)
         setCurrFileId(fileId)
 
         message.success(`${file.name} uploaded.`)
@@ -82,7 +85,7 @@ function CustomUpload({
           newFileList.push({
             uid: currFileId,
             name: currFileId,
-            url: `${import.meta.env.VITE_SERVER_FILES_URL}${currFileId}`,
+            url: getFileUrl(currFileId),
           })
         }
         message.error(`${file.name} upload failed. (${file.error.message})`)
@@ -140,22 +143,33 @@ function CustomUpload({
   return (
     <>
       <Upload
+        className={className}
         name="file"
         listType={type}
         accept={`${accept}/*`}
         maxCount={multiple ? MAX_COUNT : 1}
         multiple={multiple}
         fileList={fileList}
+        showUploadList={multiple}
         onChange={handleChange}
         customRequest={uploadFile}
         onPreview={handlePreview}
         onRemove={handleRemove}
       >
-        {type === 'text' ? (
-          <Button icon={<UploadOutlined />}>Upload</Button>
+        {fileList[0] ? (
+          <img
+            src={getFileUrl(fileList[0].uid)}
+            alt="avatar"
+            style={{ width: '100%' }}
+          />
         ) : (
           'Upload'
         )}
+        {/* {type === 'text' ? (
+          <Button icon={<UploadOutlined />}>Upload</Button>
+        ) : (
+          'Upload'
+        )} */}
       </Upload>
       <Modal
         open={previewOpen}

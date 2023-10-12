@@ -1,13 +1,12 @@
 import { ConfigProvider } from 'antd'
-import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './index.css'
-import { Provider as ReduxStoreProvider } from 'react-redux'
-import { HistoryRouter } from 'redux-first-history/rr6'
-
+import { Provider } from 'react-redux'
+import { BrowserRouter } from 'react-router-dom'
+import { PersistGate } from 'redux-persist/integration/react'
 import App from './App'
-import { history, store } from './store'
+import './index.css'
 import './locales/i18n'
+import { persistor, store } from './store'
 
 const ClientRenderer = () =>
   ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -19,11 +18,13 @@ const ClientRenderer = () =>
         },
       }}
     >
-      <ReduxStoreProvider store={store}>
-        <HistoryRouter history={history}>
-          <App />
-        </HistoryRouter>
-      </ReduxStoreProvider>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </PersistGate>
+      </Provider>
     </ConfigProvider>,
   )
 
