@@ -5,6 +5,7 @@ import fileApi from '../../services/fileApi'
 import { getFileUrl } from '../../utils/common'
 
 const MAX_COUNT = 20
+let propsFileListChanged = false
 
 interface CustomUploadProps {
   fileList?: string[] | string
@@ -30,7 +31,7 @@ function CustomUpload({
   const [currFileId, setCurrFileId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (value) {
+    if (value && value.length !== 0 && !propsFileListChanged) {
       const initialValue: UploadFile[] = []
       if (Array.isArray(value)) {
         initialValue.push(
@@ -48,9 +49,10 @@ function CustomUpload({
         })
       }
 
+      propsFileListChanged = false
       setFileList(initialValue)
     }
-  }, [])
+  }, [value])
 
   const handleCancel = () => setPreviewOpen(false)
 

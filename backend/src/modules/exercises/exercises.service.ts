@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AssignmentsService } from '../assignments/assignments.service';
@@ -60,7 +56,7 @@ export class ExercisesService {
   ): Promise<ExerciseDocument> {
     const exercise = await this.exerciseModel.findById(id);
 
-    if (!exercise || exercise.creator !== userId) {
+    if (!exercise || exercise.creator.toString() !== userId) {
       throw new NotFoundException('Exercise not found');
     }
 
