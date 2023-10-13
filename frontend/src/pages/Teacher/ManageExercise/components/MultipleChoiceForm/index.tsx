@@ -226,23 +226,21 @@ function MultipleChoiceForm({ form }: { form: FormSubmit }) {
   form.setInitialContent = setInitialContent
 
   return (
-    <>
-      <Form.List name="content" initialValue={[{}]}>
-        {(fields, { add, remove }) => {
-          form.addQuestion = add
+    <Form.List name="content" initialValue={[{}]}>
+      {(fields, { add, remove }) => {
+        form.addQuestion = add
 
-          return fields.map(({ key, name }) => (
-            <div key={key}>
-              <QuestionForm
-                index={name}
-                remove={fields.length > 1 ? remove : null}
-              />
-              <Divider />
-            </div>
-          ))
-        }}
-      </Form.List>
-    </>
+        return fields.map(({ key, name }) => (
+          <div key={key}>
+            <QuestionForm
+              index={name}
+              remove={fields.length > 1 ? remove : null}
+            />
+            <Divider />
+          </div>
+        ))
+      }}
+    </Form.List>
   )
 }
 
