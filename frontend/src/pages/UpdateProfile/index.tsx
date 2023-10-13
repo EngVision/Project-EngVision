@@ -1,8 +1,6 @@
 import {
-  Avatar,
   Button,
   Form,
-  Image,
   Input,
   Select,
   Space,
@@ -20,7 +18,6 @@ import type {
   ProfileParams,
 } from '../../services/accountApi/types'
 import authApi from '../../services/authApi'
-import { getFileUrl } from '../../utils/common'
 import { PRIVATE_ROUTES } from '../../utils/constants'
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error'
@@ -107,25 +104,14 @@ export const UpdateProfile = () => {
         <p>
           {account && (
             <div>
-              <Form.Item<ProfileParams> name="avatar" valuePropName="fileList">
-                {account.avatar ? (
-                  <Image
-                    className="mr-5 rounded-full"
-                    style={{ width: 200, height: 200 }}
-                    src={getFileUrl(account?.avatar)}
-                    alt="avatar"
-                  />
-                ) : (
-                  <Avatar size={300} className="p-5 rounded-sm"></Avatar>
-                )}
-
-                <CustomUpload
-                  onChange={(value) => {
-                    setAvatar(value)
-                  }}
-                />
+              <Form.Item<ProfileParams>
+                label="Avatar"
+                initialValue={account.avatar}
+                name="avatar"
+                valuePropName="fileList"
+              >
+                <CustomUpload type="picture-circle" />
               </Form.Item>
-
               <Space className="flex max-xl:flex-col justify-between">
                 <Form.Item<ProfileParams> name="firstName" label="First Name">
                   <Input
