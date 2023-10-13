@@ -38,11 +38,25 @@ export class FillBlankService extends ExerciseContentService {
     return questionList.map(q => q.id);
   }
 
-  updateContent(
-    questionListDto: ExerciseQuestionDto[],
+  async updateContent(
+    updateQuestionListDto: CreateFillBlankDto[],
     removedQuestions: string[],
   ): Promise<string[]> {
-    throw new Error('Method not implemented.');
+    const validatedContent = await this.validate(
+      updateQuestionListDto,
+      CreateFillBlankDto,
+    );
+
+    this.setDefaultExplain(validatedContent);
+
+    const bulkOps = this.updateBulkOps(validatedContent, removedQuestions);
+
+    const res = await this.fillBlankModel.bulkWrite(bulkOps);
+
+    return [
+      ...validatedContent.map(({ id }) => id).filter(id => !!id),
+      ...Object.values(res.insertedIds).map(id => id.toString()),
+    ];
   }
 
   async deleteContent(removedQuestion: string[]): Promise<void> {

@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QuestionResult } from 'src/modules/assignments/schemas/assignment.schema';
 import { ExerciseContentService } from '../base-exercise-content.service';
-import { UpdateMultipleChoiceDto } from './dto';
 import { CreateMultipleChoiceDto } from './dto/create-multiple-choice.dto';
 import { MultipleChoice } from './schemas/multiple-choice.schema';
 
@@ -34,12 +33,12 @@ export class MultipleChoiceService extends ExerciseContentService {
   }
 
   async updateContent(
-    updateQuestionListDto: UpdateMultipleChoiceDto[],
+    updateQuestionListDto: CreateMultipleChoiceDto[],
     removedQuestions: string[],
   ): Promise<string[]> {
     const validatedContent = await this.validate(
       updateQuestionListDto,
-      UpdateMultipleChoiceDto,
+      CreateMultipleChoiceDto,
     );
 
     this.setDefaultExplain(validatedContent);
