@@ -9,7 +9,7 @@ const axiosClient = axios.create({
 })
 
 const setupAxiosInterceptor = () => {
-  axiosClient.interceptors.response.use(
+  const interceptor = axiosClient.interceptors.response.use(
     (response) => response.data,
     async (error) => {
       const refreshToken = document.cookie
@@ -21,6 +21,8 @@ const setupAxiosInterceptor = () => {
         return Promise.reject(error.response)
       }
 
+      axiosClient.interceptors.response.eject(interceptor)
+
       try {
         await axiosClient.get('/auth/refresh')
         error.response.config.transformResponse = (response: any) => {
@@ -29,7 +31,10 @@ const setupAxiosInterceptor = () => {
         }
         return axios(error.response.config)
       } catch (refreshError) {
+        console.log(refreshError)
         return Promise.reject(refreshError)
+      } finally {
+        setupAxiosInterceptor()
       }
     },
   )
