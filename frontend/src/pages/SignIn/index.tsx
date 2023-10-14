@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import { useAppDispatch } from '../../hooks/redux'
-import { setRole, setUserAccountId } from '../../redux/app/slice'
+import { setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
 import { PUBLIC_ROUTES } from '../../utils/constants'
@@ -18,8 +18,7 @@ const SignIn: React.FC = () => {
   const onFinish = async (values: SignInParams) => {
     try {
       const { data } = await authApi.signIn(values)
-      dispatch(setUserAccountId(data.id))
-      dispatch(setRole(data.role))
+      dispatch(setUser(data))
     } catch (error) {
       setError(error.response.data.message)
     }
@@ -27,10 +26,9 @@ const SignIn: React.FC = () => {
 
   const fetchAuthUser = async () => {
     try {
-      const { data } = await authApi.fetchAuthUser()
+      const data = await authApi.fetchAuthUser()
 
-      dispatch(setUserAccountId(data.id))
-      dispatch(setRole(data.role))
+      dispatch(setUser(data))
     } catch (error) {
       console.log('error: ', error)
     }

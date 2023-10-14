@@ -151,3 +151,15 @@ export const TEACHER_COURSE_TABS = {
   course: 'Courses',
   statistic: 'Statistic',
 }
+
+export enum Role {
+  Student = 'Student',
+  Teacher = 'Teacher',
+  Admin = 'Admin',
+}
+
+export enum Gender {
+  Male = 'Male',
+  Female = 'Female',
+  Other = 'Other',
+}

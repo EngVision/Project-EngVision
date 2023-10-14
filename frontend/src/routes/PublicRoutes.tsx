@@ -1,6 +1,5 @@
 import { RouteObject } from 'react-router-dom'
 import AuthLayout from '../layouts/AuthLayout'
-import CreateProfile from '../pages/CreateProfile'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
 import SendMailResetPassword from '../pages/SendMailResetPassword'
 import SignIn from '../pages/SignIn'
@@ -26,10 +25,6 @@ const publicRoutes: RouteObject[] = [
       {
         element: <TeacherSignUp />,
         path: PUBLIC_ROUTES.signUpTeacher,
-      },
-      {
-        element: <CreateProfile />,
-        path: PUBLIC_ROUTES.createProfile,
       },
     ],
   },

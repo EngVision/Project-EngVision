@@ -1,15 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { IUser } from '../../services/authApi/types'
 
 interface AppState {
-  userAccountId: string | null
-  role: 'Student' | 'Teacher' | 'Admin' | null
+  user: IUser | null
   darkMode: boolean | string
   locales: string
 }
 
 const initialState: AppState = {
-  userAccountId: null,
-  role: null,
+  user: null,
   darkMode: false,
   locales: 'en',
 }
@@ -18,11 +17,8 @@ const appSlice = createSlice({
   initialState,
   name: 'app',
   reducers: {
-    setUserAccountId: (state, action) => {
-      state.userAccountId = action.payload
-    },
-    setRole: (state, action) => {
-      state.role = action.payload
+    setUser: (state, action) => {
+      state.user = action.payload
     },
     toggleDarkMode: (state) => {
       state.darkMode = !state.darkMode
@@ -32,7 +28,6 @@ const appSlice = createSlice({
     },
   },
 })
-export const { setUserAccountId, setRole, toggleDarkMode, toggleLocales } =
-  appSlice.actions
+export const { setUser, toggleDarkMode, toggleLocales } = appSlice.actions
 
 export default appSlice.reducer
