@@ -1,29 +1,30 @@
+import { useEffect } from 'react'
 import { Navigate, Outlet, RouteObject } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../hooks/redux'
 import DefaultLayout from '../layouts/DefaultLayout'
 import Chat from '../pages/Chat'
+import CreateProfile from '../pages/CreateProfile'
 import HelpCenter from '../pages/HelpCenter'
 import Home from '../pages/Home'
 import { UpdateProfile } from '../pages/UpdateProfile'
+import { setUser } from '../redux/app/slice'
+import authApi from '../services/authApi'
 import { PRIVATE_ROUTES, PUBLIC_ROUTES, ROLES } from '../utils/constants'
 import AdminRoutes from './AdminRoutes'
 import StudentRoutes from './StudentRoutes'
 import TeacherRoutes from './TeacherRoutes'
-import { useEffect } from 'react'
-import { setRole, setUserAccountId } from '../redux/app/slice'
-import authApi from '../services/authApi'
 
 const ProtectedLayout = () => {
   const dispatch = useAppDispatch()
-  const isLogin = !!useAppSelector((state) => state.app.userAccountId)
+  const user = useAppSelector((state) => state.app.user)
 
   const fetchAuthUser = async () => {
     try {
-      const { data } = await authApi.fetchAuthUser()
+      const data = await authApi.fetchAuthUser()
 
-      dispatch(setUserAccountId(data.id))
-      dispatch(setRole(data.role))
+      dispatch(setUser(data))
     } catch (error) {
+      dispatch(setUser(null))
       console.log('error: ', error)
     }
   }
@@ -32,7 +33,15 @@ const ProtectedLayout = () => {
     fetchAuthUser()
   }, [])
 
-  return isLogin ? <Outlet /> : <Navigate to={PUBLIC_ROUTES.signIn} />
+  return user ? (
+    user.firstLogin ? (
+      <CreateProfile />
+    ) : (
+      <Outlet />
+    )
+  ) : (
+    <Navigate to={PUBLIC_ROUTES.signIn} />
+  )
 }
 
 const privateRoutes: RouteObject[] = [
@@ -54,14 +63,18 @@ const privateRoutes: RouteObject[] = [
       },
     ],
   },
+  // {
+  //   element: <CreateProfile />,
+  //   path: PUBLIC_ROUTES.createProfile,
+  // },
 ]
 
 function PrivateRoutes() {
-  const role = useAppSelector((state) => state.app.role)
+  const user = useAppSelector((state) => state.app.user)
 
   let routes: RouteObject[] = []
 
-  switch (role) {
+  switch (user?.role) {
     case ROLES.admin.value:
       routes = AdminRoutes
       break

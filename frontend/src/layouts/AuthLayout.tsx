@@ -3,9 +3,9 @@ import { useAppSelector } from '../hooks/redux'
 import { PRIVATE_ROUTES } from '../utils/constants'
 
 const AuthLayout = () => {
-  const isLogin = !!useAppSelector((state) => state.app.userAccountId)
+  const user = useAppSelector((state) => state.app.user)
 
-  return !isLogin ? (
+  return !user ? (
     <div className="w-[100vw] h-[100vh] flex items-center justify-center bg-slate-300">
       <Outlet />
     </div>
