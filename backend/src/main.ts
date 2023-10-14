@@ -19,7 +19,7 @@ async function bootstrap() {
     exclude: ['*', { path: 'files/:id', method: RequestMethod.GET }],
   });
   app.enableCors({
-    origin: ['*'],
+    origin: true,
     credentials: true,
   });
 
