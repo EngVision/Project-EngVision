@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { SchemaTypes } from 'mongoose';
 import { CEFRLevel, ExerciseTag } from 'src/common/enums';
-import { LocalFile } from 'src/modules/files/schemas/local-file.schema';
 
 @Schema({ _id: false, versionKey: false })
 class Question {
@@ -11,10 +9,10 @@ class Question {
   @Prop({ required: true })
   text: string;
 
-  @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name, default: null })
+  @Prop({ default: null })
   image?: string;
 
-  @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name, default: null })
+  @Prop({ default: null })
   audio?: string;
 }
 const QuestionSchema = SchemaFactory.createForClass(Question);

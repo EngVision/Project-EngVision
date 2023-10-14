@@ -1,11 +1,10 @@
-import { UploadOutlined } from '@ant-design/icons'
 import { Button, Modal, Upload, UploadFile, UploadProps, message } from 'antd'
 import { useEffect, useState } from 'react'
 import fileApi from '../../services/fileApi'
 import { getFileUrl } from '../../utils/common'
+import { UploadOutlined } from '@ant-design/icons'
 
 const MAX_COUNT = 20
-let propsFileListChanged = false
 
 interface CustomUploadProps {
   fileList?: string[] | string
@@ -31,7 +30,7 @@ function CustomUpload({
   const [currFileId, setCurrFileId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (value && value.length !== 0 && !propsFileListChanged) {
+    if (value) {
       const initialValue: UploadFile[] = []
       if (Array.isArray(value)) {
         initialValue.push(
@@ -47,9 +46,9 @@ function CustomUpload({
           name: value,
           url: getFileUrl(value),
         })
+        setCurrFileId(value)
       }
 
-      propsFileListChanged = false
       setFileList(initialValue)
     }
   }, [value])
@@ -81,6 +80,14 @@ function CustomUpload({
         file.url = getFileUrl(file.uid)
         setCurrFileId(fileId)
 
+        onChange?.(
+          multiple
+            ? newFileList.map((file) => file.uid)
+            : file.status === 'done'
+            ? file.uid
+            : null,
+        )
+
         message.success(`${file.name} uploaded.`)
       } else if (status === 'error') {
         if (!multiple && currFileId) {
@@ -96,13 +103,6 @@ function CustomUpload({
       const resList = newFileList.filter((file) => file.status !== 'error')
 
       setFileList(resList)
-      onChange?.(
-        multiple
-          ? resList.map((file) => file.uid)
-          : file.status === 'done'
-          ? file.uid
-          : null,
-      )
     } catch (error) {
       message.error(String(error))
     }
@@ -142,6 +142,21 @@ function CustomUpload({
     }
   }
 
+  const uploadButton = () => {
+    switch (type) {
+      case 'text':
+      case 'picture':
+        return <Button icon={<UploadOutlined />}>Upload</Button>
+      default:
+        return (
+          <div className="flex flex-col items-center gap-1">
+            <UploadOutlined />
+            <div>Upload</div>
+          </div>
+        )
+    }
+  }
+
   return (
     <>
       <Upload
@@ -152,26 +167,12 @@ function CustomUpload({
         maxCount={multiple ? MAX_COUNT : 1}
         multiple={multiple}
         fileList={fileList}
-        showUploadList={multiple}
         onChange={handleChange}
         customRequest={uploadFile}
         onPreview={handlePreview}
         onRemove={handleRemove}
       >
-        {fileList[0] ? (
-          <img
-            src={getFileUrl(fileList[0].uid)}
-            alt="avatar"
-            style={{ width: '100%' }}
-          />
-        ) : (
-          'Upload'
-        )}
-        {/* {type === 'text' ? (
-          <Button icon={<UploadOutlined />}>Upload</Button>
-        ) : (
-          'Upload'
-        )} */}
+        {uploadButton()}
       </Upload>
       <Modal
         open={previewOpen}

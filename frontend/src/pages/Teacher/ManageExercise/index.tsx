@@ -16,6 +16,7 @@ import enumToSelectOptions from '../../../utils/enumsToSelectOptions'
 import { ExerciseSchema } from '../../../services/exerciseApi/types'
 import exerciseApi from '../../../services/exerciseApi'
 import coursesApi from '../../../services/coursesApi'
+import FillBlankForm from './components/FillBlankForm'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -93,7 +94,7 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
     case ExerciseType.MultipleChoice:
       return <MultipleChoiceForm form={form} />
     case ExerciseType.FillBlank:
-      return <></>
+      return <FillBlankForm form={form} />
     case ExerciseType.ConstructedResponse:
       return <ConstructedResponseForm form={form} />
     default:

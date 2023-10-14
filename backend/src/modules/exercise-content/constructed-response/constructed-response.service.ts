@@ -31,11 +31,25 @@ export class ConstructedResponseService extends ExerciseContentService {
     return questionList.map(q => q.id);
   }
 
-  updateContent(
-    questionListDto: ExerciseQuestionDto[],
+  async updateContent(
+    updateQuestionListDto: CreateConstructedResponseDto[],
     removedQuestions: string[],
   ): Promise<string[]> {
-    throw new Error('Method not implemented.');
+    const validatedContent = await this.validate(
+      updateQuestionListDto,
+      CreateConstructedResponseDto,
+    );
+
+    this.setDefaultExplain(validatedContent);
+
+    const bulkOps = this.updateBulkOps(validatedContent, removedQuestions);
+
+    const res = await this.constructedResponseModel.bulkWrite(bulkOps);
+
+    return [
+      ...validatedContent.map(({ id }) => id).filter(id => !!id),
+      ...Object.values(res.insertedIds).map(id => id.toString()),
+    ];
   }
 
   deleteContent(removedQuestion: string[]): Promise<void> {

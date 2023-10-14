@@ -1,8 +1,6 @@
-import { shuffleArray } from './../../../../common/utils/shuffleArray';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { SchemaTypes } from 'mongoose';
 import { CEFRLevel, ExerciseTag } from 'src/common/enums';
-import { LocalFile } from 'src/modules/files/schemas/local-file.schema';
+import { shuffleArray } from './../../../../common/utils/shuffleArray';
 
 @Schema({ _id: false, versionKey: false })
 class Answer {
@@ -12,10 +10,10 @@ class Answer {
   @Prop({ required: true })
   text: string;
 
-  @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name, default: null })
+  @Prop({ default: null })
   image: string;
 
-  @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name, default: null })
+  @Prop({ default: null })
   audio: string;
 }
 const AnswerSchema = SchemaFactory.createForClass(Answer);
@@ -28,10 +26,10 @@ class Question {
   @Prop({ required: true })
   text: string;
 
-  @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name, default: null })
+  @Prop({ default: null })
   image?: string;
 
-  @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name, default: null })
+  @Prop({ default: null })
   audio?: string;
 
   @Prop({ default: false })
