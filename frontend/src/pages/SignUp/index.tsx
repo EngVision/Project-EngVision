@@ -1,13 +1,13 @@
-import { Button, Form, Checkbox, Input } from 'antd'
+import { Button, Checkbox, Form, Input } from 'antd'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import { useAppDispatch } from '../../hooks/redux'
-import { setRole, setUserAccountId } from '../../redux/app/slice'
+import { setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignUpParams } from '../../services/authApi/types'
-import { ROLES, PRIVATE_ROUTES, PUBLIC_ROUTES } from '../../utils/constants'
+import { PRIVATE_ROUTES, PUBLIC_ROUTES, ROLES } from '../../utils/constants'
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate()
@@ -21,8 +21,7 @@ const SignUp: React.FC = () => {
         ...values,
         role: ROLES.student.value,
       })
-      dispatch(setUserAccountId(data.id))
-      dispatch(setRole(data.role))
+      dispatch(setUser(data))
       navigate(PRIVATE_ROUTES.home)
     } catch (error) {
       setError(error.response.data.message)
@@ -31,10 +30,9 @@ const SignUp: React.FC = () => {
 
   const fetchAuthUser = async (timer: ReturnType<typeof setInterval>) => {
     try {
-      const { data } = await authApi.fetchAuthUser()
+      const data = await authApi.fetchAuthUser()
 
-      dispatch(setUserAccountId(data.id))
-      dispatch(setRole(data.role))
+      dispatch(setUser(data))
       navigate(PUBLIC_ROUTES.createProfile)
       clearInterval(timer)
     } catch (error) {
