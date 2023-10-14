@@ -11,6 +11,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { CourseDetails } from '../../services/coursesApi/types'
 import CustomImage from '../common/CustomImage'
+import { LEVELS } from '../../utils/constants'
 
 interface CourseProps {
   course: CourseDetails
@@ -18,6 +19,7 @@ interface CourseProps {
 
 const Course = ({ course }: CourseProps) => {
   const navigate = useNavigate()
+  const level = LEVELS.find((l) => l.level === course.level)
 
   return (
     <Card
@@ -31,7 +33,7 @@ const Course = ({ course }: CourseProps) => {
       }
     >
       <p
-        className={`absolute left-3 top-3 bg-primary text-white py-0.5 rounded-md min-w-[40px] text-center`}
+        className={`${level?.bgColor} absolute left-3 top-3 text-white py-0.5 rounded-md min-w-[40px] text-center`}
       >
         {course.level}
       </p>

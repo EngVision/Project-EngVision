@@ -4,13 +4,13 @@ import React, { useEffect, useMemo, useState } from 'react'
 import Course from '../../../components/Course'
 import { PlusIcon } from '../../../components/Icons'
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
-import { setCourseList, setCourseStatus } from '../../../redux/course/slice'
+import { setCourseList } from '../../../redux/course/slice'
 import coursesApi from '../../../services/coursesApi'
 import { filterCourses, sortCourses } from '../../../utils/common'
-import { COURSE_STATUS } from '../../../utils/constants'
 import TeacherCreateCourse from '../CreateCourse'
-import SortDropdown from './SortDropdown'
 import FilterDropdown from './Filter/FilterDropdown'
+import SortDropdown from './SortDropdown'
+import StatusMode from './StatusMode'
 
 const Courses: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -59,45 +59,7 @@ const Courses: React.FC = () => {
       <h3 className="text-primary text-3xl mb-8">My courses</h3>
 
       <div className="flex justify-between mb-8">
-        <div className="flex gap-4">
-          <Button
-            type={status === COURSE_STATUS.all ? 'primary' : 'default'}
-            className={
-              status === COURSE_STATUS.all ? '' : 'border-primary text-primary'
-            }
-            onClick={() => {
-              dispatch(setCourseStatus(COURSE_STATUS.all))
-            }}
-          >
-            All
-          </Button>
-          <Button
-            type={status === COURSE_STATUS.published ? 'primary' : 'default'}
-            className={
-              status === COURSE_STATUS.published
-                ? ''
-                : 'border-primary text-primary'
-            }
-            onClick={() => {
-              dispatch(setCourseStatus(COURSE_STATUS.published))
-            }}
-          >
-            Published
-          </Button>
-          <Button
-            type={status === COURSE_STATUS.draft ? 'primary' : 'default'}
-            className={
-              status === COURSE_STATUS.draft
-                ? ''
-                : 'border-primary text-primary'
-            }
-            onClick={() => {
-              dispatch(setCourseStatus(COURSE_STATUS.draft))
-            }}
-          >
-            Draft
-          </Button>
-        </div>
+        <StatusMode />
 
         <div className="flex gap-4">
           <FilterDropdown />
