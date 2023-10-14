@@ -76,9 +76,14 @@ export interface CourseDetails {
   posts: string[]
   reviews: Review[]
   avgStar: number
-  updatedAt: string
   isAttended: boolean
   isReviewed: boolean
+  attendance: number
+  isPublished: boolean
+  tags: string[]
+  totalLessons: number
+  createdAt: string
+  updatedAt: string
 }
 
 export interface ReviewParams {

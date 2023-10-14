@@ -1,19 +1,20 @@
-import { Button, Tabs, Form, message } from 'antd'
+import { Button, Form, Tabs, Tooltip, message } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import coursesApi from '../../../services/coursesApi'
 
-import Overview from './Overview'
-import Section from './Section'
-import Preview from './Preview'
-import Statistic from './Statistic'
 import { TEACHER_ROUTES } from '../../../utils/constants'
+import Overview from './Overview'
+import Preview from './Preview'
+import Section from './Section'
+import { useWatch } from 'antd/es/form/Form'
 const { TabPane } = Tabs
 
 const TeacherCourseDetail = () => {
   const { courseId } = useParams()
   const [form] = Form.useForm()
+  const isPublished = useWatch('isPublished', form)
   const navigate = useNavigate()
 
   const handleSave = async () => {
@@ -32,20 +33,11 @@ const TeacherCourseDetail = () => {
     }
   }
 
-  const handleSaveAndPublish = async () => {
+  const handlePublish = async () => {
     try {
-      const formValues = form.getFieldsValue()
-      const newCourse = {
-        ...formValues,
-        price: parseFloat(formValues.price),
-      }
-
-      const [{ data }] = await Promise.all([
-        coursesApi.update(courseId || '', newCourse),
-        coursesApi.publish(courseId || ''),
-      ])
-      form.setFieldsValue(data)
-      message.success(`Update and publish successfully.`)
+      await coursesApi.publish(courseId || '')
+      form.setFieldValue('isPublished', true)
+      message.success(`Publish successfully.`)
     } catch (error) {
       console.log('error: ', error)
     }
@@ -123,7 +115,7 @@ const TeacherCourseDetail = () => {
           >
             <Section form={form} />
           </TabPane>
-          <TabPane
+          {/* <TabPane
             tab={
               <Button
                 className={`flex font-light items-center text-lg px-10 py-5 rounded-xl 
@@ -136,7 +128,7 @@ const TeacherCourseDetail = () => {
             key="3"
           >
             <Statistic />
-          </TabPane>
+          </TabPane> */}
         </Tabs>
 
         <div className="flex justify-between mt-8">
@@ -160,9 +152,17 @@ const TeacherCourseDetail = () => {
               Save
             </Button>
 
-            <Button type="primary" onClick={handleSaveAndPublish}>
-              Save and publish
-            </Button>
+            <Form.Item name="isPublished">
+              <Tooltip title={isPublished ? 'This course published' : ''}>
+                <Button
+                  type="primary"
+                  onClick={handlePublish}
+                  disabled={isPublished}
+                >
+                  Publish
+                </Button>
+              </Tooltip>
+            </Form.Item>
           </div>
         </div>
       </Form>

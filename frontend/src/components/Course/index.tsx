@@ -39,7 +39,7 @@ const Course = ({ course }: CourseProps) => {
       <div className="flex justify-between text-xs">
         <div className="flex items-center">
           <VideoPlayIcon className="pr-1" />
-          <p>10 Lessons</p>
+          <p>{course.totalLessons} Lessons</p>
         </div>
 
         <div className="flex items-center">
@@ -52,13 +52,13 @@ const Course = ({ course }: CourseProps) => {
 
       <div className="flex justify-between items-center text-xs pt-3">
         <div className="flex items-center gap-1">
-          <StarIcon className="text-blue-600" width={20} height={20} />
-          <p className="font-semibold">{course.avgStar}</p>
+          <StarIcon className="text-negative-200" width={20} height={20} />
+          <p className="font-semibold">{course.avgStar || '0'}</p>
         </div>
 
         <div className="flex items-center gap-1">
           <PeopleIcon width={20} height={20} />
-          <p className="text-blue-700">400+</p>
+          <p className="text-blue-700">{course.attendance}+</p>
           <p>Students</p>
         </div>
       </div>

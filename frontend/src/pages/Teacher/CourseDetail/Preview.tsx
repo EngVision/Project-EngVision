@@ -3,6 +3,7 @@ import { StarIcon } from '../../../components/Icons'
 import PreviewInput from '../../../components/common/PreviewInput'
 import { FormInstance, useWatch } from 'antd/lib/form/Form'
 import CustomImage from '../../../components/common/CustomImage'
+import { getFormattedDate, getFormattedPrice } from '../../../utils/common'
 
 interface PreviewProps {
   form: FormInstance
@@ -10,6 +11,11 @@ interface PreviewProps {
 
 const Preview = ({ form }: PreviewProps) => {
   const thumbnail = useWatch('thumbnail', form)
+  const price = useWatch('price', form)
+  const reviews = useWatch('reviews', form)
+  const updatedAt = useWatch('updatedAt', form)
+  const attendance = useWatch('attendance', form)
+
   return (
     <div className="flex flex-col gap-4 min-h-[12rem] select-none lg:flex-row">
       <CustomImage
@@ -19,11 +25,13 @@ const Preview = ({ form }: PreviewProps) => {
       <div className="flex flex-col h-full justify-between flex-1 gap-2">
         <div className="flex text-sm justify-between">
           <div className="mr-6">
-            Publish: <span className="font-bold">10/12/2021</span>
+            {/* Publish: <span className="font-bold">10/12/2021</span> */}
           </div>
-          <div>
-            Last Update: <span className="font-bold">10/12/2021</span>
-          </div>
+          <Form.Item name="updatedAt" noStyle>
+            <span>
+              Last Update: <b>{getFormattedDate(updatedAt)}</b>
+            </span>
+          </Form.Item>
         </div>
 
         <Form.Item name="title" noStyle>
@@ -37,14 +45,19 @@ const Preview = ({ form }: PreviewProps) => {
         <div className="flex items-center leading-6">
           <StarIcon className="text-[#FD6267] mr-1.5" />
           <span className="mr-1.5 font-bold">3.8</span>
-          <div className="mr-1.5 text-[#706E68]">(451,444 Rating)</div>
+          <Form.Item name="reviews" noStyle>
+            <div className="mr-1.5 text-[#706E68]">
+              ({reviews?.length || 0} ratings)
+            </div>
+          </Form.Item>
         </div>
 
         <div className="flex items-center gap-8">
           <div className="flex flex-col items-center">
-            <Form.Item name="price" noStyle>
-              <PreviewInput className="text-3xl text-primary text-center" />
-            </Form.Item>
+            <PreviewInput
+              className="text-3xl text-primary text-center"
+              value={getFormattedPrice(price || 0)}
+            />
             <span className="text-xs text-textSubtle text-center">
               Course price
             </span>
@@ -52,12 +65,17 @@ const Preview = ({ form }: PreviewProps) => {
 
           <div className="w-[2px] h-5 bg-slate-400"></div>
 
-          <div className="flex flex-col items-center">
-            <Form.Item name="price" noStyle>
-              <PreviewInput className="text-3xl text-primary text-center" />
-            </Form.Item>
-            <span className="text-xs text-textSubtle text-center">Revenue</span>
-          </div>
+          <Form.Item name="attendance" noStyle>
+            <div className="flex flex-col items-center">
+              <PreviewInput
+                className="text-3xl text-primary text-center"
+                value={getFormattedPrice(price * attendance)}
+              />
+              <span className="text-xs text-textSubtle text-center">
+                Revenue
+              </span>
+            </div>
+          </Form.Item>
         </div>
       </div>
     </div>

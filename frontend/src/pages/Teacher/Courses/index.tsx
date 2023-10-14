@@ -6,38 +6,29 @@ import { PlusIcon } from '../../../components/Icons'
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
 import { setCourseList, setCourseStatus } from '../../../redux/course/slice'
 import coursesApi from '../../../services/coursesApi'
-import { sortCoursesByTitle } from '../../../utils/common'
+import { filterCourses, sortCourses } from '../../../utils/common'
 import { COURSE_STATUS } from '../../../utils/constants'
 import TeacherCreateCourse from '../CreateCourse'
+import SortDropdown from './SortDropdown'
+import FilterDropdown from './Filter/FilterDropdown'
 
 const Courses: React.FC = () => {
   const dispatch = useAppDispatch()
   const courses = useAppSelector((state) => state.course.list)
   const status = useAppSelector((state) => state.course.status)
   const sortOption = useAppSelector((state) => state.course.sortOption)
+  const filterOptions = useAppSelector((state) => state.course.filterOptions)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const filteredCourses = useMemo(
-    () => sortCoursesByTitle(courses, sortOption),
-    [courses, sortOption],
-  )
+  const filteredCourses = useMemo(() => {
+    return sortCourses(filterCourses(courses, filterOptions), sortOption)
+  }, [courses, sortOption, filterOptions])
 
   const getCourses = async () => {
     try {
-      // TODO: Improve get all courses of current teacher
-      if (status === COURSE_STATUS.all) {
-        const [publishedCourses, draftCourses] = await Promise.all([
-          coursesApi.getCourses({ status: COURSE_STATUS.published }),
-          coursesApi.getCourses({ status: COURSE_STATUS.draft }),
-        ])
-        dispatch(
-          setCourseList([...publishedCourses.data, ...draftCourses.data]),
-        )
-      } else {
-        const { data } = await coursesApi.getCourses({ status })
-        dispatch(setCourseList(data))
-      }
+      const { data } = await coursesApi.getCourses({ status })
+      dispatch(setCourseList(data))
     } catch (error) {
       console.log('error: ', error)
     }
@@ -109,9 +100,8 @@ const Courses: React.FC = () => {
         </div>
 
         <div className="flex gap-4">
-          {/* This feature not supported yet */}
-          {/* <FilterDropdown />
-          <SortDropdown /> */}
+          <FilterDropdown />
+          <SortDropdown />
 
           <div>
             <Button

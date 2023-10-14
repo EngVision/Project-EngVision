@@ -2,16 +2,30 @@ import { createSlice } from '@reduxjs/toolkit'
 import { COURSE_STATUS } from '../../utils/constants'
 import { CourseDetails } from '../../services/coursesApi/types'
 
-interface CourseState {
+export interface CourseState {
   list: CourseDetails[]
   status: COURSE_STATUS
-  sortOption: 'asc' | 'desc' | ''
+  sortOption: {
+    sortBy: string
+    order: 'asc' | 'desc' | ''
+  }
+  filterOptions: {
+    searchValue: string
+    selectedLevels: string[]
+  }
 }
 
 const initialState: CourseState = {
   list: [],
   status: COURSE_STATUS.all,
-  sortOption: '',
+  sortOption: {
+    sortBy: '',
+    order: '',
+  },
+  filterOptions: {
+    searchValue: '',
+    selectedLevels: [],
+  },
 }
 
 const courseSlice = createSlice({
@@ -30,10 +44,22 @@ const courseSlice = createSlice({
     setSortOption: (state, action) => {
       state.sortOption = action.payload
     },
+    setFilterOptions: (state, action) => {
+      state.filterOptions = { ...state.filterOptions, ...action.payload }
+    },
+    clearFilterOptions: (state) => {
+      state.filterOptions = initialState.filterOptions
+    },
   },
 })
 
-export const { setCourseList, addNewCourse, setCourseStatus, setSortOption } =
-  courseSlice.actions
+export const {
+  setCourseList,
+  addNewCourse,
+  setCourseStatus,
+  setSortOption,
+  setFilterOptions,
+  clearFilterOptions,
+} = courseSlice.actions
 
 export default courseSlice.reducer
