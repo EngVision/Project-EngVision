@@ -4,40 +4,31 @@ import React, { useEffect, useMemo, useState } from 'react'
 import Course from '../../../components/Course'
 import { PlusIcon } from '../../../components/Icons'
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
-import { setCourseList, setCourseStatus } from '../../../redux/course/slice'
+import { setCourseList } from '../../../redux/course/slice'
 import coursesApi from '../../../services/coursesApi'
-import { sortCoursesByTitle } from '../../../utils/common'
-import { COURSE_STATUS } from '../../../utils/constants'
+import { filterCourses, sortCourses } from '../../../utils/common'
 import TeacherCreateCourse from '../CreateCourse'
+import FilterDropdown from './Filter/FilterDropdown'
+import SortDropdown from './SortDropdown'
+import StatusMode from './StatusMode'
 
 const Courses: React.FC = () => {
   const dispatch = useAppDispatch()
   const courses = useAppSelector((state) => state.course.list)
   const status = useAppSelector((state) => state.course.status)
   const sortOption = useAppSelector((state) => state.course.sortOption)
+  const filterOptions = useAppSelector((state) => state.course.filterOptions)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const filteredCourses = useMemo(
-    () => sortCoursesByTitle(courses, sortOption),
-    [courses, sortOption],
-  )
+  const filteredCourses = useMemo(() => {
+    return sortCourses(filterCourses(courses, filterOptions), sortOption)
+  }, [courses, sortOption, filterOptions])
 
   const getCourses = async () => {
     try {
-      // TODO: Improve get all courses of current teacher
-      if (status === COURSE_STATUS.all) {
-        const [publishedCourses, draftCourses] = await Promise.all([
-          coursesApi.getCourses({ status: COURSE_STATUS.published }),
-          coursesApi.getCourses({ status: COURSE_STATUS.draft }),
-        ])
-        dispatch(
-          setCourseList([...publishedCourses.data, ...draftCourses.data]),
-        )
-      } else {
-        const { data } = await coursesApi.getCourses({ status })
-        dispatch(setCourseList(data))
-      }
+      const { data } = await coursesApi.getCourses({ status })
+      dispatch(setCourseList(data))
     } catch (error) {
       console.log('error: ', error)
     }
@@ -68,50 +59,11 @@ const Courses: React.FC = () => {
       <h3 className="text-primary text-3xl mb-8">My courses</h3>
 
       <div className="flex justify-between mb-8">
-        <div className="flex gap-4">
-          <Button
-            type={status === COURSE_STATUS.all ? 'primary' : 'default'}
-            className={
-              status === COURSE_STATUS.all ? '' : 'border-primary text-primary'
-            }
-            onClick={() => {
-              dispatch(setCourseStatus(COURSE_STATUS.all))
-            }}
-          >
-            All
-          </Button>
-          <Button
-            type={status === COURSE_STATUS.published ? 'primary' : 'default'}
-            className={
-              status === COURSE_STATUS.published
-                ? ''
-                : 'border-primary text-primary'
-            }
-            onClick={() => {
-              dispatch(setCourseStatus(COURSE_STATUS.published))
-            }}
-          >
-            Published
-          </Button>
-          <Button
-            type={status === COURSE_STATUS.draft ? 'primary' : 'default'}
-            className={
-              status === COURSE_STATUS.draft
-                ? ''
-                : 'border-primary text-primary'
-            }
-            onClick={() => {
-              dispatch(setCourseStatus(COURSE_STATUS.draft))
-            }}
-          >
-            Draft
-          </Button>
-        </div>
+        <StatusMode />
 
         <div className="flex gap-4">
-          {/* This feature not supported yet */}
-          {/* <FilterDropdown />
-          <SortDropdown /> */}
+          <FilterDropdown />
+          <SortDropdown />
 
           <div>
             <Button
@@ -137,7 +89,7 @@ const Courses: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-x-8 gap-y-6">
+      <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
         {filteredCourses.length > 0 ? (
           filteredCourses.map((course) => (
             <Course key={course.id} course={course} />

@@ -39,7 +39,7 @@ const Overview = () => {
         />
       </Form.Item>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 lg:flex-row">
         <Form.Item<FieldType>
           name="price"
           label="Price"
