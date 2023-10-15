@@ -21,6 +21,7 @@ yarn-error.log
 # environment
 .env
 .env.*
+!.env.sample
 
 # build
 /dist
