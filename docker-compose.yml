@@ -16,7 +16,7 @@ services:
     build:
       context: ./frontend
       # Dockerfile.dev for development, Dockerfile for production
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     restart: unless-stopped
     ports:
       - $FRONTEND_PORT:80

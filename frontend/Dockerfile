@@ -2,9 +2,8 @@
 FROM node:18 as build-stage
 
 WORKDIR /frontend
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
 COPY . .
+RUN yarn ci
 RUN yarn build
 
 # Stage 2: Production stage
