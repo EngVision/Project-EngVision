@@ -2,7 +2,7 @@ import React from 'react'
 
 import type { IconProps } from './types'
 
-const Logo = ({ width = 200, height = 50, className = '' }: IconProps) => {
+const Logo = ({ width = 200, height = 40, className = '' }: IconProps) => {
   return (
     <svg
       width={width}
