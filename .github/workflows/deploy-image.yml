@@ -52,3 +52,6 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ matrix.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            FE_BASE_URL=${{ vars.FE_BASE_URL }}
+            FE_SERVER_FILES_URL=${{ vars.FE_SERVER_FILES_URL }}
