@@ -47,14 +47,14 @@ jobs:
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4.0.0
+        env:
+          VITE_BASE_URL: ${{secrets.VITE_BASE_URL}}
+          VITE_SERVER_FILES_URL: ${{secrets.VITE_SERVER_FILES_URL}}
         with:
           context: ${{ matrix.context }}
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ matrix.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          env: |
+          build-args: |
             VITE_BASE_URL
             VITE_SERVER_FILES_URL
-          build-args: |
-            "VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}"
-            "VITE_SERVER_FILES_URL=${{ secrets.VITE_SERVER_FILES_URL }}"
