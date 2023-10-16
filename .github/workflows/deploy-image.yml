@@ -4,7 +4,7 @@ on:
     branches: ["develop", "master"]
 
 env:
-  ENVIRONMENT: production
+  ENVIRONMENT: EngVision
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
