@@ -15,3 +15,5 @@ WORKDIR /backend
 COPY . .
 RUN yarn ci
 CMD yarn start
+
+EXPOSE 5000
