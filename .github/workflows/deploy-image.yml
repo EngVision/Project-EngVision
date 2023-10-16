@@ -7,6 +7,8 @@ env:
   ENVIRONMENT: production
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+  VITE_SERVER_FILES_URL: ${{ secrets.VITE_SERVER_FILES_URL }}
 
 jobs:
   build-and-push-image:
@@ -47,9 +49,6 @@ jobs:
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4.0.0
-        env:
-          VITE_BASE_URL: ${{secrets.VITE_BASE_URL}}
-          VITE_SERVER_FILES_URL: ${{secrets.VITE_SERVER_FILES_URL}}
         with:
           context: ${{ matrix.context }}
           push: true
