@@ -69,7 +69,7 @@ const SignIn: React.FC = () => {
   ]
 
   return (
-    <div className="flex flex-col items-center bg-bgNeutral py-8 px-10 rounded-[16px]">
+    <div className="flex flex-col items-center bg-bgNeutral py-8 px-10 rounded-[16px] self-center">
       <div className="mb-8">
         <h4 className=" text-primary text-center font-bold text-3xl mb-4">
           Welcome back!
@@ -118,7 +118,7 @@ const SignIn: React.FC = () => {
             size="large"
             shape="round"
             htmlType="submit"
-            className="w-full rounded-[12px]"
+            className="w-full h-11 rounded-xl"
           >
             Sign In
           </Button>
