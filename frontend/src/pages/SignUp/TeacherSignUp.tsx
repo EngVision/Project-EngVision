@@ -49,45 +49,48 @@ const TeacherSignUp: React.FC = () => {
   ]
 
   return (
-    <div className="bg-white p-[40px] rounded-[16px]">
-      <div>
-        <h4 className="text-center font-semibold text-[40px] mb-[40px]">
-          Welcome to EngVision!
+    <div className="flex flex-col bg-bgNeutral p-8 rounded-[16px] gap-6">
+      <div className="flex flex-col items-center">
+        <h4 className="text-center font-semibold text-2xl text-primary">
+          Welcome to EngVision
         </h4>
-        <p className="text-textSubtle my-[20px]">
-          Create an account and start learning!
-        </p>
+        <p>Create an account and start learning!</p>
       </div>
 
       <Form
         name="basic"
-        style={{ maxWidth: 600 }}
         initialValues={{ accepted: false }}
         onFinish={onFinish}
         autoComplete="off"
         onChange={() => setError('')}
       >
-        <Form.Item<SignUpParams>
-          name="firstName"
-          rules={[{ message: 'Please input your first name!', required: true }]}
-        >
-          <Input
-            placeholder="First Name"
-            size="middle"
-            className="rounded-[8px] h-[40px]"
-          />
-        </Form.Item>
+        <div className="flex gap-4">
+          <Form.Item<SignUpParams>
+            name="firstName"
+            rules={[
+              { message: 'Please input your first name!', required: true },
+            ]}
+          >
+            <Input
+              placeholder="First Name"
+              size="middle"
+              className="rounded-lg p-3 text-xs"
+            />
+          </Form.Item>
 
-        <Form.Item<SignUpParams>
-          name="lastName"
-          rules={[{ message: 'Please input your last name!', required: true }]}
-        >
-          <Input
-            placeholder="Last Name"
-            size="middle"
-            className="rounded-[8px] h-[40px]"
-          />
-        </Form.Item>
+          <Form.Item<SignUpParams>
+            name="lastName"
+            rules={[
+              { message: 'Please input your last name!', required: true },
+            ]}
+          >
+            <Input
+              placeholder="Last Name"
+              size="middle"
+              className="rounded-lg p-3 text-xs"
+            />
+          </Form.Item>
+        </div>
 
         <Form.Item<SignUpParams>
           name="email"
@@ -96,7 +99,7 @@ const TeacherSignUp: React.FC = () => {
           <Input
             placeholder="Email"
             size="middle"
-            className="rounded-[8px] h-[40px]"
+            className="rounded-lg p-3 text-xs"
           />
         </Form.Item>
 
@@ -107,7 +110,7 @@ const TeacherSignUp: React.FC = () => {
           <Input.Password
             placeholder="Password"
             size="large"
-            className="rounded-[8px] h-[40px]"
+            className="rounded-lg p-3 text-xs"
           />
         </Form.Item>
 
@@ -123,7 +126,7 @@ const TeacherSignUp: React.FC = () => {
           <Input.Password
             placeholder="Confirm password"
             size="large"
-            className="rounded-[8px] h-[40px]"
+            className="rounded-lg p-3 text-xs"
           />
         </Form.Item>
 
@@ -135,7 +138,7 @@ const TeacherSignUp: React.FC = () => {
         >
           <Input
             placeholder="Phone Number"
-            className="rounded-[8px] h-[40px]"
+            className="rounded-lg p-3 text-xs"
           />
         </Form.Item>
 
@@ -145,7 +148,7 @@ const TeacherSignUp: React.FC = () => {
             { message: 'Please input your certificate!', required: true },
           ]}
         >
-          <Input placeholder="Certificate" className="rounded-[8px] h-[40px]" />
+          <Input placeholder="Certificate" className="rounded-lg p-3 text-xs" />
         </Form.Item>
 
         <Form.Item<SignUpParams>
@@ -156,11 +159,11 @@ const TeacherSignUp: React.FC = () => {
         >
           <Input
             placeholder="Working school"
-            className="rounded-[8px] h-[40px]"
+            className="rounded-lg p-3 text-xs"
           />
         </Form.Item>
 
-        {error && <p className="text-red-500">{error}</p>}
+        {error && <p className="text-secondary">{error}</p>}
 
         <Form.Item<SignUpParams> name="accepted" valuePropName="checked">
           <Checkbox>
@@ -173,14 +176,25 @@ const TeacherSignUp: React.FC = () => {
             </Link>
           </Checkbox>
         </Form.Item>
+        <Form.Item className="text-center">
+          <Button
+            type="primary"
+            shape="round"
+            htmlType="submit"
+            className="h-11 w-full font-semibold "
+          >
+            Sign Up
+          </Button>
+        </Form.Item>
+        <p className="text-wolfGrey text-center mb-6">
+          ----- or continue with -----
+        </p>
 
-        <p className="text-[#CECED6] text-center my-[18px]">or continue with</p>
-
-        <div className="flex items-center justify-center gap-[32px] mb-6">
+        <div className="flex items-center justify-center gap-8 mb-6">
           {SIGN_UP_VENDORS.map((vendor) => (
             <div
               key={vendor.name}
-              className="flex border-[1px] border-solid border-[#CECED6] rounded-[12px] px-[20px] py-[16px] cursor-pointer"
+              className="flex border-2 border-solid border-wolfGrey rounded-lg p-3 cursor-pointer"
               onClick={vendor.onClick}
               role="presentation"
             >
@@ -188,17 +202,6 @@ const TeacherSignUp: React.FC = () => {
             </div>
           ))}
         </div>
-
-        <Form.Item className="text-center">
-          <Button
-            type="primary"
-            shape="round"
-            htmlType="submit"
-            className="h-[40px] min-w-[200px] font-semibold"
-          >
-            Sign Up
-          </Button>
-        </Form.Item>
 
         <p className="text-center text-textSubtle">
           Have an account?

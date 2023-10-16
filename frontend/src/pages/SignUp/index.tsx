@@ -89,19 +89,16 @@ const SignUp: React.FC = () => {
   ]
 
   return (
-    <div className="bg-white p-[40px] rounded-[16px]">
-      <div>
-        <h4 className="text-center font-semibold text-[40px] mb-[40px]">
-          Welcome to EngVision!
+    <div className="flex flex-col bg-bgNeutral p-8 rounded-[16px] gap-6">
+      <div className="flex flex-col items-center">
+        <h4 className="text-center font-semibold text-2xl text-primary">
+          Welcome to EngVision
         </h4>
-        <p className="text-textSubtle my-[20px]">
-          Create an account and start learning!
-        </p>
+        <p>Create an account and start learning!</p>
       </div>
 
       <Form
         name="basic"
-        style={{ maxWidth: 600 }}
         initialValues={{ accepted: false }}
         onFinish={onFinish}
         autoComplete="off"
@@ -113,12 +110,11 @@ const SignUp: React.FC = () => {
             rules={[
               { message: 'Please input your first name!', required: true },
             ]}
-            className="flex-1"
           >
             <Input
               placeholder="First Name"
               size="middle"
-              className="rounded-[8px] h-[40px]"
+              className="rounded-lg p-3 text-xs"
             />
           </Form.Item>
 
@@ -127,12 +123,11 @@ const SignUp: React.FC = () => {
             rules={[
               { message: 'Please input your last name!', required: true },
             ]}
-            className="flex-1"
           >
             <Input
               placeholder="Last Name"
               size="middle"
-              className="rounded-[8px] h-[40px]"
+              className="rounded-lg p-3 text-xs"
             />
           </Form.Item>
         </div>
@@ -144,7 +139,7 @@ const SignUp: React.FC = () => {
           <Input
             placeholder="Email"
             size="middle"
-            className="rounded-[8px] h-[40px]"
+            className="rounded-lg p-3 text-xs"
           />
         </Form.Item>
 
@@ -156,7 +151,7 @@ const SignUp: React.FC = () => {
         >
           <Input
             placeholder="Phone Number"
-            className="rounded-[8px] h-[40px]"
+            className="rounded-lg p-3 text-xs"
           />
         </Form.Item>
 
@@ -167,7 +162,7 @@ const SignUp: React.FC = () => {
           <Input.Password
             placeholder="Password"
             size="large"
-            className="rounded-[8px] h-[40px]"
+            className="rounded-lg p-3 text-xs"
           />
         </Form.Item>
 
@@ -183,18 +178,18 @@ const SignUp: React.FC = () => {
           <Input.Password
             placeholder="Confirm password"
             size="large"
-            className="rounded-[8px] h-[40px]"
+            className="rounded-lg p-3 text-xs"
           />
         </Form.Item>
 
-        {error && <p className="text-red-500">{error}</p>}
+        {error && <p className="text-secondary">{error}</p>}
 
         <Form.Item<SignUpParams> name="accepted" valuePropName="checked">
           <Checkbox>
             I accept
             <Link
               to="/sign-up"
-              className="font-semibold text-[#CECED6] hover:text-[#CECED6] pl-2"
+              className="font-semibold text-[#CECED6] hover:text-wolfGrey pl-2"
             >
               Terms of Service
             </Link>
@@ -206,19 +201,21 @@ const SignUp: React.FC = () => {
             type="primary"
             shape="round"
             htmlType="submit"
-            className="h-[40px] min-w-[200px] font-semibold"
+            className="w-full h-11"
           >
-            Sign Up
+            Create account
           </Button>
         </Form.Item>
 
-        <p className="text-[#CECED6] text-center my-[18px]">or continue with</p>
+        <p className="text-wolfGrey text-center mb-6">
+          ----- or continue with -----
+        </p>
 
-        <div className="flex items-center justify-center gap-[32px] mb-6">
+        <div className="flex items-center justify-center gap-8 mb-6">
           {SIGN_UP_VENDORS.map((vendor) => (
             <div
               key={vendor.name}
-              className="flex border-[1px] border-solid border-[#CECED6] rounded-[12px] px-[20px] py-[16px] cursor-pointer"
+              className="flex border-2 border-solid border-wolfGrey rounded-lg p-3 cursor-pointer"
               onClick={vendor.onClick}
               role="presentation"
             >

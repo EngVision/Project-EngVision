@@ -75,121 +75,110 @@ const CourseContent = (course: CourseDetails) => {
   return (
     <div>
       <div className="mb-10">
-        <h3 className="text-2xl text-[#2769E7] mb-6">Course Content</h3>
+        <h3 className="text-2xl text-primary mb-6">Course Content</h3>
       </div>
-      <div>
-        <div className="border-dashed border-[1px] rounded-lg">
-          {/* Sections */}
-          {course.sections.map((section, sectionIndex) => (
-            <Collapse
-              className="bg-[#FFFCF7]"
-              accordion={true} // Set accordion for each panel
-              bordered={false} // Remove borders if desired
-              expandIconPosition="end"
-              onChange={() => {}} // Custom function when panel is expanded/collapsed
+
+      <div className="border-dashed border-[1px] rounded-lg">
+        {/* Sections */}
+        {course.sections.map((section, sectionIndex) => (
+          <Collapse
+            className="bg-white"
+            accordion={true} // Set accordion for each panel
+            bordered={false} // Remove borders if desired
+            expandIconPosition="end"
+            onChange={() => {}} // Custom function when panel is expanded/collapsed
+          >
+            <Panel
+              header={
+                <div className="flex items-center text-xl">
+                  {section.completed &&
+                  section.lessons?.length &&
+                  course.isAttended ? (
+                    <TickCircle className="mr-2" width={24} height={24} />
+                  ) : (
+                    <Circle className="mr-2" width={24} height={24} />
+                  )}
+
+                  <div className="mr-2">Section {sectionIndex}:</div>
+                  <span>{section.title}</span>
+                </div>
+              }
+              extra={
+                <div className="text-xs text-gray-500">
+                  {section.totalLessonCompleted} / {section.lessons.length}
+                </div>
+              }
+              key={sectionIndex.toString()}
             >
-              <Panel
-                header={
-                  <div className="flex items-center text-xl">
-                    {section.completed &&
-                    section.lessons?.length &&
-                    course.isAttended ? (
-                      <TickCircle className="mr-2" width={24} height={24} />
-                    ) : (
-                      <Circle className="mr-2" width={24} height={24} />
-                    )}
-
-                    <div className="mr-2">Section {sectionIndex}:</div>
-                    <span>{section.title}</span>
-                  </div>
-                }
-                extra={
-                  <div className="text-xs text-gray-500">
-                    {section.totalLessonCompleted} / {section.lessons.length}
-                  </div>
-                }
-                key={sectionIndex.toString()}
-              >
-                {/* Lessons */}
-                {section.lessons?.map((lesson, lessonIndex) => (
-                  <Collapse
-                    collapsible={course.isAttended ? 'header' : 'disabled'}
-                    className="bg-[#FFFCF7] pl-4"
-                    accordion={true} // Set accordion for each panel
-                    bordered={false} // Remove borders if desired
-                    expandIconPosition="end"
-                    onChange={() => {}} // Custom function when panel is expanded/collapsed
+              {/* Lessons */}
+              {section.lessons?.map((lesson, lessonIndex) => (
+                <Collapse
+                  collapsible={course.isAttended ? 'header' : 'disabled'}
+                  className="bg-white pl-4"
+                  accordion={true} // Set accordion for each panel
+                  bordered={false} // Remove borders if desired
+                  expandIconPosition="end"
+                  onChange={() => {}} // Custom function when panel is expanded/collapsed
+                >
+                  <Panel
+                    header={
+                      <div className="flex items-center text-lg">
+                        {lesson.completed && lesson.exercises?.length ? (
+                          <TickCircle className="mr-2" width={24} height={24} />
+                        ) : (
+                          <Circle className="mr-2" width={24} height={24} />
+                        )}
+                        <div className="mr-2">Lesson {lessonIndex + 1}:</div>
+                        <span>{lesson.title}</span>
+                      </div>
+                    }
+                    extra={
+                      lesson.exercises?.length > 0 && (
+                        <div className="text-xs text-wolfGrey">
+                          {`${lesson.totalExerciseCompleted} / ${lesson.exercises?.length}`}
+                        </div>
+                      )
+                    }
+                    key={lessonIndex.toString()}
                   >
-                    <Panel
-                      header={
-                        <div className="flex items-center text-lg">
-                          {lesson.completed && lesson.exercises?.length ? (
-                            <TickCircle
-                              className="mr-2"
-                              width={24}
-                              height={24}
-                            />
-                          ) : (
-                            <Circle className="mr-2" width={24} height={24} />
-                          )}
-                          <div className="mr-2">Lesson {lessonIndex + 1}:</div>
-                          <span>{lesson.title}</span>
-                        </div>
-                      }
-                      extra={
-                        lesson.exercises?.length > 0 && (
-                          <div className="text-xs text-gray-500">
-                            {`${lesson.totalExerciseCompleted} / ${lesson.exercises?.length}`}
-                          </div>
-                        )
-                      }
-                      key={lessonIndex.toString()}
-                    >
-                      {/* Exercise */}
-                      {lesson.exercises?.map((exercise, exerciseIndex) => (
-                        <div
-                          key={exerciseIndex.toString()}
-                          className="pl-10 pr-24"
-                        >
-                          <div className="flex items-center justify-between mb-4 hover:bg-white hover:outline-dashed hover:outline-[1px] hover:outline-[#2769E7] py-2 px-2 rounded-lg">
-                            <div className="flex items-center cursor-pointer">
-                              {completedExerciseIds.includes(exercise.id) ? (
-                                <TickCircle
-                                  className="mr-2"
-                                  width={24}
-                                  height={24}
-                                />
-                              ) : (
-                                <Circle
-                                  className="mr-2"
-                                  width={24}
-                                  height={24}
-                                />
-                              )}
+                    {/* Exercise */}
+                    {lesson.exercises?.map((exercise, exerciseIndex) => (
+                      <div
+                        key={exerciseIndex.toString()}
+                        className="pl-10 pr-24"
+                      >
+                        <div className="flex items-center justify-between mb-4 hover:bg-white hover:outline-dashed hover:outline-[1px] hover:outline-primary py-2 px-2 rounded-lg">
+                          <div className="flex items-center cursor-pointer">
+                            {completedExerciseIds.includes(exercise.id) ? (
+                              <TickCircle
+                                className="mr-2"
+                                width={24}
+                                height={24}
+                              />
+                            ) : (
+                              <Circle className="mr-2" width={24} height={24} />
+                            )}
 
-                              <div className="font-bold text-lg">
-                                Exercise: {exercise.title}
-                              </div>
+                            <div className="font-bold text-lg">
+                              Exercise: {exercise.title}
                             </div>
-                            <Button
-                              onClick={() =>
-                                navigate(`/exercise/${exercise.id}`)
-                              }
-                              type="primary"
-                              className="rounded-xl text-lg leading-5 px-6 h-full py-2"
-                            >
-                              Learn
-                            </Button>
                           </div>
+                          <Button
+                            onClick={() => navigate(`/exercise/${exercise.id}`)}
+                            type="primary"
+                            className="rounded-xl text-lg leading-5 px-6 h-full py-2"
+                          >
+                            Learn
+                          </Button>
                         </div>
-                      ))}
-                    </Panel>
-                  </Collapse>
-                ))}
-              </Panel>
-            </Collapse>
-          ))}
-        </div>
+                      </div>
+                    ))}
+                  </Panel>
+                </Collapse>
+              ))}
+            </Panel>
+          </Collapse>
+        ))}
       </div>
     </div>
   )

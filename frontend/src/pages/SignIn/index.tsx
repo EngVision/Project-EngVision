@@ -1,4 +1,4 @@
-import { Button, Form, Input } from 'antd'
+import { Button, Form, Input, Checkbox } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -69,91 +69,84 @@ const SignIn: React.FC = () => {
   ]
 
   return (
-    <div className="bg-white p-[40px] rounded-[16px]">
-      <div>
-        <h4 className="text-center font-semibold text-[40px] mb-[32px]">
-          Welcome to EngVision!
+    <div className="flex flex-col items-center bg-bgNeutral py-8 px-10 rounded-[16px] self-center">
+      <div className="mb-8">
+        <h4 className=" text-primary text-center font-bold text-3xl mb-4">
+          Welcome back!
         </h4>
-        <p className=" text-textSubtle my-[20px]">Start learning right now!</p>
+        <p className="text-dark font-light ">Let's start learning right now!</p>
       </div>
-
-      <div>
-        <Form
-          name="basic"
-          style={{ maxWidth: 600 }}
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          autoComplete="off"
-          onChange={() => setError('')}
+      <Form
+        name="basic"
+        className="w-[20rem]"
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        autoComplete="off"
+        onChange={() => setError('')}
+      >
+        <Form.Item<SignInParams>
+          name="email"
+          rules={[{ message: 'Please input your email!', required: true }]}
         >
-          <Form.Item<SignInParams>
-            name="email"
-            rules={[{ message: 'Please input your email!', required: true }]}
-          >
-            <Input
-              placeholder="Email"
-              size="middle"
-              className="rounded-[8px] h-[40px]"
-            />
-          </Form.Item>
+          <Input placeholder="Email" className="rounded-[8px] p-3 text-xs" />
+        </Form.Item>
 
-          <Form.Item<SignInParams>
-            name="password"
-            rules={[{ message: 'Please input your password!', required: true }]}
-          >
-            <Input.Password
-              placeholder="Password"
-              size="large"
-              className="rounded-[8px] h-[40px]"
-            />
-          </Form.Item>
-
-          {error && <p className="text-red-500">{error}</p>}
-
-          <p className="text-[#CECED6] text-center my-[18px]">
-            or continue with
-          </p>
-
-          <div className="flex items-center justify-center gap-[32px]">
-            {SIGN_IN_VENDORS.map((vendor) => (
-              <div
-                key={vendor.name}
-                className="flex border-[1px] border-solid border-[#CECED6] rounded-[12px] px-[20px] py-[16px] cursor-pointer"
-                onClick={vendor.onClick}
-                role="presentation"
-              >
-                {vendor.icon}
-              </div>
-            ))}
-          </div>
-
-          <p
-            className="text-[#0073EA] font-semibold text-right cursor-pointer my-[28px]"
+        <Form.Item<SignInParams>
+          name="password"
+          rules={[{ message: 'Please input your password!', required: true }]}
+        >
+          <Input.Password
+            placeholder="Password"
+            className="rounded-[8px] p-3 text-xs"
+          />
+        </Form.Item>
+        <div className="w-full flex justify-between mb-6">
+          <Checkbox className="text-wolfGrey">Remember me</Checkbox>
+          <div
+            className="text-primary font-semibold text-right cursor-pointer "
             onClick={() => navigate(PUBLIC_ROUTES.sendMailResetPassword)}
             role="presentation"
           >
             Forgot password?
-          </p>
+          </div>
+        </div>
 
-          <Form.Item className="text-center">
-            <Button
-              type="primary"
-              shape="round"
-              htmlType="submit"
-              className="min-w-[200px] font-semibold h-[40px] "
+        {error && <p className="text-secondary">{error}</p>}
+        <Form.Item>
+          <Button
+            type="primary"
+            size="large"
+            shape="round"
+            htmlType="submit"
+            className="w-full h-11 rounded-xl"
+          >
+            Sign In
+          </Button>
+        </Form.Item>
+        <div className="text-wolfGrey text-center mb-6">
+          ------- or continue with -------
+        </div>
+
+        <div className="flex items-center justify-center gap-5 mb-6">
+          {SIGN_IN_VENDORS.map((vendor) => (
+            <div
+              key={vendor.name}
+              className="flex border-2 border-solid border-wolfGrey rounded-[10px] p-3 cursor-pointer"
+              onClick={vendor.onClick}
+              role="presentation"
             >
-              Sign In
-            </Button>
-          </Form.Item>
+              {vendor.icon}
+            </div>
+          ))}
+        </div>
 
-          <p className="text-center text-textSubtle ">
-            Didn't have an account?
-            <Link to="/sign-up" className="font-semibold text-primary pl-2">
-              Sign Up
-            </Link>
-          </p>
-        </Form>
-      </div>
+        <p className="text-center text-wolfGrey ">
+          Didn't have an account?
+          <Link to="/sign-up" className="font-semibold text-primary pl-2">
+            Sign Up
+          </Link>
+        </p>
+      </Form>
     </div>
   )
 }
