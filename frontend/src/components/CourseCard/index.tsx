@@ -1,7 +1,7 @@
 import { Button, Card, Popover } from 'antd'
 import { StarIcon, VideoPlayIcon } from '../Icons'
 import { Link } from 'react-router-dom'
-import { Level, STUDENT_ROUTES } from '../../utils/constants'
+import { LEVELS, STUDENT_ROUTES } from '../../utils/constants'
 
 export const CourseCard = (course: any) => {
   const { Meta } = Card
@@ -27,8 +27,8 @@ export const CourseCard = (course: any) => {
           />
         }
       >
-        <div
-          className={`${Level.find(
+        <p
+          className={`${LEVELS.find(
             (level) => level.level === course.course.level,
           )
             ?.color} absolute left-3 top-3 text-white text-xs px-5 py-2 rounded-md`}

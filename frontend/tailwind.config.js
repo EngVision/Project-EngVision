@@ -51,6 +51,12 @@ module.exports = {
         headerHeight: 60,
         sidebarWidth: 320,
       },
+      screens: {
+        '3xl': '1800px',
+      },
+    },
+    gridTemplateColumns: {
+      'fill-40': 'repeat(auto-fill, minmax(240px, 1fr))',
     },
   },
 }

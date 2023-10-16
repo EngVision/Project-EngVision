@@ -1,7 +1,7 @@
 import React from 'react'
 import VideoPlay from '../../../components/Icons/VideoPlay'
 import { Tag } from 'antd'
-import { Level } from '../../../utils/constants'
+import { LEVELS } from '../../../utils/constants'
 import type { CourseDetails, Section } from '../../../services/coursesApi/types'
 const Overview = (course: CourseDetails) => {
   return (
@@ -32,8 +32,8 @@ const Overview = (course: CourseDetails) => {
       <div className="mb-6 text-base">
         <h4 className="mb-2">Level</h4>
         <Tag
-          className={`${Level.find((level) => level.level === course.level)
-            ?.color}  text-white px-8 py-2 font-bold`}
+          className={`${LEVELS.find((level) => level.level === course.level)
+            ?.bgColor} text-white px-8 py-2 font-bold`}
         >
           {course.level}
         </Tag>

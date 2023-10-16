@@ -13,7 +13,6 @@ RUN apt-get update && apt-get install -y build-essential gcc libpq-dev make
 
 WORKDIR /backend
 COPY . .
-RUN rm -rf node_modules
-RUN yarn install --frozen-lockfile
+RUN yarn ci
 CMD yarn start
 EXPOSE 5000
