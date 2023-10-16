@@ -23,21 +23,19 @@ const Discover = () => {
   }, [])
 
   return (
-    <>
-      <div>
-        <div className="m-6 mt-0">
-          <p className="font-bold text-3xl text-primary">
-            {t('Discover.discover')}
-          </p>
-        </div>
-        <div className="m-6">
-          <div className="grid gap-11 grid-cols-4">
-            {courseList &&
-              courseList.map((course) => <CourseCard course={course} />)}
-          </div>
+    <div>
+      <div className="m-6">
+        <p className="font-bold text-3xl text-primary">
+          {t('Discover.discover')}
+        </p>
+      </div>
+      <div className="m-6">
+        <div className="grid grid-flow-col grid-cols-4 gap-11">
+          {courseList &&
+            courseList.map((course) => <CourseCard course={course} />)}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

@@ -27,7 +27,7 @@ export const CourseCard = (course: any) => {
           />
         }
       >
-        <p
+        <div
           className={`${LEVELS.find(
             (level) => level.level === course.course.level,
           )

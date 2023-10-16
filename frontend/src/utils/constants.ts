@@ -112,7 +112,7 @@ export enum CEFRLevel {
   A1 = 'A1',
 }
 
-export const Level = [
+export const LEVELS = [
   { level: CEFRLevel.A1, color: 'bg-alternative' },
   { level: CEFRLevel.A2, color: 'bg-alternative' },
   { level: CEFRLevel.B1, color: 'bg-primary' },
