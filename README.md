@@ -36,9 +36,7 @@ docker system prune -a
 
 ## Notes
 
-Please note that all enviroment variables are stored outside of each code repository. Please refer to `.env.sample` files to see what variables are needed.
-
-It intended to be run with Docker Compose. If you want to run the system withour Docker, please copy the `.env.sample` to each service folder, remove the `BE_` or `FE_` prefix rename it to .env.
+Please refer to `.env.sample` files in each service folders to see what variables are needed.
 
 ## Run the Frontend System
 

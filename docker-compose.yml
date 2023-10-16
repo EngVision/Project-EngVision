@@ -4,22 +4,10 @@ services:
   backend:
     build: ./backend
     restart: unless-stopped
+    env_file:
+      - ./backend/.env
     ports:
-      - $BE_PORT:5000
-    environment:
-      - PORT=$BE_PORT
-      - UPLOAD_LOCATION=$BE_UPLOAD_LOCATION
-      - SERVER_URL=$BE_SERVER_URL
-      - AT_SECRET=$BE_AT_SECRET
-      - RT_SECRET=$BE_RT_SECRET
-      - AT_EXPIRATION_TIME=$BE_AT_EXPIRATION_TIME
-      - RT_EXPIRATION_TIME=$BE_RT_EXPIRATION_TIME
-      - GOOGLE_CLIENT_ID=$BE_GOOGLE_CLIENT_ID
-      - GOOGLE_CLIENT_SECRET=$BE_GOOGLE_CLIENT_SECRET
-      - FACEBOOK_APP_ID=$BE_FACEBOOK_APP_ID
-      - FACEBOOK_APP_SECRET=$BE_FACEBOOK_APP_SECRET
-      - MAIL_PASSWORD=$BE_MAIL_PASSWORD
-      - MONGO_URI=$BE_MONGO_URI
+      - 5000:5000
     volumes:
       - ./backend:/backend
       - /backend/node_modules
@@ -29,16 +17,11 @@ services:
       context: ./frontend
       # Dockerfile.dev for development, Dockerfile for production
       dockerfile: Dockerfile
-      args:
-        - VITE_BASE_URL=$FE_BASE_URL
-        - VITE_SERVER_FILES_URL=$FE_SERVER_FILES_URL
     restart: unless-stopped
+    env_file:
+      - ./frontend/.env
     ports:
-      - $FE_PORT:80
-      - $FE_DEV_PORT:3000
-    environment:
-      - VITE_BASE_URL=$FE_BASE_URL
-      - VITE_SERVER_FILES_URL=$FE_SERVER_FILES_URL
+      - 3000:3000
     volumes:
       - ./frontend:/frontend
       - /frontend/node_modules
