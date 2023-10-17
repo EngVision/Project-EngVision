@@ -137,7 +137,10 @@ export const SEARCH_OPTIONS = {
   course: 'Courses',
 }
 
-export const UPLOAD_FILE_URL = `${import.meta.env.VITE_BASE_URL}/files`
+export const BASE_URL = import.meta.env.VITE_BASE_URL
+export const UPLOAD_FILE_URL = `${BASE_URL}/files`
+export const GOOGLE_LOGIN = `${BASE_URL}auth/google/login`
+export const FACEBOOK_LOGIN = `${BASE_URL}auth/facebook/login`
 
 export enum COURSE_STATUS {
   draft = 'Draft',

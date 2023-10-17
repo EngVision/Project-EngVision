@@ -1,17 +1,18 @@
-import { Button, Form, Input, Checkbox } from 'antd'
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Button, Form, Input } from 'antd'
+import React, { useEffect, useState, useContext } from 'react'
+import { Link } from 'react-router-dom'
 
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import { useAppDispatch } from '../../hooks/redux'
 import { setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
-import { PUBLIC_ROUTES } from '../../utils/constants'
+import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
+import { NotificationContext } from '../../contexts/notification'
 
 const SignIn: React.FC = () => {
-  const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const apiNotification = useContext(NotificationContext)
 
   const [error, setError] = useState<string>('')
 
@@ -19,6 +20,9 @@ const SignIn: React.FC = () => {
     try {
       const { data } = await authApi.signIn(values)
       dispatch(setUser(data))
+      apiNotification.success({
+        message: 'Sign in successfully!',
+      })
     } catch (error) {
       setError(error.response.data.message)
     }
@@ -40,16 +44,12 @@ const SignIn: React.FC = () => {
   }, [])
 
   const signInWithGoogle = async () => {
-    window.open(
-      `${import.meta.env.VITE_BASE_URL}auth/google/login`,
-      '_blank',
-      'width=500,height=600,left=400,top=200',
-    )
+    window.open(GOOGLE_LOGIN, '_blank', 'width=500,height=600,left=400,top=200')
   }
 
   const signInWithFacebook = async () => {
     window.open(
-      `${import.meta.env.VITE_BASE_URL}auth/facebook/login`,
+      FACEBOOK_LOGIN,
       '_blank',
       'width=500,height=600,left=400,top=200',
     )
@@ -68,51 +68,89 @@ const SignIn: React.FC = () => {
     },
   ]
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+    return emailRegex.test(email)
+  }
+
+  const validatePassword = (password: string) => {
+    const passwordRegex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+    return password && password.length >= 8 && passwordRegex.test(password)
+  }
+
   return (
     <div className="flex flex-col items-center bg-bgNeutral py-8 px-10 rounded-[16px] self-center">
       <div className="mb-8">
-        <h4 className=" text-primary text-center font-bold text-3xl mb-4">
+        <h4 className=" text-primary text-center font-bold text-4xl mb-4">
           Welcome back!
         </h4>
         <p className="text-dark font-light ">Let's start learning right now!</p>
       </div>
+
       <Form
         name="basic"
-        className="w-[20rem]"
         initialValues={{ remember: true }}
         onFinish={onFinish}
         autoComplete="off"
         onChange={() => setError('')}
+        layout="vertical"
+        className="w-[560px]"
       >
         <Form.Item<SignInParams>
           name="email"
-          rules={[{ message: 'Please input your email!', required: true }]}
+          label="Email"
+          rules={[
+            { message: 'Please input your email!', required: true },
+            {
+              async validator(_, value) {
+                return new Promise((resolve, reject) => {
+                  if (validateEmail(value)) {
+                    resolve('')
+                  } else reject(new Error('Invalid email'))
+                })
+              },
+            },
+          ]}
         >
-          <Input placeholder="Email" className="rounded-[8px] p-3 text-xs" />
+          <Input
+            placeholder="Email"
+            size="middle"
+            className="rounded-[8px] p-3 text-xs"
+          />
         </Form.Item>
 
         <Form.Item<SignInParams>
           name="password"
-          rules={[{ message: 'Please input your password!', required: true }]}
+          label="Password"
+          rules={[
+            { message: 'Please input your password!', required: true },
+            {
+              async validator(_, value) {
+                return new Promise((resolve, reject) => {
+                  if (validatePassword(value)) {
+                    resolve('')
+                  } else
+                    reject(
+                      new Error(
+                        'The password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number or special character',
+                      ),
+                    )
+                })
+              },
+            },
+          ]}
         >
           <Input.Password
             placeholder="Password"
+            size="large"
             className="rounded-[8px] p-3 text-xs"
           />
         </Form.Item>
-        <div className="w-full flex justify-between mb-6">
-          <Checkbox className="text-wolfGrey">Remember me</Checkbox>
-          <div
-            className="text-primary font-semibold text-right cursor-pointer "
-            onClick={() => navigate(PUBLIC_ROUTES.sendMailResetPassword)}
-            role="presentation"
-          >
-            Forgot password?
-          </div>
-        </div>
 
         {error && <p className="text-secondary">{error}</p>}
-        <Form.Item>
+
+        <Form.Item className="mt-4">
           <Button
             type="primary"
             size="large"
@@ -123,9 +161,6 @@ const SignIn: React.FC = () => {
             Sign In
           </Button>
         </Form.Item>
-        <div className="text-wolfGrey text-center mb-6">
-          ------- or continue with -------
-        </div>
 
         <div className="flex items-center justify-center gap-5 mb-6">
           {SIGN_IN_VENDORS.map((vendor) => (
