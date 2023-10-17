@@ -24,7 +24,7 @@ const SignIn: React.FC = () => {
         message: 'Sign in successfully!',
       })
     } catch (error) {
-      setError(error.response.data.message)
+      setError(error.data.message)
     }
   }
 
@@ -69,23 +69,24 @@ const SignIn: React.FC = () => {
   ]
 
   const validateEmail = (email: string) => {
+    if (!email) return true
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
     return emailRegex.test(email)
   }
 
   const validatePassword = (password: string) => {
-    const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+    if (!password) return true
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/
     return password && password.length >= 8 && passwordRegex.test(password)
   }
 
   return (
     <div className="flex flex-col items-center bg-bgNeutral py-8 px-10 rounded-[16px] self-center">
-      <div className="mb-8">
+      <div className="mb-8 flex flex-col items-center">
         <h4 className=" text-primary text-center font-bold text-4xl mb-4">
           Welcome back!
         </h4>
-        <p className="text-dark font-light ">Let's start learning right now!</p>
+        <p className="text-dark font-light">Let's start learning right now!</p>
       </div>
 
       <Form
@@ -95,7 +96,7 @@ const SignIn: React.FC = () => {
         autoComplete="off"
         onChange={() => setError('')}
         layout="vertical"
-        className="w-[560px]"
+        className="w-[36rem]"
       >
         <Form.Item<SignInParams>
           name="email"
@@ -116,7 +117,7 @@ const SignIn: React.FC = () => {
           <Input
             placeholder="Email"
             size="middle"
-            className="rounded-[8px] p-3 text-xs"
+            className="rounded-[8px] px-3 py-2"
           />
         </Form.Item>
 
@@ -144,7 +145,7 @@ const SignIn: React.FC = () => {
           <Input.Password
             placeholder="Password"
             size="large"
-            className="rounded-[8px] p-3 text-xs"
+            className="rounded-[8px] px-3 py-2"
           />
         </Form.Item>
 
@@ -156,7 +157,7 @@ const SignIn: React.FC = () => {
             size="large"
             shape="round"
             htmlType="submit"
-            className="w-full h-11 rounded-xl"
+            className="w-full h-11 rounded-xl mt-3"
           >
             Sign In
           </Button>
