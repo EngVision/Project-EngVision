@@ -51,8 +51,6 @@ function CustomUpload({
 
       setFileList(initialValue)
     }
-
-    console.log(value)
   }, [value])
 
   const handleCancel = () => setPreviewOpen(false)

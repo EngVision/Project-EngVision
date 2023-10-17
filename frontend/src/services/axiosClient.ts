@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { cleanObject } from '../utils/common'
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -9,6 +10,12 @@ const axiosClient = axios.create({
 })
 
 const setupAxiosInterceptor = () => {
+  axiosClient.interceptors.request.use((config) => {
+    config.data = cleanObject(config.data)
+
+    return config
+  })
+
   const interceptor = axiosClient.interceptors.response.use(
     (response) => response.data,
     async (error) => {
@@ -31,7 +38,7 @@ const setupAxiosInterceptor = () => {
         }
         return axios(error.response.config)
       } catch (refreshError) {
-        console.log(refreshError)
+        console.error(refreshError)
         return Promise.reject(refreshError)
       } finally {
         setupAxiosInterceptor()

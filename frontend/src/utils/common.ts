@@ -91,3 +91,30 @@ export function getFormattedDate(inputDate: string): string {
 
   return `${day}/${month}/${year}`
 }
+
+export function cleanObject(obj: any) {
+  function internalClean(obj: any) {
+    return _.transform(obj, function (result: any, value, key) {
+      var isCollection = _.isObject(value)
+      var cleaned = isCollection ? internalClean(value) : value
+
+      if (
+        (isCollection && _.isEmpty(cleaned)) ||
+        _.isNull(cleaned) ||
+        _.isUndefined(cleaned) ||
+        _.isNaN(cleaned) ||
+        cleaned === ''
+      ) {
+        return
+      }
+
+      if (_.isArray(result)) {
+        result.push(cleaned)
+      } else {
+        result[key] = cleaned
+      }
+    })
+  }
+
+  return _.isObject(obj) ? internalClean(obj) : obj
+}

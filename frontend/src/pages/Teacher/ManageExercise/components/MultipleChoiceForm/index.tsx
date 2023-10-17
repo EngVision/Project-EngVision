@@ -136,7 +136,7 @@ interface QuestionFormSchema {
   questionText: string
   questionTags: ExerciseTag[]
   questionLevel: CEFRLevel
-  explanation: string
+  explanation?: string
   answers: AnswerFormSchema[]
   id?: string
 }
