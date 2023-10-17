@@ -8,6 +8,9 @@ class Question {
 
   @Prop({ default: null })
   image?: string;
+
+  @Prop({ required: true, default: [] })
+  limits: number[];
 }
 const QuestionSchema = SchemaFactory.createForClass(Question);
 

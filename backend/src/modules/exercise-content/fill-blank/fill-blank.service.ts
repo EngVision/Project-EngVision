@@ -60,18 +60,20 @@ export class FillBlankService extends ExerciseContentService {
     await this.fillBlankModel.bulkWrite([this.deleteBulkOps(removedQuestion)]);
   }
 
-  async checkAnswer(id: string, answer: string): Promise<QuestionResult> {
-    if (typeof answer !== 'string') {
-      throw new BadRequestException('Answer must be a string');
+  async checkAnswer(id: string, answer: string[]): Promise<QuestionResult> {
+    if (Array.isArray(answer) && typeof answer[0] !== 'string') {
+      throw new BadRequestException('Answer must be not empty string array');
     }
+
+    const answerStr = answer.join(',');
 
     const {
       question,
       correctAnswer: { detail, explanation },
     } = await this.fillBlankModel.findById(id);
 
-    this.validateQuestion(question.text, answer);
-    const transformAnswer = this.transformAnswer(question.text, answer);
+    this.validateQuestion(question.text, answerStr);
+    const transformAnswer = this.transformAnswer(question.text, answerStr);
 
     const isCorrect = detail.toLowerCase() === transformAnswer.toLowerCase();
 
@@ -106,6 +108,10 @@ export class FillBlankService extends ExerciseContentService {
         q.question.text,
         q.correctAnswer.detail,
       );
+
+      q.question.limits = q.correctAnswer.detail
+        .split(',')
+        .map(s => s.trim().length);
     });
   }
 

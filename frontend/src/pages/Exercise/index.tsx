@@ -1,6 +1,7 @@
-import { Button, Progress } from 'antd'
+import { Button, Form, Progress } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { EmojiHappyIcon, EmojiSadIcon } from '../../components/Icons'
 import ArrowLeft from '../../components/Icons/ArrowLeft'
 import assignmentApi from '../../services/assignmentApi'
 import { AssignmentResponse } from '../../services/assignmentApi/types'
@@ -13,6 +14,7 @@ import MultipleChoice from './components/MultipleChoice'
 
 function Exercise() {
   const { id } = useParams()
+  const [form] = Form.useForm()
 
   const [exercise, setExercise] = useState<ExerciseSchema>()
   const [assignment, setAssignment] = useState<AssignmentResponse>()
@@ -52,6 +54,8 @@ function Exercise() {
       await exerciseApi.submitAnswer(id, questionId, data)
       const assignment = await assignmentApi.getAssignment(id)
 
+      console.log(assignment)
+
       setAssignment(assignment)
     }
   }
@@ -71,7 +75,6 @@ function Exercise() {
               {...content}
               exerciseId={id}
               result={assignment?.detail[questionIndex]}
-              submitAnswer={submitAnswer}
             />
           )
         case ExerciseType.FillBlank:
@@ -80,7 +83,6 @@ function Exercise() {
               {...content}
               exerciseId={id}
               result={assignment?.detail[questionIndex]}
-              submitAnswer={submitAnswer}
             />
           )
         default:
@@ -101,66 +103,94 @@ function Exercise() {
     }
   }
 
-  return (
-    <div className="h-screen flex flex-col md:flex-row md:justify-center">
-      <div className="flex justify-between">
-        <Button
-          type="primary"
-          ghost
-          shape="circle"
-          size="large"
-          icon={<ArrowLeft />}
-          className="ml-5 mt-5 md:ml-10 md:top-0 md:left-0 md:fixed"
-          onClick={() => navigate('..', { relative: 'path' })}
-        />
-        <Button
-          type="primary"
-          ghost
-          shape="circle"
-          size="large"
-          icon={'?'}
-          className="mr-5 mt-5 md:mr-10 md:top-0 md:right-0 md:fixed"
-        />
-      </div>
+  const onFinish = (values: any) => {
+    console.log(values)
+    submitAnswer(values, exercise?.content[questionIndex].id || '')
+  }
 
-      <div className="flex-1 flex flex-col w-full p-5 md:w-2/3 md:flex-none">
-        <div className="flex-1 flex flex-col">
-          <Progress
-            percent={Math.floor(
-              (questionIndex / (exercise?.content.length || 1)) * 100,
-            )}
-          />
-          <div className="flex-1 px-5 py-10">{ExerciseComponent()}</div>
-        </div>
-        <div className="flex justify-between mb-5">
+  return (
+    <Form form={form} onFinish={onFinish}>
+      <div className="h-screen flex flex-col md:flex-row md:justify-center">
+        <div className="flex justify-between">
           <Button
             type="primary"
-            size="large"
             ghost
-            className="w-[150px]"
-            disabled={questionIndex <= 0}
-            onClick={previousQuestion}
-          >
-            Previous
-          </Button>
+            shape="circle"
+            size="large"
+            icon={<ArrowLeft />}
+            className="ml-5 mt-5 md:ml-10 md:top-0 md:left-0 md:fixed"
+            onClick={() => navigate('..', { relative: 'path' })}
+          />
           <Button
             type="primary"
+            ghost
+            shape="circle"
             size="large"
-            className="w-[150px]"
-            onClick={nextQuestion}
-            disabled={
-              !hasResult && questionIndex < (exercise?.content?.length || 0)
-            }
-          >
-            {`${
-              questionIndex >= (exercise?.content?.length || 0)
-                ? 'Next exercise'
-                : 'Next'
-            }`}
-          </Button>
+            icon={'?'}
+            className="mr-5 mt-5 md:mr-10 md:top-0 md:right-0 md:fixed"
+          />
+        </div>
+
+        <div className="flex-1 flex flex-col w-full p-5 md:w-2/3 md:flex-none">
+          <div className="flex-1 flex flex-col">
+            <Progress
+              percent={Math.floor(
+                (questionIndex / (exercise?.content.length || 1)) * 100,
+              )}
+            />
+            <div className="flex-1 px-5 py-10">
+              {ExerciseComponent()}
+              {assignment?.detail[questionIndex] && (
+                <div className="w-full p-5 border-2 border-solid border-primary rounded-md flex items-center gap-4">
+                  {assignment?.detail[questionIndex].isCorrect ? (
+                    <EmojiHappyIcon />
+                  ) : (
+                    <EmojiSadIcon />
+                  )}
+                  <div className="flex-1 text-primary flex flex-col gap-2">
+                    {assignment?.detail[questionIndex].isCorrect && (
+                      <b>Good job!</b>
+                    )}
+                    <p>{assignment?.detail[questionIndex].explanation}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex justify-between mb-5">
+            <Button
+              type="primary"
+              size="large"
+              ghost
+              className="w-[150px]"
+              disabled={questionIndex <= 0}
+              onClick={previousQuestion}
+            >
+              Previous
+            </Button>
+            {!hasResult && questionIndex < (exercise?.content?.length || 0) ? (
+              <Button
+                type="primary"
+                size="large"
+                className="w-[150px]"
+                htmlType="submit"
+              >
+                Confirm
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                size="large"
+                className="w-[150px]"
+                onClick={nextQuestion}
+              >
+                Next
+              </Button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </Form>
   )
 }
 

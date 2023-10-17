@@ -3,16 +3,12 @@ import {
   QuestionPayload,
   SubmitAnswerResponse,
 } from '../../../../services/exerciseApi/types'
-
-interface SubmitAnswer {
-  answer: string
-}
+import { useEffect } from 'react'
 
 interface FillBlankProps extends QuestionPayload {
-  question: { text: string; image?: string }
+  question: { text: string; image?: string; limits: number[] }
   exerciseId: string
   result?: FillBlankResponse
-  submitAnswer: (data: SubmitAnswer, questionId: string) => Promise<void>
 }
 
 interface FillBlankResponse extends SubmitAnswerResponse {
@@ -20,39 +16,43 @@ interface FillBlankResponse extends SubmitAnswerResponse {
   correctAnswer: string
 }
 
-interface FormProps {
-  answerArr: [{ answer: string }]
-}
-
-function FillBlank({ question, result }: FillBlankProps) {
-  const [form] = Form.useForm<FormProps>()
-  const answer = Form.useWatch('answerArr', form)
-
-  console.log(question)
+function FillBlank(props: FillBlankProps) {
+  const { question } = props
+  const answer = Form.useWatch('answer')
+  const form = Form.useFormInstance()
 
   const questionArr = question.text.split('[]')
 
-  const onFinish = (values: FormProps) => {
-    console.log(values.answerArr.map((ans) => ans.answer).join(','))
-  }
+  console.log(question.limits)
+
+  useEffect(() => {
+    form.setFieldValue('answer', Array(questionArr.length - 1).fill(''))
+  }, [props])
 
   return (
-    <Form form={form} onFinish={onFinish}>
+    <div className="mb-10">
+      <p className="mb-5 text-primary text-2xl font-semibold">
+        Fill blank question
+      </p>
       <Form.List
-        name="answerArr"
-        initialValue={Array(questionArr.length - 1).fill({})}
+        name="answer"
+        initialValue={Array(questionArr.length - 1).fill('')}
       >
         {(fields) => (
           <>
             {fields.map(({ key }) => {
               return (
                 <>
-                  <span>{questionArr[key]}</span>
-                  <Form.Item noStyle name={[key, 'answer']}>
+                  <span className="text-xl">{questionArr[key]}</span>
+                  <Form.Item noStyle name={[key]}>
                     <Input
+                      className="font-bold text-xl"
+                      maxLength={question.limits[key]}
+                      // eslint-disable-next-line jsx-a11y/no-autofocus
+                      autoFocus
                       style={{
                         textAlign: 'center',
-                        width: 15 + (answer?.[key]?.answer?.length || 0) * 8,
+                        width: 15 + (answer?.[key]?.length || 0) * 15,
                         padding: '2px 5px',
                         margin: 2,
                       }}
@@ -61,10 +61,13 @@ function FillBlank({ question, result }: FillBlankProps) {
                 </>
               )
             })}
+            <span className="text-xl">
+              {questionArr[questionArr.length - 1]}
+            </span>
           </>
         )}
       </Form.List>
-    </Form>
+    </div>
   )
 }
 
