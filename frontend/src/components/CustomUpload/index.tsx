@@ -17,7 +17,7 @@ interface CustomUploadProps {
 
 function CustomUpload({
   className,
-  fileList: value = [],
+  fileList: value,
   onChange,
   type = 'text',
   multiple = false,
@@ -51,6 +51,8 @@ function CustomUpload({
 
       setFileList(initialValue)
     }
+
+    console.log(value)
   }, [value])
 
   const handleCancel = () => setPreviewOpen(false)

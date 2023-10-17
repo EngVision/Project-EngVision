@@ -1,16 +1,16 @@
 import { Button } from 'antd'
+import { useEffect, useState } from 'react'
+import { EmojiHappyIcon, EmojiSadIcon } from '../../../../components/Icons'
 import {
-  Question,
+  QuestionPayload,
   SubmitAnswerResponse,
 } from '../../../../services/exerciseApi/types'
-import { EmojiHappyIcon, EmojiSadIcon } from '../../../../components/Icons'
-import { useEffect, useState } from 'react'
 
 interface SubmitAnswer {
   answer: number[]
 }
 
-interface MultipleChoiceProps extends Question {
+interface MultipleChoiceProps extends QuestionPayload {
   question: {
     text: string
     answers: {

@@ -1,20 +1,20 @@
 import { Button, Progress } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import ArrowLeft from '../../components/Icons/ArrowLeft'
 import assignmentApi from '../../services/assignmentApi'
 import { AssignmentResponse } from '../../services/assignmentApi/types'
 import exerciseApi from '../../services/exerciseApi'
-import { ExerciseResponse } from '../../services/exerciseApi/types'
+import { ExerciseSchema } from '../../services/exerciseApi/types'
 import { ExerciseType } from '../../utils/constants'
+import DoneExercise from './components/DoneExercise'
 import FillBlank from './components/FillBlank'
 import MultipleChoice from './components/MultipleChoice'
-import ArrowLeft from '../../components/Icons/ArrowLeft'
-import DoneExercise from './components/DoneExercise'
 
 function Exercise() {
   const { id } = useParams()
 
-  const [exercise, setExercise] = useState<ExerciseResponse>()
+  const [exercise, setExercise] = useState<ExerciseSchema>()
   const [assignment, setAssignment] = useState<AssignmentResponse>()
   const [questionIndex, setQuestionIndex] = useState<number>(0)
   const [hasResult, setHasResult] = useState<boolean>(false)

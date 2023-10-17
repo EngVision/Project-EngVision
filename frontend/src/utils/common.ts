@@ -1,4 +1,5 @@
 import { CourseDetails } from '../services/coursesApi/types'
+import _ from 'lodash'
 
 export const getFileUrl = (id: string) =>
   `${import.meta.env.VITE_SERVER_FILES_URL}${id}`
@@ -45,4 +46,25 @@ export function sortCoursesByTitle(
     }
   })
   return sortedCourses
+}
+
+export function clean(el: any) {
+  function internalClean(el: any) {
+    return _.transform(el, function (result: any, value, key) {
+      var isCollection = _.isObject(value)
+      var cleaned = isCollection ? internalClean(value) : value
+
+      if (isCollection && _.isEmpty(cleaned)) {
+        return
+      }
+
+      if (_.isArray(result)) {
+        result.push(cleaned)
+      } else {
+        result[key] = cleaned
+      }
+    })
+  }
+
+  return _.isObject(el) ? internalClean(el) : el
 }

@@ -24,12 +24,7 @@ export class FillBlankService extends ExerciseContentService {
       CreateFillBlankDto,
     );
 
-    if (!this.isValidQuestionList(validatedContent)) {
-      throw new BadRequestException(
-        `question.text, correctAnswer.detail: Number of answer must match with number of blank`,
-      );
-    }
-
+    this.validateQuestionList(validatedContent);
     this.transformAnswerList(validatedContent);
     this.setDefaultExplain(validatedContent);
 
@@ -47,6 +42,8 @@ export class FillBlankService extends ExerciseContentService {
       CreateFillBlankDto,
     );
 
+    this.validateQuestionList(validatedContent);
+    this.transformAnswerList(validatedContent);
     this.setDefaultExplain(validatedContent);
 
     const bulkOps = this.updateBulkOps(validatedContent, removedQuestions);
@@ -73,12 +70,7 @@ export class FillBlankService extends ExerciseContentService {
       correctAnswer: { detail, explanation },
     } = await this.fillBlankModel.findById(id);
 
-    if (!this.isValidQuestion(question.text, answer)) {
-      throw new BadRequestException(
-        'Number of answer must match with number of blank',
-      );
-    }
-
+    this.validateQuestion(question.text, answer);
     const transformAnswer = this.transformAnswer(question.text, answer);
 
     const isCorrect = detail.toLowerCase() === transformAnswer.toLowerCase();
@@ -92,20 +84,20 @@ export class FillBlankService extends ExerciseContentService {
     };
   }
 
-  isValidQuestionList(questionList: FillBlank[]): boolean {
-    return questionList.every(q =>
-      this.isValidQuestion(q.question.text, q.correctAnswer.detail),
+  validateQuestionList(questionList: FillBlank[]): void {
+    questionList.forEach(q =>
+      this.validateQuestion(q.question.text, q.correctAnswer.detail),
     );
   }
 
-  isValidQuestion(question: string, answer: string): boolean {
+  validateQuestion(question: string, answer: string): void {
     const count = (question.match(/\[]/g) || []).length;
 
-    if (count === answer.split('/').length) {
-      return true; // return true if question text number of '[]' is match with number of correct answer
+    if (count !== answer.split(',').length) {
+      throw new BadRequestException(
+        `question.text, correctAnswer.detail: Number of answer must match with number of blank`,
+      ); // return true if question text number of '[]' is match with number of correct answer
     }
-
-    return false; // return false if question text does not contain '[]' or not valid
   }
 
   transformAnswerList(questionList: FillBlank[]): void {
@@ -118,17 +110,9 @@ export class FillBlankService extends ExerciseContentService {
   }
 
   transformAnswer(question: string, answer: string): string {
-    const answerSplitted = answer.split('/').map(s => s.trim());
+    const answerSplitted = answer.split(',').map(s => s.trim());
 
-    return question
-      .split('[]')
-      .reduce(
-        (prev, s, i) =>
-          `${prev}${s}${
-            answerSplitted[i] ? '<b>' + answerSplitted[i] + '</b>' : ''
-          }`,
-        '',
-      );
+    return answerSplitted.join(',');
   }
 
   setDefaultExplain(questionList: FillBlank[]): void {
