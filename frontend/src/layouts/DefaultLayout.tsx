@@ -7,7 +7,7 @@ const DefaultLayout = () => {
   return (
     <div className="flex flex-row bg-bgDefault h-[100vh]">
       <Sidebar />
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col min-w-[0px]">
         <div className="px-8">
           <Header />
         </div>
