@@ -40,9 +40,9 @@ const CourseDetailsPage = () => {
     }
   }
   return courseDetails ? (
-    <div className="flex flex-col bg-white p-5 rounded-md shadow-lg">
+    <div className="flex flex-col bg-bgNeutral p-5 rounded-md shadow-lg">
       <div className="flex h-60 mb-8">
-        <div className="h-full w-[18.75rem] mr-8">
+        <div className="h-full w-[18.75rem] mr-8 rounded-lg overflow-hidden">
           <img
             className="object-cover w-full h-full"
             src="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
@@ -58,12 +58,12 @@ const CourseDetailsPage = () => {
               </span>
             </div>
           </div>
-          <h2 className="text-4xl text-[#2769E7]">{courseDetails.title}</h2>
+          <h2 className="text-4xl text-primary">{courseDetails.title}</h2>
           <p>{courseDetails.about}</p>
           <div className="flex items-center leading-6">
-            <Star className="text-[#FD6267] mr-1.5" />
+            <Star className="text-secondary mr-1.5" />
             <span className="mr-1.5 font-bold">{courseDetails.avgStar}</span>
-            <div className="mr-1.5 text-[#706E68]">{`(${courseDetails.reviews.length} Rating)`}</div>
+            <div className="mr-1.5 text-wolfGrey">{`(${courseDetails.reviews.length} Rating)`}</div>
           </div>
           {!courseDetails.isAttended && (
             <div>
@@ -87,7 +87,7 @@ const CourseDetailsPage = () => {
           tab={
             <Button
               className={`flex font-light items-center text-lg px-10 py-5 rounded-xl ${
-                activeKey === '1' ? '' : 'text-[#2769E7] border-[#2769E7]'
+                activeKey === '1' ? '' : 'text-primary border-primary'
               }`}
               type={activeKey === '1' ? 'primary' : 'default'}
             >
@@ -102,7 +102,7 @@ const CourseDetailsPage = () => {
           tab={
             <Button
               className={`flex font-light items-center text-lg px-10 py-5 rounded-xl ${
-                activeKey === '2' ? '' : 'text-[#2769E7] border-[#2769E7]'
+                activeKey === '2' ? '' : 'text-primary border-primary'
               }`}
               type={activeKey === '2' ? 'primary' : 'default'}
             >
@@ -117,7 +117,7 @@ const CourseDetailsPage = () => {
           tab={
             <Button
               className={`flex font-light items-center text-lg px-10 py-5 rounded-xl ${
-                activeKey === '3' ? '' : 'text-[#2769E7] border-[#2769E7]'
+                activeKey === '3' ? '' : 'text-primary border-primary'
               }`}
               type={activeKey === '3' ? 'primary' : 'default'}
             >

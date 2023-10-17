@@ -112,13 +112,13 @@ export enum CEFRLevel {
   A1 = 'A1',
 }
 
-export const Level = [
-  { level: CEFRLevel.A1, color: 'bg-green-300' },
-  { level: CEFRLevel.A2, color: 'bg-green-500' },
-  { level: CEFRLevel.B1, color: 'bg-blue-300' },
-  { level: CEFRLevel.B2, color: 'bg-blue-500' },
-  { level: CEFRLevel.C1, color: 'bg-red-300' },
-  { level: CEFRLevel.C2, color: 'bg-red-500' },
+export const LEVELS = [
+  { level: CEFRLevel.A1, color: 'bg-alternative' },
+  { level: CEFRLevel.A2, color: 'bg-alternative' },
+  { level: CEFRLevel.B1, color: 'bg-primary' },
+  { level: CEFRLevel.B2, color: 'bg-primary' },
+  { level: CEFRLevel.C1, color: 'bg-secondary' },
+  { level: CEFRLevel.C2, color: 'bg-secondary' },
 ]
 
 export const GENDERS = [
@@ -137,7 +137,10 @@ export const SEARCH_OPTIONS = {
   course: 'Courses',
 }
 
-export const UPLOAD_FILE_URL = `${import.meta.env.VITE_BASE_URL}/files`
+export const BASE_URL = import.meta.env.VITE_BASE_URL
+export const UPLOAD_FILE_URL = `${BASE_URL}/files`
+export const GOOGLE_LOGIN = `${BASE_URL}auth/google/login`
+export const FACEBOOK_LOGIN = `${BASE_URL}auth/facebook/login`
 
 export enum COURSE_STATUS {
   draft = 'Draft',

@@ -22,18 +22,16 @@ yarn dev
 ## Commands
 
 ```bash
-yarn dev             # start development server
+yarn clean           # remove 'node_modules' 'dist' completely
+yarn ci              # clean and install
 yarn start           # start development server
-yarn validate        # run test,lint,build,typecheck concurrently
-yarn test            # run vitest
-yarn test:watch      # run vitest watch mode
+yarn dev             # start development server
+yarn build           # build production bundle to 'dist' directly
+yarn preview         # preview production bundle
 yarn lint            # run eslint
 yarn lint:fix        # run eslint with --fix option
 yarn typecheck       # run TypeScript compiler check
-yarn build           # build production bundle to 'dist' directly
 yarn prettier        # run prettier for json|yml|css|md|mdx files
-yarn clean           # remove 'node_modules' 'yarn.lock' 'dist' completely
-yarn serve           # launch server for production bundle in local
 ```
 
 ## Run via docker
