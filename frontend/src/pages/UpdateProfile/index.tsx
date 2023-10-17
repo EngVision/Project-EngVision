@@ -23,9 +23,8 @@ import { PRIVATE_ROUTES } from '../../utils/constants'
 type NotificationType = 'success' | 'info' | 'warning' | 'error'
 
 export const UpdateProfile = () => {
-  const { TextArea } = Input
+  //const { TextArea } = Input
   const [account, setAccount] = useState<ProfileParams>()
-  const [avatar, setAvatar] = useState('' as any)
   const [keyCollapse, setKeyCollapse] = useState('' as any)
   const [api, contextHolder] = notification.useNotification()
 
@@ -40,9 +39,10 @@ export const UpdateProfile = () => {
       try {
         const res = await authApi.fetchAuthUser()
         const data = res.data
+        console.log(data)
         if (data) setAccount(data)
       } catch (error) {
-        console.error('Error fetching courses:', error)
+        console.log('Error fetching courses:', error)
       }
     }
 
@@ -68,19 +68,14 @@ export const UpdateProfile = () => {
 
   const onFinish = async (values: ProfileParams) => {
     const password: ChangePassword = values
-    if (avatar) values.avatar = avatar
 
     try {
-      if (
-        keyCollapse.includes('1') ||
-        keyCollapse.includes('2') ||
-        !keyCollapse
-      ) {
+      if (keyCollapse.includes('1') || !keyCollapse) {
         await accountApi.update(values)
         openNotificationWithIcon('success', 'Update profile successfully.')
       }
       if (
-        keyCollapse.includes('3') &&
+        keyCollapse.includes('2') &&
         values.password === values.retypePassword
       ) {
         await accountApi.changePassword(password)
@@ -128,32 +123,7 @@ export const UpdateProfile = () => {
                   />
                 </Form.Item>
               </Space>
-              <Form.Item<ProfileParams> name="email" label="Email">
-                <Input
-                  defaultValue={account.email}
-                  size="large"
-                  className="w-[31rem] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
-                />
-              </Form.Item>
-              <Form.Item<ProfileParams> name="about" label="About">
-                <TextArea
-                  defaultValue={account.about}
-                  style={{ height: 80, resize: 'none' }}
-                  className="border-slate-300 shadow-sm hover:border-slate-40 rounded-md"
-                />
-              </Form.Item>
-            </div>
-          )}
-        </p>
-      ),
-    },
-    {
-      key: '2',
-      label: 'Personal Information',
-      children: (
-        <p>
-          {account && (
-            <div>
+
               <Space className="flex max-xl:flex-col justify-between">
                 <Form.Item<ProfileParams>
                   name="gender"
@@ -176,13 +146,38 @@ export const UpdateProfile = () => {
                   />
                 </Form.Item>
               </Space>
+
+              <Space className="flex max-xl:flex-col justify-between">
+                <Form.Item<ProfileParams> name="email" label="Email">
+                  <Input
+                    defaultValue={account.email}
+                    size="large"
+                    className="w-[31rem] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
+                  />
+                </Form.Item>
+
+                <Form.Item<ProfileParams> name="country" label="Country">
+                  <Input
+                    defaultValue={account.country}
+                    size="large"
+                    className="w-[31rem] border-slate-300 hover:border-slate-40 rounded-md shadow-sm"
+                  />
+                </Form.Item>
+              </Space>
+              {/* <Form.Item<ProfileParams> name="about" label="About">
+                <TextArea
+                  defaultValue={account.about}
+                  style={{ height: 80, resize: 'none' }}
+                  className="border-slate-300 shadow-sm hover:border-slate-40 rounded-md"
+                />
+              </Form.Item> */}
             </div>
           )}
         </p>
       ),
     },
     {
-      key: '3',
+      key: '2',
       label: 'Change Password',
       children: (
         <p>

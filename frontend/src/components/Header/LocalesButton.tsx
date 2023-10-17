@@ -1,16 +1,15 @@
 import { Select } from 'antd'
-import { useAppDispatch } from '../../hooks/redux'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { toggleLocales } from '../../redux/app/slice'
 import Gobal from '../Icons/Gobal'
 
 const LocalesButton = () => {
   const dispatch = useAppDispatch()
-  const defaultValue = localStorage.getItem('locales')
+  const defaultValue = useAppSelector((state) => state.app.locales)
 
   const handleChangeLocales = (value: any) => {
     if (value) {
       dispatch(toggleLocales(value))
-      location.reload()
     }
   }
 

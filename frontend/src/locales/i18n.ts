@@ -3,8 +3,9 @@ import { initReactI18next } from 'react-i18next'
 
 import EN from './EN/en.json'
 import VN from './VN/vn.json'
+import { useAppSelector } from '../hooks/redux'
 
-const languages = localStorage.getItem('locales')
+//const languages = useAppSelector((state) => state.app.locales)
 
 const resources = {
   en: {
@@ -17,7 +18,7 @@ const resources = {
 
 i18n.use(initReactI18next).init({
   resources,
-  lng: languages || 'en',
+  lng: 'en',
   fallbackLng: 'en',
   interpolation: {
     escapeValue: false,

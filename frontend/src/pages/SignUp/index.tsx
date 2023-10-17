@@ -4,7 +4,12 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import { useAppDispatch } from '../../hooks/redux'
-import { setRole, setUserAccountId } from '../../redux/app/slice'
+import {
+  setRole,
+  setUserAccountId,
+  setUserAvatar,
+  setUserName,
+} from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignUpParams } from '../../services/authApi/types'
 import { ROLES, PRIVATE_ROUTES, PUBLIC_ROUTES } from '../../utils/constants'
@@ -22,6 +27,8 @@ const SignUp: React.FC = () => {
         role: ROLES.student.value,
       })
       dispatch(setUserAccountId(data.id))
+      dispatch(setUserName(data.name))
+      dispatch(setUserAvatar(data.avatar))
       dispatch(setRole(data.role))
       navigate(PRIVATE_ROUTES.home)
     } catch (error) {
@@ -34,6 +41,8 @@ const SignUp: React.FC = () => {
       const { data } = await authApi.fetchAuthUser()
 
       dispatch(setUserAccountId(data.id))
+      dispatch(setUserName(data.name))
+      dispatch(setUserAvatar(data.avatar))
       dispatch(setRole(data.role))
       navigate(PUBLIC_ROUTES.createProfile)
       clearInterval(timer)

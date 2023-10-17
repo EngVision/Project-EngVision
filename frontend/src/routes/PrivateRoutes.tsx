@@ -10,7 +10,12 @@ import AdminRoutes from './AdminRoutes'
 import StudentRoutes from './StudentRoutes'
 import TeacherRoutes from './TeacherRoutes'
 import { useEffect } from 'react'
-import { setRole, setUserAccountId } from '../redux/app/slice'
+import {
+  setRole,
+  setUserAccountId,
+  setUserAvatar,
+  setUserName,
+} from '../redux/app/slice'
 import authApi from '../services/authApi'
 
 const ProtectedLayout = () => {
@@ -22,6 +27,8 @@ const ProtectedLayout = () => {
       const { data } = await authApi.fetchAuthUser()
 
       dispatch(setUserAccountId(data.id))
+      dispatch(setUserName(data.name))
+      dispatch(setUserAvatar(data.avatar))
       dispatch(setRole(data.role))
     } catch (error) {
       console.log('error: ', error)
