@@ -2,6 +2,8 @@ name: Deploy EngVision Image
 on:
   push:
     branches: ["develop", "master"]
+  pull_request: 
+    branches: ["develop", "master"]
 
 env:
   REGISTRY: ghcr.io
