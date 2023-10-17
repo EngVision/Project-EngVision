@@ -82,11 +82,11 @@ const SignIn: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center bg-bgNeutral py-8 px-10 rounded-[16px] self-center">
-      <div className="mb-8">
+      <div className="mb-8 flex flex-col items-center">
         <h4 className=" text-primary text-center font-bold text-4xl mb-4">
           Welcome back!
         </h4>
-        <p className="text-dark font-light ">Let's start learning right now!</p>
+        <p className="text-dark font-light">Let's start learning right now!</p>
       </div>
 
       <Form
@@ -96,7 +96,7 @@ const SignIn: React.FC = () => {
         autoComplete="off"
         onChange={() => setError('')}
         layout="vertical"
-        className="w-[560px]"
+        className="w-[36rem]"
       >
         <Form.Item<SignInParams>
           name="email"
