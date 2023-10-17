@@ -76,6 +76,14 @@ code {
   padding: 0 !important;
 }
 
+.ant-select-selector {
+  font-size: unset !important;
+}
+
+.ant-input-password {
+  font-size: unset !important;
+}
+
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
