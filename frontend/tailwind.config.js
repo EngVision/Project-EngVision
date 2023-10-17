@@ -54,9 +54,9 @@ module.exports = {
       screens: {
         '3xl': '1800px',
       },
-    },
-    gridTemplateColumns: {
-      'fill-40': 'repeat(auto-fill, minmax(240px, 1fr))',
+      gridTemplateColumns: {
+        'fill-40': 'repeat(auto-fill, minmax(240px, 1fr))',
+      },
     },
   },
 }
