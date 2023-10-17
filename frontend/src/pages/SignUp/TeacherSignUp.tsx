@@ -41,7 +41,7 @@ const TeacherSignUp: React.FC = () => {
       })
       navigate(PRIVATE_ROUTES.home)
     } catch (error) {
-      setError(error.response.data.message)
+      setError(error.data.message)
     }
   }
 
@@ -136,7 +136,7 @@ const TeacherSignUp: React.FC = () => {
             <Input
               placeholder="First Name"
               size="middle"
-              className="rounded-lg p-3 text-xs"
+              className="rounded-lg px-3 py-2"
             />
           </Form.Item>
 
@@ -151,7 +151,7 @@ const TeacherSignUp: React.FC = () => {
             <Input
               placeholder="Last Name"
               size="middle"
-              className="rounded-lg p-3 text-xs"
+              className="rounded-lg px-3 py-2"
             />
           </Form.Item>
         </div>
@@ -164,7 +164,7 @@ const TeacherSignUp: React.FC = () => {
           <Input
             placeholder="Email"
             size="middle"
-            className="rounded-lg p-3 text-xs"
+            className="rounded-lg px-3 py-2"
           />
         </Form.Item>
 
@@ -190,7 +190,7 @@ const TeacherSignUp: React.FC = () => {
           <Input.Password
             placeholder="Password"
             size="large"
-            className="rounded-lg p-3 text-xs"
+            className="rounded-lg px-3 py-2"
           />
         </Form.Item>
 
@@ -207,7 +207,7 @@ const TeacherSignUp: React.FC = () => {
           <Input.Password
             placeholder="Confirm password"
             size="large"
-            className="rounded-lg p-3 text-xs"
+            className="rounded-lg px-3 py-2"
           />
         </Form.Item>
 
@@ -218,10 +218,7 @@ const TeacherSignUp: React.FC = () => {
             { message: 'Please input your phone number!', required: true },
           ]}
         >
-          <Input
-            placeholder="Phone Number"
-            className="rounded-lg p-3 text-xs"
-          />
+          <Input placeholder="Phone Number" className="rounded-lg px-3 py-2" />
         </Form.Item>
 
         <Form.Item<SignUpParams>
@@ -231,7 +228,7 @@ const TeacherSignUp: React.FC = () => {
             { message: 'Please input your certificate!', required: true },
           ]}
         >
-          <Input placeholder="Certificate" className="rounded-lg p-3 text-xs" />
+          <Input placeholder="Certificate" className="rounded-lg px-3 py-2" />
         </Form.Item>
 
         <Form.Item<SignUpParams>
@@ -243,7 +240,7 @@ const TeacherSignUp: React.FC = () => {
         >
           <Input
             placeholder="Working school"
-            className="rounded-lg p-3 text-xs"
+            className="rounded-lg px-3 py-2"
           />
         </Form.Item>
 
@@ -258,6 +255,9 @@ const TeacherSignUp: React.FC = () => {
             </Link>
           </Checkbox>
         </Form.Item>
+
+        {error && <p className="text-secondary mt-[-20px] mb-6">{error}</p>}
+
         <Form.Item className="text-center" noStyle>
           <Button
             type="primary"
@@ -268,8 +268,6 @@ const TeacherSignUp: React.FC = () => {
             Sign Up
           </Button>
         </Form.Item>
-
-        {error && <p className="text-red-500 mt-[-20px] mb-6">{error}</p>}
 
         <div className="text-grey-300 text-center my-4 px-16 flex items-center gap-4 justify-center">
           <div className="h-[1px] bg-grey-300 flex-1" />
