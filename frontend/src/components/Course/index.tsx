@@ -33,7 +33,7 @@ const Course = ({ course }: CourseProps) => {
       }
     >
       <p
-        className={`${level?.bgColor} absolute left-3 top-3 text-white py-0.5 rounded-md min-w-[40px] text-center`}
+        className={`${level?.color} absolute left-3 top-3 text-white py-0.5 rounded-md min-w-[40px] text-center`}
       >
         {course.level}
       </p>

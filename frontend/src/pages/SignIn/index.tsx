@@ -1,14 +1,14 @@
 import { Button, Form, Input } from 'antd'
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
+import { NotificationContext } from '../../contexts/notification'
 import { useAppDispatch } from '../../hooks/redux'
 import { setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
 import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
-import { NotificationContext } from '../../contexts/notification'
 
 const SignIn: React.FC = () => {
   const dispatch = useAppDispatch()

@@ -14,7 +14,6 @@ export const PRIVATE_ROUTES = {
   home: '/',
   statistic: '/statistic',
   chat: '/chat',
-  manageUsers: '/manage-users',
   settings: '/settings',
   helpCenter: '/help-center',
 
@@ -33,7 +32,7 @@ export const PRIVATE_ROUTES = {
 export const STUDENT_ROUTES = {
   // Menu
   myHub: '/my-hub',
-  exam: '/exam',
+  exercisesAndExams: '/exercises-exams',
   discover: '/discover',
 
   appearance: '/appearance',
@@ -165,4 +164,13 @@ export enum Gender {
   Male = 'Male',
   Female = 'Female',
   Other = 'Other',
+}
+
+export enum NextDue {
+  none = 'None',
+  tomorrow = 'Tomorrow',
+  today = 'Today',
+  in1week = 'In 1 week',
+  in2weeks = 'In 2 weeks',
+  in1month = 'In 1 month',
 }

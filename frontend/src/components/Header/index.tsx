@@ -1,14 +1,9 @@
 import { Avatar } from 'antd'
-import { useEffect, useState } from 'react'
-
-import { NotificationIcon } from '../Icons'
-
-import { ProfileParams } from '../../services/accountApi/types'
-import authApi from '../../services/authApi'
+import { useAppSelector } from '../../hooks/redux'
 import { getFileUrl } from '../../utils/common'
+import { NotificationIcon } from '../Icons'
 import DarkModeButton from './DarkModeButton'
 import Search from './Search'
-import { useAppSelector } from '../../hooks/redux'
 
 const Header = () => {
   const user = useAppSelector((state) => state.app.user)
@@ -25,7 +20,7 @@ const Header = () => {
             <Avatar
               className={`${user?.avatar ? '' : 'bg-blue-400 text-white'}`}
               src={getFileUrl(user?.avatar)}
-              size="large"
+              size="default"
             >
               {user?.avatar ? '' : user?.lastName[0]}
             </Avatar>

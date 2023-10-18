@@ -1,30 +1,24 @@
 import { Button, Tooltip } from 'antd'
-import { useState } from 'react'
-import { useAppDispatch } from '../../hooks/redux'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { toggleDarkMode } from '../../redux/app/slice'
 import Moon from '../Icons/Moon'
 import Sun from '../Icons/Sun'
-import useDarkMode from '../../hooks/useDarkMode'
 
 const DarkModeButton = () => {
   const dispatch = useAppDispatch()
-  const [theme, setTheme] = useState(localStorage.getItem('theme'))
-  const { handleTheme } = useDarkMode()
+  const theme = useAppSelector((state) => state.app.darkMode)
 
   const handleChangeTheme = () => {
-    const value = theme === 'dark' ? 'light' : 'dark'
-    dispatch(toggleDarkMode(value))
-    setTheme(localStorage.getItem('theme'))
-    handleTheme(value === 'dark' ? true : false)
+    dispatch(toggleDarkMode())
   }
 
   const ButtonDarkMode = () => {
     return (
       <Tooltip title="Dark Mode">
         <Button
-          type={theme === 'dark' ? 'primary' : 'text'}
+          type={theme ? 'primary' : 'text'}
           shape="circle"
-          icon={theme === 'dark' ? <Moon /> : <Sun />}
+          icon={theme ? <Moon /> : <Sun />}
           onClick={() => handleChangeTheme()}
         />
       </Tooltip>

@@ -12,7 +12,7 @@ const SUB_MENU_ITEMS: MenuItemType[] = [
   {
     icon: <SettingsIcon />,
     path: PRIVATE_ROUTES.settings,
-    title: 'Settings',
+    title: 'Account',
   },
   {
     icon: <MessageQuestionIcon />,
