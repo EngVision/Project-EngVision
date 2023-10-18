@@ -9,7 +9,7 @@ import Home from '../pages/Home'
 import { UpdateProfile } from '../pages/UpdateProfile'
 import { setUser } from '../redux/app/slice'
 import authApi from '../services/authApi'
-import { PRIVATE_ROUTES, PUBLIC_ROUTES, Role } from '../utils/constants'
+import { PRIVATE_ROUTES, PUBLIC_ROUTES, ROLES } from '../utils/constants'
 import AdminRoutes from './AdminRoutes'
 import StudentRoutes from './StudentRoutes'
 import TeacherRoutes from './TeacherRoutes'
@@ -76,13 +76,13 @@ function PrivateRoutes() {
   let routes: RouteObject[] = []
 
   switch (user?.role) {
-    case Role.Admin:
+    case ROLES.admin.value:
       routes = AdminRoutes
       break
-    case Role.Teacher:
+    case ROLES.teacher.value:
       routes = TeacherRoutes
       break
-    case Role.Student:
+    case ROLES.student.value:
       routes = StudentRoutes
       break
     default:

@@ -14,7 +14,6 @@ export const PRIVATE_ROUTES = {
   home: '/',
   statistic: '/statistic',
   chat: '/chat',
-  manageUsers: '/manage-users',
   settings: '/settings',
   helpCenter: '/help-center',
 

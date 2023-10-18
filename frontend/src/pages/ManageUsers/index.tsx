@@ -128,8 +128,8 @@ const ManageUsers = () => {
             className={`
             ${
               status === Status.Pending
-                ? '!text-[#F3F8FF] !bg-lime-500 !border-lime-500'
-                : 'bg-transparent text-[#41AB3F] border-[#41AB3F] hover:!text-lime-500 hover:!border-lime-500'
+                ? '!text-white !bg-lime-500 !border-lime-500'
+                : 'bg-transparent text-alternative border-alternative hover:!text-lime-500 hover:!border-lime-500'
             }`}
             onClick={() => setStatus('Pending')}
           >
@@ -140,7 +140,7 @@ const ManageUsers = () => {
             ghost
             className={`${
               status === Status.Active
-                ? '!text-[#F3F8FF] !bg-[#1677FF] !border-[#1677FF]'
+                ? '!text-white !bg-primary !border-primary'
                 : ''
             }`}
             onClick={() => setStatus('Active')}
@@ -153,7 +153,7 @@ const ManageUsers = () => {
             ghost
             className={`${
               status === Status.Locked
-                ? '!text-[#F3F8FF] !bg-[#ff4d4f] !border-[#ff4d4f]'
+                ? '!text-white !bg-secondary !border-secondary'
                 : ''
             }`}
             onClick={() => setStatus('Locked')}
@@ -187,7 +187,7 @@ const ManageUsers = () => {
             {dataFilter.map((user) => (
               <tr
                 key={user.id}
-                className="text-[#706E68] text-[14px] bg-[#FFFCF7]"
+                className="text-wolfGrey text-[14px] bg-bgNeutral"
               >
                 <td className="p-[12px] rounded-l-md">{user.name}</td>
                 <td>{user.email}</td>
@@ -196,23 +196,25 @@ const ManageUsers = () => {
                   <Tag
                     className={`${LEVELS.find(
                       (level) => level.level === user.level,
-                    )?.color} text-[#706E68] px-[10px]`}
+                    )?.color} text-white px-[10px]`}
                   >
                     {user.level}
                   </Tag>
                 </td>
                 <td>{user.createDate}</td>
                 <td>
-                  <div
-                    className={`border-[1px] border-solid border-[#706E68] py-[2px] px-[4px] rounded-[5px] ${
-                      user.status === Status.Pending
-                        ? 'text-[#41AB3F] !border-[#41AB3F]'
-                        : user.status === Status.Active
-                        ? 'text-[#1677FF] !border-[#1677FF]'
-                        : 'text-[#ff4d4f] !border-[#ff4d4f]'
-                    }`}
-                  >
-                    {user.status}
+                  <div className="flex justify-center align-middle">
+                    <div
+                      className={`border-[1px] border-solid py-[4px] px-[8px] rounded-[5px] ${
+                        user.status === Status.Pending
+                          ? 'text-alternative !border-alternative'
+                          : user.status === Status.Active
+                          ? 'text-primary !border-primary'
+                          : 'text-secondary !border-secondary'
+                      }`}
+                    >
+                      {user.status}
+                    </div>
                   </div>
                 </td>
                 <td>
@@ -292,15 +294,6 @@ const ManageUsers = () => {
           </tbody>
         </table>
       </div>
-
-      {/* <div>
-        <div className="modalContent">
-          <iframe
-            className="h-[200px] w-full"
-            src="http://www.africau.edu/images/default/sample.pdf"
-          ></iframe>
-        </div>
-      </div> */}
     </>
   )
 }
