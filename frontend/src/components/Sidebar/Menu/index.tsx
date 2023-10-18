@@ -22,10 +22,10 @@ const SUB_MENU_ITEMS: MenuItemType[] = [
 ]
 
 const Menu = () => {
-  const role = useAppSelector((state) => state.app.role)
+  const user = useAppSelector((state) => state.app.user)
 
   const renderMenu = () => {
-    switch (role) {
+    switch (user?.role) {
       case ROLES.student.value: {
         return <StudentMenu />
       }

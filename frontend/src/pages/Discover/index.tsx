@@ -30,7 +30,7 @@ const Discover = () => {
         </p>
       </div>
       <div className="m-6">
-        <div className="grid grid-flow-col grid-cols-4 gap-11">
+        <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
           {courseList &&
             courseList.map((course) => <CourseCard course={course} />)}
         </div>

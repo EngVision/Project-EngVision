@@ -42,7 +42,7 @@ const SignUp: React.FC = () => {
       })
       navigate(PRIVATE_ROUTES.home)
     } catch (error) {
-      setError(error.response.data.message)
+      setError(error.data.message)
     }
   }
 
@@ -107,19 +107,28 @@ const SignUp: React.FC = () => {
   ]
 
   const validateEmail = (email: string) => {
+    if (!email) return true
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
     return emailRegex.test(email)
   }
 
   const validatePassword = (password: string) => {
+    if (!password) return true
     const passwordRegex =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
     return password && password.length >= 8 && passwordRegex.test(password)
   }
 
   const validateConfirmPassword = (confirmPassword: string) => {
+    if (!confirmPassword) return true
     const password = form.getFieldValue('password')
     return confirmPassword === password
+  }
+
+  const validatePhone = (phone: string) => {
+    if (!phone) return true
+    const phoneRegex = /^\d{10,}$/
+    return phoneRegex.test(phone)
   }
 
   return (
@@ -153,7 +162,7 @@ const SignUp: React.FC = () => {
             <Input
               placeholder="First Name"
               size="middle"
-              className="rounded-lg p-3 text-xs"
+              className="rounded-lg py-2 px-3"
             />
           </Form.Item>
 
@@ -168,7 +177,7 @@ const SignUp: React.FC = () => {
             <Input
               placeholder="Last Name"
               size="middle"
-              className="rounded-lg p-3 text-xs"
+              className="rounded-lg py-2 px-3"
             />
           </Form.Item>
         </div>
@@ -192,7 +201,7 @@ const SignUp: React.FC = () => {
           <Input
             placeholder="Email"
             size="middle"
-            className="rounded-lg p-3 text-xs"
+            className="rounded-lg py-2 px-3"
           />
         </Form.Item>
 
@@ -201,12 +210,23 @@ const SignUp: React.FC = () => {
           label="Phone number"
           rules={[
             { message: 'Please input your phone number!', required: true },
+            {
+              async validator(_, value) {
+                return new Promise((resolve, reject) => {
+                  if (validatePhone(value)) {
+                    resolve('')
+                  } else
+                    reject(
+                      new Error(
+                        'Phone must be longer than or equal to 10 characters',
+                      ),
+                    )
+                })
+              },
+            },
           ]}
         >
-          <Input
-            placeholder="Phone Number"
-            className="rounded-lg p-3 text-xs"
-          />
+          <Input placeholder="Phone Number" className="rounded-lg py-2 px-3" />
         </Form.Item>
 
         <Form.Item<SignUpParams>
@@ -247,7 +267,7 @@ const SignUp: React.FC = () => {
           <Input.Password
             placeholder="Password"
             size="large"
-            className="rounded-lg p-3 text-xs"
+            className="rounded-lg py-2 px-3"
           />
         </Form.Item>
 
@@ -275,11 +295,9 @@ const SignUp: React.FC = () => {
           <Input.Password
             placeholder="Confirm password"
             size="large"
-            className="rounded-lg p-3 text-xs"
+            className="rounded-lg py-2 px-3"
           />
         </Form.Item>
-
-        {error && <p className="text-secondary">{error}</p>}
 
         <Form.Item<SignUpParams> name="accepted" valuePropName="checked">
           <Checkbox>
@@ -293,7 +311,7 @@ const SignUp: React.FC = () => {
           </Checkbox>
         </Form.Item>
 
-        {error && <p className="text-red-500 mt-[-20px] mb-6">{error}</p>}
+        {error && <p className="text-secondary mt-[-20px] mb-6">{error}</p>}
 
         <Form.Item className="text-center" noStyle>
           <Button

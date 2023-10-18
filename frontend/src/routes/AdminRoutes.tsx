@@ -7,7 +7,12 @@ import TeacherCourseDetail from '../pages/Teacher/CourseDetail'
 import TeacherCourses from '../pages/Teacher/Courses'
 import LessonDetail from '../pages/Teacher/LessonDetail'
 import ManageExercise from '../pages/Teacher/ManageExercise'
-import { PRIVATE_ROUTES, TEACHER_ROUTES } from '../utils/constants'
+import {
+  ADMIN_ROUTES,
+  PRIVATE_ROUTES,
+  TEACHER_ROUTES,
+} from '../utils/constants'
+import ManageUsers from '../pages/ManageUsers'
 
 const adminRoutes: RouteObject[] = [
   {
@@ -51,6 +56,10 @@ const adminRoutes: RouteObject[] = [
             ],
           },
         ],
+      },
+      {
+        element: <ManageUsers />,
+        path: ADMIN_ROUTES.manageUsers,
       },
       {
         element: <Statistic />,
