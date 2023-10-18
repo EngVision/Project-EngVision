@@ -1,37 +1,18 @@
-import { useEffect } from 'react'
 import { Navigate, Outlet, RouteObject } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../hooks/redux'
+import { useAppSelector } from '../hooks/redux'
 import DefaultLayout from '../layouts/DefaultLayout'
 import Chat from '../pages/Chat'
 import CreateProfile from '../pages/CreateProfile'
 import HelpCenter from '../pages/HelpCenter'
 import Home from '../pages/Home'
 import { UpdateProfile } from '../pages/UpdateProfile'
-import { setUser } from '../redux/app/slice'
-import authApi from '../services/authApi'
 import { PRIVATE_ROUTES, PUBLIC_ROUTES, ROLES } from '../utils/constants'
 import AdminRoutes from './AdminRoutes'
 import StudentRoutes from './StudentRoutes'
 import TeacherRoutes from './TeacherRoutes'
 
 const ProtectedLayout = () => {
-  const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.app.user)
-
-  const fetchAuthUser = async () => {
-    try {
-      const data = await authApi.fetchAuthUser()
-
-      dispatch(setUser(data))
-    } catch (error) {
-      dispatch(setUser(null))
-      console.log('error: ', error)
-    }
-  }
-
-  useEffect(() => {
-    fetchAuthUser()
-  }, [])
 
   return user ? (
     user.firstLogin ? (
@@ -63,15 +44,10 @@ const privateRoutes: RouteObject[] = [
       },
     ],
   },
-  // {
-  //   element: <CreateProfile />,
-  //   path: PUBLIC_ROUTES.createProfile,
-  // },
 ]
 
 function PrivateRoutes() {
   const user = useAppSelector((state) => state.app.user)
-  console.log('🚀 ~ file: PrivateRoutes.tsx:75 ~ PrivateRoutes ~ user:', user)
 
   let routes: RouteObject[] = []
 

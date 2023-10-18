@@ -17,7 +17,7 @@ interface CustomUploadProps {
 
 function CustomUpload({
   className,
-  fileList: value = [],
+  fileList: value,
   onChange,
   type = 'text',
   multiple = false,

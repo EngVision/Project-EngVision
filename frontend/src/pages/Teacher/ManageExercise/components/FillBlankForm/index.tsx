@@ -115,6 +115,13 @@ interface FillBlankPayload extends QuestionPayload {
   }
 }
 
+interface FillBlankResponse extends Omit<FillBlankPayload, 'correctAnswer'> {
+  correctAnswer: {
+    detail: string[]
+    explanation: string
+  }
+}
+
 const transformSubmitData = (exercise: any) => {
   const { content } = exercise
 
@@ -139,14 +146,14 @@ const transformSubmitData = (exercise: any) => {
 function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
   const { content } = exercise
 
-  const transformedContent = content.map((q: FillBlankPayload) => {
+  const transformedContent = content.map((q: FillBlankResponse) => {
     const questionForm: QuestionFormSchema = {
       id: q.id,
       questionText: q.question.text,
       questionTags: q.tags,
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
-      answer: q.correctAnswer.detail,
+      answer: q.correctAnswer.detail.join(', '),
     }
 
     return questionForm

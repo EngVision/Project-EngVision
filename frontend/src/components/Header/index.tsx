@@ -1,9 +1,7 @@
 import { Avatar } from 'antd'
-
-import { NotificationIcon } from '../Icons'
-
 import { useAppSelector } from '../../hooks/redux'
 import { getFileUrl } from '../../utils/common'
+import { NotificationIcon } from '../Icons'
 import DarkModeButton from './DarkModeButton'
 import Search from './Search'
 
