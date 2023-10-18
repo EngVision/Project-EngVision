@@ -26,12 +26,10 @@ const Home = () => {
     try {
       const fetchAssignments = async () => {
         const data = await assignmentApi.getAssignments()
-        console.log(data)
         setAssignments(data)
       }
       const fetchCourses = async () => {
         const courses: any = await coursesApi.getCourses(status)
-        console.log(courses)
         setCourseList(courses.data)
       }
 
