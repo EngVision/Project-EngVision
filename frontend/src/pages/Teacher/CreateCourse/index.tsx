@@ -48,7 +48,7 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
           onFinish={handleSave}
           autoComplete="off"
           layout="vertical"
-          className="flex flex-col gap-4"
+          className="flex flex-col"
         >
           <Form.Item<FieldType>
             name="title"

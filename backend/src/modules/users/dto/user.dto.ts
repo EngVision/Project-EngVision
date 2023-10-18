@@ -37,6 +37,9 @@ export class UserDto {
   @ApiProperty({ type: String, description: 'Country' })
   country?: string;
 
+  @ApiProperty({ type: String, description: 'Country' })
+  firstLogin?: boolean;
+
   @Exclude()
   password?: string;
 

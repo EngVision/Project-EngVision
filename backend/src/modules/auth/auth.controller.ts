@@ -100,9 +100,9 @@ export class AuthController {
 
     this.authService.attachTokensCookie(res, tokens);
 
-    if (!user.password) {
-      return res.redirect(`${process.env.CLIENT_URL}/create-profile`);
-    }
+    // if (!user.password) {
+    //   return res.redirect(`${process.env.CLIENT_URL}/create-profile`);
+    // }
 
     return res.redirect(`${process.env.CLIENT_URL}/sso-success`);
   }
@@ -128,8 +128,13 @@ export class AuthController {
   async getMe(@CurrentUser() currentUser: JwtPayload, @Res() res: Response) {
     const user = await this.usersService.getById(currentUser.sub);
 
-    return res
-      .status(HttpStatus.OK)
-      .send(GetResponse({ dataType: UserDto, data: user }));
+    const firstLogin = !user.password;
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        dataType: UserDto,
+        data: { ...user.toObject(), firstLogin },
+      }),
+    );
   }
 }

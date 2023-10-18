@@ -34,7 +34,7 @@ export class CoursesService {
     private readonly reviewsService: ReviewsService,
     private readonly filesService: FilesService,
     private readonly exercisesService: ExercisesService,
-  ) {}
+  ) { }
 
   async createCourse(course: CreateCourseDto, user: JwtPayload) {
     const newCourse = new this.courseModel({ ...course, teacher: user.sub });

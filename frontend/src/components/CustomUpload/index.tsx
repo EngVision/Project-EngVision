@@ -124,7 +124,7 @@ function CustomUpload({
 
     try {
       let res
-      if (multiple || !currFileId) {
+      if (multiple || !currFileId || (!multiple && value)) {
         res = await fileApi.create(file, onProgress)
       } else {
         res = await fileApi.update(currFileId, file, onProgress)

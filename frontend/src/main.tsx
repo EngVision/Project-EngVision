@@ -15,6 +15,7 @@ const ClientRenderer = () =>
         token: {
           colorText: '#313134',
           fontFamily: 'Poppins, sans-serif',
+          fontSize: 14,
         },
       }}
     >

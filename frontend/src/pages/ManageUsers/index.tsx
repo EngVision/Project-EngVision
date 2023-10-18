@@ -1,6 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { Button, Dropdown, MenuProps, Space, Tag } from 'antd'
 import { MoreVerticalIcon } from '../../components/Icons'
-import { Level } from '../../utils/constants'
+import { LEVELS } from '../../utils/constants'
 import { useState } from 'react'
 
 interface DataType {
@@ -125,11 +126,11 @@ const ManageUsers = () => {
       <div className="flex justify-between mt-6 mb-3">
         <Space>
           <Button
-            className={` ${
-              status === Status.Pending
+            className={`
+            ${status === Status.Pending
                 ? '!text-[#F3F8FF] !bg-lime-500 !border-lime-500'
                 : 'bg-transparent text-[#41AB3F] border-[#41AB3F] hover:!text-lime-500 hover:!border-lime-500'
-            }`}
+              }`}
             onClick={() => setStatus('Pending')}
           >
             Pending
@@ -137,11 +138,10 @@ const ManageUsers = () => {
           <Button
             type="primary"
             ghost
-            className={`${
-              status === Status.Active
-                ? '!text-[#F3F8FF] !bg-[#1677FF] !border-[#1677FF]'
-                : ''
-            }`}
+            className={`${status === Status.Active
+              ? '!text-[#F3F8FF] !bg-[#1677FF] !border-[#1677FF]'
+              : ''
+              }`}
             onClick={() => setStatus('Active')}
           >
             Active
@@ -150,11 +150,10 @@ const ManageUsers = () => {
             type="primary"
             danger
             ghost
-            className={`${
-              status === Status.Locked
-                ? '!text-[#F3F8FF] !bg-[#ff4d4f] !border-[#ff4d4f]'
-                : ''
-            }`}
+            className={`${status === Status.Locked
+              ? '!text-[#F3F8FF] !bg-[#ff4d4f] !border-[#ff4d4f]'
+              : ''
+              }`}
             onClick={() => setStatus('Locked')}
           >
             Locked
@@ -193,9 +192,9 @@ const ManageUsers = () => {
                 <td>{user.role}</td>
                 <td>
                   <Tag
-                    className={`${Level.find(
+                    className={`${LEVELS.find(
                       (level) => level.level === user.level,
-                    )?.color} text-[#706E68] px-[10px]`}
+                    )?.bgColor} text-[#706E68] px-[10px]`}
                   >
                     {user.level}
                   </Tag>
@@ -203,13 +202,12 @@ const ManageUsers = () => {
                 <td>{user.createDate}</td>
                 <td>
                   <div
-                    className={`border-[1px] border-solid border-[#706E68] py-[2px] px-[4px] rounded-[5px] ${
-                      user.status === Status.Pending
-                        ? 'text-[#41AB3F] !border-[#41AB3F]'
-                        : user.status === Status.Active
+                    className={`border-[1px] border-solid border-[#706E68] py-[2px] px-[4px] rounded-[5px] ${user.status === Status.Pending
+                      ? 'text-[#41AB3F] !border-[#41AB3F]'
+                      : user.status === Status.Active
                         ? 'text-[#1677FF] !border-[#1677FF]'
                         : 'text-[#ff4d4f] !border-[#ff4d4f]'
-                    }`}
+                      }`}
                   >
                     {user.status}
                   </div>
