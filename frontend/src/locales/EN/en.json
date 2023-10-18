@@ -1,10 +1,13 @@
 {
-    "SignIn": {},
-    "SignUp": {},
-    "Home": {
-        "doclist": "Doclist"
-    },
-    "Discover": {
-        "discover": "Discover"
-    }
+  "SignIn": {},
+  "SignUp": {},
+  "Home": {
+    "doclist": "Doclist"
+  },
+  "Discover": {
+    "discover": "Discover"
+  },
+  "Exercises": {
+    "exercises": "Exercises"
+  }
 }

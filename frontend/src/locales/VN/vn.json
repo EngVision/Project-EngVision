@@ -1,14 +1,13 @@
 {
-    "SignIn":{
-        
-    },
-    "SignUp":{
-
-    },
-    "Home":{
-        "doclist": "Danh sách"
-    },
-    "Discover": {
-        "discover": "Khóa học"
-    }
+  "SignIn": {},
+  "SignUp": {},
+  "Home": {
+    "doclist": "Danh sách"
+  },
+  "Discover": {
+    "discover": "Khóa học"
+  },
+  "Exercises": {
+    "exercises": "Bài tập"
+  }
 }

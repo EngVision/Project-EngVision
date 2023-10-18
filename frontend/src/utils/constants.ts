@@ -14,7 +14,6 @@ export const PRIVATE_ROUTES = {
   home: '/',
   statistic: '/statistic',
   chat: '/chat',
-  manageUsers: '/manage-users',
   settings: '/settings',
   helpCenter: '/help-center',
 
@@ -33,7 +32,7 @@ export const PRIVATE_ROUTES = {
 export const STUDENT_ROUTES = {
   // Menu
   myHub: '/my-hub',
-  exam: '/exam',
+  exercisesAndExams: '/exercises-exams',
   discover: '/discover',
 
   appearance: '/appearance',

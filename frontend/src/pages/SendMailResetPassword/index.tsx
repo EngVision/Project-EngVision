@@ -33,7 +33,7 @@ const SendMailResetPassword: React.FC = () => {
         })
     } catch (error) {
       setSentMail(false)
-      setError(error.response.data.message)
+      setError(error.data.message)
     }
   }
 
@@ -60,7 +60,7 @@ const SendMailResetPassword: React.FC = () => {
           >
             <Form.Item
               name="email"
-              className="mb-6"
+              className="mb-2"
               rules={[
                 {
                   async validator(_, value) {
@@ -83,7 +83,7 @@ const SendMailResetPassword: React.FC = () => {
 
             {error && <p className="text-secondary">{error}</p>}
 
-            <Form.Item className="text-center">
+            <Form.Item className="text-center mt-6">
               <Button
                 type="primary"
                 shape="round"
