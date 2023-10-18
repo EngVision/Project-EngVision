@@ -125,7 +125,14 @@ export const UpdateProfile = () => {
                     options={gender}
                   />
                 </Form.Item>
-                {user.phone && (
+                <Form.Item<ProfileParams> name="email" label="Email">
+                  <Input
+                    defaultValue={user.email}
+                    size="large"
+                    className="w-[31rem] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
+                  />
+                </Form.Item>
+                {/* {user.phone && (
                   <Form.Item<ProfileParams> name="phone" label="Phone Number">
                     <Input
                       defaultValue={user.phone}
@@ -133,10 +140,10 @@ export const UpdateProfile = () => {
                       className="w-[31rem] border-slate-300 hover:border-slate-40 rounded-md shadow-sm"
                     />
                   </Form.Item>
-                )}
+                )} */}
               </Space>
 
-              <Space className="flex max-xl:flex-col justify-between">
+              {/* <Space className="flex max-xl:flex-col justify-between">
                 <Form.Item<ProfileParams> name="email" label="Email">
                   <Input
                     defaultValue={user.email}
@@ -152,7 +159,7 @@ export const UpdateProfile = () => {
                     className="w-[31rem] border-slate-300 hover:border-slate-40 rounded-md shadow-sm"
                   />
                 </Form.Item>
-              </Space>
+              </Space> */}
             </div>
           )}
         </p>
