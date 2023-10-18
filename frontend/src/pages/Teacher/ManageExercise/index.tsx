@@ -17,12 +17,13 @@ import { ExerciseSchema } from '../../../services/exerciseApi/types'
 import exerciseApi from '../../../services/exerciseApi'
 import coursesApi from '../../../services/coursesApi'
 import FillBlankForm from './components/FillBlankForm'
+import dayjs, { Dayjs } from 'dayjs'
 
 interface GeneralInfo {
   type: ExerciseType
   title: string
   description?: string
-  deadline?: Date
+  deadline?: Dayjs
   tags?: ExerciseTag[]
   level?: CEFRLevel
 }
@@ -52,7 +53,11 @@ const GeneralInfoForm = () => {
           />
         </Form.Item>
         <Form.Item<GeneralInfo> label="Deadline" name="deadline">
-          <DatePicker placeholder="Deadline (optional)" className="w-full" />
+          <DatePicker
+            showTime
+            placeholder="Deadline (optional)"
+            className="w-full"
+          />
         </Form.Item>
       </div>
       <div className="grid grid-cols-2 gap-4">
@@ -134,12 +139,14 @@ function ManageExercise() {
   }
 
   const setInitialValues = (formSubmit: FormSubmit, value: ExerciseSchema) => {
-    formSubmit.setFieldsValue({
+    const valueForm = {
       ...value,
-    })
+      deadline: value.deadline ? dayjs(value.deadline) : undefined,
+    }
+    formSubmit.setFieldsValue(valueForm)
 
     setTimeout(() => {
-      formSubmit.setInitialContent(value)
+      formSubmit.setInitialContent(valueForm)
     }, 100)
   }
 

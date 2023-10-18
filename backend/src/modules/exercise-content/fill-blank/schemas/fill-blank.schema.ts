@@ -8,6 +8,9 @@ class Question {
 
   @Prop({ default: null })
   image?: string;
+
+  @Prop({ required: true, default: [] })
+  limits: number[];
 }
 const QuestionSchema = SchemaFactory.createForClass(Question);
 
@@ -15,8 +18,8 @@ export type FillBlankDocument = FillBlank & Document;
 
 @Schema({ _id: false, versionKey: false })
 class CorrectAnswer {
-  @Prop({ type: String, required: true })
-  detail: string;
+  @Prop({ type: [String], required: true })
+  detail: string[];
 
   @Prop({ type: String, default: null })
   explanation: string;

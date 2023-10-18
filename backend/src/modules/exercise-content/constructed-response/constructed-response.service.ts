@@ -60,6 +60,6 @@ export class ConstructedResponseService extends ExerciseContentService {
     throw new Error('Method not implemented.');
   }
   setDefaultExplain(questionList: ExerciseQuestionDto[]): void {
-    throw new Error('Method not implemented.');
+    // throw new Error('Method not implemented.');
   }
 }

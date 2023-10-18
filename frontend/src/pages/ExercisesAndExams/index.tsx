@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import coursesApi from '../../services/coursesApi'
-import type { CourseDetails } from '../../services/coursesApi/types'
-import { COURSE_STATUS } from '../../utils/constants'
+import type { CourseExercisesDue } from '../../services/coursesApi/types'
 import CourseCard from './CourseCard'
 import { Button, Space } from 'antd'
 import ArrowLeft from '../../components/Icons/ArrowLeft'
@@ -15,15 +14,14 @@ enum Direction {
 
 const ExercisesAndExams = () => {
   const { t } = useTranslation()
-  const [courseList, setCourseList] = useState<CourseDetails[]>([])
+  const [courseList, setCourseList] = useState<CourseExercisesDue[]>([])
   const [disabledScrollLeft, setDisabledScrollLeft] = useState<boolean>(true)
-  const [disabledScrollRight, setDisabledScrollRight] = useState<boolean>(false)
-  const status = { status: COURSE_STATUS.all }
+  const [disabledScrollRight, setDisabledScrollRight] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courses: any = await coursesApi.getCourses(status)
+        const courses = await coursesApi.getCoursesExercisesDue()
         setCourseList(courses.data)
       } catch (error) {
         console.error('Error fetching courses:', error)
@@ -31,10 +29,11 @@ const ExercisesAndExams = () => {
     }
 
     fetchCourses()
-    setTimeout(() => {
-      initDisabledScrollRight()
-    })
   }, [])
+
+  useEffect(() => {
+    initDisabledScrollRight()
+  }, [courseList])
 
   const initDisabledScrollRight = () => {
     const containerElement: HTMLElement | null =

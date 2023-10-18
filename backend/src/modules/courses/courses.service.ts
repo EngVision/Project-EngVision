@@ -21,6 +21,7 @@ import {
   SearchCourseDto,
   UpdateCourseDto,
   CourseDetailDto,
+  CourseExercisesDto,
 } from './dto';
 import { Order, Role, SortBy, StatusCourseSearch } from 'src/common/enums';
 import { JwtPayload } from '../auth/types';
@@ -34,7 +35,7 @@ export class CoursesService {
     private readonly reviewsService: ReviewsService,
     private readonly filesService: FilesService,
     private readonly exercisesService: ExercisesService,
-  ) { }
+  ) {}
 
   async createCourse(course: CreateCourseDto, user: JwtPayload) {
     const newCourse = new this.courseModel({ ...course, teacher: user.sub });
@@ -539,7 +540,10 @@ export class CoursesService {
   }
 
   async attendCourse(courseId: string, studentId: string) {
-    const course = await this.courseModel.findById(courseId);
+    const course = await this.courseModel.findOne({
+      _id: courseId,
+      isPublished: true,
+    });
 
     if (!course) throw new BadRequestException('Course not found');
     if (course.attendanceList.includes(studentId))
@@ -578,5 +582,74 @@ export class CoursesService {
     await course.save();
 
     return true;
+  }
+
+  async getCoursesExercises(user: JwtPayload) {
+    const courses = await this.courseModel.aggregate([
+      {
+        $match: {
+          attendanceList: {
+            $elemMatch: { $eq: new Types.ObjectId(user.sub) },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'exercises',
+          localField: 'sections.lessons.exercises',
+          foreignField: '_id',
+          as: 'exercises',
+        },
+      },
+      {
+        $addFields: {
+          totalLessons: {
+            $reduce: {
+              input: '$sections',
+              initialValue: 0,
+              in: { $add: ['$$value', { $size: '$$this.lessons' }] },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          totalLessons: 1,
+          'exercises._id': 1,
+          'exercises.title': 1,
+          'exercises.deadline': 1,
+          thumbnail: 1,
+          level: 1,
+          attendanceList: 1,
+        },
+      },
+    ]);
+
+    return plainToInstance(CourseExercisesDto, courses);
+  }
+
+  async getCoursesExercisesDue(user: JwtPayload) {
+    const now = new Date();
+    const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    const coursesExercises: CourseExercisesDto[] =
+      await this.getCoursesExercises(user);
+
+    coursesExercises.forEach(course => {
+      let ongoingExercises = 0;
+      let dueExercises = 0;
+
+      course.exercises?.forEach(exercise => {
+        if (new Date(exercise.deadline) < now) dueExercises += 1;
+        else if (new Date(exercise.deadline) < nextWeek) ongoingExercises += 1;
+      });
+
+      course.dueExercises = dueExercises;
+      course.ongoingExercises = ongoingExercises;
+    });
+
+    return coursesExercises;
   }
 }
