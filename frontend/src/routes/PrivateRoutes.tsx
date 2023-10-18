@@ -48,7 +48,6 @@ const privateRoutes: RouteObject[] = [
 
 function PrivateRoutes() {
   const user = useAppSelector((state) => state.app.user)
-  console.log('🚀 ~ file: PrivateRoutes.tsx:75 ~ PrivateRoutes ~ user:', user)
 
   let routes: RouteObject[] = []
 

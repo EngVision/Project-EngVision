@@ -5,7 +5,6 @@ import { QuestionResult } from 'src/modules/assignments/schemas/assignment.schem
 import { ExerciseContentService } from '../base-exercise-content.service';
 import { CreateFillBlankDto } from './dto/create-fill-blank.dto';
 import { FillBlank } from './schemas/fill-blank.schema';
-import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 
 @Injectable()
 export class FillBlankService extends ExerciseContentService {
@@ -25,10 +24,12 @@ export class FillBlankService extends ExerciseContentService {
     );
 
     this.validateQuestionList(validatedContent);
-    this.transformAnswerList(validatedContent);
-    this.setDefaultExplain(validatedContent);
+    const transformedContent = this.transformAnswerList(validatedContent);
+    this.setDefaultExplain(transformedContent);
 
-    const questionList = await this.fillBlankModel.insertMany(validatedContent);
+    const questionList = await this.fillBlankModel.insertMany(
+      transformedContent,
+    );
 
     return questionList.map(q => q.id);
   }
@@ -43,10 +44,10 @@ export class FillBlankService extends ExerciseContentService {
     );
 
     this.validateQuestionList(validatedContent);
-    this.transformAnswerList(validatedContent);
-    this.setDefaultExplain(validatedContent);
+    const transformedContent = this.transformAnswerList(validatedContent);
+    this.setDefaultExplain(transformedContent);
 
-    const bulkOps = this.updateBulkOps(validatedContent, removedQuestions);
+    const bulkOps = this.updateBulkOps(transformedContent, removedQuestions);
 
     const res = await this.fillBlankModel.bulkWrite(bulkOps);
 
@@ -65,28 +66,26 @@ export class FillBlankService extends ExerciseContentService {
       throw new BadRequestException('Answer must be not empty string array');
     }
 
-    const answerStr = answer.join(',');
-
     const {
       question,
       correctAnswer: { detail, explanation },
     } = await this.fillBlankModel.findById(id);
 
-    this.validateQuestion(question.text, answerStr);
-    const transformAnswer = this.transformAnswer(question.text, answerStr);
+    this.validateQuestion(question.text, this.answerToString(answer));
 
-    const isCorrect = detail.toLowerCase() === transformAnswer.toLowerCase();
+    const isCorrect =
+      this.answerToString(detail) === this.answerToString(answer);
 
     return {
       question: id,
       isCorrect,
-      answer: transformAnswer,
+      answer,
       correctAnswer: detail,
       explanation,
     };
   }
 
-  validateQuestionList(questionList: FillBlank[]): void {
+  validateQuestionList(questionList: CreateFillBlankDto[]): void {
     questionList.forEach(q =>
       this.validateQuestion(q.question.text, q.correctAnswer.detail),
     );
@@ -102,28 +101,42 @@ export class FillBlankService extends ExerciseContentService {
     }
   }
 
-  transformAnswerList(questionList: FillBlank[]): void {
-    questionList.forEach(q => {
-      q.correctAnswer.detail = this.transformAnswer(
-        q.question.text,
-        q.correctAnswer.detail,
-      );
+  transformAnswerList(questionList: CreateFillBlankDto[]): FillBlank[] {
+    const res: FillBlank[] = [];
 
-      q.question.limits = q.correctAnswer.detail
-        .split(',')
-        .map(s => s.trim().length);
+    questionList.forEach(q => {
+      res.push({
+        ...q,
+        correctAnswer: {
+          ...q.correctAnswer,
+          detail: this.transformAnswer(q.correctAnswer.detail),
+        },
+        question: {
+          ...q.question,
+          limits: q.correctAnswer.detail.split(',').map(s => s.trim().length),
+        },
+      });
     });
+
+    return res;
   }
 
-  transformAnswer(question: string, answer: string): string {
-    const answerSplitted = answer.split(',').map(s => s.trim());
+  transformAnswer(answer: string): string[] {
+    return answer.split(',').map(s => s.trim());
+  }
 
-    return answerSplitted.join(',');
+  answerToString(answer: string[]): string {
+    return answer
+      .map(s => s.trim())
+      .join()
+      .toLowerCase();
   }
 
   setDefaultExplain(questionList: FillBlank[]): void {
     questionList.forEach(q => {
-      q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail}`;
+      q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail.join(
+        ', ',
+      )}`;
     });
   }
 }

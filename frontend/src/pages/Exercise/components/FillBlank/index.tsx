@@ -1,9 +1,9 @@
 import { Form, Input } from 'antd'
+import { useEffect } from 'react'
 import {
   QuestionPayload,
   SubmitAnswerResponse,
 } from '../../../../services/exerciseApi/types'
-import { useEffect } from 'react'
 
 interface FillBlankProps extends QuestionPayload {
   question: { text: string; image?: string; limits: number[] }
@@ -12,25 +12,26 @@ interface FillBlankProps extends QuestionPayload {
 }
 
 interface FillBlankResponse extends SubmitAnswerResponse {
-  answer: string
-  correctAnswer: string
+  answer: string[]
+  correctAnswer: string[]
 }
 
 function FillBlank(props: FillBlankProps) {
-  const { question } = props
+  const { question, result } = props
   const answer = Form.useWatch('answer')
   const form = Form.useFormInstance()
 
   const questionArr = question.text.split('[]')
 
-  console.log(question.limits)
-
   useEffect(() => {
     form.setFieldValue('answer', Array(questionArr.length - 1).fill(''))
+    if (result) {
+      form.setFieldValue('answer', result.correctAnswer)
+    }
   }, [props])
 
   return (
-    <div className="mb-10">
+    <div>
       <p className="mb-5 text-primary text-2xl font-semibold">
         Fill blank question
       </p>
@@ -46,8 +47,16 @@ function FillBlank(props: FillBlankProps) {
                   <span className="text-xl">{questionArr[key]}</span>
                   <Form.Item noStyle name={[key]}>
                     <Input
-                      className="font-bold text-xl"
+                      className={`font-bold text-xl ${
+                        result
+                          ? result.correctAnswer[key] === result.answer[key]
+                            ? '!text-green-500'
+                            : '!text-red-500'
+                          : ''
+                      }`}
+                      minLength={question.limits[key]}
                       maxLength={question.limits[key]}
+                      disabled={!!result}
                       // eslint-disable-next-line jsx-a11y/no-autofocus
                       autoFocus
                       style={{
