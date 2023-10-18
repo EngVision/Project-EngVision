@@ -84,8 +84,8 @@ function CustomUpload({
           multiple
             ? newFileList.map((file) => file.uid)
             : file.status === 'done'
-            ? file.uid
-            : null,
+              ? file.uid
+              : null,
         )
 
         message.success(`${file.name} uploaded.`)
@@ -137,7 +137,7 @@ function CustomUpload({
         url: err.request.responseURL,
         method: err.config.method,
         name: err.statusText,
-        message: err.data.message,
+        message: err.data?.message,
       })
     }
   }

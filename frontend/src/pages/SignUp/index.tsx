@@ -114,8 +114,7 @@ const SignUp: React.FC = () => {
 
   const validatePassword = (password: string) => {
     if (!password) return true
-    const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/
     return password && password.length >= 8 && passwordRegex.test(password)
   }
 

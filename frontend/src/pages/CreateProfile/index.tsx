@@ -1,15 +1,22 @@
 import { Button, Checkbox, Form, Input, Select } from 'antd'
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { useForm } from 'antd/es/form/Form'
 import accountApi from '../../services/accountApi'
 import authApi from '../../services/authApi'
 import type { SignUpParams } from '../../services/authApi/types'
-import { GENDERS } from '../../utils/constants'
+import { Gender, PRIVATE_ROUTES, Role } from '../../utils/constants'
+import { setUser } from '../../redux/app/slice'
+import { useAppDispatch } from '../../hooks/redux'
+import { NotificationContext } from '../../contexts/notification'
+import enumToSelectOptions from '../../utils/enumsToSelectOptions'
 
 const CreateProfile = () => {
   const [form] = useForm<SignUpParams>()
+  const dispatch = useAppDispatch()
+  const apiNotification = useContext(NotificationContext)
+  const navigate = useNavigate()
 
   const [error, setError] = useState<string>('')
 
@@ -26,20 +33,43 @@ const CreateProfile = () => {
   }, [])
 
   const onFinish = async (values: SignUpParams) => {
-    try {
-      const res = await accountApi.updateWhenSignUp(values)
-      console.log('🚀 ~ file: index.tsx:30 ~ onFinish ~ res:', res)
+    if (!values.accepted) {
+      setError('Please accept Terms of Service')
+      return
+    }
 
-      window.close()
+    try {
+      const { data } = await accountApi.updateWhenSignUp(values)
+      dispatch(setUser(data))
+      apiNotification.success({
+        message: 'Create account successfully!',
+      })
+      navigate(PRIVATE_ROUTES.home)
     } catch (error) {
-      setError(error.response.data.message)
+      setError(error.data.message)
     }
   }
 
-  console.log('first')
+  const validatePassword = (password: string) => {
+    if (!password) return true
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/
+    return password && password.length >= 8 && passwordRegex.test(password)
+  }
+
+  const validateConfirmPassword = (confirmPassword: string) => {
+    if (!confirmPassword) return true
+    const password = form.getFieldValue('password')
+    return confirmPassword === password
+  }
+
+  const validatePhone = (phone: string) => {
+    if (!phone) return true
+    const phoneRegex = /^\d{10,}$/
+    return phoneRegex.test(phone)
+  }
 
   return (
-    <div className="w-[100vw] h-[100vh] flex items-center justify-center bg-slate-300">
+    <div className="w-[100vw] min-h-[100vh] flex items-center justify-center bg-slate-300 py-16">
       <div className="bg-white p-[40px] rounded-[16px]">
         <div>
           <h4 className="text-center font-semibold text-[40px] mb-[40px]">
@@ -58,10 +88,13 @@ const CreateProfile = () => {
           onFinish={onFinish}
           autoComplete="off"
           onChange={() => setError('')}
+          layout="vertical"
+          className="w-[36rem]"
         >
           <div className="flex items-center gap-4">
             <Form.Item<SignUpParams>
               name="firstName"
+              label="First name"
               rules={[
                 { message: 'Please input your first name!', required: true },
               ]}
@@ -75,6 +108,7 @@ const CreateProfile = () => {
 
             <Form.Item<SignUpParams>
               name="lastName"
+              label="Last name"
               rules={[
                 { message: 'Please input your last name!', required: true },
               ]}
@@ -89,7 +123,24 @@ const CreateProfile = () => {
 
           <Form.Item<SignUpParams>
             name="password"
-            rules={[{ message: 'Please input your password!', required: true }]}
+            label="Password"
+            rules={[
+              { message: 'Please input your password!', required: true },
+              {
+                async validator(_, value) {
+                  return new Promise((resolve, reject) => {
+                    if (validatePassword(value)) {
+                      resolve('')
+                    } else
+                      reject(
+                        new Error(
+                          'The password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number or special character',
+                        ),
+                      )
+                  })
+                },
+              },
+            ]}
           >
             <Input.Password
               placeholder="Password"
@@ -100,10 +151,25 @@ const CreateProfile = () => {
 
           <Form.Item<SignUpParams>
             name="confirmPassword"
+            label="Confirm password"
             rules={[
               {
                 message: 'Please input your confirm password!',
                 required: true,
+              },
+              {
+                async validator(_, value) {
+                  return new Promise((resolve, reject) => {
+                    if (validateConfirmPassword(value)) {
+                      resolve('')
+                    } else
+                      reject(
+                        new Error(
+                          'The confirm password must be same as password!',
+                        ),
+                      )
+                  })
+                },
               },
             ]}
           >
@@ -116,8 +182,23 @@ const CreateProfile = () => {
 
           <Form.Item<SignUpParams>
             name="phoneNumber"
+            label="Phone number"
             rules={[
               { message: 'Please input your phone number!', required: true },
+              {
+                async validator(_, value) {
+                  return new Promise((resolve, reject) => {
+                    if (validatePhone(value)) {
+                      resolve('')
+                    } else
+                      reject(
+                        new Error(
+                          'Phone must be longer than or equal to 10 characters',
+                        ),
+                      )
+                  })
+                },
+              },
             ]}
           >
             <Input
@@ -126,28 +207,35 @@ const CreateProfile = () => {
             />
           </Form.Item>
 
-          {/* <Form.Item<SignUpParams>
-          name="gender"
-          rules={[{ message: 'Please input your gender!', required: true }]}
-        >
-          <Upload {...props}>
-            <Button icon={<UploadOutlined />}>Click to Upload</Button>
-          </Upload>
-        </Form.Item> */}
-
           <Form.Item<SignUpParams>
             name="gender"
+            label="Gender"
             rules={[{ message: 'Please input your gender!', required: true }]}
+            className="[&>*]:!text-sm"
           >
             <Select
-              options={GENDERS}
-              className="h-[40px] text-[14px]"
-              placeholder="Choose your gender"
+              options={enumToSelectOptions(Gender)}
+              className="h-[40px] !text-[14px]"
+              placeholder="Gender"
               size="large"
             />
           </Form.Item>
 
-          {error && <p className="text-red-500">{error}</p>}
+          <Form.Item<SignUpParams>
+            name="role"
+            label="Role"
+            rules={[{ required: true, message: 'Please choose role!' }]}
+          >
+            <Select
+              placeholder="Select role"
+              options={Object.values(Role).map((role) => ({
+                value: role,
+                label: role,
+              }))}
+              className="h-[40px] text-[14px]"
+              size="large"
+            />
+          </Form.Item>
 
           <Form.Item<SignUpParams> name="accepted" valuePropName="checked">
             <Checkbox>
@@ -160,6 +248,8 @@ const CreateProfile = () => {
               </Link>
             </Checkbox>
           </Form.Item>
+
+          {error && <p className="text-secondary mt-[-20px] mb-6">{error}</p>}
 
           <Form.Item className="text-center">
             <Button

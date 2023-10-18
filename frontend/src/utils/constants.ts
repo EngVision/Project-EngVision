@@ -137,7 +137,7 @@ export const SEARCH_OPTIONS = {
 }
 
 export const BASE_URL = import.meta.env.VITE_BASE_URL
-export const UPLOAD_FILE_URL = `${BASE_URL}/files`
+export const UPLOAD_FILE_URL = import.meta.env.VITE_SERVER_FILES_URL
 export const GOOGLE_LOGIN = `${BASE_URL}auth/google/login`
 export const FACEBOOK_LOGIN = `${BASE_URL}auth/facebook/login`
 
