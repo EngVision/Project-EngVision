@@ -1,9 +1,10 @@
+import _ from 'lodash'
 import { CourseState } from '../redux/course/slice'
 import { CourseDetails } from '../services/coursesApi/types'
-import _ from 'lodash'
+import { UPLOAD_FILE_URL } from './constants'
 
 export const getFileUrl = (id: string) =>
-  `${import.meta.env.VITE_SERVER_FILES_URL}${id}`
+  `${UPLOAD_FILE_URL}${id}`
 
 export const getFormattedPrice = (price: number) =>
   price || price === 0 ? `$${price.toFixed(2)}` : '$0'
@@ -95,8 +96,8 @@ export function getFormattedDate(inputDate: string): string {
 export function cleanObject(obj: any) {
   function internalClean(obj: any) {
     return _.transform(obj, function (result: any, value, key) {
-      var isCollection = _.isObject(value)
-      var cleaned = isCollection ? internalClean(value) : value
+      const isCollection = _.isObject(value)
+      const cleaned = isCollection ? internalClean(value) : value
 
       if (
         (isCollection && _.isEmpty(cleaned)) ||
