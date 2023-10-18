@@ -106,6 +106,15 @@ const coursesApi = {
       throw error
     }
   },
+  getCoursesExercisesDue: async () => {
+    try {
+      const res = await axiosClient.get(`${PREFIX}exercises-due`)
+      return res
+    } catch (error) {
+      console.error('Error get courses:', error)
+      throw error
+    }
+  },
 }
 
 export default coursesApi

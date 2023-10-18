@@ -98,6 +98,22 @@ export class CoursesController {
     );
   }
 
+  @Get('/exercises-due')
+  @ApiResponseData(Array)
+  @UseGuards(AtGuard, RoleGuard(Role.Student))
+  async getCoursesExercises(
+    @Res() res: Response,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const courses = await this.coursesService.getCoursesExercisesDue(user);
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        data: courses,
+      }),
+    );
+  }
+
   @Get('/:id')
   @ApiResponseData(CourseDetailDto)
   @UseGuards(AtGuard)
