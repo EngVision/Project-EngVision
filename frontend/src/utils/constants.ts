@@ -166,3 +166,12 @@ export enum Gender {
   Female = 'Female',
   Other = 'Other',
 }
+
+export enum NextDue {
+  none = 'None',
+  tomorrow = 'Tomorrow',
+  today = 'Today',
+  in1week = 'In 1 week',
+  in2weeks = 'In 2 weeks',
+  in1month = 'In 1 month',
+}

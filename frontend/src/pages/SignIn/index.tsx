@@ -1,14 +1,14 @@
 import { Button, Form, Input } from 'antd'
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
+import { NotificationContext } from '../../contexts/notification'
 import { useAppDispatch } from '../../hooks/redux'
 import { setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
 import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
-import { NotificationContext } from '../../contexts/notification'
 
 const SignIn: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -24,7 +24,11 @@ const SignIn: React.FC = () => {
         message: 'Sign in successfully!',
       })
     } catch (error) {
-      setError(error.response.data.message)
+      if (error.response.data.message) {
+        setError(error.response.data.message)
+      } else {
+        setError('An error occurred during sign-in.')
+      }
     }
   }
 
@@ -75,7 +79,7 @@ const SignIn: React.FC = () => {
 
   const validatePassword = (password: string) => {
     const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/
     return password && password.length >= 8 && passwordRegex.test(password)
   }
 

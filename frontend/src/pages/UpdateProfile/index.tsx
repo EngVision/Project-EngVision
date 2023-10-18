@@ -8,23 +8,25 @@ import {
   TabsProps,
   notification,
 } from 'antd'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import CustomUpload from '../../components/CustomUpload'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import accountApi from '../../services/accountApi'
 import type {
   ChangePassword,
   ProfileParams,
 } from '../../services/accountApi/types'
-import authApi from '../../services/authApi'
 import { PRIVATE_ROUTES } from '../../utils/constants'
+import { setUser } from '../../redux/app/slice'
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error'
 
 export const UpdateProfile = () => {
-  //const { TextArea } = Input
-  const [account, setAccount] = useState<ProfileParams>()
+  const dispatch = useAppDispatch()
+  const user = useAppSelector((state) => state.app.user)
+
   const [keyCollapse, setKeyCollapse] = useState('' as any)
   const [api, contextHolder] = notification.useNotification()
 
@@ -33,21 +35,6 @@ export const UpdateProfile = () => {
     { value: 'Female', label: 'Female' },
     { value: 'Other', label: 'Other' },
   ]
-
-  useEffect(() => {
-    const fetchAccount = async () => {
-      try {
-        const res = await authApi.fetchAuthUser()
-        const data = res.data
-        console.log(data)
-        if (data) setAccount(data)
-      } catch (error) {
-        console.log('Error fetching courses:', error)
-      }
-    }
-
-    fetchAccount()
-  }, [])
 
   const openNotificationWithIcon = (
     type: NotificationType,
@@ -73,6 +60,7 @@ export const UpdateProfile = () => {
       if (keyCollapse.includes('1') || !keyCollapse) {
         await accountApi.update(values)
         openNotificationWithIcon('success', 'Update profile successfully.')
+        dispatch(setUser(values))
       }
       if (
         keyCollapse.includes('2') &&
@@ -97,11 +85,11 @@ export const UpdateProfile = () => {
       label: 'Profile',
       children: (
         <p>
-          {account && (
+          {user && (
             <div>
               <Form.Item<ProfileParams>
                 label="Avatar"
-                initialValue={account.avatar}
+                initialValue={user.avatar}
                 name="avatar"
                 valuePropName="fileList"
               >
@@ -110,14 +98,14 @@ export const UpdateProfile = () => {
               <Space className="flex max-xl:flex-col justify-between">
                 <Form.Item<ProfileParams> name="firstName" label="First Name">
                   <Input
-                    defaultValue={account.firstName}
+                    defaultValue={user.firstName}
                     size="large"
                     className="w-[31rem] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
                   />
                 </Form.Item>
                 <Form.Item<ProfileParams> name="lastName" label="Last Name">
                   <Input
-                    defaultValue={account.lastName}
+                    defaultValue={user.lastName}
                     size="large"
                     className="w-[31rem] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
                   />
@@ -133,24 +121,25 @@ export const UpdateProfile = () => {
                   <Select
                     className="shadow-sm"
                     size="large"
-                    defaultValue={account.gender}
+                    defaultValue={user.gender}
                     options={gender}
                   />
                 </Form.Item>
-
-                <Form.Item<ProfileParams> name="phone" label="Phone Number">
-                  <Input
-                    defaultValue={account.phone}
-                    size="large"
-                    className="w-[31rem] border-slate-300 hover:border-slate-40 rounded-md shadow-sm"
-                  />
-                </Form.Item>
+                {user.phone && (
+                  <Form.Item<ProfileParams> name="phone" label="Phone Number">
+                    <Input
+                      defaultValue={user.phone}
+                      size="large"
+                      className="w-[31rem] border-slate-300 hover:border-slate-40 rounded-md shadow-sm"
+                    />
+                  </Form.Item>
+                )}
               </Space>
 
               <Space className="flex max-xl:flex-col justify-between">
                 <Form.Item<ProfileParams> name="email" label="Email">
                   <Input
-                    defaultValue={account.email}
+                    defaultValue={user.email}
                     size="large"
                     className="w-[31rem] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
                   />
@@ -158,19 +147,12 @@ export const UpdateProfile = () => {
 
                 <Form.Item<ProfileParams> name="country" label="Country">
                   <Input
-                    defaultValue={account.country}
+                    defaultValue={user.country}
                     size="large"
                     className="w-[31rem] border-slate-300 hover:border-slate-40 rounded-md shadow-sm"
                   />
                 </Form.Item>
               </Space>
-              {/* <Form.Item<ProfileParams> name="about" label="About">
-                <TextArea
-                  defaultValue={account.about}
-                  style={{ height: 80, resize: 'none' }}
-                  className="border-slate-300 shadow-sm hover:border-slate-40 rounded-md"
-                />
-              </Form.Item> */}
             </div>
           )}
         </p>
@@ -217,35 +199,33 @@ export const UpdateProfile = () => {
   return (
     <div>
       {contextHolder}
-      {account && (
-        <Form
-          name="validateOnly"
-          layout="vertical"
-          autoComplete="off"
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-        >
-          <Tabs
-            defaultActiveKey="1"
-            items={items}
-            onChange={(e) => setKeyCollapse(e)}
-          />
-          <div className="mt-6">
-            <Space className="flex justify-end">
-              <Link to={PRIVATE_ROUTES.home}>
-                <Button className="h-10 w-20">Cancel</Button>
-              </Link>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="h-10 w-20 bg-[#2563EB]"
-              >
-                Save
-              </Button>
-            </Space>
-          </div>
-        </Form>
-      )}
+      <Form
+        name="validateOnly"
+        layout="vertical"
+        autoComplete="off"
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+      >
+        <Tabs
+          defaultActiveKey="1"
+          items={items}
+          onChange={(e) => setKeyCollapse(e)}
+        />
+        <div className="mt-6">
+          <Space className="flex justify-end">
+            <Link to={PRIVATE_ROUTES.home}>
+              <Button className="h-10 w-20">Cancel</Button>
+            </Link>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="h-10 w-20 bg-[#2563EB]"
+            >
+              Save
+            </Button>
+          </Space>
+        </div>
+      </Form>
     </div>
   )
 }

@@ -1,30 +1,14 @@
 import { Avatar } from 'antd'
-import { useEffect, useState } from 'react'
 
 import { NotificationIcon } from '../Icons'
 
-import { ProfileParams } from '../../services/accountApi/types'
-import authApi from '../../services/authApi'
+import { useAppSelector } from '../../hooks/redux'
 import { getFileUrl } from '../../utils/common'
 import DarkModeButton from './DarkModeButton'
 import Search from './Search'
 
 const Header = () => {
-  const [account, setAccount] = useState<ProfileParams>()
-
-  useEffect(() => {
-    const fetchAccount = async () => {
-      try {
-        const res = await authApi.fetchAuthUser()
-        const data = res.data
-        if (data) setAccount(data)
-      } catch (error) {
-        console.error('Error fetching courses:', error)
-      }
-    }
-
-    fetchAccount()
-  }, [])
+  const user = useAppSelector((state) => state.app.user)
 
   return (
     <div className="flex items-center py-9">
@@ -34,13 +18,13 @@ const Header = () => {
         <div className="flex items-center gap-4">
           <NotificationIcon width={40} height={40} />
           <DarkModeButton />
-          {account && (
+          {user && (
             <Avatar
-              className={`${account?.avatar ? '' : 'bg-blue-400 text-white'}`}
-              src={getFileUrl(account?.avatar)}
+              className={`${user?.avatar ? '' : 'bg-blue-400 text-white'}`}
+              src={getFileUrl(user?.avatar)}
               size="default"
             >
-              {account?.avatar ? '' : account?.lastName[0]}
+              {user?.avatar ? '' : user?.lastName[0]}
             </Avatar>
           )}
         </div>

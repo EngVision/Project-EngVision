@@ -10,6 +10,7 @@ export interface AssignmentResponse {
   totalCorrect: number
   totalQuestion: number
   totalDone: number
+  progress: number
   createdAt: Date
   updatedAt: Date
 }
