@@ -4,10 +4,10 @@ import { NoteIcon, PeopleIcon } from '../../../components/Icons'
 import { useNavigate } from 'react-router-dom'
 import { LEVELS } from '../../../utils/constants'
 import CustomImage from '../../../components/common/CustomImage'
-import { CourseDetails } from '../../../services/coursesApi/types'
+import { CourseExercisesDue } from '../../../services/coursesApi/types'
 
 interface CourseProps {
-  course: CourseDetails
+  course: CourseExercisesDue
 }
 
 const CourseCard = ({ course }: CourseProps) => {
@@ -16,7 +16,7 @@ const CourseCard = ({ course }: CourseProps) => {
 
   return (
     <Card
-      className="min-w-[300px] shadow-lg snap-center cursor-pointer"
+      className="min-w-[300px] max-w-[330px] shadow-lg snap-center cursor-pointer"
       onClick={() => navigate(`../discover/${course.id}`)}
       cover={
         <CustomImage
@@ -39,14 +39,16 @@ const CourseCard = ({ course }: CourseProps) => {
 
         <div className="flex items-center">
           <NoteIcon className="pr-1" />
-          <p>0 assignments</p>
+          <p>{course.totalLessons} assignments</p>
         </div>
       </div>
 
       <p className="text-sm font-bold uppercase py-4">{course.title}</p>
 
-      <p className="text-alternative">3 assignment due in one week</p>
-      <p className="text-secondary">0 due</p>
+      <p className="text-alternative">
+        {course.ongoingExercises} assignment due in one week
+      </p>
+      <p className="text-secondary">{course.dueExercises} due</p>
     </Card>
   )
 }

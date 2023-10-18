@@ -14,3 +14,4 @@ export * from './update-lesson.dto';
 export * from './update-section.dto';
 export * from './exercise.dto';
 export * from './lesson-exercise-id.dto';
+export * from './course-exercises.dto';

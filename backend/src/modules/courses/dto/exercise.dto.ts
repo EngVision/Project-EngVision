@@ -12,4 +12,7 @@ export class ExerciseDto {
 
   @ApiProperty({ type: String, description: 'Description' })
   description: string;
+
+  @ApiProperty({ type: String, description: 'Deadline' })
+  deadline: string;
 }

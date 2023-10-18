@@ -13,6 +13,9 @@ export class Exercise {
   @Prop({ type: SchemaTypes.ObjectId, ref: User.name, required: true })
   creator: string;
 
+  @Prop({ type: Date, default: null })
+  deadline: string;
+
   @Prop({ type: String, default: null })
   description?: string;
 

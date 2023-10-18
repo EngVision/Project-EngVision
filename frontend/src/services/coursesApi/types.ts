@@ -86,6 +86,17 @@ export interface CourseDetails {
   updatedAt: string
 }
 
+export interface CourseExercisesDue {
+  id: string
+  title: string
+  thumbnail: string
+  level: string
+  attendance: number
+  totalLessons: number
+  dueExercises: number
+  ongoingExercises: number
+}
+
 export interface ReviewParams {
   star: number
   comment: string
