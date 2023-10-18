@@ -6,7 +6,7 @@ const AuthLayout = () => {
   const user = useAppSelector((state) => state.app.user)
 
   return !user ? (
-    <div className="w-screen min-h-screen flex items-center justify-center bg-bgDefault p-16">
+    <div className="w-screen min-h-screen flex items-center justify-center p-16">
       <Outlet />
     </div>
   ) : (

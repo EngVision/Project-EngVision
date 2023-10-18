@@ -1,37 +1,33 @@
-import { useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from './redux'
-import { toggleDarkMode } from '../redux/app/slice'
+// import { useEffect, useState } from 'react'
+// import { useAppDispatch, useAppSelector } from './redux'
+// import { toggleDarkMode } from '../redux/app/slice'
 
-const updateThemeInDocument = (theme: boolean) => {
-  if (
-    theme === true &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  ) {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
-}
+// const updateThemeInDocument = (theme: boolean) => {
+//   if (
+//     theme === true &&
+//     window.matchMedia('(prefers-color-scheme: dark)').matches
+//   ) {
+//     document.documentElement.classList.add('dark')
+//   } else {
+//     document.documentElement.classList.remove('dark')
+//   }
+// }
 
-const useDarkMode = () => {
-  const [isDarkMode, setDarkMode] = useState(false)
-  const dispatch = useAppDispatch()
-  const theme = useAppSelector((state) => state.app.darkMode)
+// const useDarkMode = () => {
+//   const dispatch = useAppDispatch()
+//   const theme = useAppSelector((state) => state.app.darkMode)
 
-  useEffect(() => {
-    const osPref = window.matchMedia('(prefers-color-scheme: dark)').matches
+//   useEffect(() => {
+//     const osPref = window.matchMedia('(prefers-color-scheme: dark)').matches
 
-    if (!theme) {
-      if (osPref) dispatch(toggleDarkMode())
-      setDarkMode(osPref)
-    } else {
-      setDarkMode(theme)
-    }
+//     if (!theme) {
+//       if (osPref) dispatch(toggleDarkMode())
+//     }
 
-    updateThemeInDocument(theme)
-  }, [])
+//     updateThemeInDocument(theme)
+//   }, [])
 
-  return { isDarkMode }
-}
+//   return { isDarkMode }
+// }
 
-export default useDarkMode
+// export default useDarkMode
