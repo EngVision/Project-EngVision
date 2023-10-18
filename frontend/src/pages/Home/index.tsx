@@ -49,7 +49,7 @@ const Home = () => {
     exercise.totalInProcess = exercise.totalQuestion - exercise.totalDone
   })
 
-  const NotiDashboard = () => {
+  const DashboardNoti = () => {
     return (
       <div className="flex flex-row px-5 justify-between bg-[#41AB3F] rounded-xl items-center">
         <div className="basis-1/4 text-xl text-white">
@@ -63,7 +63,7 @@ const Home = () => {
       </div>
     )
   }
-  const CardDashborad = (title: string, value: any) => {
+  const DashboardCard = (title: string, value: any) => {
     return (
       <div className="w-60 h-56 p-2 my-4 flex flex-col rounded-xl bg-white items-center justify-center text-xl">
         <div className="text-blue-600 text-center">{title}</div>
@@ -74,17 +74,17 @@ const Home = () => {
   return (
     <div className="flex flex-col">
       <div className="mb-8">
-        <NotiDashboard />
+        <DashboardNoti />
       </div>
       <div className="flex flex-wrap justify-between space-x-1">
-        {CardDashborad('EXERCISES', exercise.totalInProcess)}
-        {CardDashborad('TOTAL EXERCISES', exercise.totalQuestion)}
-        {CardDashborad('NEXT DUE', nextDue.tomorrow)}
-        {CardDashborad('SUBMITTED ASSIGNMENTS', exercise.totalDone)}
-        {CardDashborad('COURSES LEARNING', courseList.length)}
-        {CardDashborad('TOTAL COURSES', courseList.length)}
-        {CardDashborad('FINISHED COURSES', 0)}
-        {CardDashborad('CERF LEVEL', level.C1)}
+        {DashboardCard('EXERCISES', exercise.totalInProcess)}
+        {DashboardCard('TOTAL EXERCISES', exercise.totalQuestion)}
+        {DashboardCard('NEXT DUE', nextDue.tomorrow)}
+        {DashboardCard('SUBMITTED ASSIGNMENTS', exercise.totalDone)}
+        {DashboardCard('COURSES LEARNING', courseList.length)}
+        {DashboardCard('TOTAL COURSES', courseList.length)}
+        {DashboardCard('FINISHED COURSES', 0)}
+        {DashboardCard('CERF LEVEL', level.C1)}
       </div>
     </div>
   )
