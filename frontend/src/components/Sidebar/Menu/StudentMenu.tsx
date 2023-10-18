@@ -25,7 +25,7 @@ const STUDENT_MENU_ITEMS: MenuItemType[] = [
   {
     icon: <NoteIcon />,
     path: STUDENT_ROUTES.exercisesAndExams,
-    title: 'Exams&Exams',
+    title: 'Exercises & Exams',
   },
   {
     icon: <GlobalSearchIcon />,
