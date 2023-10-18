@@ -3,7 +3,7 @@ import { IUser } from '../../services/authApi/types'
 
 interface AppState {
   user: IUser | null
-  darkMode: boolean | string
+  darkMode: boolean
   locales: string
 }
 

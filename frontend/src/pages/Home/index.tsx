@@ -65,7 +65,7 @@ const Home = () => {
   }
   const DashboardCard = (title: string, value: any) => {
     return (
-      <div className="w-60 h-56 p-2 my-4 flex flex-col rounded-xl bg-white items-center justify-center text-xl">
+      <div className="w-[100%/4] h-56 p-2 my-4 flex flex-col rounded-xl bg-white items-center justify-center text-xl">
         <div className="text-blue-600 text-center">{title}</div>
         <div className="text-blue-700 font-bold">{value}</div>
       </div>
@@ -76,7 +76,7 @@ const Home = () => {
       <div className="mb-8">
         <DashboardNoti />
       </div>
-      <div className="flex flex-wrap justify-between space-x-1">
+      <div className="grid grid-cols-fill-40 gap-x-6 gap-y-4">
         {DashboardCard('EXERCISES', exercise.totalInProcess)}
         {DashboardCard('TOTAL EXERCISES', exercise.totalQuestion)}
         {DashboardCard('NEXT DUE', nextDue.tomorrow)}
