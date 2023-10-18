@@ -17,27 +17,39 @@ export const studentRoutes: RouteObject[] = [
         element: <ExercisesAndExams />,
         path: STUDENT_ROUTES.exercisesAndExams,
       },
-      {
-        element: <Discover />,
-        path: STUDENT_ROUTES.discover,
-      },
+
       {
         element: <Statistic />,
         path: PRIVATE_ROUTES.statistic,
       },
       {
-        element: <CourseDetailsPage />,
-        path: STUDENT_ROUTES.courseDetails,
-      },
-      {
-        element: <CourseDetailsPage />,
-        path: STUDENT_ROUTES.courseDetails,
+        path: 'discover',
+        children: [
+          {
+            element: <Discover />,
+            path: '',
+          },
+          {
+            path: ':courseId',
+            children: [
+              {
+                path: '',
+                element: <CourseDetailsPage />,
+              },
+              {
+                path: 'exercise',
+                children: [
+                  {
+                    element: <Exercise />,
+                    path: ':id',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       },
     ],
-  },
-  {
-    element: <Exercise />,
-    path: PRIVATE_ROUTES.exercise,
   },
 ]
 

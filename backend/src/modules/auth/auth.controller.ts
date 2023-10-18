@@ -96,13 +96,9 @@ export class AuthController {
   @Get('google/login')
   @UseGuards(GoogleGuard)
   async googleLogin(@Req() req, @Res() res: Response) {
-    const { tokens, user } = await this.authService.singleSignOn(req);
+    const { tokens } = await this.authService.singleSignOn(req);
 
     this.authService.attachTokensCookie(res, tokens);
-
-    // if (!user.password) {
-    //   return res.redirect(`${process.env.CLIENT_URL}/create-profile`);
-    // }
 
     return res.redirect(`${process.env.CLIENT_URL}/sso-success`);
   }
@@ -110,13 +106,9 @@ export class AuthController {
   @Get('facebook/login')
   @UseGuards(FacebookGuard)
   async facebookLogin(@Req() req, @Res() res: Response) {
-    const { tokens, user } = await this.authService.singleSignOn(req);
+    const { tokens } = await this.authService.singleSignOn(req);
 
     this.authService.attachTokensCookie(res, tokens);
-
-    if (!user.password) {
-      return res.redirect(`${process.env.CLIENT_URL}/create-profile`);
-    }
 
     return res.redirect(`${process.env.CLIENT_URL}/sso-success`);
   }

@@ -1,12 +1,12 @@
 import { Button, Checkbox, Divider, Form, Input, Select } from 'antd'
 import { FormSubmit } from '../..'
 import CustomUpload from '../../../../../components/CustomUpload'
-import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
-import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
 import {
   ExerciseSchema,
   QuestionPayload,
 } from '../../../../../services/exerciseApi/types'
+import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
+import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
 
 interface AnswerFormProps {
   index: number
@@ -136,7 +136,7 @@ interface QuestionFormSchema {
   questionText: string
   questionTags: ExerciseTag[]
   questionLevel: CEFRLevel
-  explanation: string
+  explanation?: string
   answers: AnswerFormSchema[]
   id?: string
 }
@@ -159,7 +159,7 @@ interface MultipleChoicePayload extends QuestionPayload {
   }
   correctAnswer: {
     detail: number[]
-    explanation: string
+    explanation?: string
   }
 }
 

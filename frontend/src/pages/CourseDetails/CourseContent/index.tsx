@@ -164,7 +164,9 @@ const CourseContent = (course: CourseDetails) => {
                             </div>
                           </div>
                           <Button
-                            onClick={() => navigate(`/exercise/${exercise.id}`)}
+                            onClick={() =>
+                              navigate(`./exercise/${exercise.id}`)
+                            }
                             type="primary"
                             className="rounded-xl text-lg leading-5 px-6 h-full py-2"
                           >
