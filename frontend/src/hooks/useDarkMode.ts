@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useAppDispatch, useAppSelector } from './redux'
+import { toggleDarkMode } from '../redux/app/slice'
 
-const updateThemeInDocument = () => {
+const updateThemeInDocument = (theme: boolean) => {
   if (
-    localStorage.theme === 'dark' ||
-    (!('theme' in localStorage) &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches)
+    theme === true &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
   ) {
     document.documentElement.classList.add('dark')
   } else {
@@ -14,29 +15,23 @@ const updateThemeInDocument = () => {
 
 const useDarkMode = () => {
   const [isDarkMode, setDarkMode] = useState(false)
-
-  const handleTheme = (preferDarkMode: boolean) => {
-    localStorage.setItem('theme', preferDarkMode ? 'dark' : 'light')
-
-    updateThemeInDocument()
-
-    setDarkMode(preferDarkMode)
-  }
+  const dispatch = useAppDispatch()
+  const theme = useAppSelector((state) => state.app.darkMode)
 
   useEffect(() => {
     const osPref = window.matchMedia('(prefers-color-scheme: dark)').matches
 
-    if (!localStorage.getItem('theme')) {
-      localStorage.setItem('theme', osPref ? 'dark' : 'light')
+    if (!theme) {
+      if (osPref) dispatch(toggleDarkMode())
       setDarkMode(osPref)
     } else {
-      setDarkMode(localStorage.getItem('theme') === 'dark' ? true : false)
+      setDarkMode(theme)
     }
 
-    updateThemeInDocument()
+    updateThemeInDocument(theme)
   }, [])
 
-  return { isDarkMode, handleTheme }
+  return { isDarkMode }
 }
 
 export default useDarkMode
