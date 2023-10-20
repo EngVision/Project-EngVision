@@ -7,7 +7,7 @@ import { PRIVATE_ROUTES } from '../../utils/constants'
 
 const Sidebar = () => {
   return (
-    <div className="w-fit lg:w-sidebarWidth p-8 flex flex-col h-[100vh] gap-2 bg-bgNeutral">
+    <div className="w-fit lg:w-sidebarWidth p-8 flex flex-col h-[100vh] gap-2 !bg-bgNeutral">
       <Link to={PRIVATE_ROUTES.home}>
         <LogoImageIcon
           className="block lg:hidden ml-[6px]"

@@ -102,3 +102,17 @@ input[type='number']::-webkit-outer-spin-button {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.theme-light {
+  --bg-default: #f3efe2;
+  --bg-Neutral: #fffcf7;
+  --bg-NeutralHover: #091e4224;
+  --text-color: #313134;
+}
+
+.theme-dark {
+  --bg-default: #1e1e1e;
+  --bg-Neutral: #292929;
+  --bg-NeutralHover: #3c3c3c;
+  --text-color: #ffffff;
+}
