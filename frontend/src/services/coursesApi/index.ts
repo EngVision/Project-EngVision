@@ -20,6 +20,7 @@ const coursesApi = {
       const res: ResponseData = await axiosClient.get(
         `${PREFIX}?status=${status}`,
       )
+
       return res
     } catch (error) {
       console.error('Error get courses:', error)

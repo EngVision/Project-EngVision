@@ -81,10 +81,7 @@ const ExerciseTable = ({ exerciseList }: ExerciseTableProps) => {
     <div>
       <h4 className="mb-4 text-2xl">Exercises</h4>
       <Table
-        dataSource={[
-          ...exerciseList,
-          { key: 1, id: 1, title: 'test', description: 'test' },
-        ]}
+        dataSource={[...exerciseList]}
         columns={columns}
         pagination={false}
         className="rounded-lg overflow-hidden"
