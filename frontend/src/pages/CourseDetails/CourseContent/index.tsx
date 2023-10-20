@@ -25,53 +25,55 @@ const CourseContent = (course: CourseDetails) => {
     }
   }, [])
 
-  assignments.forEach((assignment) => {
-    if (assignment.totalDone === assignment.totalQuestion) {
-      completedExerciseIds.push(assignment.exercise)
-    }
-  })
+  if (course.isAttended) {
+    assignments.forEach((assignment) => {
+      if (assignment.totalDone === assignment.totalQuestion) {
+        completedExerciseIds.push(assignment.exercise)
+      }
+    })
+    course.sections?.forEach((section) => {
+      section.completed = true
+      let countLessonCompleted: number = 0
 
-  course.sections?.forEach((section) => {
-    section.completed = true
-    let countLessonCompleted: number = 0
-    if (section.lessons === undefined) return
-    if (section.lessons.length === 0) {
-      section.completed = false
-    } else {
-      section.lessons.forEach((lesson) => {
-        if (lesson.exercises === undefined) return
-        lesson.completed = true
-        let countExerciseCompleted: number = 0
+      if (section.lessons?.length === 0) {
+        section.completed = false
+      } else {
+        section?.lessons?.forEach((lesson) => {
+          if (lesson.exercises === undefined) return
+          lesson.completed = true
+          let countExerciseCompleted: number = 0
 
-        if (lesson.exercises.length === 0) {
-          lesson.completed = false
-        } else {
-          lesson.exercises?.forEach((exercise) => {
-            if (completedExerciseIds.includes(exercise.id)) {
-              exercise.completed = true
-              countExerciseCompleted++
-            } else {
-              exercise.completed = false
-              lesson.completed = false
-            }
-          })
-        }
+          if (lesson.exercises?.length === 0) {
+            lesson.completed = false
+          } else {
+            lesson.exercises?.forEach((exercise) => {
+              if (completedExerciseIds.includes(exercise.id)) {
+                exercise.completed = true
+                countExerciseCompleted++
+              } else {
+                exercise.completed = false
+                lesson.completed = false
+              }
+            })
+          }
 
-        if (lesson.completed) {
-          countLessonCompleted++
-        } else {
-          lesson.completed = false
-          section.completed = false
-        }
-        lesson.totalExerciseCompleted = countExerciseCompleted
-      })
-    }
+          if (lesson.completed) {
+            countLessonCompleted++
+          } else {
+            lesson.completed = false
+            section.completed = false
+          }
+          lesson.totalExerciseCompleted = countExerciseCompleted
+        })
+      }
 
-    if (!section.completed) {
-      section.completed = false
-    }
-    section.totalLessonCompleted = countLessonCompleted
-  })
+      if (!section.completed) {
+        section.completed = false
+      }
+      section.totalLessonCompleted = countLessonCompleted
+    })
+  }
+
   return (
     <div>
       <div className="mb-10">
@@ -105,7 +107,10 @@ const CourseContent = (course: CourseDetails) => {
               }
               extra={
                 <div className="text-xs text-gray-500">
-                  {section.totalLessonCompleted} / {section.lessons.length}
+                  {section.totalLessonCompleted
+                    ? section.totalLessonCompleted
+                    : '0'}{' '}
+                  / {section.lessons.length}
                 </div>
               }
               key={sectionIndex.toString()}
@@ -133,6 +138,7 @@ const CourseContent = (course: CourseDetails) => {
                       </div>
                     }
                     extra={
+                      course.isAttended &&
                       lesson.exercises?.length > 0 && (
                         <div className="text-xs text-wolfGrey">
                           {`${lesson.totalExerciseCompleted} / ${lesson.exercises?.length}`}
@@ -142,39 +148,44 @@ const CourseContent = (course: CourseDetails) => {
                     key={lessonIndex.toString()}
                   >
                     {/* Exercise */}
-                    {lesson.exercises?.map((exercise, exerciseIndex) => (
-                      <div
-                        key={exerciseIndex.toString()}
-                        className="pl-10 pr-24"
-                      >
-                        <div className="flex items-center justify-between mb-4 hover:bg-white hover:outline-dashed hover:outline-[1px] hover:outline-primary py-2 px-2 rounded-lg">
-                          <div className="flex items-center cursor-pointer">
-                            {completedExerciseIds.includes(exercise.id) ? (
-                              <TickCircle
-                                className="mr-2"
-                                width={24}
-                                height={24}
-                              />
-                            ) : (
-                              <Circle className="mr-2" width={24} height={24} />
-                            )}
+                    {course.isAttended &&
+                      lesson.exercises?.map((exercise, exerciseIndex) => (
+                        <div
+                          key={exerciseIndex.toString()}
+                          className="pl-10 pr-24"
+                        >
+                          <div className="flex items-center justify-between mb-4 hover:bg-white hover:outline-dashed hover:outline-[1px] hover:outline-primary py-2 px-2 rounded-lg">
+                            <div className="flex items-center cursor-pointer">
+                              {completedExerciseIds.includes(exercise.id) ? (
+                                <TickCircle
+                                  className="mr-2"
+                                  width={24}
+                                  height={24}
+                                />
+                              ) : (
+                                <Circle
+                                  className="mr-2"
+                                  width={24}
+                                  height={24}
+                                />
+                              )}
 
-                            <div className="font-bold text-lg">
-                              Exercise: {exercise.title}
+                              <div className="font-bold text-lg">
+                                Exercise: {exercise.title}
+                              </div>
                             </div>
+                            <Button
+                              onClick={() =>
+                                navigate(`./exercise/${exercise.id}`)
+                              }
+                              type="primary"
+                              className="rounded-xl text-lg leading-5 px-6 h-full py-2"
+                            >
+                              Learn
+                            </Button>
                           </div>
-                          <Button
-                            onClick={() =>
-                              navigate(`./exercise/${exercise.id}`)
-                            }
-                            type="primary"
-                            className="rounded-xl text-lg leading-5 px-6 h-full py-2"
-                          >
-                            Learn
-                          </Button>
                         </div>
-                      </div>
-                    ))}
+                      ))}
                   </Panel>
                 </Collapse>
               ))}
