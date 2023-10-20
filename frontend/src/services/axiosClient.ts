@@ -2,6 +2,7 @@ import axios from 'axios'
 import { setUser } from '../redux/app/slice'
 import { store } from '../store'
 import { cleanObject } from '../utils/common'
+import authApi from './authApi'
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -36,6 +37,8 @@ const setupAxiosInterceptor = () => {
           refreshingFunction = axiosClient.get('/auth/refresh')
         }
 
+        await refreshingFunction
+
         error.response.config.transformResponse = (response: any) => {
           const res = JSON.parse(response)
           return res.data
@@ -44,7 +47,10 @@ const setupAxiosInterceptor = () => {
         return axios(error.response.config)
       } catch (refreshError) {
         console.error(refreshError)
+
         store.dispatch(setUser(null))
+        await authApi.logout()
+
         return Promise.reject(refreshError)
       } finally {
         // eslint-disable-next-line require-atomic-updates

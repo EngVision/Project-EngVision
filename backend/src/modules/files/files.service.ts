@@ -1,7 +1,6 @@
 import {
   DeleteObjectCommand,
   GetObjectCommand,
-  ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
@@ -69,6 +68,13 @@ export class FilesService {
     });
     await newFile.save();
 
+    await this.S3.send(
+      new PutObjectCommand({
+        Bucket: this.bucketName,
+        Key: newFile.id,
+      }),
+    );
+
     return newFile;
   }
 
@@ -115,7 +121,7 @@ export class FilesService {
     const s3File = await this.S3.send(
       new GetObjectCommand({
         Bucket: this.bucketName,
-        Key: id,
+        Key: file.id,
       }),
     );
 
@@ -163,12 +169,7 @@ export class FilesService {
       d: 'identicon',
     });
 
-    const newFile = new this.fileModel({
-      url: avatarUrl,
-      userId,
-    });
-
-    await newFile.save();
+    const newFile = await this.createWithUrl(avatarUrl, userId);
 
     return newFile;
   }
