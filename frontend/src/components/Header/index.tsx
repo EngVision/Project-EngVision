@@ -4,6 +4,7 @@ import { getFileUrl } from '../../utils/common'
 import { NotificationIcon } from '../Icons'
 import DarkModeButton from './DarkModeButton'
 import Search from './Search'
+import LocalesButton from './LocalesButton'
 
 const Header = () => {
   const user = useAppSelector((state) => state.app.user)
@@ -15,6 +16,7 @@ const Header = () => {
 
         <div className="flex items-center gap-4">
           <NotificationIcon width={40} height={40} />
+          <LocalesButton />
           <DarkModeButton />
           {user && (
             <Avatar
