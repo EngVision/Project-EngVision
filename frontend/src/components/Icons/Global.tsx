@@ -2,7 +2,7 @@ import React from 'react'
 
 import type { IconProps } from './types'
 
-const Gobal = ({ width = 24, height = 24, className = '' }: IconProps) => {
+const Global = ({ width = 24, height = 24, className = '' }: IconProps) => {
   return (
     <svg
       width={width}
@@ -51,4 +51,4 @@ const Gobal = ({ width = 24, height = 24, className = '' }: IconProps) => {
   )
 }
 
-export default Gobal
+export default Global

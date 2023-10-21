@@ -1,7 +1,7 @@
 import { Select } from 'antd'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { toggleLocales } from '../../redux/app/slice'
-import Gobal from '../Icons/Gobal'
+import Global from '../Icons/Global'
 import { useTranslation } from 'react-i18next'
 
 const LocalesButton = () => {
@@ -18,7 +18,7 @@ const LocalesButton = () => {
 
   return (
     <Select
-      suffixIcon={<Gobal />}
+      suffixIcon={<Global />}
       defaultValue={defaultValue}
       style={{ width: 120 }}
       onChange={(value) => handleChangeLocales(value)}
