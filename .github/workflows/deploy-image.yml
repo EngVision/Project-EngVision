@@ -1,7 +1,7 @@
 name: Deploy EngVision Image
 on:
   push:
-    branches: ["develop", "master", "fix-bug"]
+    branches: ["develop", "master"]
   pull_request: 
     branches: ["develop", "master"]
 
