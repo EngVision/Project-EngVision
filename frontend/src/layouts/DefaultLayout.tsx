@@ -3,17 +3,9 @@ import Sidebar from '../components/Sidebar'
 
 import { Outlet } from 'react-router-dom'
 import { useAppSelector } from '../hooks/redux'
-import { useTranslation } from 'react-i18next'
-import { useEffect } from 'react'
 
 const DefaultLayout = () => {
-  const { i18n } = useTranslation()
   const theme = useAppSelector((state) => state.app.darkMode)
-  const locales = useAppSelector((state) => state.app.locales)
-
-  useEffect(() => {
-    i18n.changeLanguage(locales)
-  }, [locales])
 
   return (
     <div
