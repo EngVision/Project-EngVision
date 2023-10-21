@@ -10,16 +10,19 @@ const App: React.FC = () => {
   const { i18n } = useTranslation()
   const [apiNotification, contextHolder] = notification.useNotification()
   const locales = useAppSelector((state) => state.app.locales)
+  const theme = useAppSelector((state) => state.app.darkMode)
 
   useEffect(() => {
     i18n.changeLanguage(locales)
   }, [])
 
   return (
-    <NotificationContext.Provider value={apiNotification}>
-      {contextHolder}
-      <AppRoutes />
-    </NotificationContext.Provider>
+    <div className={`${theme ? 'theme-dark' : 'theme-light'}`}>
+      <NotificationContext.Provider value={apiNotification}>
+        {contextHolder}
+        <AppRoutes />
+      </NotificationContext.Provider>
+    </div>
   )
 }
 
