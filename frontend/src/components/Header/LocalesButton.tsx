@@ -1,19 +1,15 @@
 import { Select } from 'antd'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { toggleLocales } from '../../redux/app/slice'
-import { useTranslation } from 'react-i18next'
 import Gobal from '../Icons/Gobal'
 
 const LocalesButton = () => {
   const dispatch = useAppDispatch()
   const defaultValue = useAppSelector((state) => state.app.locales)
 
-  const { i18n } = useTranslation()
-
   const handleChangeLocales = (value: any) => {
     if (value) {
       dispatch(toggleLocales(value))
-      i18n.changeLanguage(value)
     }
   }
 
