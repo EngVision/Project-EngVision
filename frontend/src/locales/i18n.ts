@@ -3,9 +3,6 @@ import { initReactI18next } from 'react-i18next'
 
 import EN from './EN/en.json'
 import VN from './VN/vn.json'
-import { useAppSelector } from '../hooks/redux'
-
-//const languages = useAppSelector((state) => state.app.locales)
 
 const resources = {
   en: {

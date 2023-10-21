@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom'
 
 const DefaultLayout = () => {
   return (
-    <div className="flex flex-row bg-bgDefault h-[100vh]">
+    <div className="flex flex-row bg-bgDefault h-screen text-textColor">
       <Sidebar />
       <div className="flex flex-1 flex-col min-w-[0px]">
         <div className="px-8">
