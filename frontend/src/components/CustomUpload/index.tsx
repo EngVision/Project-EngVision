@@ -1,8 +1,8 @@
+import { UploadOutlined } from '@ant-design/icons'
 import { Button, Modal, Upload, UploadFile, UploadProps, message } from 'antd'
 import { useEffect, useState } from 'react'
 import fileApi from '../../services/fileApi'
 import { getFileUrl } from '../../utils/common'
-import { UploadOutlined } from '@ant-design/icons'
 
 const MAX_COUNT = 20
 
@@ -84,8 +84,8 @@ function CustomUpload({
           multiple
             ? newFileList.map((file) => file.uid)
             : file.status === 'done'
-              ? file.uid
-              : null,
+            ? file.uid
+            : null,
         )
 
         message.success(`${file.name} uploaded.`)

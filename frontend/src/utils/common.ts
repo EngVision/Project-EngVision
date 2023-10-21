@@ -3,8 +3,7 @@ import { CourseState } from '../redux/course/slice'
 import { CourseDetails } from '../services/coursesApi/types'
 import { UPLOAD_FILE_URL } from './constants'
 
-export const getFileUrl = (id: string) =>
-  `${UPLOAD_FILE_URL}${id}`
+export const getFileUrl = (id: string) => `${UPLOAD_FILE_URL}${id}`
 
 export const getFormattedPrice = (price: number) =>
   price || price === 0 ? `$${price.toFixed(2)}` : '$0'

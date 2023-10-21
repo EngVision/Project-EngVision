@@ -1,33 +1,62 @@
 import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
+import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { LocalFile, LocalFileDocument } from './schemas/local-file.schema';
-import { Model } from 'mongoose';
 import { unlink } from 'fs';
 import * as gravatar from 'gravatar';
+import { Model } from 'mongoose';
+import { extname } from 'path';
+import { v4 as uuid } from 'uuid';
+import { LocalFile, LocalFileDocument } from './schemas/local-file.schema';
 
 @Injectable()
 export class FilesService {
+  private S3: S3Client;
+  private readonly bucketName;
+
   constructor(
     @InjectModel(LocalFile.name)
     private readonly fileModel: Model<LocalFileDocument>,
-  ) {}
+  ) {
+    this.S3 = new S3Client({
+      region: 'auto',
+      endpoint: process.env.S3_ENDPOINT,
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY_ID,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+      },
+    });
+
+    this.bucketName = process.env.S3_BUCKET_NAME;
+  }
 
   async create(
     file: Express.Multer.File,
     userId: string,
   ): Promise<LocalFileDocument> {
     const newFile = new this.fileModel({
-      filename: file.filename,
-      path: file.path,
+      filename: `${uuid()}${extname(file.originalname)}`,
       mimetype: file.mimetype,
       userId,
     });
     await newFile.save();
+
+    await this.S3.send(
+      new PutObjectCommand({
+        Bucket: this.bucketName,
+        Key: newFile.id,
+        Body: file.buffer,
+      }),
+    );
 
     return newFile;
   }
@@ -38,6 +67,13 @@ export class FilesService {
       userId,
     });
     await newFile.save();
+
+    await this.S3.send(
+      new PutObjectCommand({
+        Bucket: this.bucketName,
+        Key: newFile.id,
+      }),
+    );
 
     return newFile;
   }
@@ -61,21 +97,38 @@ export class FilesService {
 
     updatedFile.url = null;
     updatedFile.filename = file.filename;
-    updatedFile.path = file.path;
     updatedFile.mimetype = file.mimetype;
     updatedFile.save();
+
+    await this.S3.send(
+      new PutObjectCommand({
+        Bucket: this.bucketName,
+        Key: updatedFile.id,
+        Body: file.buffer,
+      }),
+    );
 
     return updatedFile;
   }
 
-  async get(id: string): Promise<LocalFileDocument> {
+  async get(id: string): Promise<LocalFile & { body: any }> {
     const file = await this.fileModel.findById(id);
 
     if (!file) {
       throw new NotFoundException('File not found');
     }
 
-    return file;
+    const s3File = await this.S3.send(
+      new GetObjectCommand({
+        Bucket: this.bucketName,
+        Key: file.id,
+      }),
+    );
+
+    return {
+      ...file.toObject(),
+      body: s3File.Body,
+    };
   }
 
   async remove(id: string, userId: string): Promise<void> {
@@ -89,11 +142,20 @@ export class FilesService {
       throw new ForbiddenException('Access denied');
     }
 
+    await this.S3.send(
+      new DeleteObjectCommand({
+        Bucket: this.bucketName,
+        Key: file.id,
+      }),
+    );
+
     await file.deleteOne();
 
-    unlink(file.path, err => {
-      if (err) throw new InternalServerErrorException(err);
-    });
+    if (file.path) {
+      unlink(file.path, err => {
+        if (err) throw new InternalServerErrorException(err);
+      });
+    }
   }
 
   async getDefaultAvatar(
@@ -107,12 +169,7 @@ export class FilesService {
       d: 'identicon',
     });
 
-    const newFile = new this.fileModel({
-      url: avatarUrl,
-      userId,
-    });
-
-    await newFile.save();
+    const newFile = await this.createWithUrl(avatarUrl, userId);
 
     return newFile;
   }

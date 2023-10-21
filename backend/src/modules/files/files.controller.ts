@@ -6,26 +6,20 @@ import {
   Param,
   Post,
   Put,
-  Req,
   Res,
   StreamableFile,
-  UnsupportedMediaTypeException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { multerOptions } from 'src/common/config';
+import { Response } from 'express';
 import { ApiResponseData, CurrentUser } from 'src/common/decorators';
+import { GetResponse } from 'src/common/dto';
+import { AtGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
 import { FilesService } from './files.service';
-import { FileValidationErrors } from 'src/common/enums';
-import { GetResponse } from 'src/common/dto';
-import { Request, Response } from 'express';
-import { AtGuard } from 'src/common/guards';
-import { createReadStream } from 'fs';
-import { join } from 'path';
 
 @Controller('files')
 @ApiTags('Files')
@@ -34,7 +28,7 @@ export class FilesController {
 
   @Post('')
   @UseGuards(AtGuard)
-  @UseInterceptors(FileInterceptor('file', multerOptions('')))
+  @UseInterceptors(FileInterceptor('file'))
   @ApiBody({
     schema: {
       type: 'object',
@@ -51,17 +45,8 @@ export class FilesController {
     @CurrentUser() user: JwtPayload,
     @UploadedFile()
     file: Express.Multer.File,
-    @Req() req: Request,
     @Res() res: Response,
   ) {
-    if (
-      req['fileValidationError'] === FileValidationErrors.UNSUPPORTED_FILE_TYPE
-    ) {
-      throw new UnsupportedMediaTypeException(
-        `Unsupported file type ${req['unsupportedFileType']}`,
-      );
-    }
-
     const newFile = await this.filesService.create(file, user.sub);
 
     return res
@@ -73,7 +58,7 @@ export class FilesController {
 
   @Put(':id')
   @UseGuards(AtGuard)
-  @UseInterceptors(FileInterceptor('file', multerOptions('')))
+  @UseInterceptors(FileInterceptor('file'))
   @ApiBody({
     schema: {
       type: 'object',
@@ -113,13 +98,13 @@ export class FilesController {
       return res.redirect(file.url);
     }
 
-    const stream = createReadStream(join(process.cwd(), file.path));
+    // const stream = createReadStream(join(process.cwd(), file.path));
 
     res.set({
       'Content-Disposition': `inline; filename="${file.filename}"`,
       'Content-Type': file.mimetype,
     });
-    return new StreamableFile(stream);
+    return new StreamableFile(file.body);
   }
 
   @Delete(':id')

@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { ApiResponseData, CurrentUser } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
 import {
@@ -47,13 +47,10 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(AtGuard)
   @ApiResponseData(Object)
-  async logout(
-    @Req() req: Request & { user: JwtPayload },
-    @Res() res: Response,
-  ) {
-    await this.authService.logout(req.user.sub, res);
+  async logout(@Res() res: Response) {
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
 
     return res
       .status(HttpStatus.OK)
