@@ -1,18 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import TeacherLearn from '../../components/Icons/TeacherLearn'
 import { useAppSelector } from '../../hooks/redux'
-import { SubmissionResponse } from '../../services/submissionApi/types'
+import coursesApi from '../../services/coursesApi'
 import submissionApi from '../../services/submissionApi'
 import { CEFRLevel, COURSE_STATUS, NextDue } from '../../utils/constants'
-import coursesApi from '../../services/coursesApi'
-import { CourseParams } from '../../services/coursesApi/types'
 
 const Home = () => {
   const status: any = { status: COURSE_STATUS.attended }
   const user = useAppSelector((state) => state.app.user)
-
-  const [assignments, setAssignments] = useState<SubmissionResponse[]>([])
-  const [courseList, setCourseList] = useState<CourseParams[]>([])
 
   const level = CEFRLevel
   const nextDue = NextDue
@@ -22,32 +17,26 @@ const Home = () => {
     totalInProcess: 0,
   }
 
-  useEffect(() => {
-    try {
-      const fetchAssignments = async () => {
-        const data = await submissionApi.getSubmissionList()
-        setAssignments(data)
-      }
-      const fetchCourses = async () => {
-        const courses: any = await coursesApi.getCourses(status)
-        setCourseList(courses.data)
-      }
-
-      fetchAssignments()
-      fetchCourses()
-    } catch (error) {
-      console.error('Error fetching assignments:', error)
-    }
-  }, [])
-
-  assignments.forEach((assignment) => {
-    if (assignment.totalDone) {
-      exercise.totalDone += assignment.totalDone
-    } else if (assignment.totalQuestion) {
-      exercise.totalQuestion += assignment.totalQuestion
-    }
-    exercise.totalInProcess = exercise.totalQuestion - exercise.totalDone
+  const { data: rawCourseList } = useQuery({
+    queryKey: ['courses', status],
+    queryFn: () => coursesApi.getCourses(status),
   })
+
+  const { data: rawSubmissionList } = useQuery({
+    queryKey: ['submissions'],
+    queryFn: submissionApi.getSubmissionList,
+  })
+
+  if (rawSubmissionList) {
+    rawSubmissionList.data.forEach((assignment) => {
+      if (assignment.totalDone) {
+        exercise.totalDone += assignment.totalDone
+      } else if (assignment.totalQuestion) {
+        exercise.totalQuestion += assignment.totalQuestion
+      }
+      exercise.totalInProcess = exercise.totalQuestion - exercise.totalDone
+    })
+  }
 
   const DashboardNoti = () => {
     return (
@@ -76,16 +65,18 @@ const Home = () => {
       <div className="mb-8">
         <DashboardNoti />
       </div>
-      <div className="grid grid-cols-fill-40 gap-x-6 gap-y-4">
-        {DashboardCard('EXERCISES', exercise.totalInProcess)}
-        {DashboardCard('TOTAL EXERCISES', exercise.totalQuestion)}
-        {DashboardCard('NEXT DUE', nextDue.tomorrow)}
-        {DashboardCard('SUBMITTED ASSIGNMENTS', exercise.totalDone)}
-        {DashboardCard('COURSES LEARNING', courseList.length)}
-        {DashboardCard('TOTAL COURSES', courseList.length)}
-        {DashboardCard('FINISHED COURSES', 0)}
-        {DashboardCard('CERF LEVEL', level.C1)}
-      </div>
+      {rawCourseList && (
+        <div className="grid grid-cols-fill-40 gap-x-6 gap-y-4">
+          {DashboardCard('EXERCISES', exercise.totalInProcess)}
+          {DashboardCard('TOTAL EXERCISES', exercise.totalQuestion)}
+          {DashboardCard('NEXT DUE', nextDue.tomorrow)}
+          {DashboardCard('SUBMITTED ASSIGNMENTS', exercise.totalDone)}
+          {DashboardCard('COURSES LEARNING', rawCourseList.data.length)}
+          {DashboardCard('TOTAL COURSES', rawCourseList.data.length)}
+          {DashboardCard('FINISHED COURSES', 0)}
+          {DashboardCard('CERF LEVEL', level.C1)}
+        </div>
+      )}
     </div>
   )
 }

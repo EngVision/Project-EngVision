@@ -103,5 +103,5 @@ export interface ReviewParams {
 }
 
 export interface GetCourseProps {
-  status: COURSE_STATUS | ''
+  status: COURSE_STATUS
 }

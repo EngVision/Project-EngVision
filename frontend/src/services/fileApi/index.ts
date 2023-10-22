@@ -11,7 +11,7 @@ const fileApi = {
   ): Promise<ResponseData> => {
     const formData = new FormData()
     formData.append('file', file)
-    
+
     try {
       const res: ResponseData = await axiosClient.post(`${PREFIX}`, formData, {
         headers: {

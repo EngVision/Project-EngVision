@@ -10,7 +10,7 @@ export interface CourseState {
     order: 'asc' | 'desc' | ''
   }
   filterOptions: {
-    searchValue: string
+    keyword: string
     selectedLevels: string[]
   }
 }
@@ -23,7 +23,7 @@ const initialState: CourseState = {
     order: '',
   },
   filterOptions: {
-    searchValue: '',
+    keyword: '',
     selectedLevels: [],
   },
 }

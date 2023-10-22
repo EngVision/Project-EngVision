@@ -1,11 +1,11 @@
 import axiosClient from '../axiosClient'
-import { ResponseData } from '../types'
+import { LessonType } from './type'
 
 const PREFIX = 'courses/lessons/'
 
 export const lessonApi = {
-  getLesson: async (id: string) => {
-    const res: ResponseData = await axiosClient.get(`${PREFIX}${id}`)
-    return res
+  getLesson: async (id: string): Promise<LessonType> => {
+    const res = await axiosClient.get(`${PREFIX}${id}`)
+    return res.data
   },
 }

@@ -1,10 +1,12 @@
-import { Button, Form, Input, Select, message } from 'antd'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Button, Form, Input, Select } from 'antd'
 import { Link } from 'react-router-dom'
 import CustomUpload from '../../../components/CustomUpload'
+import { useAppSelector } from '../../../hooks/redux'
 import coursesApi from '../../../services/coursesApi'
 import { CEFRLevel, TEACHER_ROUTES } from '../../../utils/constants'
-import { useAppDispatch } from '../../../hooks/redux'
-import { addNewCourse } from '../../../redux/course/slice'
+import { useContext } from 'react'
+import { NotificationContext } from '../../../contexts/notification'
 
 type FieldType = {
   title: string
@@ -21,17 +23,28 @@ interface TeacherCreateCourseProps {
 const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
   onClose,
 }) => {
-  const dispatch = useAppDispatch()
+  const status = useAppSelector((state) => state.course.status)
+  const queryClient = useQueryClient()
+  const apiNotification = useContext(NotificationContext)
+
+  const createTeacherCourseMutation = useMutation({
+    mutationFn: coursesApi.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['courses', { status }] })
+    },
+  })
 
   const handleSave = async (values: FieldType) => {
-    const newCourse = {
+    const newCourse: any = {
       ...values,
       price: parseFloat(values.price),
       thumbnail: values.thumbnail,
     }
-    const { data } = await coursesApi.create(newCourse)
-    dispatch(addNewCourse({ ...newCourse, id: data.id }))
-    message.success(`Create successfully.`)
+    createTeacherCourseMutation.mutate(newCourse, {
+      onSuccess: () => {
+        apiNotification.success({ message: 'Create successfully.' })
+      },
+    })
     onClose()
   }
 
