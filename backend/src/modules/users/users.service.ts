@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -87,12 +88,22 @@ export class UsersService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UserDocument> {
-    if (updateUserDto.avatar) {
+    const user = await this.getById(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
+
+    if (!updateUserDto.avatar) {
+      updateUserDto.avatar = (
+        await this.filesService.getDefaultAvatar(id, user.email)
+      ).id;
+    }
+
     const updatedUser = await this.userModel.findByIdAndUpdate(
       id,
       { ...updateUserDto },
-      { returnDocument: 'after' },
+      { new: true },
     );
 
     return updatedUser;

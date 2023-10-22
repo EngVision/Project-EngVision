@@ -1,5 +1,5 @@
-import { Form, Input } from 'antd'
-import { useEffect } from 'react'
+import { Form, Input, InputRef } from 'antd'
+import { useEffect, useRef } from 'react'
 import {
   QuestionPayload,
   SubmitAnswerResponse,
@@ -20,6 +20,7 @@ function FillBlank(props: FillBlankProps) {
   const { question, result } = props
   const answer = Form.useWatch('answer')
   const form = Form.useFormInstance()
+  const firstInput = useRef<InputRef>(null)
 
   const questionArr = question.text.split('[]')
 
@@ -29,6 +30,10 @@ function FillBlank(props: FillBlankProps) {
       form.setFieldValue('answer', result.correctAnswer)
     }
   }, [props])
+
+  useEffect(() => {
+    firstInput.current?.focus()
+  }, [firstInput.current])
 
   return (
     <div>
@@ -47,6 +52,7 @@ function FillBlank(props: FillBlankProps) {
                   <span className="text-xl">{questionArr[key]}</span>
                   <Form.Item noStyle name={[key]}>
                     <Input
+                      ref={key === 0 ? firstInput : null}
                       className={`font-bold text-xl ${
                         result
                           ? result.correctAnswer[key] === result.answer[key]
@@ -57,11 +63,9 @@ function FillBlank(props: FillBlankProps) {
                       minLength={question.limits[key]}
                       maxLength={question.limits[key]}
                       disabled={!!result}
-                      // eslint-disable-next-line jsx-a11y/no-autofocus
-                      autoFocus
                       style={{
                         textAlign: 'center',
-                        width: 15 + (answer?.[key]?.length || 0) * 15,
+                        width: 25 + (answer?.[key]?.length || 0) * 15,
                         padding: '2px 5px',
                         margin: 2,
                       }}

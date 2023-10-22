@@ -19,10 +19,10 @@ class QuestionResultDto {
   explanation: string;
 }
 
-export class AssignmentDto {
+export class SubmissionDto {
   @Expose({ name: '_id' })
   @Transform(value => value.obj._id.toString())
-  @ApiProperty({ description: 'Assignment id' })
+  @ApiProperty({ description: 'Submission id' })
   id?: string;
 
   @Transform(value => value.obj.user.toString())

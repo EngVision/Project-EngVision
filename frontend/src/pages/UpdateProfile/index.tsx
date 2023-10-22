@@ -53,6 +53,11 @@ export const UpdateProfile = () => {
     )
   }
 
+  const removeAvatar = async (v: any) => {
+    const updatedProfile = await accountApi.update({ avatar: v })
+    dispatch(setUser(updatedProfile.data))
+  }
+
   const onFinish = async (values: ProfileParams) => {
     const password: ChangePassword = values
 
@@ -93,7 +98,7 @@ export const UpdateProfile = () => {
                 name="avatar"
                 valuePropName="fileList"
               >
-                <CustomUpload type="picture-circle" />
+                <CustomUpload type="picture-circle" onRemove={removeAvatar} />
               </Form.Item>
               <Space className="flex max-xl:flex-col justify-between">
                 <Form.Item<ProfileParams> name="firstName" label="First Name">

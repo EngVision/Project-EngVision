@@ -9,6 +9,7 @@ const MAX_COUNT = 20
 interface CustomUploadProps {
   fileList?: string[] | string
   onChange?: (value: any) => void
+  onRemove?: (value: any) => Promise<void>
   multiple?: boolean
   type?: UploadProps['listType']
   accept?: 'image' | 'audio' | 'video'
@@ -22,6 +23,7 @@ function CustomUpload({
   type = 'text',
   multiple = false,
   accept = 'image',
+  onRemove,
 }: CustomUploadProps) {
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewImage, setPreviewImage] = useState('')
@@ -97,6 +99,7 @@ function CustomUpload({
             url: getFileUrl(currFileId),
           })
         }
+
         message.error(`${file.name} upload failed. (${file.error.message})`)
       }
 
@@ -110,8 +113,10 @@ function CustomUpload({
 
   const handleRemove: UploadProps['onRemove'] = async (file) => {
     try {
+      message.loading(`Removing ${file.name}...`)
       await fileApi.delete(file.uid)
 
+      await onRemove?.(null)
       setCurrFileId(null)
       message.success(`${file.name} removed.`)
     } catch (error) {
@@ -123,8 +128,10 @@ function CustomUpload({
     const { onSuccess, onError, file, onProgress } = options
 
     try {
+      message.loading(`uploading...`)
+
       let res
-      if (multiple || !currFileId || (!multiple && value)) {
+      if (multiple || !currFileId) {
         res = await fileApi.create(file, onProgress)
       } else {
         res = await fileApi.update(currFileId, file, onProgress)

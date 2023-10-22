@@ -3,12 +3,12 @@ import { Button, Collapse } from 'antd'
 import TickCircle from '../../../components/Icons/TickCircle'
 import Circle from '../../../components/Icons/Circle'
 import { CourseDetails } from '../../../services/coursesApi/types'
-import { AssignmentResponse } from '../../../services/assignmentApi/types'
-import assignmentApi from '../../../services/assignmentApi'
+import { SubmissionResponse } from '../../../services/submissionApi/types'
+import submissionApi from '../../../services/submissionApi'
 import { useNavigate } from 'react-router-dom'
 const { Panel } = Collapse
 const CourseContent = (course: CourseDetails) => {
-  const [assignments, setAssignments] = useState<AssignmentResponse[]>([])
+  const [assignments, setAssignments] = useState<SubmissionResponse[]>([])
   const completedExerciseIds: string[] = []
 
   const navigate = useNavigate()
@@ -16,7 +16,7 @@ const CourseContent = (course: CourseDetails) => {
   useEffect(() => {
     try {
       const fetchAssignments = async () => {
-        const data = await assignmentApi.getAssignments()
+        const data = await submissionApi.getSubmissionList()
         setAssignments(data)
       }
       fetchAssignments()

@@ -1,10 +1,10 @@
-import { Button, Form, Progress } from 'antd'
+import { Button, Form, Progress, message } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { EmojiHappyIcon, EmojiSadIcon } from '../../components/Icons'
 import ArrowLeft from '../../components/Icons/ArrowLeft'
-import assignmentApi from '../../services/assignmentApi'
-import { AssignmentResponse } from '../../services/assignmentApi/types'
+import submissionApi from '../../services/submissionApi'
+import { SubmissionResponse } from '../../services/submissionApi/types'
 import exerciseApi from '../../services/exerciseApi'
 import { ExerciseSchema } from '../../services/exerciseApi/types'
 import { ExerciseType } from '../../utils/constants'
@@ -17,7 +17,7 @@ function Exercise() {
   const [form] = Form.useForm()
 
   const [exercise, setExercise] = useState<ExerciseSchema>()
-  const [assignment, setAssignment] = useState<AssignmentResponse>()
+  const [submission, setSubmission] = useState<SubmissionResponse>()
   const [questionIndex, setQuestionIndex] = useState<number>(0)
   const [hasResult, setHasResult] = useState<boolean>(false)
 
@@ -29,14 +29,14 @@ function Exercise() {
   }, [])
 
   useEffect(() => {
-    setHasResult(!!assignment?.detail[questionIndex])
-  }, [assignment, questionIndex])
+    setHasResult(!!submission?.detail[questionIndex])
+  }, [submission, questionIndex])
 
   const getAssignment = async () => {
     if (id) {
-      const assignment = await assignmentApi.getAssignment(id)
+      const assignment = await submissionApi.getSubmission(id)
 
-      setAssignment(assignment)
+      setSubmission(assignment)
       setQuestionIndex(assignment?.totalDone || 0)
     }
   }
@@ -50,14 +50,14 @@ function Exercise() {
   }
 
   const submitAnswer = async (data: any, questionId: string): Promise<void> => {
-    console.log(id)
     if (id) {
+      const hide = message.loading({ content: 'Submitting...', key: 'submit' })
+
       await exerciseApi.submitAnswer(id, questionId, data)
-      const assignment = await assignmentApi.getAssignment(id)
+      const assignment = await submissionApi.getSubmission(id)
 
-      console.log(assignment)
-
-      setAssignment(assignment)
+      hide()
+      setSubmission(assignment)
     }
   }
 
@@ -65,7 +65,7 @@ function Exercise() {
     const content = exercise?.content[questionIndex]
 
     if (questionIndex >= (exercise?.content?.length || 0)) {
-      return assignment && <DoneExercise {...assignment} />
+      return submission && <DoneExercise {...submission} />
     }
 
     if (content && id) {
@@ -75,7 +75,7 @@ function Exercise() {
             <MultipleChoice
               {...content}
               exerciseId={id}
-              result={assignment?.detail[questionIndex]}
+              result={submission?.detail[questionIndex]}
             />
           )
         case ExerciseType.FillBlank:
@@ -83,7 +83,7 @@ function Exercise() {
             <FillBlank
               {...content}
               exerciseId={id}
-              result={assignment?.detail[questionIndex]}
+              result={submission?.detail[questionIndex]}
             />
           )
         default:
@@ -98,7 +98,7 @@ function Exercise() {
 
   const nextQuestion = () => {
     if (questionIndex >= (exercise?.content?.length || 0)) {
-      navigate('..', { relative: 'path' })
+      navigate('../..', { relative: 'path' })
     } else {
       if (!hasResult) {
         form.submit()
@@ -147,18 +147,18 @@ function Exercise() {
           />
           <div className="flex-1 px-5 py-10">
             <div className="mb-14">{ExerciseComponent()}</div>
-            {assignment?.detail[questionIndex] && (
+            {submission?.detail[questionIndex] && (
               <div className="w-full p-5 border-2 border-solid border-primary rounded-md flex items-center gap-4">
-                {assignment?.detail[questionIndex].isCorrect ? (
+                {submission?.detail[questionIndex].isCorrect ? (
                   <EmojiHappyIcon />
                 ) : (
                   <EmojiSadIcon />
                 )}
                 <div className="flex-1 text-primary flex flex-col gap-2">
-                  {assignment?.detail[questionIndex].isCorrect && (
+                  {submission?.detail[questionIndex].isCorrect && (
                     <b>Good job!</b>
                   )}
-                  <p>{assignment?.detail[questionIndex].explanation}</p>
+                  <p>{submission?.detail[questionIndex].explanation}</p>
                 </div>
               </div>
             )}

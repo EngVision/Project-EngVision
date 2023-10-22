@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { QuestionResult } from 'src/modules/submissions/schemas/submission.schema';
 import { ExerciseContentService } from '../base-exercise-content.service';
-import { QuestionResult } from 'src/modules/assignments/schemas/assignment.schema';
 import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 import { CreateConstructedResponseDto } from './dto/create-constructed-response.dto';
-import { InjectModel } from '@nestjs/mongoose';
 import { ConstructedResponse } from './schemas/constructed-response.schema';
-import { Model } from 'mongoose';
 
 @Injectable()
 export class ConstructedResponseService extends ExerciseContentService {

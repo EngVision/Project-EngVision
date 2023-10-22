@@ -12,22 +12,22 @@ export interface ResetForgottenPassword {
 }
 
 export interface ProfileParams {
-  firstName: string
-  lastName: string
-  email: string
-  avatar: string
-  certificates: string
-  about: string
-  gender: string
-  phone: string
-  country: string
-  role: string
-  oldPassword: string
-  password: string
-  retypePassword: string
+  firstName?: string
+  lastName?: string
+  email?: string
+  avatar?: string
+  certificates?: string
+  about?: string
+  gender?: string
+  phone?: string
+  country?: string
+  role?: string
+  oldPassword?: string
+  password?: string
+  retypePassword?: string
 }
 
 export interface ChangePassword {
-  oldPassword: string
-  password: string
+  oldPassword?: string
+  password?: string
 }
