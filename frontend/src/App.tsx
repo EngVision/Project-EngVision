@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 
 import { notification } from 'antd'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'react-i18next'
 import { NotificationContext } from './contexts/notification'
 import { useAppSelector } from './hooks/redux'
 import AppRoutes from './routes'
