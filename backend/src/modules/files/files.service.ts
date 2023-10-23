@@ -83,7 +83,15 @@ export class FilesService {
     userId: string,
     file: Express.Multer.File,
   ): Promise<LocalFileDocument> {
-    const updatedFile = await this.fileModel.findById(id);
+    let updatedFile = await this.fileModel.findById(id);
+
+    if (!updatedFile) {
+      updatedFile = new this.fileModel({
+        filename: `${uuid()}${extname(file.originalname)}`,
+        mimetype: file.mimetype,
+        userId,
+      });
+    }
 
     if (updatedFile.userId !== userId) {
       throw new ForbiddenException('Access denied');

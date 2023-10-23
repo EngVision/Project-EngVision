@@ -21,6 +21,8 @@ import { AtGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
 import { FilesService } from './files.service';
 
+const maxFileSize = 50 * 1000 * 1000;
+
 @Controller('files')
 @ApiTags('Files')
 export class FilesController {
@@ -28,7 +30,9 @@ export class FilesController {
 
   @Post('')
   @UseGuards(AtGuard)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: maxFileSize } }),
+  )
   @ApiBody({
     schema: {
       type: 'object',
@@ -58,7 +62,9 @@ export class FilesController {
 
   @Put(':id')
   @UseGuards(AtGuard)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: maxFileSize } }),
+  )
   @ApiBody({
     schema: {
       type: 'object',

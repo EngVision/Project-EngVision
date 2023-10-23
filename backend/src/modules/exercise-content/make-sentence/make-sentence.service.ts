@@ -1,11 +1,11 @@
 import { BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { QuestionResult } from 'src/modules/assignments/schemas/assignment.schema';
 import { ExerciseContentService } from '../base-exercise-content.service';
 import { CreateMakeSentenceDto } from './dto/create-make-sentence.dto';
 import { MakeSentence } from './schemas/make-sentence.schema';
 import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
+import { QuestionResult } from 'src/modules/submissions/schemas/submission.schema';
 
 export class MakeSentenceService extends ExerciseContentService {
   constructor(
@@ -27,8 +27,9 @@ export class MakeSentenceService extends ExerciseContentService {
 
     this.setDefaultExplain(validatedContent);
 
-    const questionList =
-      await this.MakeSentenceModel.insertMany(validatedContent);
+    const questionList = await this.MakeSentenceModel.insertMany(
+      validatedContent,
+    );
 
     return questionList.map(q => q.id);
   }
