@@ -95,28 +95,36 @@ export const UpdateProfile = () => {
               >
                 <CustomUpload type="picture-circle" />
               </Form.Item>
-              <Space className="flex max-xl:flex-col justify-between">
-                <Form.Item<ProfileParams> name="firstName" label="First Name">
+              <div className="flex max-xl:flex-col gap-8">
+                <Form.Item<ProfileParams>
+                  name="firstName"
+                  label="First Name"
+                  className="flex-1"
+                >
                   <Input
                     defaultValue={user.firstName}
                     size="large"
-                    className="w-[31rem] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
+                    className="w-[100%] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
                   />
                 </Form.Item>
-                <Form.Item<ProfileParams> name="lastName" label="Last Name">
+                <Form.Item<ProfileParams>
+                  name="lastName"
+                  label="Last Name"
+                  className="flex-1"
+                >
                   <Input
                     defaultValue={user.lastName}
                     size="large"
-                    className="w-[31rem] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
+                    className="w-[100%] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
                   />
                 </Form.Item>
-              </Space>
+              </div>
 
-              <Space className="flex max-xl:flex-col justify-between">
+              <div className="flex max-xl:flex-col gap-8">
                 <Form.Item<ProfileParams>
                   name="gender"
                   label="Gender"
-                  className="w-[31rem]"
+                  className="flex-1"
                 >
                   <Select
                     className="shadow-sm"
@@ -125,11 +133,15 @@ export const UpdateProfile = () => {
                     options={gender}
                   />
                 </Form.Item>
-                <Form.Item<ProfileParams> name="email" label="Email">
+                <Form.Item<ProfileParams>
+                  name="email"
+                  label="Email"
+                  className="flex-1"
+                >
                   <Input
                     defaultValue={user.email}
                     size="large"
-                    className="w-[31rem] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
+                    className="w-[100%] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
                   />
                 </Form.Item>
                 {/* {user.phone && (
@@ -141,7 +153,7 @@ export const UpdateProfile = () => {
                     />
                   </Form.Item>
                 )} */}
-              </Space>
+              </div>
 
               {/* <Space className="flex max-xl:flex-col justify-between">
                 <Form.Item<ProfileParams> name="email" label="Email">
