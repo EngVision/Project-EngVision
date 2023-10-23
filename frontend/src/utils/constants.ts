@@ -16,8 +16,8 @@ export const PRIVATE_ROUTES = {
   chat: '/chat',
   settings: '/settings',
   helpCenter: '/help-center',
-
   updateProfile: '/update-profile',
+  manageUsers: '/manage-users',
 
   // Exercise
   exercise: '/exercise/:id',
