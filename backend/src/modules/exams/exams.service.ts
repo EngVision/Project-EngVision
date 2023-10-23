@@ -40,7 +40,8 @@ export class ExamsService {
   ): Promise<ExamDocument> {
     const updatedExam = await this.examModel.findByIdAndUpdate(
       id,
-      updateExamDto,
+      { ...updateExamDto },
+      { new: true },
     );
 
     if (!updatedExam) {
