@@ -28,6 +28,9 @@ export class Exercise {
   @Prop({ enum: ExerciseType, required: true })
   type: ExerciseType;
 
+  @Prop({ type: Boolean, default: false })
+  needGrade?: boolean;
+
   @Prop([{ type: SchemaTypes.ObjectId, refPath: 'type', required: true }])
   content: string[];
 }

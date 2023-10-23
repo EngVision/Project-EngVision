@@ -11,6 +11,7 @@ import { ExerciseType } from '../../utils/constants'
 import DoneExercise from './components/DoneExercise'
 import FillBlank from './components/FillBlank'
 import MultipleChoice from './components/MultipleChoice'
+import ConstructedResponse from './components/ConstructedResponse'
 
 function Exercise() {
   const { id } = useParams()
@@ -74,7 +75,6 @@ function Exercise() {
           return (
             <MultipleChoice
               {...content}
-              exerciseId={id}
               result={submission?.detail[questionIndex]}
             />
           )
@@ -82,7 +82,14 @@ function Exercise() {
           return (
             <FillBlank
               {...content}
-              exerciseId={id}
+              result={submission?.detail[questionIndex]}
+            />
+          )
+        case ExerciseType.ConstructedResponse:
+          return (
+            <ConstructedResponse
+              {...content}
+              {...exercise}
               result={submission?.detail[questionIndex]}
             />
           )
@@ -139,13 +146,13 @@ function Exercise() {
       </div>
 
       <div className="flex-1 flex flex-col w-full p-5 md:w-2/3 md:flex-none">
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col h-[95%]">
           <Progress
             percent={Math.floor(
               (questionIndex / (exercise?.content.length || 1)) * 100,
             )}
           />
-          <div className="flex-1 px-5 py-10">
+          <div className="flex-1 mx-5 my-10 p-5 overflow-y-auto">
             <div className="mb-14">{ExerciseComponent()}</div>
             {submission?.detail[questionIndex] && (
               <div className="w-full p-5 border-2 border-solid border-primary rounded-md flex items-center gap-4">

@@ -27,5 +27,5 @@ export class ExamDto {
   course: string;
 
   @Exclude()
-  teacher: string;
+  creator: string;
 }

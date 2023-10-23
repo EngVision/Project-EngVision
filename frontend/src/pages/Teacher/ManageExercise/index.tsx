@@ -39,7 +39,10 @@ const GeneralInfoForm = () => {
         <Input placeholder="Title" />
       </Form.Item>
       <Form.Item<GeneralInfo> label="Description" name="description">
-        <Input.TextArea placeholder="Description (optional)" />
+        <Input.TextArea
+          placeholder="Description (optional)"
+          autoSize={{ minRows: 4, maxRows: 10 }}
+        />
       </Form.Item>
       <div className="grid grid-cols-2 gap-4">
         <Form.Item<GeneralInfo>
