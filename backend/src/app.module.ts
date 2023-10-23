@@ -11,6 +11,7 @@ import { FilesModule } from './modules/files/files.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { SubmissionsModule } from './modules/submissions/submissions.module';
 import { UsersModule } from './modules/users/users.module';
+import { ExamsModule } from './modules/exams/exams.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { UsersModule } from './modules/users/users.module';
     ReviewsModule,
     FilesModule,
     SubmissionsModule,
+    ExamsModule,
   ],
   providers: [
     {

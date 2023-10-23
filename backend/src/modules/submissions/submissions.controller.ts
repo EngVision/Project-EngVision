@@ -18,7 +18,9 @@ import { AtGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
 import { SubmissionDto } from './dto/submission.dto';
 import { SubmissionsService } from './submissions.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Submissions')
 @Controller('submissions')
 export class SubmissionsController {
   constructor(private readonly submissionsService: SubmissionsService) {}
