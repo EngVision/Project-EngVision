@@ -9,7 +9,7 @@ interface AppState {
 
 const initialState: AppState = {
   user: null,
-  darkMode: false,
+  darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
   locales: 'en',
 }
 
