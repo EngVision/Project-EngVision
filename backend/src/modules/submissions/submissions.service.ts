@@ -1,24 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AssignmentDto } from './dto/assignment.dto';
+import { SubmissionDto } from './dto/submission.dto';
 import {
-  Assignment,
-  AssignmentDocument,
   QuestionResult,
-} from './schemas/assignment.schema';
+  Submission,
+  SubmissionDocument,
+} from './schemas/submission.schema';
 
 @Injectable()
-export class AssignmentsService {
+export class SubmissionsService {
   constructor(
-    @InjectModel(Assignment.name) private assignmentModel: Model<Assignment>,
+    @InjectModel(Submission.name) private assignmentModel: Model<Submission>,
   ) {}
 
   async update(
     userId: string,
     exerciseId: string,
-    assignmentDto: AssignmentDto,
-  ): Promise<AssignmentDto> {
+    submissionDto: SubmissionDto,
+  ): Promise<SubmissionDto> {
     const assignment = await this.findByUserAndExercise(userId, exerciseId);
 
     let detail: QuestionResult[] = [];
@@ -27,26 +27,26 @@ export class AssignmentsService {
     }
 
     //Add or update question result
-    const [result] = assignmentDto.detail;
+    const [result] = submissionDto.detail;
     const i = detail.findIndex(
       value => value.question.toString() === result.question.toString(),
     );
     if (i > -1) detail[i] = result;
     else detail.push(result);
 
-    assignmentDto.detail = detail;
-    assignmentDto.totalCorrect = assignmentDto.detail.reduce(
+    submissionDto.detail = detail;
+    submissionDto.totalCorrect = submissionDto.detail.reduce(
       (prev, questionResult) => (questionResult.isCorrect ? prev + 1 : prev),
       0,
     );
-    assignmentDto.totalDone = assignmentDto.detail.length;
+    submissionDto.totalDone = submissionDto.detail.length;
 
     const newAssignment = await this.assignmentModel.findOneAndUpdate(
       {
         user: userId,
         exercise: exerciseId,
       },
-      { ...assignmentDto },
+      { ...submissionDto },
       {
         upsert: true,
         new: true,
@@ -64,7 +64,7 @@ export class AssignmentsService {
   async findByUserAndExercise(
     userId: string,
     exerciseId: string,
-  ): Promise<AssignmentDto> {
+  ): Promise<SubmissionDto> {
     const assignment = await this.assignmentModel.findOne({
       user: userId,
       exercise: exerciseId,
@@ -82,7 +82,7 @@ export class AssignmentsService {
     };
   }
 
-  async findByUser(userId: string): Promise<AssignmentDocument[]> {
+  async findByUser(userId: string): Promise<SubmissionDocument[]> {
     const assignments = await this.assignmentModel.find({
       user: userId,
     });
@@ -90,7 +90,7 @@ export class AssignmentsService {
     return assignments;
   }
 
-  async findOne(id: string): Promise<AssignmentDocument> {
+  async findOne(id: string): Promise<SubmissionDocument> {
     const assignment = await this.assignmentModel.findById(id);
 
     if (!assignment) {

@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AssignmentsService } from '../assignments/assignments.service';
-import { QuestionResult } from '../assignments/schemas/assignment.schema';
 import { ExerciseContentServiceFactory } from '../exercise-content/exercise-content-factory.service';
+import { QuestionResult } from '../submissions/schemas/submission.schema';
+import { SubmissionsService } from '../submissions/submissions.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise, ExerciseDocument } from './schemas/exercise.schema';
@@ -13,7 +13,7 @@ export class ExercisesService {
   constructor(
     @InjectModel(Exercise.name) private exerciseModel: Model<Exercise>,
     private readonly exerciseContentServiceFactory: ExerciseContentServiceFactory,
-    private readonly assignmentsService: AssignmentsService,
+    private readonly submissionsService: SubmissionsService,
   ) {}
 
   async create(
@@ -116,7 +116,7 @@ export class ExercisesService {
 
     const result = await service.checkAnswer(questionId, answer);
 
-    await this.assignmentsService.update(userId, exercise.id, {
+    await this.submissionsService.update(userId, exercise.id, {
       user: userId,
       exercise: exerciseId,
       exerciseType: exercise.type,

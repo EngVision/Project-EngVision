@@ -1,7 +1,7 @@
 import type { ExerciseType } from '../../utils/constants'
 import type { SubmitAnswerResponse } from '../exerciseApi/types'
 
-export interface AssignmentResponse {
+export interface SubmissionResponse {
   id: string
   exercise: string
   user: string

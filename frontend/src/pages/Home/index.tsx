@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import TeacherLearn from '../../components/Icons/TeacherLearn'
 import { useAppSelector } from '../../hooks/redux'
-import { AssignmentResponse } from '../../services/assignmentApi/types'
-import assignmentApi from '../../services/assignmentApi'
+import { SubmissionResponse } from '../../services/submissionApi/types'
+import submissionApi from '../../services/submissionApi'
 import { CEFRLevel, COURSE_STATUS, NextDue } from '../../utils/constants'
 import coursesApi from '../../services/coursesApi'
 import { CourseParams } from '../../services/coursesApi/types'
@@ -11,7 +11,7 @@ const Home = () => {
   const status: any = { status: COURSE_STATUS.attended }
   const user = useAppSelector((state) => state.app.user)
 
-  const [assignments, setAssignments] = useState<AssignmentResponse[]>([])
+  const [assignments, setAssignments] = useState<SubmissionResponse[]>([])
   const [courseList, setCourseList] = useState<CourseParams[]>([])
 
   const level = CEFRLevel
@@ -25,7 +25,7 @@ const Home = () => {
   useEffect(() => {
     try {
       const fetchAssignments = async () => {
-        const data = await assignmentApi.getAssignments()
+        const data = await submissionApi.getSubmissionList()
         setAssignments(data)
       }
       const fetchCourses = async () => {

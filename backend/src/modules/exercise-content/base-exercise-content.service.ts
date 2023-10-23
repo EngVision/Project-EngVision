@@ -1,9 +1,9 @@
 import { ValidationPipe } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Validator } from 'class-validator';
-import { QuestionResult } from '../assignments/schemas/assignment.schema';
 import { ExerciseQuestionDto } from './dto/exercise-content.dto';
 import { Types } from 'mongoose';
+import { QuestionResult } from '../submissions/schemas/submission.schema';
 
 export abstract class ExerciseContentService {
   protected async validate(

@@ -23,10 +23,10 @@ export class QuestionResult {
 }
 const QuestionResultSchema = SchemaFactory.createForClass(QuestionResult);
 
-export type AssignmentDocument = Assignment & Document;
+export type SubmissionDocument = Submission & Document;
 
 @Schema({ versionKey: false, timestamps: true })
-export class Assignment {
+export class Submission {
   @Prop({ type: SchemaTypes.ObjectId, ref: User.name, required: true })
   user: string;
 
@@ -52,4 +52,4 @@ export class Assignment {
   detail: QuestionResult[];
 }
 
-export const AssignmentSchema = SchemaFactory.createForClass(Assignment);
+export const SubmissionSchema = SchemaFactory.createForClass(Submission);

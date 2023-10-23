@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AssignmentsModule } from '../assignments/assignments.module';
 import { ExerciseContentModule } from '../exercise-content/exercise-content.module';
+import { SubmissionsModule } from '../submissions/submissions.module';
 import { ExercisesController } from './exercises.controller';
 import { ExercisesService } from './exercises.service';
 import { Exercise, ExerciseSchema } from './schemas/exercise.schema';
@@ -12,7 +12,7 @@ import { Exercise, ExerciseSchema } from './schemas/exercise.schema';
       { name: Exercise.name, schema: ExerciseSchema },
     ]),
     ExerciseContentModule,
-    AssignmentsModule,
+    SubmissionsModule,
   ],
   controllers: [ExercisesController],
   providers: [ExercisesService],
