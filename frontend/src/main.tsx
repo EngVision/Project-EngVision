@@ -10,8 +10,24 @@ import './locales/i18n'
 import { persistor, store } from './store'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ReactGA from 'react-ga4'
+import * as Sentry from '@sentry/react'
 
 const queryClient = new QueryClient()
+
+const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN
+
+Sentry.init({
+  dsn: SENTRY_DSN,
+  integrations: [
+    new Sentry.BrowserTracing({
+      tracePropagationTargets: ['localhost', /^https:\/\/yourserver\.io\/api/],
+    }),
+    new Sentry.Replay(),
+  ],
+  tracesSampleRate: 0.5,
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
+})
 
 const TRACKING_ID = import.meta.env.VITE_GA4_TRACKING_ID
 
