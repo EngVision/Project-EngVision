@@ -18,6 +18,6 @@ class PartDto {
 export class ExamDetailDto extends PartialType(
   OmitType(ExamDto, ['parts'] as const),
 ) {
-  @ApiProperty({ description: 'Exam parts' })
+  @ApiProperty({ description: 'Exam parts', type: [PartDto] })
   parts: PartDto[];
 }

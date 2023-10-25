@@ -15,7 +15,11 @@ export class Exam {
   @Prop()
   description: string;
 
-  @Prop({ required: true, type: SchemaTypes.ObjectId, ref: Course.name })
+  @Prop({
+    type: SchemaTypes.ObjectId,
+    ref: Course.name,
+    default: null,
+  })
   course: string;
 
   @Prop({ required: true, type: SchemaTypes.ObjectId, ref: User.name })
@@ -24,7 +28,7 @@ export class Exam {
   @Prop({ required: true })
   level: CEFRLevel;
 
-  @Prop({ type: [String], enum: ExerciseTag, required: true })
+  @Prop({ type: [String], enum: ExerciseTag, default: [] })
   tags: ExerciseTag[];
 
   @Prop([{ required: true, type: SchemaTypes.ObjectId, ref: Exercise.name }])

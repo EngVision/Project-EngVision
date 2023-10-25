@@ -5,7 +5,7 @@ class ContentDto {
   @Transform(value => value.obj._id.toString())
   id?: string;
 
-  @Expose({ groups: ['Teacher'] })
+  @Expose({ groups: ['Teacher', 'Admin'] })
   correctAnswer: any;
 }
 
