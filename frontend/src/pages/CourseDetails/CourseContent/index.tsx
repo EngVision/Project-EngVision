@@ -1,32 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Button, Collapse } from 'antd'
 import TickCircle from '../../../components/Icons/TickCircle'
 import Circle from '../../../components/Icons/Circle'
 import { CourseDetails } from '../../../services/coursesApi/types'
-import { SubmissionResponse } from '../../../services/submissionApi/types'
 import submissionApi from '../../../services/submissionApi'
 import { useNavigate } from 'react-router-dom'
+
 const { Panel } = Collapse
+
 const CourseContent = (course: CourseDetails) => {
-  const [assignments, setAssignments] = useState<SubmissionResponse[]>([])
   const completedExerciseIds: string[] = []
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    try {
-      const fetchAssignments = async () => {
-        const data = await submissionApi.getSubmissionList()
-        setAssignments(data)
-      }
-      fetchAssignments()
-    } catch (error) {
-      console.error('Error fetching assignments:', error)
-    }
-  }, [])
+  const { data: rawSubmissionList } = useQuery({
+    queryKey: ['submissions'],
+    queryFn: submissionApi.getSubmissionList,
+  })
 
-  if (course.isAttended) {
-    assignments.forEach((assignment) => {
+  if (course.isAttended && rawSubmissionList) {
+    rawSubmissionList.data.forEach((assignment) => {
       if (assignment.totalDone === assignment.totalQuestion) {
         completedExerciseIds.push(assignment.exercise)
       }
@@ -84,6 +77,7 @@ const CourseContent = (course: CourseDetails) => {
         {/* Sections */}
         {course.sections.map((section, sectionIndex) => (
           <Collapse
+            key={section.id}
             className="bg-white"
             accordion={true} // Set accordion for each panel
             bordered={false} // Remove borders if desired
@@ -118,6 +112,7 @@ const CourseContent = (course: CourseDetails) => {
               {/* Lessons */}
               {section.lessons?.map((lesson, lessonIndex) => (
                 <Collapse
+                  key={lesson.id}
                   collapsible={course.isAttended ? 'header' : 'disabled'}
                   className="bg-white pl-4"
                   accordion={true} // Set accordion for each panel

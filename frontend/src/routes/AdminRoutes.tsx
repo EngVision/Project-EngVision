@@ -1,7 +1,8 @@
 import { RouteObject } from 'react-router-dom'
 import DefaultLayout from '../layouts/DefaultLayout'
-import Exam from '../pages/Exam'
+import ManageExam from '../pages/Amin/ManageExam'
 import Exercise from '../pages/Exercise'
+import ManageUsers from '../pages/ManageUsers'
 import Statistic from '../pages/Statistic'
 import TeacherCourseDetail from '../pages/Teacher/CourseDetail'
 import TeacherCourses from '../pages/Teacher/Courses'
@@ -12,14 +13,13 @@ import {
   PRIVATE_ROUTES,
   TEACHER_ROUTES,
 } from '../utils/constants'
-import ManageUsers from '../pages/ManageUsers'
 
 const adminRoutes: RouteObject[] = [
   {
     element: <DefaultLayout />,
     children: [
       {
-        element: <Exam />,
+        element: <ManageExam />,
         path: TEACHER_ROUTES.assignmentExam,
       },
       {

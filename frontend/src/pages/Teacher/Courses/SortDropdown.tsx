@@ -33,13 +33,20 @@ const SortDropdown = () => {
               key={index}
               onClick={() => {
                 if (isActive) {
-                  setSortOption({
-                    sortBy: '',
-                    order: '',
-                  })
+                  dispatch(
+                    setSortOption({
+                      sortBy: '',
+                      order: '',
+                    }),
+                  )
+                } else {
+                  dispatch(
+                    setSortOption({
+                      sortBy: option.sortBy,
+                      order: option.order,
+                    }),
+                  )
                 }
-
-                dispatch(setSortOption(option))
               }}
               className={`py-2 px-4 rounded-lg hover:bg-grey-100 cursor-pointer 
               ${isActive ? 'bg-grey-100 font-semibold' : ''}`}

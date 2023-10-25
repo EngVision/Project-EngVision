@@ -6,22 +6,28 @@ import {
   Review,
   ReviewParams,
 } from '../../../services/coursesApi/types'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+const { TextArea } = Input
 
 interface ReviewsProps {
   course: CourseDetails
-  onReviewSubmit: () => Promise<void>
 }
 
-const Reviews: React.FC<ReviewsProps> = ({ course, onReviewSubmit }) => {
-  const { TextArea } = Input
+const Reviews: React.FC<ReviewsProps> = ({ course }) => {
+  const queryClient = useQueryClient()
+
+  const reviewMutation = useMutation({
+    mutationFn: (review: ReviewParams) =>
+      coursesApi.postReview(course.id, review),
+  })
+
   const onFinish = async (values: ReviewParams) => {
-    try {
-      const review = values
-      await coursesApi.postReview(course.id, review)
-    } catch (error) {
-      throw error
-    }
-    onReviewSubmit()
+    reviewMutation.mutate(values, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['courseDetail'] })
+      },
+    })
   }
 
   const onFinishFailed = (errorInfo: any) => {
