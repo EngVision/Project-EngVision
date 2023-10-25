@@ -4,12 +4,16 @@ import { UpdateExamDto } from './dto/update-exam.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Exam, ExamDocument } from './schemas/exam.schema';
 import { Model } from 'mongoose';
+import { ExercisesService } from '../exercises/exercises.service';
+import { CEFRLevel } from 'src/common/enums';
+import { shuffleArray } from 'src/common/utils';
 
 @Injectable()
 export class ExamsService {
   constructor(
     @InjectModel(Exam.name)
     private readonly examModel: Model<ExamDocument>,
+    private readonly exercisesService: ExercisesService,
   ) {}
 
   async create(createExamDto: CreateExamDto): Promise<ExamDocument> {
@@ -28,7 +32,7 @@ export class ExamsService {
     const exam = await this.examModel.findById(id);
 
     if (!exam) {
-      throw new NotFoundException(`Exam #${id} not found`);
+      throw new NotFoundException(`Exam not found`);
     }
 
     return await exam.populate('parts', 'id title description');
@@ -53,5 +57,38 @@ export class ExamsService {
 
   async remove(id: string) {
     await this.examModel.findByIdAndDelete(id);
+  }
+
+  async getEntranceExam(): Promise<ExamDocument> {
+    const exercises = await this.exercisesService.getEntranceExercises(
+      CEFRLevel.B2,
+    );
+
+    console.log(exercises);
+
+    shuffleArray(exercises);
+
+    return new this.examModel({
+      title: 'Entrance Exam',
+      description: 'Entrance Exam',
+      level: CEFRLevel.B2,
+      parts: exercises.slice(0, 4).map(exercise => exercise._id),
+    });
+  }
+
+  async addPart(id: string, partId: string): Promise<ExamDocument> {
+    const exam = await this.examModel.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      { $addToSet: { parts: partId } },
+      { new: true },
+    );
+
+    if (!exam) {
+      throw new NotFoundException(`Exam #${id} not found`);
+    }
+
+    return exam.populate('parts', 'id title description');
   }
 }

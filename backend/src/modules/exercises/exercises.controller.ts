@@ -23,6 +23,7 @@ import { CreateMultipleChoiceDto } from '../exercise-content/multiple-choice/dto
 import { QuestionResult } from '../submissions/schemas/submission.schema';
 import { CreateExerciseDto, ExerciseDto, UpdateExerciseDto } from './dto';
 import { ExercisesService } from './exercises.service';
+import { GetResponseList } from 'src/common/dto/paginated-response.dto';
 
 @Controller('exercises')
 @ApiTags('Exercises')
@@ -46,6 +47,25 @@ export class ExercisesController {
     return res
       .status(HttpStatus.CREATED)
       .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
+  }
+
+  @Get()
+  @UseGuards(AtGuard)
+  async findAll(@CurrentUser() user: JwtPayload, @Res() res: Response) {
+    const exercises = await this.exercisesService.find(
+      { creator: user.sub },
+      user.roles,
+    );
+
+    return res.status(HttpStatus.OK).send(
+      GetResponseList({
+        dataType: ExerciseDto,
+        data: exercises,
+        limit: 0,
+        offset: 0,
+        total: exercises.length,
+      }),
+    );
   }
 
   @Get(':id')

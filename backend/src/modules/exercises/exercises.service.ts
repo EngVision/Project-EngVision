@@ -6,7 +6,12 @@ import { QuestionResult } from '../submissions/schemas/submission.schema';
 import { SubmissionsService } from '../submissions/submissions.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
-import { Exercise, ExerciseDocument } from './schemas/exercise.schema';
+import {
+  Exercise,
+  ExerciseDocument,
+  ExerciseSchema,
+} from './schemas/exercise.schema';
+import { CEFRLevel, Role } from 'src/common/enums';
 
 @Injectable()
 export class ExercisesService {
@@ -33,8 +38,34 @@ export class ExercisesService {
     return await newExercise.populate('content');
   }
 
-  async find(): Promise<ExerciseDocument[]> {
-    const exercises = await this.exerciseModel.find({}).populate('content');
+  async find(
+    query: UpdateExerciseDto = {},
+    roles?: Role[],
+  ): Promise<ExerciseDocument[]> {
+    if (roles && roles.includes(Role.Admin)) {
+      const exercises = await this.exerciseModel.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'creator',
+            foreignField: '_id',
+            as: 'creator',
+          },
+        },
+        {
+          $match: {
+            'creator.role': Role.Admin,
+          },
+        },
+      ]);
+
+      return exercises.map(exercise => ({
+        ...exercise,
+        creator: exercise.creator[0]._id,
+      }));
+    }
+
+    const exercises = await this.exerciseModel.find(query);
 
     return exercises;
   }
@@ -100,6 +131,27 @@ export class ExercisesService {
 
     await service.deleteContent(exercise.content);
     await exercise.deleteOne();
+  }
+
+  async getEntranceExercises(level: CEFRLevel): Promise<ExerciseDocument[]> {
+    const exercises = await this.exerciseModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'creator',
+          foreignField: '_id',
+          as: 'creator',
+        },
+      },
+      {
+        $match: {
+          level: level,
+          'creator.role': Role.Teacher,
+        },
+      },
+    ]);
+
+    return exercises;
   }
 
   async submitAnswer(

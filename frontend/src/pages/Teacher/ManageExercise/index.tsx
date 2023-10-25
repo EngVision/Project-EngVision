@@ -199,7 +199,7 @@ function ManageExercise() {
               onError: (error) => {
                 message.open({
                   key: 'submitMessage',
-                  content: error.data.message,
+                  content: error.message,
                   type: 'error',
                 })
               },
@@ -209,7 +209,7 @@ function ManageExercise() {
         onError: (error) => {
           message.open({
             key: 'submitMessage',
-            content: error.data.message,
+            content: error.message,
             type: 'error',
           })
         },
