@@ -23,6 +23,11 @@ const exerciseApi = {
     return res.data
   },
 
+  deleteExercise: async (id: string): Promise<ExerciseSchema> => {
+    const res = await axiosClient.delete(`${PREFIX}/${id}`)
+    return res.data
+  },
+
   submitAnswer: async (
     exerciseId: string,
     questionId: string,

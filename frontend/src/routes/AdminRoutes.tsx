@@ -1,6 +1,7 @@
 import { RouteObject } from 'react-router-dom'
 import DefaultLayout from '../layouts/DefaultLayout'
 import ManageExam from '../pages/Amin/ManageExam'
+import EditTest from '../pages/Amin/ManageExam/Component/EditTest'
 import Exercise from '../pages/Exercise'
 import ManageUsers from '../pages/ManageUsers'
 import Statistic from '../pages/Statistic'
@@ -8,19 +9,32 @@ import TeacherCourseDetail from '../pages/Teacher/CourseDetail'
 import TeacherCourses from '../pages/Teacher/Courses'
 import LessonDetail from '../pages/Teacher/LessonDetail'
 import ManageExercise from '../pages/Teacher/ManageExercise'
-import {
-  ADMIN_ROUTES,
-  PRIVATE_ROUTES,
-  TEACHER_ROUTES,
-} from '../utils/constants'
+import { ADMIN_ROUTES, PRIVATE_ROUTES } from '../utils/constants'
 
 const adminRoutes: RouteObject[] = [
   {
     element: <DefaultLayout />,
     children: [
       {
-        element: <ManageExam />,
-        path: TEACHER_ROUTES.assignmentExam,
+        path: ADMIN_ROUTES.exams,
+        children: [
+          {
+            element: <ManageExam />,
+            path: '',
+          },
+          {
+            element: <ManageExercise />,
+            path: 'edit-part',
+          },
+          {
+            element: <ManageExercise />,
+            path: 'create-part',
+          },
+          {
+            element: <EditTest />,
+            path: 'edit-test',
+          },
+        ],
       },
       {
         path: 'courses',
