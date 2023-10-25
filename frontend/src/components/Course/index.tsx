@@ -1,13 +1,7 @@
 import { Card } from 'antd'
 
 import { getFormattedPrice } from '../../utils/common'
-import {
-  MoreIcon,
-  PeopleIcon,
-  PlayCircleIcon,
-  StarIcon,
-  VideoPlayIcon,
-} from '../Icons'
+import { MoreIcon, PeopleIcon, StarIcon, VideoPlayIcon } from '../Icons'
 import { useNavigate } from 'react-router-dom'
 import { CourseDetails } from '../../services/coursesApi/types'
 import CustomImage from '../common/CustomImage'
@@ -42,11 +36,6 @@ const Course = ({ course }: CourseProps) => {
         <div className="flex items-center">
           <VideoPlayIcon className="pr-1" />
           <p>{course.totalLessons} Lessons</p>
-        </div>
-
-        <div className="flex items-center">
-          <PlayCircleIcon className="pr-1" />
-          <p>25 hr 3 min </p>
         </div>
       </div>
 

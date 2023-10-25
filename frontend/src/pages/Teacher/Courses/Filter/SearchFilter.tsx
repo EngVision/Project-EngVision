@@ -7,16 +7,14 @@ const { Search } = Input
 
 const SearchFilter = () => {
   const dispatch = useAppDispatch()
-  const searchValue = useAppSelector(
-    (state) => state.course.filterOptions.searchValue,
-  )
+  const keyword = useAppSelector((state) => state.course.filterOptions.keyword)
 
   const onSearch = (value: string) => {
-    if (!value && !searchValue) return
+    if (!value && !keyword) return
 
     dispatch(
       setFilterOptions({
-        searchValue: value,
+        keyword: value,
       }),
     )
   }

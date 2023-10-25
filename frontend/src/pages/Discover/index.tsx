@@ -1,26 +1,20 @@
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
+import { useQuery } from '@tanstack/react-query'
 import { CourseCard } from '../../components/CourseCard'
 import coursesApi from '../../services/coursesApi'
-import type { CourseParams } from '../../services/coursesApi/types'
 import { COURSE_STATUS } from '../../utils/constants'
+import AppLoading from '../../components/common/AppLoading'
+
 const Discover = () => {
   const { t } = useTranslation()
-  const [courseList, setCourseList] = useState<CourseParams[]>([])
   const status: any = { status: COURSE_STATUS.all }
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const courses: any = await coursesApi.getCourses(status)
-        setCourseList(courses.data)
-      } catch (error) {
-        console.error('Error fetching courses:', error)
-      }
-    }
 
-    fetchCourses()
-  }, [])
+  const { data: rawCourseList, isLoading } = useQuery({
+    queryKey: ['courses', status],
+    queryFn: () => coursesApi.getCourses(status),
+  })
+
+  if (isLoading) return <AppLoading />
 
   return (
     <div>
@@ -31,8 +25,10 @@ const Discover = () => {
       </div>
       <div className="m-6">
         <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
-          {courseList &&
-            courseList.map((course) => <CourseCard course={course} />)}
+          {rawCourseList &&
+            rawCourseList.data.map((course) => (
+              <CourseCard course={course} key={course.id} />
+            ))}
         </div>
       </div>
     </div>

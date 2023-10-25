@@ -1,11 +1,12 @@
+import { useQuery } from '@tanstack/react-query'
+import { Button, Space } from 'antd'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import coursesApi from '../../services/coursesApi'
-import type { CourseExercisesDue } from '../../services/coursesApi/types'
-import CourseCard from './CourseCard'
-import { Button, Space } from 'antd'
 import ArrowLeft from '../../components/Icons/ArrowLeft'
 import ArrowRight from '../../components/Icons/ArrowRight'
+import AppLoading from '../../components/common/AppLoading'
+import coursesApi from '../../services/coursesApi'
+import CourseCard from './CourseCard'
 
 enum Direction {
   left = 'left',
@@ -14,26 +15,17 @@ enum Direction {
 
 const ExercisesAndExams = () => {
   const { t } = useTranslation()
-  const [courseList, setCourseList] = useState<CourseExercisesDue[]>([])
   const [disabledScrollLeft, setDisabledScrollLeft] = useState<boolean>(true)
   const [disabledScrollRight, setDisabledScrollRight] = useState<boolean>(true)
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const courses = await coursesApi.getCoursesExercisesDue()
-        setCourseList(courses.data)
-      } catch (error) {
-        console.error('Error fetching courses:', error)
-      }
-    }
-
-    fetchCourses()
-  }, [])
+  const { data: rawCourseExerciseDue, isLoading } = useQuery({
+    queryKey: ['coursesExercisesDue'],
+    queryFn: coursesApi.getCoursesExercisesDue,
+  })
 
   useEffect(() => {
     initDisabledScrollRight()
-  }, [courseList])
+  }, [rawCourseExerciseDue?.data])
 
   const initDisabledScrollRight = () => {
     const containerElement: HTMLElement | null =
@@ -75,49 +67,53 @@ const ExercisesAndExams = () => {
     } else setDisabledScrollRight(false)
   }
 
+  if (isLoading) return <AppLoading />
+
   return (
-    <div>
-      <div className="my-6 flex justify-between align-middle">
-        <p className="font-bold text-3xl text-primary">
-          {t('Exercises.exercises')}
-        </p>
-        <Space>
-          <Button
-            type="primary"
-            shape="circle"
-            size="large"
-            ghost
-            icon={<ArrowLeft />}
-            onClick={() => scroll(Direction.left)}
-            disabled={disabledScrollLeft}
-          ></Button>
-          <Button
-            type="primary"
-            shape="circle"
-            size="large"
-            ghost
-            icon={<ArrowRight />}
-            onClick={() => scroll(Direction.right)}
-            disabled={disabledScrollRight}
-          ></Button>
-        </Space>
+    rawCourseExerciseDue && (
+      <div>
+        <div className="my-6 flex justify-between align-middle">
+          <p className="font-bold text-3xl text-primary">
+            {t('Exercises.exercises')}
+          </p>
+          <Space>
+            <Button
+              type="primary"
+              shape="circle"
+              size="large"
+              ghost
+              icon={<ArrowLeft />}
+              onClick={() => scroll(Direction.left)}
+              disabled={disabledScrollLeft}
+            ></Button>
+            <Button
+              type="primary"
+              shape="circle"
+              size="large"
+              ghost
+              icon={<ArrowRight />}
+              onClick={() => scroll(Direction.right)}
+              disabled={disabledScrollRight}
+            ></Button>
+          </Space>
+        </div>
+        <div
+          id="course-list"
+          className="flex gap-10 overflow-x-scroll scrollbar-hide scroll-smooth snap-mandatory snap-x"
+          onScroll={handleChangeScroll}
+        >
+          {rawCourseExerciseDue.data.length > 0 ? (
+            rawCourseExerciseDue.data.map((course) => (
+              <CourseCard key={course.id} course={course} />
+            ))
+          ) : (
+            <div className="col-span-4 text-center italic text-textSubtle">
+              <p className="text-lg">No courses found</p>
+            </div>
+          )}
+        </div>
       </div>
-      <div
-        id="course-list"
-        className="flex gap-10 overflow-x-scroll scrollbar-hide scroll-smooth snap-mandatory snap-x"
-        onScroll={handleChangeScroll}
-      >
-        {courseList.length > 0 ? (
-          courseList.map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))
-        ) : (
-          <div className="col-span-4 text-center italic text-textSubtle">
-            <p className="text-lg">No courses found</p>
-          </div>
-        )}
-      </div>
-    </div>
+    )
   )
 }
 

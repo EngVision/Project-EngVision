@@ -2,26 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { CEFRLevel, ExerciseTag } from 'src/common/enums';
 
 @Schema({ _id: false, versionKey: false })
-class Answer {
-  @Prop({ required: true })
-  id: number;
-
-  @Prop({ required: true })
-  text: string;
-
-  @Prop({ default: null })
-  image: string;
-
-  @Prop({ default: null })
-  audio: string;
-}
-const AnswerSchema = SchemaFactory.createForClass(Answer);
-
-@Schema({ _id: false, versionKey: false })
 class Question {
-  @Prop({ default: null })
-  title: string;
-
   @Prop({ required: true })
   text: string;
 
@@ -31,15 +12,15 @@ class Question {
   @Prop({ default: null })
   audio?: string;
 
-  @Prop([[{ type: AnswerSchema }]])
-  answers: [Answer[]];
+  @Prop([[{ type: String }]])
+  answers: String[][];
 }
 const QuestionSchema = SchemaFactory.createForClass(Question);
 
 @Schema({ _id: false, versionKey: false })
 class CorrectAnswer {
-  @Prop({ type: [Number], required: true })
-  detail: number[];
+  @Prop({ type: [String], required: true })
+  detail: string[];
 
   @Prop({ type: String, default: null })
   explanation: string;
