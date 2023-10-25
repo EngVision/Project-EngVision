@@ -15,7 +15,7 @@ const MenuItem = ({ item }: Props) => {
         ${isActive ? '!bg-primary text-white' : ''}`
       }
     >
-      <div className="flex items-cente w-[24px]">{item.icon}</div>
+      <div className="flex items-center w-[24px]">{item.icon}</div>
       <span className="hidden lg:block">{item.title}</span>
     </NavLink>
   )
