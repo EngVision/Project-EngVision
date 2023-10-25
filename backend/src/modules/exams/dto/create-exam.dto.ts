@@ -25,8 +25,8 @@ export class CreateExamDto {
   course: string;
 
   @IsMongoId()
-  @ApiProperty({ type: String, description: 'Teacher id' })
-  teacher: string;
+  @ApiProperty({ type: String, description: 'creator id' })
+  creator: string;
 
   @IsEnum(CEFRLevel)
   @ApiProperty({ enum: CEFRLevel, description: 'Level (A1/A2 ...)' })

@@ -19,11 +19,11 @@ export class SubmissionsService {
     exerciseId: string,
     submissionDto: SubmissionDto,
   ): Promise<SubmissionDto> {
-    const assignment = await this.findByUserAndExercise(userId, exerciseId);
+    const submission = await this.findByUserAndExercise(userId, exerciseId);
 
     let detail: QuestionResult[] = [];
-    if (assignment) {
-      detail = assignment.detail;
+    if (submission) {
+      detail = submission.detail;
     }
 
     //Add or update question result
@@ -65,18 +65,18 @@ export class SubmissionsService {
     userId: string,
     exerciseId: string,
   ): Promise<SubmissionDto> {
-    const assignment = await this.assignmentModel.findOne({
+    const submission = await this.assignmentModel.findOne({
       user: userId,
       exercise: exerciseId,
     });
 
-    if (!assignment) {
+    if (!submission) {
       return null;
     }
 
     return {
-      ...assignment.toObject(),
-      progress: +(assignment.totalDone / assignment.totalQuestion).toPrecision(
+      ...submission.toObject(),
+      progress: +(submission.totalDone / submission.totalQuestion).toPrecision(
         2,
       ),
     };
