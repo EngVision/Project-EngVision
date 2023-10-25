@@ -1,17 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CEFRLevel, Role } from 'src/common/enums';
 import { ExerciseContentServiceFactory } from '../exercise-content/exercise-content-factory.service';
 import { QuestionResult } from '../submissions/schemas/submission.schema';
 import { SubmissionsService } from '../submissions/submissions.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
-import {
-  Exercise,
-  ExerciseDocument,
-  ExerciseSchema,
-} from './schemas/exercise.schema';
-import { CEFRLevel, Role } from 'src/common/enums';
+import { Exercise, ExerciseDocument } from './schemas/exercise.schema';
 
 @Injectable()
 export class ExercisesService {

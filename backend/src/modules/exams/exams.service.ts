@@ -16,8 +16,13 @@ export class ExamsService {
     private readonly exercisesService: ExercisesService,
   ) {}
 
-  async create(createExamDto: CreateExamDto): Promise<ExamDocument> {
+  async create(
+    createExamDto: CreateExamDto,
+    creator: string,
+  ): Promise<ExamDocument> {
     const newExam = new this.examModel(createExamDto);
+
+    newExam.creator = creator;
 
     return await newExam.save();
   }
@@ -63,8 +68,6 @@ export class ExamsService {
     const exercises = await this.exercisesService.getEntranceExercises(
       CEFRLevel.B2,
     );
-
-    console.log(exercises);
 
     shuffleArray(exercises);
 

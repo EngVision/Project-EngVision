@@ -18,11 +18,12 @@ import { CreateExamDto } from './dto/create-exam.dto';
 import { ExamDto } from './dto/exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { ExamsService } from './exams.service';
-import { ApiResponseData } from 'src/common/decorators';
+import { ApiResponseData, CurrentUser } from 'src/common/decorators';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { ExamDetailDto } from './dto/exam-detail.dto';
 import { AddPartDto } from './dto/add-part.dto';
+import { JwtPayload } from '../auth/types';
 
 @ApiTags('Exams')
 @Controller('exams')
@@ -32,8 +33,12 @@ export class ExamsController {
   @Post()
   @UseGuards(AtGuard, RoleGuard(Role.Teacher))
   @ApiResponseData(ExamDto)
-  async create(@Body() createExamDto: CreateExamDto, @Res() res: Response) {
-    const exam = await this.examsService.create(createExamDto);
+  async create(
+    @CurrentUser() user: JwtPayload,
+    @Body() createExamDto: CreateExamDto,
+    @Res() res: Response,
+  ) {
+    const exam = await this.examsService.create(createExamDto, user.sub);
 
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
