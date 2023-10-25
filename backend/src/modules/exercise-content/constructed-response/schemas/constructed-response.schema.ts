@@ -3,9 +3,6 @@ import { CEFRLevel, ExerciseTag } from 'src/common/enums';
 
 @Schema({ _id: false, versionKey: false })
 class Question {
-  @Prop({ default: null })
-  title: string;
-
   @Prop({ required: true })
   text: string;
 
@@ -40,7 +37,7 @@ export class ConstructedResponse {
   @Prop({ type: QuestionSchema, required: true })
   question: Question;
 
-  @Prop({ type: CorrectAnswerSchema, required: true })
+  @Prop({ type: CorrectAnswerSchema })
   correctAnswer: CorrectAnswer;
 }
 

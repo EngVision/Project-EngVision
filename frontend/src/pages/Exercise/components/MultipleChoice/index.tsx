@@ -14,7 +14,6 @@ interface MultipleChoiceProps extends QuestionPayload {
     }[]
     multipleCorrectAnswers: boolean
   }
-  exerciseId: string
   result: MultipleChoiceResponse | undefined
 }
 
