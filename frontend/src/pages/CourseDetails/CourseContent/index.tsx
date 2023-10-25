@@ -84,7 +84,6 @@ const CourseContent = (course: CourseDetails) => {
         {/* Sections */}
         {course.sections.map((section, sectionIndex) => (
           <Collapse
-            className="bg-white"
             accordion={true} // Set accordion for each panel
             bordered={false} // Remove borders if desired
             expandIconPosition="end"
@@ -119,7 +118,7 @@ const CourseContent = (course: CourseDetails) => {
               {section.lessons?.map((lesson, lessonIndex) => (
                 <Collapse
                   collapsible={course.isAttended ? 'header' : 'disabled'}
-                  className="bg-white pl-4"
+                  className="pl-4"
                   accordion={true} // Set accordion for each panel
                   bordered={false} // Remove borders if desired
                   expandIconPosition="end"
@@ -154,7 +153,7 @@ const CourseContent = (course: CourseDetails) => {
                           key={exerciseIndex.toString()}
                           className="pl-10 pr-24"
                         >
-                          <div className="flex items-center justify-between mb-4 hover:bg-white hover:outline-dashed hover:outline-[1px] hover:outline-primary py-2 px-2 rounded-lg">
+                          <div className="flex items-center justify-between mb-4 hover:outline-dashed hover:outline-[1px] hover:outline-primary py-2 px-2 rounded-lg">
                             <div className="flex items-center cursor-pointer">
                               {completedExerciseIds.includes(exercise.id) ? (
                                 <TickCircle

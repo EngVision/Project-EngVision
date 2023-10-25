@@ -22,7 +22,7 @@ const Overview = (course: CourseDetails) => {
       <div className="mb-6">
         <h4 className="text-base mb-2">Description</h4>
         <div
-          className="bg-white border-solid border-[1px] border-wolfGrey
+          className="bg-white text-dark border-solid border-[1px] border-wolfGrey
          py-2 px-4 rounded-lg"
         >
           {course.about}
