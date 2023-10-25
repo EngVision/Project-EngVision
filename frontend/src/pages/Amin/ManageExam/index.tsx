@@ -42,13 +42,7 @@ const ManageExam = () => {
       const data: any = await examApi.getExam()
       setTests(data.data)
 
-      const allDataParts: ExerciseSchema[] = []
-      for (let i = 0; i < data.data.length; i++) {
-        for (let j = 0; j < data.data[i].parts.length; j++) {
-          const dataPart = await exerciseApi.getExercise(data.data[i].parts[j])
-          allDataParts.push(dataPart)
-        }
-      }
+      const allDataParts: ExerciseSchema[] = await exerciseApi.getAllExercise()
 
       setParts(allDataParts)
     } catch (error) {

@@ -23,6 +23,11 @@ const exerciseApi = {
     return res.data
   },
 
+  getAllExercise: async (): Promise<ExerciseSchema[]> => {
+    const res = await axiosClient.get(`${PREFIX}`)
+    return res.data
+  },
+
   deleteExercise: async (id: string): Promise<ExerciseSchema> => {
     const res = await axiosClient.delete(`${PREFIX}/${id}`)
     return res.data
