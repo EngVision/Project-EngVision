@@ -20,6 +20,7 @@ export class ExamDto {
   @ApiProperty({ description: 'Tags', type: [String], enum: ExerciseTag })
   tags: ExerciseTag[];
 
+  @Transform(value => value.obj.parts.map(part => part.toString()))
   @ApiProperty({ description: 'Exam parts' })
   parts: string[];
 

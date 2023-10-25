@@ -21,6 +21,7 @@ import { ExamsService } from './exams.service';
 import { ApiResponseData } from 'src/common/decorators';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { ExamDetailDto } from './dto/exam-detail.dto';
 
 @ApiTags('Exams')
 @Controller('exams')
@@ -57,17 +58,17 @@ export class ExamsController {
   }
 
   @Get(':id')
-  @ApiResponseData(ExamDto)
+  @ApiResponseData(ExamDetailDto)
   async findOne(@Param('id') id: string, @Res() res: Response) {
     const exam = await this.examsService.findOne(id);
 
     return res
       .status(HttpStatus.OK)
-      .send(GetResponse({ dataType: ExamDto, data: exam }));
+      .send(GetResponse({ dataType: ExamDetailDto, data: exam }));
   }
 
   @Patch(':id')
-  @ApiResponseData(ExamDto)
+  @ApiResponseData(ExamDetailDto)
   async update(
     @Param('id') id: string,
     @Body() updateExamDto: UpdateExamDto,
@@ -77,7 +78,7 @@ export class ExamsController {
 
     return res
       .status(HttpStatus.OK)
-      .send(GetResponse({ dataType: ExamDto, data: exam }));
+      .send(GetResponse({ dataType: ExamDetailDto, data: exam }));
   }
 
   @Delete(':id')
