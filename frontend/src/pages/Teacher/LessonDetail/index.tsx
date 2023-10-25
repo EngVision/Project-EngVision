@@ -1,28 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { lessonApi } from '../../../services/lessonApi'
+import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
+import AppLoading from '../../../components/common/AppLoading'
+import { lessonApi } from '../../../services/lessonApi'
 import ExerciseTable from './ExerciseTable'
-import { LessonType } from '../../../services/lessonApi/type'
 
 const LessonDetail = () => {
-  const { lessonId } = useParams()
-  const [lesson, setLesson] = useState<LessonType>()
+  const { lessonId = '' } = useParams()
 
-  const getLesson = async () => {
-    try {
-      if (lessonId) {
-        const { data } = await lessonApi.getLesson(lessonId)
+  const { data: lesson, isLoading } = useQuery({
+    queryKey: ['lesson', lessonId],
+    queryFn: () => lessonApi.getLesson(lessonId),
+  })
 
-        setLesson(data)
-      }
-    } catch (error) {
-      console.log('error: ', error)
-    }
-  }
-
-  useEffect(() => {
-    getLesson()
-  }, [])
+  if (isLoading) return <AppLoading />
 
   return (
     <div>

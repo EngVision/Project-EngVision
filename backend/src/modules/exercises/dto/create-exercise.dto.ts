@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
+  IsBoolean,
   IsDateString,
   IsEnum,
   IsMongoId,
@@ -62,4 +63,8 @@ export class CreateExerciseDto {
   @IsOptional()
   @IsDateString()
   deadline: string;
+
+  @IsOptional()
+  @IsBoolean()
+  needGrade?: boolean;
 }

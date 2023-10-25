@@ -7,7 +7,6 @@ const PREFIX = 'exercises'
 const exerciseApi = {
   createExercise: async (data: ExerciseSchema): Promise<ExerciseSchema> => {
     const res = await axiosClient.post(`${PREFIX}`, data)
-
     return res.data
   },
 
@@ -16,13 +15,11 @@ const exerciseApi = {
     data: ExerciseSchema,
   ): Promise<ExerciseSchema> => {
     const res = await axiosClient.patch(`${PREFIX}/${id}`, data)
-
     return res.data
   },
 
   getExercise: async (id: string): Promise<ExerciseSchema> => {
     const res = await axiosClient.get(`${PREFIX}/${id}`)
-
     return res.data
   },
 
@@ -35,7 +32,6 @@ const exerciseApi = {
       `${PREFIX}/${exerciseId}/submit-answer/${questionId}`,
       data,
     )
-
     return res.data
   },
 }

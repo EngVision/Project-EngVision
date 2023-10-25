@@ -7,7 +7,6 @@ import {
 
 interface FillBlankProps extends QuestionPayload {
   question: { text: string; image?: string; limits: number[] }
-  exerciseId: string
   result?: FillBlankResponse
 }
 

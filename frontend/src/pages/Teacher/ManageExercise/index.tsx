@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   Button,
   DatePicker,
@@ -7,17 +8,17 @@ import {
   Select,
   message,
 } from 'antd'
-import { useEffect, useRef } from 'react'
-import ConstructedResponseForm from './components/ConstructedResponseForm'
-import MultipleChoiceForm from './components/MultipleChoiceForm'
+import dayjs, { Dayjs } from 'dayjs'
+import { useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import coursesApi from '../../../services/coursesApi'
+import exerciseApi from '../../../services/exerciseApi'
+import { ExerciseSchema } from '../../../services/exerciseApi/types'
 import { CEFRLevel, ExerciseTag, ExerciseType } from '../../../utils/constants'
 import enumToSelectOptions from '../../../utils/enumsToSelectOptions'
-import { ExerciseSchema } from '../../../services/exerciseApi/types'
-import exerciseApi from '../../../services/exerciseApi'
-import coursesApi from '../../../services/coursesApi'
+import ConstructedResponseForm from './components/ConstructedResponseForm'
 import FillBlankForm from './components/FillBlankForm'
-import dayjs, { Dayjs } from 'dayjs'
+import MultipleChoiceForm from './components/MultipleChoiceForm'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -39,7 +40,10 @@ const GeneralInfoForm = () => {
         <Input placeholder="Title" />
       </Form.Item>
       <Form.Item<GeneralInfo> label="Description" name="description">
-        <Input.TextArea placeholder="Description (optional)" />
+        <Input.TextArea
+          placeholder="Description (optional)"
+          autoSize={{ minRows: 4, maxRows: 10 }}
+        />
       </Form.Item>
       <div className="grid grid-cols-2 gap-4">
         <Form.Item<GeneralInfo>
@@ -124,19 +128,33 @@ function ManageExercise() {
 
   const navigate = useNavigate()
 
-  const { lessonId, exerciseId } = useParams()
+  const { lessonId = '', exerciseId = '' } = useParams()
 
-  useEffect(() => {
-    getExercise()
-  }, [])
+  const addExerciseMutation = useMutation({
+    mutationFn: (exerciseId: string) =>
+      coursesApi.addExercise(lessonId, exerciseId),
+  })
 
   const getExercise = async () => {
     if (exerciseId) {
-      const res = await exerciseApi.getExercise(exerciseId)
-
-      setInitialValues(form as FormSubmit, res)
+      const data = await exerciseApi.getExercise(exerciseId)
+      setInitialValues(form as FormSubmit, data)
     }
   }
+
+  useQuery({
+    queryKey: ['exercise', exerciseId],
+    queryFn: getExercise,
+  })
+
+  const createExerciseMutation = useMutation({
+    mutationFn: exerciseApi.createExercise,
+  })
+
+  const updateExerciseMutation = useMutation({
+    mutationFn: (data: ExerciseSchema) =>
+      exerciseApi.updateExercise(exerciseId, data),
+  })
 
   const setInitialValues = (formSubmit: FormSubmit, value: ExerciseSchema) => {
     const valueForm = {
@@ -153,38 +171,48 @@ function ManageExercise() {
   const onSubmit = async (values: ExerciseSchema, formSubmit: FormSubmit) => {
     formSubmit.transform(values)
 
-    try {
-      message.open({
-        key: 'submitMessage',
-        content: 'loading',
-        type: 'loading',
+    message.open({
+      key: 'submitMessage',
+      content: 'loading',
+      type: 'loading',
+    })
+
+    if (exerciseId) {
+      updateExerciseMutation.mutate(values, {
+        onSuccess: (exercise) => {
+          setInitialValues(form as FormSubmit, exercise)
+        },
       })
-
-      if (exerciseId) {
-        const res = await exerciseApi.updateExercise(exerciseId, values)
-
-        setInitialValues(form as FormSubmit, res)
-      } else {
-        const { id } = await exerciseApi.createExercise(values)
-
-        if (lessonId && id) {
-          await coursesApi.addExercise(lessonId, id)
-
-          navigate('..', { relative: 'path' })
-        }
-      }
-
-      message.open({
-        key: 'submitMessage',
-        content: exerciseId ? 'Saved' : 'Created',
-        type: 'success',
-      })
-    } catch (error) {
-      console.log(error)
-      message.open({
-        key: 'submitMessage',
-        content: error.response?.data?.message,
-        type: 'error',
+    } else {
+      createExerciseMutation.mutate(values, {
+        onSuccess: (data) => {
+          if (lessonId && data.id) {
+            addExerciseMutation.mutate(data.id, {
+              onSuccess: () => {
+                navigate('..', { relative: 'path' })
+                message.open({
+                  key: 'submitMessage',
+                  content: exerciseId ? 'Saved' : 'Created',
+                  type: 'success',
+                })
+              },
+              onError: (error) => {
+                message.open({
+                  key: 'submitMessage',
+                  content: error.data.message,
+                  type: 'error',
+                })
+              },
+            })
+          }
+        },
+        onError: (error) => {
+          message.open({
+            key: 'submitMessage',
+            content: error.data.message,
+            type: 'error',
+          })
+        },
       })
     }
   }

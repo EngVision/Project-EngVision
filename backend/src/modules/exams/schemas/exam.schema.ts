@@ -19,7 +19,7 @@ export class Exam {
   course: string;
 
   @Prop({ required: true, type: SchemaTypes.ObjectId, ref: User.name })
-  teacher: string;
+  creator: string;
 
   @Prop({ required: true })
   level: CEFRLevel;

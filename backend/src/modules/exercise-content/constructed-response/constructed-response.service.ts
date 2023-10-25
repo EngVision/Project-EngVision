@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QuestionResult } from 'src/modules/submissions/schemas/submission.schema';
@@ -52,12 +52,38 @@ export class ConstructedResponseService extends ExerciseContentService {
     ];
   }
 
-  deleteContent(removedQuestion: string[]): Promise<void> {
-    throw new Error('Method not implemented.');
+  async deleteContent(removedQuestion: string[]): Promise<void> {
+    await this.constructedResponseModel.bulkWrite([
+      this.deleteBulkOps(removedQuestion),
+    ]);
   }
 
-  checkAnswer(id: string, answer: any): Promise<QuestionResult> {
-    throw new Error('Method not implemented.');
+  async checkAnswer(id: string, answer: string): Promise<QuestionResult> {
+    if (typeof answer !== 'string') {
+      throw new BadRequestException('answer must be a string');
+    }
+
+    const { detail, explanation } = (
+      await this.constructedResponseModel.findById(id).select('correctAnswer')
+    ).correctAnswer;
+
+    const submission = {
+      question: id,
+      answer,
+      correctAnswer: detail,
+      explanation,
+    };
+
+    if (!detail) {
+      return submission;
+    }
+
+    const isCorrect = answer.toLowerCase() === detail.toLowerCase();
+
+    return {
+      ...submission,
+      isCorrect,
+    };
   }
   setDefaultExplain(questionList: ExerciseQuestionDto[]): void {
     // throw new Error('Method not implemented.');

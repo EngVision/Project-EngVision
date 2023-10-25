@@ -31,7 +31,7 @@ export class ExamsService {
       throw new NotFoundException(`Exam #${id} not found`);
     }
 
-    return await exam.populate('parts');
+    return await exam.populate('parts', 'id title description');
   }
 
   async update(

@@ -1,63 +1,63 @@
-import { Button, Form, Progress, message } from 'antd'
+import { Button, Form, Progress } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { EmojiHappyIcon, EmojiSadIcon } from '../../components/Icons'
 import ArrowLeft from '../../components/Icons/ArrowLeft'
 import submissionApi from '../../services/submissionApi'
-import { SubmissionResponse } from '../../services/submissionApi/types'
 import exerciseApi from '../../services/exerciseApi'
-import { ExerciseSchema } from '../../services/exerciseApi/types'
 import { ExerciseType } from '../../utils/constants'
 import DoneExercise from './components/DoneExercise'
 import FillBlank from './components/FillBlank'
 import MultipleChoice from './components/MultipleChoice'
+import ConstructedResponse from './components/ConstructedResponse'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 function Exercise() {
-  const { id } = useParams()
+  const { id = '' } = useParams()
   const [form] = Form.useForm()
+  const queryClient = useQueryClient()
 
-  const [exercise, setExercise] = useState<ExerciseSchema>()
-  const [submission, setSubmission] = useState<SubmissionResponse>()
   const [questionIndex, setQuestionIndex] = useState<number>(0)
   const [hasResult, setHasResult] = useState<boolean>(false)
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    getExercise()
-    getAssignment()
-  }, [])
+  const getSubmission = async (exerciseId: string) => {
+    const submission = await submissionApi.getSubmission(exerciseId)
+
+    setQuestionIndex(submission.totalDone || 0)
+    return submission
+  }
+
+  const { data: submission } = useQuery({
+    queryKey: ['submission', id],
+    queryFn: () => getSubmission(id),
+  })
+
+  const { data: exercise } = useQuery({
+    queryKey: ['exercise', id],
+    queryFn: () => exerciseApi.getExercise(id),
+  })
+
+  const submitAnswerMutation = useMutation({
+    mutationFn: ({ questionId, data }: { questionId: string; data: any }) =>
+      exerciseApi.submitAnswer(id, questionId, data),
+  })
 
   useEffect(() => {
     setHasResult(!!submission?.detail[questionIndex])
   }, [submission, questionIndex])
 
-  const getAssignment = async () => {
-    if (id) {
-      const assignment = await submissionApi.getSubmission(id)
-
-      setSubmission(assignment)
-      setQuestionIndex(assignment?.totalDone || 0)
-    }
-  }
-
-  const getExercise = async () => {
-    if (id) {
-      const exercise = await exerciseApi.getExercise(id)
-
-      setExercise(exercise)
-    }
-  }
-
   const submitAnswer = async (data: any, questionId: string): Promise<void> => {
     if (id) {
-      const hide = message.loading({ content: 'Submitting...', key: 'submit' })
-
-      await exerciseApi.submitAnswer(id, questionId, data)
-      const assignment = await submissionApi.getSubmission(id)
-
-      hide()
-      setSubmission(assignment)
+      submitAnswerMutation.mutate(
+        { questionId, data },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['submission'] })
+          },
+        },
+      )
     }
   }
 
@@ -74,7 +74,6 @@ function Exercise() {
           return (
             <MultipleChoice
               {...content}
-              exerciseId={id}
               result={submission?.detail[questionIndex]}
             />
           )
@@ -82,7 +81,14 @@ function Exercise() {
           return (
             <FillBlank
               {...content}
-              exerciseId={id}
+              result={submission?.detail[questionIndex]}
+            />
+          )
+        case ExerciseType.ConstructedResponse:
+          return (
+            <ConstructedResponse
+              {...content}
+              {...exercise}
               result={submission?.detail[questionIndex]}
             />
           )
@@ -139,13 +145,13 @@ function Exercise() {
       </div>
 
       <div className="flex-1 flex flex-col w-full p-5 md:w-2/3 md:flex-none">
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col h-[95%]">
           <Progress
             percent={Math.floor(
               (questionIndex / (exercise?.content.length || 1)) * 100,
             )}
           />
-          <div className="flex-1 px-5 py-10">
+          <div className="flex-1 mx-5 my-10 p-5 overflow-y-auto">
             <div className="mb-14">{ExerciseComponent()}</div>
             {submission?.detail[questionIndex] && (
               <div className="w-full p-5 border-2 border-solid border-primary rounded-md flex items-center gap-4">

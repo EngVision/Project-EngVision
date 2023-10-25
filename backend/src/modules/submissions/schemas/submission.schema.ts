@@ -9,8 +9,8 @@ export class QuestionResult {
   @Prop({ type: SchemaTypes.ObjectId, ref: 'exerciseType', required: true })
   question: string;
 
-  @Prop({ required: true })
-  isCorrect: boolean;
+  @Prop({ default: null })
+  isCorrect?: boolean;
 
   @Prop({ type: Object, required: true })
   answer: any;
@@ -18,8 +18,11 @@ export class QuestionResult {
   @Prop({ type: Object, required: true })
   correctAnswer: any;
 
-  @Prop()
+  @Prop({ default: null })
   explanation: string;
+
+  @Prop({ default: null })
+  grade?: number;
 }
 const QuestionResultSchema = SchemaFactory.createForClass(QuestionResult);
 
@@ -47,6 +50,9 @@ export class Submission {
 
   @Prop({ required: true })
   totalDone: number;
+
+  @Prop()
+  grade: number;
 
   @Prop([{ type: QuestionResultSchema, required: true }])
   detail: QuestionResult[];
