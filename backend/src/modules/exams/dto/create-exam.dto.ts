@@ -20,18 +20,16 @@ export class CreateExamDto {
   @ApiProperty({ type: String, description: 'Description' })
   description: string;
 
+  @IsOptional()
   @IsMongoId()
   @ApiProperty({ type: String, description: 'Course id' })
   course: string;
-
-  @IsMongoId()
-  @ApiProperty({ type: String, description: 'creator id' })
-  creator: string;
 
   @IsEnum(CEFRLevel)
   @ApiProperty({ enum: CEFRLevel, description: 'Level (A1/A2 ...)' })
   level: CEFRLevel;
 
+  @IsOptional()
   @IsEnum(ExerciseTag, { each: true })
   @ApiProperty({ description: 'Tags', type: [String], enum: ExerciseTag })
   tags: ExerciseTag[];
