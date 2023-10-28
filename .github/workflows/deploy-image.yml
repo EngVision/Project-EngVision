@@ -2,7 +2,7 @@ name: Deploy EngVision Image
 on:
   push:
     branches: ["develop", "master"]
-  pull_request: 
+  pull_request:
     branches: ["develop", "master"]
 
 env:
@@ -11,6 +11,7 @@ env:
   VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
   VITE_SERVER_FILES_URL: ${{ secrets.VITE_SERVER_FILES_URL }}
   VITE_GA4_TRACKING_ID: ${{ secrets.VITE_GA4_TRACKING_ID }}
+  VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
 
 jobs:
   build-and-push-image:
@@ -61,3 +62,4 @@ jobs:
             VITE_BASE_URL
             VITE_SERVER_FILES_URL
             VITE_GA4_TRACKING_ID
+            VITE_SENTRY_DSN

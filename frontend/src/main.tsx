@@ -1,4 +1,3 @@
-import { ConfigProvider } from 'antd'
 import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
@@ -62,25 +61,15 @@ TRACKING_ID
 const ClientRenderer = () =>
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorText: '#313134',
-            fontFamily: 'Poppins, sans-serif',
-            fontSize: 14,
-          },
-        }}
-      >
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <BrowserRouter>
-              <QueryClientProvider client={queryClient}>
-                <App />
-              </QueryClientProvider>
-            </BrowserRouter>
-          </PersistGate>
-        </Provider>
-      </ConfigProvider>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <BrowserRouter>
+            <QueryClientProvider client={queryClient}>
+              <App />
+            </QueryClientProvider>
+          </BrowserRouter>
+        </PersistGate>
+      </Provider>
     </ErrorBoundary>,
   )
 
