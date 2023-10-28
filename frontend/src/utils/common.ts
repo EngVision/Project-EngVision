@@ -3,8 +3,11 @@ import { UPLOAD_FILE_URL } from './constants'
 
 export const getFileUrl = (id: string) => `${UPLOAD_FILE_URL}${id}`
 
-export const getFormattedPrice = (price: number) =>
-  price || price === 0 ? `$${price.toFixed(2)}` : '$0'
+export const getFormattedPrice = (price: number | string) => {
+  if (typeof price === 'string') price = parseFloat(price)
+
+  return price || price === 0 ? `$${price.toFixed(2)}` : '$0'
+}
 
 export function getFormattedDate(inputDate: string): string {
   const date = new Date(inputDate)

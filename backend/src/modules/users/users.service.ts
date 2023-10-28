@@ -13,6 +13,8 @@ import { CreateAccountDto } from './dto/create-account.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { emailContent } from './template/email.content';
 import { FilesService } from '../files/files.service';
+import { UserQueryDto } from './dto/user-query.dto';
+import { Order } from 'src/common/enums';
 
 @Injectable()
 export class UsersService {
@@ -26,10 +28,8 @@ export class UsersService {
       service: 'Gmail',
       auth: {
         user: 'engvision.dev@gmail.com',
-        pass: 'EngVision2023',
+        pass: process.env.MAIL_PASSWORD,
       },
-      secure: false,
-      requireTLS: true,
     });
   }
 
@@ -40,6 +40,10 @@ export class UsersService {
     newUser.avatar = (
       await this.filesService.getDefaultAvatar(newUser._id, newUser.email)
     ).id;
+
+    if (newUser.role === 'Teacher') {
+      newUser.isApproved = false;
+    }
 
     await newUser.save();
 
@@ -59,6 +63,10 @@ export class UsersService {
       ).id;
     }
 
+    if (newUser.role === 'Teacher') {
+      newUser.isApproved = false;
+    }
+
     await newUser.save();
 
     return newUser;
@@ -71,10 +79,28 @@ export class UsersService {
       { returnDocument: 'after' },
     );
 
+    if (updatedUser.role === 'Teacher') {
+      updatedUser.isApproved = false;
+    }
+
     return updatedUser;
   }
 
   /* Get user */
+  async getAll(userQuery: UserQueryDto): Promise<[UserDocument[], number]> {
+    const { limit, page, sortBy, order, ...query } = userQuery;
+
+    const users = await this.userModel.find(query, null, {
+      skip: page * limit,
+      limit: limit,
+      sort: { [sortBy]: order === Order.desc ? -1 : 1 },
+    });
+
+    const total = await this.userModel.countDocuments(query);
+
+    return [users, total];
+  }
+
   async getById(id: string): Promise<UserDocument> {
     return await this.userModel.findOne({ _id: id });
   }
@@ -187,5 +213,59 @@ export class UsersService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async approveUser(id: string): Promise<void> {
+    const user = await this.userModel.findByIdAndUpdate(id, {
+      isApprove: true,
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const mailOptions = {
+      from: 'engvision.dev@gmail.com',
+      to: user.email,
+      subject: 'Your account has been approved',
+      html: 'Welcome to Engvision, your account has been approved',
+    };
+    await this.transporter.sendMail(mailOptions);
+  }
+
+  async blockUser(id: string, reason: string): Promise<void> {
+    const user = await this.userModel.findByIdAndUpdate(id, {
+      isBlocked: true,
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const mailOptions = {
+      from: 'engvision.dev@gmail.com',
+      to: user.email,
+      subject: 'Your account has been blocked',
+      html: 'Your account has been blocked. Reason:' + reason,
+    };
+    await this.transporter.sendMail(mailOptions);
+  }
+
+  async unblockUser(id: string): Promise<void> {
+    const user = await this.userModel.findByIdAndUpdate(id, {
+      isBlocked: false,
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const mailOptions = {
+      from: 'engvision.dev@gmail.com',
+      to: user.email,
+      subject: 'Your account has been unblocked',
+      html: 'Your account has been unblocked. Welcome back!',
+    };
+    await this.transporter.sendMail(mailOptions);
   }
 }

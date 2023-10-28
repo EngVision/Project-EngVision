@@ -15,6 +15,7 @@ interface MultipleChoiceProps extends QuestionPayload {
     multipleCorrectAnswers: boolean
   }
   result: MultipleChoiceResponse | undefined
+  setIsSubmittable: (value: boolean) => void
 }
 
 interface MultipleChoiceResponse extends SubmitAnswerResponse {
@@ -23,7 +24,7 @@ interface MultipleChoiceResponse extends SubmitAnswerResponse {
 }
 
 function MultipleChoice(props: MultipleChoiceProps) {
-  const { question, result } = props
+  const { question, result, setIsSubmittable } = props
   const selectedAnswers = Form.useWatch('answer')
   const form = Form.useFormInstance()
 
@@ -38,11 +39,13 @@ function MultipleChoice(props: MultipleChoiceProps) {
     } else {
       form.setFieldValue('answer', [answer])
     }
+
+    setIsSubmittable(selectAnswers.length > 0)
   }
 
   useEffect(() => {
     form.setFieldValue('answer', [])
-  }, [props])
+  }, [question])
 
   return (
     <div>

@@ -8,6 +8,7 @@ import {
 interface FillBlankProps extends QuestionPayload {
   question: { text: string; image?: string; limits: number[] }
   result?: FillBlankResponse
+  setIsSubmittable: (value: boolean) => void
 }
 
 interface FillBlankResponse extends SubmitAnswerResponse {
@@ -16,8 +17,8 @@ interface FillBlankResponse extends SubmitAnswerResponse {
 }
 
 function FillBlank(props: FillBlankProps) {
-  const { question, result } = props
-  const answer = Form.useWatch('answer')
+  const { question, result, setIsSubmittable } = props
+  const answer = Form.useWatch<string[]>('answer')
   const form = Form.useFormInstance()
   const firstInput = useRef<InputRef>(null)
 
@@ -28,7 +29,11 @@ function FillBlank(props: FillBlankProps) {
     if (result) {
       form.setFieldValue('answer', result.correctAnswer)
     }
-  }, [props])
+  }, [question])
+
+  useEffect(() => {
+    setIsSubmittable(answer?.every((value) => value.length > 0) || false)
+  }, [answer])
 
   useEffect(() => {
     firstInput.current?.focus()

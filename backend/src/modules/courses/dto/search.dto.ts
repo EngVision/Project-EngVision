@@ -7,9 +7,10 @@ import {
   IsNumber,
   IsOptional,
 } from 'class-validator';
-import { Order, SortBy, StatusCourseSearch } from 'src/common/enums';
+import { QueryDto } from 'src/common/dto/query.dto';
+import { Order, StatusCourseSearch } from 'src/common/enums';
 
-export class SearchCourseDto {
+export class SearchCourseDto extends QueryDto {
   @IsNotEmpty()
   @IsEnum(StatusCourseSearch)
   @ApiPropertyOptional({
@@ -49,30 +50,4 @@ export class SearchCourseDto {
   @IsNumber()
   @ApiPropertyOptional({ type: Number, description: 'Price max' })
   priceMax?: number;
-
-  @IsOptional()
-  @IsEnum(SortBy)
-  @ApiPropertyOptional({ type: String, description: 'Sort by (default time)' })
-  sortBy?: string;
-
-  @IsOptional()
-  @IsEnum(Order)
-  @ApiPropertyOptional({
-    type: String,
-    description:
-      'order (asc for low(old) to high(new), desc for high(new) to low(old))',
-  })
-  order?: string;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @ApiPropertyOptional({ type: Number, description: 'Page' })
-  page?: number;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @ApiPropertyOptional({ type: Number, description: 'Limit' })
-  limit?: number;
 }
