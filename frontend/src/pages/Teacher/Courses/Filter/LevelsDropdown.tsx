@@ -1,5 +1,5 @@
 import React from 'react'
-import DropdownCheckbox from './DropdownCheckbox'
+import DropdownCheckbox from '../../../../components/common/DropdownCheckbox'
 import { CEFRLevel } from '../../../../utils/constants'
 import { useAppDispatch } from '../../../../hooks/redux'
 import { setFilterOptions } from '../../../../redux/course/slice'
