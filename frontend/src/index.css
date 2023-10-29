@@ -126,3 +126,16 @@ input[type='number']::-webkit-outer-spin-button {
   --alternativeHover: #66b06b;
   --text-color: #ffffff;
 }
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d4d4d4;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}

@@ -31,8 +31,13 @@ export class AuthService {
     const { email, password } = loginDto;
 
     const user = await this.validateUser(email, password);
+
     if (!user) {
       throw new UnauthorizedException('Email or password is incorrect');
+    }
+
+    if (user.isBlocked) {
+      throw new ForbiddenException('Your account has been blocked');
     }
 
     const tokens = await this.getTokens(user);

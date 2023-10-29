@@ -1,16 +1,16 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Form, Progress } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { EmojiHappyIcon, EmojiSadIcon } from '../../components/Icons'
 import ArrowLeft from '../../components/Icons/ArrowLeft'
-import submissionApi from '../../services/submissionApi'
 import exerciseApi from '../../services/exerciseApi'
+import submissionApi from '../../services/submissionApi'
 import { ExerciseType } from '../../utils/constants'
+import ConstructedResponse from './components/ConstructedResponse'
 import DoneExercise from './components/DoneExercise'
 import FillBlank from './components/FillBlank'
 import MultipleChoice from './components/MultipleChoice'
-import ConstructedResponse from './components/ConstructedResponse'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 function Exercise() {
   const { id = '' } = useParams()
@@ -19,13 +19,13 @@ function Exercise() {
 
   const [questionIndex, setQuestionIndex] = useState<number>(0)
   const [hasResult, setHasResult] = useState<boolean>(false)
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(false)
 
   const navigate = useNavigate()
 
   const getSubmission = async (exerciseId: string) => {
     const submission = await submissionApi.getSubmission(exerciseId)
 
-    setQuestionIndex(submission.totalDone || 0)
     return submission
   }
 
@@ -43,6 +43,10 @@ function Exercise() {
     mutationFn: ({ questionId, data }: { questionId: string; data: any }) =>
       exerciseApi.submitAnswer(id, questionId, data),
   })
+
+  useEffect(() => {
+    setQuestionIndex(submission?.totalDone || 0)
+  }, [submission])
 
   useEffect(() => {
     setHasResult(!!submission?.detail[questionIndex])
@@ -75,6 +79,7 @@ function Exercise() {
             <MultipleChoice
               {...content}
               result={submission?.detail[questionIndex]}
+              setIsSubmittable={setIsSubmittable}
             />
           )
         case ExerciseType.FillBlank:
@@ -82,6 +87,7 @@ function Exercise() {
             <FillBlank
               {...content}
               result={submission?.detail[questionIndex]}
+              setIsSubmittable={setIsSubmittable}
             />
           )
         case ExerciseType.ConstructedResponse:
@@ -185,6 +191,7 @@ function Exercise() {
             type="primary"
             size="large"
             className="w-[150px]"
+            disabled={!isSubmittable}
             onClick={nextQuestion}
           >
             {!hasResult ? 'Confirm' : 'Next'}

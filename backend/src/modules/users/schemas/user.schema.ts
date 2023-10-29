@@ -53,6 +53,12 @@ export class User {
   @Prop({ default: null })
   resetPasswordCode?: string;
 
+  @Prop({ default: true })
+  isApproved?: boolean;
+
+  @Prop({ default: false })
+  isBlocked?: boolean;
+
   validatePassword?: (password: string) => Promise<boolean>;
   validateRefreshToken?: (refreshToken: string) => Promise<boolean>;
   preSave?: () => Promise<void>;
