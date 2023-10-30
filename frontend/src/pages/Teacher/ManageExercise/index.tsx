@@ -19,6 +19,7 @@ import enumToSelectOptions from '../../../utils/enumsToSelectOptions'
 import ConstructedResponseForm from './components/ConstructedResponseForm'
 import FillBlankForm from './components/FillBlankForm'
 import MultipleChoiceForm from './components/MultipleChoiceForm'
+import MakeSentenceForm from './components/MakeSentence'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -106,6 +107,8 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
       return <FillBlankForm form={form} />
     case ExerciseType.ConstructedResponse:
       return <ConstructedResponseForm form={form} />
+    case ExerciseType.MakeSentence:
+      return <MakeSentenceForm form={form} />
     default:
       return <></>
   }
@@ -170,13 +173,6 @@ function ManageExercise() {
 
   const onSubmit = async (values: ExerciseSchema, formSubmit: FormSubmit) => {
     formSubmit.transform(values)
-
-    message.open({
-      key: 'submitMessage',
-      content: 'loading',
-      type: 'loading',
-    })
-
     if (exerciseId) {
       updateExerciseMutation.mutate(values, {
         onSuccess: (exercise) => {
@@ -261,7 +257,15 @@ function ManageExercise() {
           </Form.Item>
         )}
         <Form.Item noStyle>
-          <Button type="primary" htmlType="submit" block>
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            loading={
+              createExerciseMutation.isPending ||
+              updateExerciseMutation.isPending
+            }
+          >
             {exerciseId ? 'Save' : 'Create'}
           </Button>
         </Form.Item>

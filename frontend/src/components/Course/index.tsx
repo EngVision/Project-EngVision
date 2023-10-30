@@ -5,7 +5,7 @@ import { MoreIcon, PeopleIcon, StarIcon, VideoPlayIcon } from '../Icons'
 import { useNavigate } from 'react-router-dom'
 import { CourseDetails } from '../../services/coursesApi/types'
 import CustomImage from '../common/CustomImage'
-import { LEVELS } from '../../utils/constants'
+import { LEVELS, UPLOAD_FILE_URL } from '../../utils/constants'
 
 interface CourseProps {
   course: CourseDetails
@@ -20,7 +20,7 @@ const Course = ({ course }: CourseProps) => {
       className="w-full"
       cover={
         <CustomImage
-          src={`${import.meta.env.VITE_SERVER_FILES_URL}${course.thumbnail}`}
+          src={`${UPLOAD_FILE_URL}${course.thumbnail}`}
           onClick={() => navigate(course.id)}
           className="cursor-pointer h-[200px]"
         />

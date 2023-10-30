@@ -1,12 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button, Form, Input, Select } from 'antd'
-import { Link } from 'react-router-dom'
+import { useContext } from 'react'
 import CustomUpload from '../../../components/CustomUpload'
+import { NotificationContext } from '../../../contexts/notification'
 import { useAppSelector } from '../../../hooks/redux'
 import coursesApi from '../../../services/coursesApi'
-import { CEFRLevel, TEACHER_ROUTES } from '../../../utils/constants'
-import { useContext } from 'react'
-import { NotificationContext } from '../../../contexts/notification'
+import { CEFRLevel } from '../../../utils/constants'
 
 type FieldType = {
   title: string
@@ -131,8 +130,8 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
           </Form.Item>
 
           <div className="flex gap-4 mt-8 justify-end">
-            <Button className="text-primary border-primary">
-              <Link to={TEACHER_ROUTES.courses}>Cancel</Link>
+            <Button className="text-primary border-primary" onClick={onClose}>
+              Cancel
             </Button>
 
             <Form.Item>
