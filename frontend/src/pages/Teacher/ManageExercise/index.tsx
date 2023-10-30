@@ -19,6 +19,8 @@ import enumToSelectOptions from '../../../utils/enumsToSelectOptions'
 import ConstructedResponseForm from './components/ConstructedResponseForm'
 import FillBlankForm from './components/FillBlankForm'
 import MultipleChoiceForm from './components/MultipleChoiceForm'
+import CustomUpload from '../../../components/CustomUpload'
+import AppLoading from '../../../components/common/AppLoading'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -93,6 +95,46 @@ const GeneralInfoForm = () => {
   )
 }
 
+interface ContentQuestion {
+  contentQuestion: {
+    text: string
+    image: string | null
+    audio: string | null
+  }
+}
+
+const ContentQuestionForm = () => {
+  return (
+    <>
+      <Form.Item<ContentQuestion>
+        label="Question"
+        name={['contentQuestion', 'text']}
+      >
+        <Input.TextArea
+          placeholder="Description (optional)"
+          autoSize={{ minRows: 4, maxRows: 10 }}
+        />
+      </Form.Item>
+      <div className="grid grid-cols-2 gap-4">
+        <Form.Item<ContentQuestion>
+          valuePropName="fileList"
+          label="Question image"
+          name={['contentQuestion', 'image']}
+        >
+          <CustomUpload type="picture-card" />
+        </Form.Item>
+        <Form.Item<ContentQuestion>
+          valuePropName="fileList"
+          label="Question audio"
+          name={['contentQuestion', 'audio']}
+        >
+          <CustomUpload accept="audio" type="picture-card" />
+        </Form.Item>
+      </div>
+    </>
+  )
+}
+
 interface ExerciseFormProps {
   type: ExerciseType
   form: FormSubmit
@@ -142,7 +184,7 @@ function ManageExercise() {
     }
   }
 
-  useQuery({
+  const { isLoading } = useQuery({
     queryKey: ['exercise', exerciseId],
     queryFn: getExercise,
   })
@@ -171,6 +213,8 @@ function ManageExercise() {
   const onSubmit = async (values: ExerciseSchema, formSubmit: FormSubmit) => {
     formSubmit.transform(values)
 
+    console.log(values)
+
     message.open({
       key: 'submitMessage',
       content: 'loading',
@@ -181,6 +225,12 @@ function ManageExercise() {
       updateExerciseMutation.mutate(values, {
         onSuccess: (exercise) => {
           setInitialValues(form as FormSubmit, exercise)
+
+          message.open({
+            key: 'submitMessage',
+            content: 'Saved',
+            type: 'success',
+          })
         },
       })
     } else {
@@ -192,7 +242,7 @@ function ManageExercise() {
                 navigate('..', { relative: 'path' })
                 message.open({
                   key: 'submitMessage',
-                  content: exerciseId ? 'Saved' : 'Created',
+                  content: 'Created',
                   type: 'success',
                 })
               },
@@ -228,45 +278,63 @@ function ManageExercise() {
   }
 
   return (
-    <Form
-      className="flex flex-col h-full"
-      form={form}
-      onFinish={async (v) => onSubmit(v, form as FormSubmit)}
-      layout="vertical"
-      scrollToFirstError
-    >
-      <div className="overflow-y-scroll px-8 pb-4">
-        <div className="flex items-center justify-between my-4">
-          <p className="text-2xl font-bold">General</p>
-        </div>
-        <GeneralInfoForm />
-        <p className="text-2xl font-bold my-5">Exercise content</p>
-        <ExerciseForm type={type} form={form as FormSubmit} />
-        <div style={{ float: 'left', clear: 'both' }} ref={bottomDivRef}></div>
-      </div>
-      <div
-        className="flex flex-col gap-4 pt-4 px-8 mr-4 z-10"
-        style={{ boxShadow: '0px -15px 10px -20px' }}
-      >
-        {type && (
-          <Form.Item noStyle>
-            <Button
-              type="dashed"
-              block
-              icon={'+'}
-              onClick={() => addQuestion(form as FormSubmit)}
-            >
-              Add question
-            </Button>
-          </Form.Item>
-        )}
-        <Form.Item noStyle>
-          <Button type="primary" htmlType="submit" block>
-            {exerciseId ? 'Save' : 'Create'}
-          </Button>
-        </Form.Item>
-      </div>
-    </Form>
+    <>
+      {isLoading ? (
+        <AppLoading />
+      ) : (
+        <Form
+          className="flex flex-col h-full"
+          form={form}
+          onFinish={async (v) => onSubmit(v, form as FormSubmit)}
+          layout="vertical"
+          scrollToFirstError
+        >
+          <div className="overflow-y-scroll px-8 pb-4">
+            <div className="flex items-center justify-between my-4">
+              <p className="text-2xl font-bold">General</p>
+            </div>
+            <GeneralInfoForm />
+            <p className="text-2xl font-bold my-5">Exercise content</p>
+            <ContentQuestionForm />
+            <ExerciseForm type={type} form={form as FormSubmit} />
+            <div
+              style={{ float: 'left', clear: 'both' }}
+              ref={bottomDivRef}
+            ></div>
+          </div>
+          <div
+            className="flex flex-col gap-4 pt-4 px-8 mr-4 z-10"
+            style={{ boxShadow: '0px -15px 10px -20px' }}
+          >
+            {type && (
+              <Form.Item noStyle>
+                <Button
+                  type="dashed"
+                  block
+                  icon={'+'}
+                  onClick={() => addQuestion(form as FormSubmit)}
+                >
+                  Add question
+                </Button>
+              </Form.Item>
+            )}
+            <Form.Item noStyle>
+              <Button
+                type="primary"
+                htmlType="submit"
+                block
+                loading={
+                  updateExerciseMutation.isPending ||
+                  createExerciseMutation.isPending
+                }
+              >
+                {exerciseId ? 'Save' : 'Create'}
+              </Button>
+            </Form.Item>
+          </div>
+        </Form>
+      )}
+    </>
   )
 }
 

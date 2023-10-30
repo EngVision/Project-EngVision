@@ -96,6 +96,7 @@ function Exercise() {
               {...content}
               {...exercise}
               result={submission?.detail[questionIndex]}
+              setIsSubmittable={setIsSubmittable}
             />
           )
         default:

@@ -7,11 +7,14 @@ import {
   Submission,
   SubmissionDocument,
 } from './schemas/submission.schema';
+import { Order, Role } from 'src/common/enums';
+import { QueryDto } from 'src/common/dto/query.dto';
+import { GradingDto } from './dto/grading.dto';
 
 @Injectable()
 export class SubmissionsService {
   constructor(
-    @InjectModel(Submission.name) private assignmentModel: Model<Submission>,
+    @InjectModel(Submission.name) private submissionModel: Model<Submission>,
   ) {}
 
   async update(
@@ -41,7 +44,14 @@ export class SubmissionsService {
     );
     submissionDto.totalDone = submissionDto.detail.length;
 
-    const newAssignment = await this.assignmentModel.findOneAndUpdate(
+    if (!submissionDto.needGrade) {
+      submissionDto.grade =
+        (submissionDto.totalCorrect / submissionDto.totalDone) * 10;
+    }
+
+    console.log(submissionDto);
+
+    const newAssignment = await this.submissionModel.findOneAndUpdate(
       {
         user: userId,
         exercise: exerciseId,
@@ -65,7 +75,7 @@ export class SubmissionsService {
     userId: string,
     exerciseId: string,
   ): Promise<SubmissionDto> {
-    const submission = await this.assignmentModel.findOne({
+    const submission = await this.submissionModel.findOne({
       user: userId,
       exercise: exerciseId,
     });
@@ -82,21 +92,85 @@ export class SubmissionsService {
     };
   }
 
-  async findByUser(userId: string): Promise<SubmissionDocument[]> {
-    const assignments = await this.assignmentModel.find({
+  async findByUser(
+    query: QueryDto,
+    userId: string,
+    roles: Role[],
+  ): Promise<[SubmissionDocument[], number]> {
+    const documentQuery = {
+      skip: query.page * query.limit,
+      limit: query.limit,
+      sort: { [query.sortBy]: query.order === Order.asc ? 1 : -1 },
+    };
+
+    if (roles.includes(Role.Teacher)) {
+      const submissions = await this.submissionModel.find(
+        {
+          teacher: userId,
+          needGrade: true,
+        },
+        null,
+        documentQuery,
+      );
+      const total = await this.submissionModel.countDocuments({
+        teacher: userId,
+        needGrade: true,
+      });
+
+      return [submissions, total];
+    }
+
+    const submissions = await this.submissionModel.find(
+      {
+        user: userId,
+      },
+      null,
+      documentQuery,
+    );
+    const total = await this.submissionModel.countDocuments({
       user: userId,
     });
 
-    return assignments;
+    return [submissions, total];
   }
 
   async findOne(id: string): Promise<SubmissionDocument> {
-    const assignment = await this.assignmentModel.findById(id);
+    const submission = await this.submissionModel.findById(id);
 
-    if (!assignment) {
-      throw new NotFoundException('Assignment not found');
+    if (!submission) {
+      throw new NotFoundException('Submission not found');
     }
 
-    return assignment;
+    return submission;
+  }
+
+  async gradeSubmission(
+    submissionId: string,
+    questionId: string,
+    gradingDto: GradingDto,
+    userId: string,
+  ) {
+    const submission = await this.submissionModel.findById(submissionId);
+
+    if (!submission || submission.teacher.toString() !== userId) {
+      throw new NotFoundException('Submission not found');
+    }
+
+    const { detail } = submission;
+
+    const i = detail.findIndex(
+      value => value.question.toString() === questionId,
+    );
+
+    submission.detail[i].grade = gradingDto.grade;
+    submission.detail[i].explanation = gradingDto.feedback;
+
+    submission.grade =
+      submission.detail.reduce((accumulator, q) => q.grade + accumulator, 0) /
+      submission.detail.length;
+
+    await submission.save();
+
+    return submission;
   }
 }

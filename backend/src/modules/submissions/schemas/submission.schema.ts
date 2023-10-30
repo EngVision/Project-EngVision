@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, SchemaTypes } from 'mongoose';
 import { ExerciseType } from 'src/common/enums';
+import { Course } from 'src/modules/courses/schemas/course.schema';
 import { Exercise } from 'src/modules/exercises/schemas/exercise.schema';
 import { User } from 'src/modules/users/schemas/user.schema';
 
@@ -15,7 +16,7 @@ export class QuestionResult {
   @Prop({ type: Object, required: true })
   answer: any;
 
-  @Prop({ type: Object, required: true })
+  @Prop({ type: Object, default: null })
   correctAnswer: any;
 
   @Prop({ default: null })
@@ -39,6 +40,9 @@ export class Submission {
   @Prop({ type: SchemaTypes.ObjectId, ref: Exercise.name, required: true })
   exercise: string;
 
+  @Prop({ type: SchemaTypes.ObjectId, ref: Course.name, default: null })
+  course: string;
+
   @Prop({ enum: ExerciseType, required: true })
   exerciseType: ExerciseType;
 
@@ -51,8 +55,11 @@ export class Submission {
   @Prop({ required: true })
   totalDone: number;
 
-  @Prop()
+  @Prop({ default: null })
   grade: number;
+
+  @Prop({ default: false })
+  needGrade: boolean;
 
   @Prop([{ type: QuestionResultSchema, required: true }])
   detail: QuestionResult[];

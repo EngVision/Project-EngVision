@@ -162,6 +162,8 @@ export class ExercisesService {
       exercise.type,
     );
 
+    console.log(exercise);
+
     const result = await service.checkAnswer(questionId, answer);
 
     await this.submissionsService.update(userId, exercise.id, {
@@ -171,6 +173,8 @@ export class ExercisesService {
       totalQuestion: exercise.content.length,
       detail: [result],
       teacher: exercise.creator,
+      needGrade: exercise.needGrade,
+      course: exercise.course,
     });
 
     return result;

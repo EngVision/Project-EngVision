@@ -13,6 +13,7 @@ interface ConstructedResponseProps extends QuestionPayload {
   result: ConstructedResponseRes | undefined
   title: string
   description?: string
+  setIsSubmittable: (value: boolean) => void
 }
 
 interface ConstructedResponseRes extends SubmitAnswerResponse {
@@ -22,20 +23,26 @@ interface ConstructedResponseRes extends SubmitAnswerResponse {
 
 export default function ConstructedResponse(props: ConstructedResponseProps) {
   const form = Form.useFormInstance()
+  const answer = Form.useWatch<string>('answer')
 
   const {
     question,
     result,
     title: exerciseTitle,
     description: exerciseDescription,
+    setIsSubmittable,
   } = props
+
+  useEffect(() => {
+    setIsSubmittable(answer?.length > 0 || false)
+  }, [answer])
 
   useEffect(() => {
     form.setFieldValue('answer', null)
     if (result) {
-      form.setFieldValue('answer', result.correctAnswer)
+      form.setFieldValue('answer', result.correctAnswer || result.answer)
     }
-  }, [props])
+  }, [result])
 
   return (
     <div>

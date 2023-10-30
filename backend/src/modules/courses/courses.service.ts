@@ -456,6 +456,12 @@ export class CoursesService {
     if (!course)
       throw new BadRequestException('Lesson ID is missing or access denied');
 
+    await this.exercisesService.update(
+      exerciseId,
+      { course: course.id },
+      teacherId,
+    );
+
     return course;
   }
 
