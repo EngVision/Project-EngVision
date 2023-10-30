@@ -2,7 +2,7 @@ import { Card } from 'antd'
 
 import { NoteIcon, PeopleIcon } from '../../../components/Icons'
 import { useNavigate } from 'react-router-dom'
-import { LEVELS } from '../../../utils/constants'
+import { LEVELS, UPLOAD_FILE_URL } from '../../../utils/constants'
 import CustomImage from '../../../components/common/CustomImage'
 import { CourseExercisesDue } from '../../../services/coursesApi/types'
 
@@ -20,7 +20,7 @@ const CourseCard = ({ course }: CourseProps) => {
       onClick={() => navigate(`../discover/${course.id}`)}
       cover={
         <CustomImage
-          src={`${import.meta.env.VITE_SERVER_FILES_URL}${course.thumbnail}`}
+          src={`${UPLOAD_FILE_URL}${course.thumbnail}`}
           className="h-[200px]"
         />
       }

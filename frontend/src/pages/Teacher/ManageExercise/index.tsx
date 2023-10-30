@@ -21,6 +21,7 @@ import FillBlankForm from './components/FillBlankForm'
 import MultipleChoiceForm from './components/MultipleChoiceForm'
 import CustomUpload from '../../../components/CustomUpload'
 import AppLoading from '../../../components/common/AppLoading'
+import MakeSentenceForm from './components/MakeSentence'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -148,6 +149,8 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
       return <FillBlankForm form={form} />
     case ExerciseType.ConstructedResponse:
       return <ConstructedResponseForm form={form} />
+    case ExerciseType.MakeSentence:
+      return <MakeSentenceForm form={form} />
     default:
       return <></>
   }
@@ -212,8 +215,6 @@ function ManageExercise() {
 
   const onSubmit = async (values: ExerciseSchema, formSubmit: FormSubmit) => {
     formSubmit.transform(values)
-
-    console.log(values)
 
     message.open({
       key: 'submitMessage',

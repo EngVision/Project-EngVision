@@ -1,12 +1,5 @@
 import { PRIVATE_ROUTES, STUDENT_ROUTES } from '../../../utils/constants'
-import {
-  BookIcon,
-  ChartIcon,
-  DashboardIcon,
-  GlobalSearchIcon,
-  MessageIcon,
-  NoteIcon,
-} from '../../Icons'
+import { DashboardIcon, GlobalSearchIcon, NoteIcon } from '../../Icons'
 
 import { MenuItemType } from '../types'
 import MenuItem from './MenuItem'
@@ -17,11 +10,11 @@ const STUDENT_MENU_ITEMS: MenuItemType[] = [
     path: PRIVATE_ROUTES.home,
     title: 'Dashboard',
   },
-  {
-    icon: <BookIcon />,
-    path: STUDENT_ROUTES.myHub,
-    title: 'My hub',
-  },
+  // {
+  //   icon: <BookIcon />,
+  //   path: STUDENT_ROUTES.myHub,
+  //   title: 'My hub',
+  // },
   {
     icon: <NoteIcon />,
     path: STUDENT_ROUTES.exercisesAndExams,
@@ -32,16 +25,16 @@ const STUDENT_MENU_ITEMS: MenuItemType[] = [
     path: STUDENT_ROUTES.discover,
     title: 'Discover',
   },
-  {
-    icon: <ChartIcon />,
-    path: PRIVATE_ROUTES.statistic,
-    title: 'Statistic',
-  },
-  {
-    icon: <MessageIcon />,
-    path: PRIVATE_ROUTES.chat,
-    title: 'Chats',
-  },
+  // {
+  //   icon: <ChartIcon />,
+  //   path: PRIVATE_ROUTES.statistic,
+  //   title: 'Statistic',
+  // },
+  // {
+  //   icon: <MessageIcon />,
+  //   path: PRIVATE_ROUTES.chat,
+  //   title: 'Chats',
+  // },
 ]
 
 const StudentMenu = () => {

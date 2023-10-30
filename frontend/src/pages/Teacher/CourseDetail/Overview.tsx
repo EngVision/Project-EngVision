@@ -12,7 +12,7 @@ type FieldType = {
 
 const Overview = () => {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col">
       <h4 className="text-primary text-2xl font-semibold">General</h4>
 
       <Form.Item<FieldType>

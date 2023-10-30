@@ -1,6 +1,6 @@
 import { Button, Checkbox, Col, Popover } from 'antd'
 import { useEffect, useState } from 'react'
-import { ArrowDownIcon } from '../../../../components/Icons'
+import { ArrowDownIcon } from '../Icons'
 
 type onChangeType = (selection: string[]) => void
 
