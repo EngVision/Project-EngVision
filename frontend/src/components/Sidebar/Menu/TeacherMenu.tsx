@@ -27,6 +27,11 @@ const TEACHER_MENU_ITEMS: MenuItemType[] = [
     title: 'Assignments & Exams',
   },
   {
+    icon: <NoteIcon />,
+    path: TEACHER_ROUTES.grading,
+    title: 'Grading',
+  },
+  {
     icon: <ChartIcon />,
     path: PRIVATE_ROUTES.statistic,
     title: 'Statistic',
