@@ -1,22 +1,23 @@
 import { Button, Checkbox, Form, Input, Select } from 'antd'
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
+import { useMutation } from '@tanstack/react-query'
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
+import { NotificationContext } from '../../contexts/notification'
 import { useAppDispatch } from '../../hooks/redux'
 import { setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignUpParams } from '../../services/authApi/types'
 import {
+  FACEBOOK_LOGIN,
+  GOOGLE_LOGIN,
+  Gender,
   PRIVATE_ROUTES,
   PUBLIC_ROUTES,
   ROLES,
-  Gender,
-  FACEBOOK_LOGIN,
-  GOOGLE_LOGIN,
 } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
-import { NotificationContext } from '../../contexts/notification'
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate()
@@ -24,26 +25,24 @@ const SignUp: React.FC = () => {
   const apiNotification = useContext(NotificationContext)
   const [form] = Form.useForm<SignUpParams>()
 
-  const [error, setError] = useState<string>('')
-
-  const onFinish = async (values: SignUpParams) => {
-    if (!values.accepted) {
-      setError('Please accept Terms of Service')
-      return
-    }
-    try {
-      const { data } = await authApi.signUp({
-        ...values,
-        role: ROLES.student.value,
-      })
-      dispatch(setUser(data))
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: authApi.signUp,
+    onSuccess: (data) => {
+      dispatch(setUser(data.data))
       apiNotification.success({
         message: 'Sign up successfully!',
       })
       navigate(PRIVATE_ROUTES.home)
-    } catch (error) {
-      setError(error.data.message)
+    },
+  })
+  console.log('🚀 ~ file: index.tsx:38 ~ error:', error)
+
+  const onFinish = async (values: SignUpParams) => {
+    const newUser = {
+      ...values,
+      role: ROLES.student.value,
     }
+    mutate(newUser)
   }
 
   const fetchAuthUser = async (timer: ReturnType<typeof setInterval>) => {
@@ -130,6 +129,10 @@ const SignUp: React.FC = () => {
     return phoneRegex.test(phone)
   }
 
+  const validateAcceptTerm = (accepted: boolean) => {
+    return accepted
+  }
+
   return (
     <div className="flex flex-col bg-bgNeutral p-8 rounded-[16px] gap-6">
       <div className="flex flex-col items-center">
@@ -144,7 +147,6 @@ const SignUp: React.FC = () => {
         initialValues={{ accepted: false }}
         onFinish={onFinish}
         autoComplete="off"
-        onChange={() => setError('')}
         className="w-[560px] flex flex-col"
         layout="vertical"
         form={form}
@@ -202,30 +204,6 @@ const SignUp: React.FC = () => {
             size="middle"
             className="rounded-lg py-2 px-3"
           />
-        </Form.Item>
-
-        <Form.Item<SignUpParams>
-          name="phoneNumber"
-          label="Phone number"
-          rules={[
-            { message: 'Please input your phone number!', required: true },
-            {
-              async validator(_, value) {
-                return new Promise((resolve, reject) => {
-                  if (validatePhone(value)) {
-                    resolve('')
-                  } else
-                    reject(
-                      new Error(
-                        'Phone must be longer than or equal to 10 characters',
-                      ),
-                    )
-                })
-              },
-            },
-          ]}
-        >
-          <Input placeholder="Phone Number" className="rounded-lg py-2 px-3" />
         </Form.Item>
 
         <Form.Item<SignUpParams>
@@ -298,7 +276,44 @@ const SignUp: React.FC = () => {
           />
         </Form.Item>
 
-        <Form.Item<SignUpParams> name="accepted" valuePropName="checked">
+        <Form.Item<SignUpParams>
+          name="phoneNumber"
+          label="Phone number"
+          rules={[
+            {
+              async validator(_, value) {
+                return new Promise((resolve, reject) => {
+                  if (validatePhone(value)) {
+                    resolve('')
+                  } else
+                    reject(
+                      new Error(
+                        'Phone must be longer than or equal to 10 characters',
+                      ),
+                    )
+                })
+              },
+            },
+          ]}
+        >
+          <Input placeholder="Phone Number" className="rounded-lg py-2 px-3" />
+        </Form.Item>
+
+        <Form.Item<SignUpParams>
+          name="accepted"
+          valuePropName="checked"
+          rules={[
+            {
+              async validator(_, value) {
+                return new Promise((resolve, reject) => {
+                  if (validateAcceptTerm(value)) {
+                    resolve('')
+                  } else reject(new Error('Please accept Terms of Service'))
+                })
+              },
+            },
+          ]}
+        >
           <Checkbox>
             I accept
             <Link
@@ -310,14 +325,19 @@ const SignUp: React.FC = () => {
           </Checkbox>
         </Form.Item>
 
-        {error && <p className="text-secondary mt-[-20px] mb-6">{error}</p>}
+        {error && (
+          <p className="text-secondary mt-[-20px] mb-6">
+            Email is existed. Please choose another email!
+          </p>
+        )}
 
         <Form.Item className="text-center" noStyle>
           <Button
             type="primary"
             shape="round"
             htmlType="submit"
-            className="w-full h-11"
+            className="w-full h-11 mt-4"
+            loading={isPending}
           >
             Create account
           </Button>

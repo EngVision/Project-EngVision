@@ -453,8 +453,15 @@ export class CoursesService {
       { arrayFilters: [{ 'index._id': lessonId }], new: true },
     );
 
-    if (!course)
+    if (!course) {
       throw new BadRequestException('Lesson ID is missing or access denied');
+    }
+
+    await this.exercisesService.update(
+      exerciseId,
+      { course: course.id },
+      teacherId,
+    );
 
     return course;
   }

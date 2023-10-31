@@ -11,6 +11,7 @@ export interface SubmissionResponse {
   totalQuestion: number
   totalDone: number
   progress: number
+  grade: number
   createdAt: Date
   updatedAt: Date
 }
