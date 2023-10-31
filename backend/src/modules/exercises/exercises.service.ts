@@ -92,15 +92,16 @@ export class ExercisesService {
     );
 
     const prevQuestions = exercise.content.map(id => id.toString());
-    const currQuestions = updateExerciseDto.content.map(({ id }) => id);
+    const currQuestions = updateExerciseDto.content
+      ? updateExerciseDto.content.map(({ id }) => id)
+      : prevQuestions;
     const removedQuestions = prevQuestions.filter(
       id => !currQuestions.includes(id),
     );
 
-    const content = await service.updateContent(
-      updateExerciseDto.content,
-      removedQuestions,
-    );
+    const content = updateExerciseDto.content
+      ? await service.updateContent(updateExerciseDto.content, removedQuestions)
+      : exercise.content;
 
     const updatedExercise = await this.exerciseModel.findByIdAndUpdate(
       id,
