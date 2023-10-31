@@ -1,5 +1,5 @@
 import { Button, Form, Input } from 'antd'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
@@ -9,23 +9,25 @@ import { setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
 import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
+import { useMutation } from '@tanstack/react-query'
 
 const SignIn: React.FC = () => {
   const dispatch = useAppDispatch()
   const apiNotification = useContext(NotificationContext)
 
-  const [error, setError] = useState<string>('')
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: authApi.signIn,
+  })
 
   const onFinish = async (values: SignInParams) => {
-    try {
-      const { data } = await authApi.signIn(values)
-      dispatch(setUser(data))
-      apiNotification.success({
-        message: 'Sign in successfully!',
-      })
-    } catch (error) {
-      setError(error.data.message)
-    }
+    mutate(values, {
+      onSuccess: (data) => {
+        dispatch(setUser(data.data))
+        apiNotification.success({
+          message: 'Sign in successfully!',
+        })
+      },
+    })
   }
 
   const fetchAuthUser = async () => {
@@ -94,7 +96,6 @@ const SignIn: React.FC = () => {
         initialValues={{ remember: true }}
         onFinish={onFinish}
         autoComplete="off"
-        onChange={() => setError('')}
         layout="vertical"
         className="w-[36rem]"
       >
@@ -149,7 +150,9 @@ const SignIn: React.FC = () => {
           />
         </Form.Item>
 
-        {error && <p className="text-secondary">{error}</p>}
+        {error && (
+          <p className="text-secondary">Email or password is incorrect!</p>
+        )}
 
         <Form.Item className="mt-4">
           <Button
@@ -158,6 +161,7 @@ const SignIn: React.FC = () => {
             shape="round"
             htmlType="submit"
             className="w-full h-11 rounded-xl mt-3"
+            loading={isPending}
           >
             Sign In
           </Button>

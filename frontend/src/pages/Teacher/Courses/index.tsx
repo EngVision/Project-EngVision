@@ -63,7 +63,7 @@ const Courses: React.FC = () => {
       {isLoading ? (
         <AppLoading />
       ) : (
-        <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+        <div className="grid grid-cols-fill-40 gap-x-6 gap-y-4">
           {rawCourseList?.data && rawCourseList.data.length > 0 ? (
             rawCourseList.data.map((course) => (
               <Course key={course.id} course={course} />

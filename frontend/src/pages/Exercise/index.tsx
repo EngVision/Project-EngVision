@@ -1,16 +1,18 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Form, Progress } from 'antd'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { EmojiHappyIcon, EmojiSadIcon } from '../../components/Icons'
 import ArrowLeft from '../../components/Icons/ArrowLeft'
-import submissionApi from '../../services/submissionApi'
 import exerciseApi from '../../services/exerciseApi'
+import submissionApi from '../../services/submissionApi'
 import { ExerciseType } from '../../utils/constants'
+import ConstructedResponse from './components/ConstructedResponse'
 import DoneExercise from './components/DoneExercise'
 import FillBlank from './components/FillBlank'
 import MultipleChoice from './components/MultipleChoice'
-import ConstructedResponse from './components/ConstructedResponse'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import MakeSentence from './components/MakeSentence'
+import AppLoading from '../../components/common/AppLoading'
 
 function Exercise() {
   const { id = '' } = useParams()
@@ -19,22 +21,27 @@ function Exercise() {
 
   const [questionIndex, setQuestionIndex] = useState<number>(0)
   const [hasResult, setHasResult] = useState<boolean>(false)
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(false)
+  const firstLoad = useRef<boolean>(true)
 
   const navigate = useNavigate()
 
   const getSubmission = async (exerciseId: string) => {
     const submission = await submissionApi.getSubmission(exerciseId)
 
-    setQuestionIndex(submission.totalDone || 0)
+    if (firstLoad.current) {
+      setQuestionIndex(submission.totalDone || 0)
+      firstLoad.current = false
+    }
     return submission
   }
 
-  const { data: submission } = useQuery({
+  const { data: submission, isLoading: isLoadingSubmission } = useQuery({
     queryKey: ['submission', id],
     queryFn: () => getSubmission(id),
   })
 
-  const { data: exercise } = useQuery({
+  const { data: exercise, isLoading: isLoadingExercise } = useQuery({
     queryKey: ['exercise', id],
     queryFn: () => exerciseApi.getExercise(id),
   })
@@ -43,6 +50,10 @@ function Exercise() {
     mutationFn: ({ questionId, data }: { questionId: string; data: any }) =>
       exerciseApi.submitAnswer(id, questionId, data),
   })
+
+  useEffect(() => {
+    setQuestionIndex(submission?.totalDone || 0)
+  }, [submission])
 
   useEffect(() => {
     setHasResult(!!submission?.detail[questionIndex])
@@ -75,6 +86,7 @@ function Exercise() {
             <MultipleChoice
               {...content}
               result={submission?.detail[questionIndex]}
+              setIsSubmittable={setIsSubmittable}
             />
           )
         case ExerciseType.FillBlank:
@@ -82,6 +94,7 @@ function Exercise() {
             <FillBlank
               {...content}
               result={submission?.detail[questionIndex]}
+              setIsSubmittable={setIsSubmittable}
             />
           )
         case ExerciseType.ConstructedResponse:
@@ -89,6 +102,15 @@ function Exercise() {
             <ConstructedResponse
               {...content}
               {...exercise}
+              result={submission?.detail[questionIndex]}
+              setIsSubmittable={setIsSubmittable}
+            />
+          )
+        case ExerciseType.MakeSentence:
+          return (
+            <MakeSentence
+              {...content}
+              exerciseId={id}
               result={submission?.detail[questionIndex]}
             />
           )
@@ -117,6 +139,8 @@ function Exercise() {
   const onFinish = (values: any) => {
     submitAnswer(values, exercise?.content[questionIndex].id || '')
   }
+
+  if (isLoadingSubmission || isLoadingExercise) return <AppLoading />
 
   return (
     <Form
@@ -185,7 +209,9 @@ function Exercise() {
             type="primary"
             size="large"
             className="w-[150px]"
+            disabled={!isSubmittable}
             onClick={nextQuestion}
+            loading={submitAnswerMutation.isPending}
           >
             {!hasResult ? 'Confirm' : 'Next'}
           </Button>

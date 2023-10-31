@@ -92,15 +92,16 @@ export class ExercisesService {
     );
 
     const prevQuestions = exercise.content.map(id => id.toString());
-    const currQuestions = updateExerciseDto.content.map(({ id }) => id);
+    const currQuestions = updateExerciseDto.content
+      ? updateExerciseDto.content.map(({ id }) => id)
+      : prevQuestions;
     const removedQuestions = prevQuestions.filter(
       id => !currQuestions.includes(id),
     );
 
-    const content = await service.updateContent(
-      updateExerciseDto.content,
-      removedQuestions,
-    );
+    const content = updateExerciseDto.content
+      ? await service.updateContent(updateExerciseDto.content, removedQuestions)
+      : exercise.content;
 
     const updatedExercise = await this.exerciseModel.findByIdAndUpdate(
       id,
@@ -162,6 +163,8 @@ export class ExercisesService {
       exercise.type,
     );
 
+    console.log(exercise);
+
     const result = await service.checkAnswer(questionId, answer);
 
     await this.submissionsService.update(userId, exercise.id, {
@@ -171,6 +174,8 @@ export class ExercisesService {
       totalQuestion: exercise.content.length,
       detail: [result],
       teacher: exercise.creator,
+      needGrade: exercise.needGrade,
+      course: exercise.course,
     });
 
     return result;

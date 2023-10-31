@@ -1,8 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Expose, Transform } from 'class-transformer';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import { ExerciseType } from 'src/common/enums';
 
 class QuestionResultDto {
+  @Transform(value => value.obj.question.toString())
   @ApiProperty({ description: 'Question id' })
   question: string;
 
@@ -36,8 +37,15 @@ export class SubmissionDto {
   @ApiProperty({ description: 'Teacher id' })
   teacher: string;
 
+  @ApiProperty({ description: 'Course id' })
+  course?: string;
+
   @ApiPropertyOptional({ description: 'Exercise grade' })
   grade?: number;
+
+  @Exclude()
+  @ApiPropertyOptional({ description: 'Exercise need grade' })
+  needGrade?: boolean;
 
   @Transform(value => value.obj.exercise.toString())
   @ApiProperty({ description: 'Exercise id' })
@@ -58,6 +66,7 @@ export class SubmissionDto {
   @ApiProperty({ description: 'Exercise progress' })
   progress?: number;
 
+  @Type(() => QuestionResultDto)
   @ApiProperty({ type: QuestionResultDto, description: 'Result' })
   detail: QuestionResultDto[];
 }

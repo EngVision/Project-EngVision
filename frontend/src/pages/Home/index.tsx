@@ -4,6 +4,7 @@ import { useAppSelector } from '../../hooks/redux'
 import coursesApi from '../../services/coursesApi'
 import submissionApi from '../../services/submissionApi'
 import { CEFRLevel, COURSE_STATUS, NextDue } from '../../utils/constants'
+import { useMemo } from 'react'
 
 const Home = () => {
   const status: any = { status: COURSE_STATUS.attended }
@@ -11,11 +12,6 @@ const Home = () => {
 
   const level = CEFRLevel
   const nextDue = NextDue
-  const exercise = {
-    totalDone: 0,
-    totalQuestion: 0,
-    totalInProcess: 0,
-  }
 
   const { data: rawCourseList } = useQuery({
     queryKey: ['courses', status],
@@ -27,16 +23,27 @@ const Home = () => {
     queryFn: submissionApi.getSubmissionList,
   })
 
-  if (rawSubmissionList) {
-    rawSubmissionList.data.forEach((assignment) => {
-      if (assignment.totalDone) {
-        exercise.totalDone += assignment.totalDone
-      } else if (assignment.totalQuestion) {
-        exercise.totalQuestion += assignment.totalQuestion
-      }
+  const exercise = useMemo(() => {
+    const exercise = {
+      totalDone: 0,
+      totalQuestion: 0,
+      totalInProcess: 0,
+    }
+
+    if (rawSubmissionList) {
+      rawSubmissionList.data.forEach((assignment) => {
+        if (assignment.totalDone) {
+          exercise.totalDone += assignment.totalDone
+        }
+        if (assignment.totalQuestion) {
+          exercise.totalQuestion += assignment.totalQuestion
+        }
+      })
       exercise.totalInProcess = exercise.totalQuestion - exercise.totalDone
-    })
-  }
+    }
+
+    return exercise
+  }, [rawSubmissionList?.data])
 
   const DashboardNoti = () => {
     return (

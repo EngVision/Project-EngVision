@@ -86,6 +86,7 @@ export enum ExerciseType {
   MultipleChoice = 'MultipleChoice',
   FillBlank = 'FillBlank',
   ConstructedResponse = 'ConstructedResponse',
+  MakeSentence = 'MakeSentence',
 }
 
 export enum ExerciseTag {

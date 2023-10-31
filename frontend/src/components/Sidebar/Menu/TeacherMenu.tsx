@@ -1,11 +1,5 @@
 import { PRIVATE_ROUTES, TEACHER_ROUTES } from '../../../utils/constants'
-import {
-  BookIcon,
-  ChartIcon,
-  DashboardIcon,
-  MessageIcon,
-  NoteIcon,
-} from '../../Icons'
+import { BookIcon, DashboardIcon } from '../../Icons'
 
 import { MenuItemType } from '../types'
 import MenuItem from './MenuItem'
@@ -21,21 +15,21 @@ const TEACHER_MENU_ITEMS: MenuItemType[] = [
     path: TEACHER_ROUTES.courses,
     title: 'My courses',
   },
-  {
-    icon: <NoteIcon />,
-    path: TEACHER_ROUTES.assignmentExam,
-    title: 'Assignments & Exams',
-  },
-  {
-    icon: <ChartIcon />,
-    path: PRIVATE_ROUTES.statistic,
-    title: 'Statistic',
-  },
-  {
-    icon: <MessageIcon />,
-    path: PRIVATE_ROUTES.chat,
-    title: 'Chats',
-  },
+  // {
+  //   icon: <NoteIcon />,
+  //   path: TEACHER_ROUTES.assignmentExam,
+  //   title: 'Assignments & Exams',
+  // },
+  // {
+  //   icon: <ChartIcon />,
+  //   path: PRIVATE_ROUTES.statistic,
+  //   title: 'Statistic',
+  // },
+  // {
+  //   icon: <MessageIcon />,
+  //   path: PRIVATE_ROUTES.chat,
+  //   title: 'Chats',
+  // },
 ]
 
 const TeacherMenu = () => {

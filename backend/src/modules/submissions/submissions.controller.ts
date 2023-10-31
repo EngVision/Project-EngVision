@@ -1,8 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
   HttpStatus,
   Param,
+  Post,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -14,11 +17,14 @@ import {
 } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
-import { AtGuard } from 'src/common/guards';
+import { AtGuard, RoleGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
 import { SubmissionDto } from './dto/submission.dto';
 import { SubmissionsService } from './submissions.service';
 import { ApiTags } from '@nestjs/swagger';
+import { QueryDto } from 'src/common/dto/query.dto';
+import { Role } from 'src/common/enums';
+import { GradingDto } from './dto/grading.dto';
 
 @ApiTags('Submissions')
 @Controller('submissions')
@@ -28,16 +34,24 @@ export class SubmissionsController {
   @Get()
   @UseGuards(AtGuard)
   @ApiResponseList(SubmissionDto)
-  async findAll(@CurrentUser() user: JwtPayload, @Res() res: Response) {
-    const assignments = await this.submissionsService.findByUser(user.sub);
+  async findAll(
+    @Query() query: QueryDto,
+    @CurrentUser() user: JwtPayload,
+    @Res() res: Response,
+  ) {
+    const [submissions, total] = await this.submissionsService.findByUser(
+      query,
+      user.sub,
+      user.roles,
+    );
 
     return res.status(HttpStatus.OK).send(
       GetResponseList({
         dataType: SubmissionDto,
-        data: assignments,
-        limit: 0,
-        offset: 0,
-        total: 0,
+        data: submissions,
+        limit: query.limit,
+        offset: query.page,
+        total,
       }),
     );
   }
@@ -50,7 +64,7 @@ export class SubmissionsController {
     @Param('exerciseId') exerciseId: string,
     @Res() res: Response,
   ) {
-    const assignment = await this.submissionsService.findByUserAndExercise(
+    const submission = await this.submissionsService.findByUserAndExercise(
       user.sub,
       exerciseId,
     );
@@ -58,7 +72,32 @@ export class SubmissionsController {
     return res.status(HttpStatus.OK).send(
       GetResponse({
         dataType: SubmissionDto,
-        data: assignment,
+        data: submission,
+      }),
+    );
+  }
+
+  @Post(':submissionId/grade/:questionId')
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  @ApiResponseData(SubmissionDto)
+  async gradeExercise(
+    @CurrentUser() user: JwtPayload,
+    @Param('submissionId') submissionId: string,
+    @Param('questionId') questionId: string,
+    @Body() gradingDto: GradingDto,
+    @Res() res: Response,
+  ) {
+    const submission = await this.submissionsService.gradeSubmission(
+      submissionId,
+      questionId,
+      gradingDto,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        dataType: SubmissionDto,
+        data: submission,
       }),
     );
   }

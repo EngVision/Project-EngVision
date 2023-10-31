@@ -4,6 +4,7 @@ import PreviewInput from '../../../components/common/PreviewInput'
 import { FormInstance, useWatch } from 'antd/lib/form/Form'
 import CustomImage from '../../../components/common/CustomImage'
 import { getFormattedDate, getFormattedPrice } from '../../../utils/common'
+import { UPLOAD_FILE_URL } from '../../../utils/constants'
 
 interface PreviewProps {
   form: FormInstance
@@ -20,7 +21,7 @@ const Preview = ({ form }: PreviewProps) => {
     <div className="flex flex-col gap-4 min-h-[12rem] select-none lg:flex-row">
       <CustomImage
         className="object-cover min-w-[300px] h-[12rem] rounded-md"
-        src={`${import.meta.env.VITE_SERVER_FILES_URL}${thumbnail}`}
+        src={`${UPLOAD_FILE_URL}${thumbnail}`}
       />
       <div className="flex flex-col h-full justify-between flex-1 gap-2">
         <div className="flex text-sm justify-between">
@@ -34,17 +35,21 @@ const Preview = ({ form }: PreviewProps) => {
           </Form.Item>
         </div>
 
-        <Form.Item name="title" noStyle>
-          <PreviewInput className="font-semibold text-2xl" />
-        </Form.Item>
+        <div>
+          <Form.Item name="title" noStyle>
+            <PreviewInput className="font-semibold text-2xl" />
+          </Form.Item>
 
-        <Form.Item name="about" noStyle>
-          <PreviewInput className="text-base" />
-        </Form.Item>
+          <Form.Item name="about" noStyle>
+            <PreviewInput className="text-base mb-2" />
+          </Form.Item>
+        </div>
 
         <div className="flex items-center leading-6">
           <StarIcon className="text-[#FD6267] mr-1.5" />
-          <span className="mr-1.5 font-bold">3.8</span>
+          <span className="mr-1.5 font-bold">
+            {form.getFieldValue('avgStar')}
+          </span>
           <Form.Item name="reviews" noStyle>
             <div className="mr-1.5 text-[#706E68]">
               ({reviews?.length || 0} ratings)
