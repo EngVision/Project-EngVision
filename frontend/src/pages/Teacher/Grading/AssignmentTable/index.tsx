@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Table, Tag, Space } from 'antd'
+import { Table, Tag, Space, Avatar } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 interface DataType {
   id: string
@@ -30,6 +30,14 @@ const AssignmentTable = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      render: (text) => (
+        <Space size="middle">
+          <Avatar size="large" className="bg-primary">
+            {text.charAt(0)}
+          </Avatar>
+          <span>{text}</span>
+        </Space>
+      ),
     },
     { title: 'Section', dataIndex: 'section', key: 'section' },
     { title: 'Lesson', dataIndex: 'lesson', key: 'lesson' },
