@@ -7,7 +7,7 @@ export class QueryDto {
   @IsOptional()
   @IsEnum(SortBy)
   @ApiPropertyOptional({ enum: SortBy, description: 'Sort by (default time)' })
-  sortBy?: string = SortBy.time;
+  sortBy?: SortBy = SortBy.time;
 
   @IsOptional()
   @IsEnum(Order)
@@ -16,7 +16,7 @@ export class QueryDto {
     description:
       'order (asc for low(old) to high(new), desc for high(new) to low(old))',
   })
-  order?: string;
+  order?: Order = Order.asc;
 
   @IsOptional()
   @Type(() => Number)

@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -24,6 +25,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { ExamDetailDto } from './dto/exam-detail.dto';
 import { AddPartDto } from './dto/add-part.dto';
 import { JwtPayload } from '../auth/types';
+import { EntranceExamQueryDto } from './dto/entrance-exam-query.dto';
 
 @ApiTags('Exams')
 @Controller('exams')
@@ -50,8 +52,11 @@ export class ExamsController {
 
   @Get('entrance-exam')
   @ApiResponseData(ExamDto)
-  async getEntranceExam(@Res() res: Response) {
-    const exam = await this.examsService.getEntranceExam();
+  async getEntranceExam(
+    @Query() query: EntranceExamQueryDto,
+    @Res() res: Response,
+  ) {
+    const exam = await this.examsService.getEntranceExam(query.level);
 
     return res.status(HttpStatus.OK).send(
       GetResponse({

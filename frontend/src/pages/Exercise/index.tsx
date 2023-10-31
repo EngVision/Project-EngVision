@@ -103,6 +103,7 @@ function Exercise() {
               {...content}
               {...exercise}
               result={submission?.detail[questionIndex]}
+              setIsSubmittable={setIsSubmittable}
             />
           )
         case ExerciseType.MakeSentence:

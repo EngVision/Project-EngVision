@@ -22,6 +22,11 @@ export interface ExerciseSchema {
   level?: CEFRLevel
   content: QuestionPayload[]
   id?: string
+  contentQuestion?: {
+    text: string
+    image: string
+    audio: string
+  }
 }
 
 export interface SubmitAnswerResponse {

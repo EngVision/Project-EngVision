@@ -5,6 +5,7 @@ import {
   IsArray,
   IsBoolean,
   IsDateString,
+  IsDefined,
   IsEnum,
   IsMongoId,
   IsNotEmpty,
@@ -14,6 +15,28 @@ import {
 } from 'class-validator';
 import { CEFRLevel, ExerciseTag, ExerciseType } from 'src/common/enums';
 import { ExerciseQuestionDto } from 'src/modules/exercise-content/dto/exercise-content.dto';
+
+class ContentQuestionDto {
+  @IsString()
+  @ApiProperty({ type: String, description: 'Question text' })
+  text: string;
+
+  @IsOptional()
+  @IsMongoId()
+  @ApiPropertyOptional({
+    type: String,
+    description: 'Audio file id',
+  })
+  audio?: string;
+
+  @IsOptional()
+  @IsMongoId()
+  @ApiPropertyOptional({
+    type: String,
+    description: 'Image file id',
+  })
+  image?: string;
+}
 
 export class CreateExerciseDto {
   @IsOptional()
@@ -67,4 +90,15 @@ export class CreateExerciseDto {
   @IsOptional()
   @IsBoolean()
   needGrade?: boolean;
+
+  @IsOptional()
+  @IsDefined()
+  @Type(() => ContentQuestionDto)
+  @ApiProperty({ type: ContentQuestionDto, description: 'Correct answer' })
+  contentQuestion?: ContentQuestionDto;
+
+  @IsOptional()
+  @IsMongoId()
+  @ApiProperty({ type: String, description: 'Course id' })
+  course?: string;
 }

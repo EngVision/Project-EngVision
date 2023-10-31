@@ -64,17 +64,15 @@ export class ExamsService {
     await this.examModel.findByIdAndDelete(id);
   }
 
-  async getEntranceExam(): Promise<ExamDocument> {
-    const exercises = await this.exercisesService.getEntranceExercises(
-      CEFRLevel.B2,
-    );
+  async getEntranceExam(level: CEFRLevel): Promise<ExamDocument> {
+    const exercises = await this.exercisesService.getEntranceExercises(level);
 
     shuffleArray(exercises);
 
     return new this.examModel({
       title: 'Entrance Exam',
       description: 'Entrance Exam',
-      level: CEFRLevel.B2,
+      level: level,
       parts: exercises.slice(0, 4).map(exercise => exercise._id),
     });
   }
