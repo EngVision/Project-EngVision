@@ -104,12 +104,14 @@ const EditTest = () => {
     } else if (record) {
       const data: any = await examApi.getExamById(record.id as string)
       setTests(data)
+      console.log(data)
 
       const allDataParts: ExerciseSchema[] = []
       for (let i = 0; i < data.parts.length; i++) {
         allDataParts.push(data.parts[i])
       }
       setParts(allDataParts)
+      console.log(allDataParts)
     }
   }
 

@@ -10,7 +10,7 @@ import exerciseApi from '../../../services/exerciseApi'
 import { ExerciseSchema } from '../../../services/exerciseApi/types'
 import { ADMIN_ROUTES } from '../../../utils/constants'
 
-interface TestInfo {
+interface ExamInfo {
   id: string
   title: string
   description: string
@@ -18,11 +18,15 @@ interface TestInfo {
 
 const ManageExam = () => {
   const navigate = useNavigate()
-  const [tests, setTests] = useState<TestInfo[]>([])
+  const [titleNotiModal, setTitleNotiModal] = useState('')
+  const [descriptionNotiModal, setDescriptionNotiModal] = useState('')
+  const [exams, setExams] = useState<ExamInfo[]>([])
   const [parts, setParts] = useState<ExerciseSchema[]>([])
-
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentTest, setCurrentTest] = useState<TestInfo | null>(null)
+  const [currentExam, setCurrentExam] = useState<ExamInfo | null>(null)
+  const [currentExercise, setCurrentExercise] = useState<ExerciseSchema | null>(
+    null,
+  )
 
   const items = [
     {
@@ -37,24 +41,31 @@ const ManageExam = () => {
     },
   ]
 
+  useEffect(() => {
+    fetchExams()
+    fetchExercises()
+  }, [])
+
   const fetchExams = async () => {
     try {
       const data: any = await examApi.getExam()
-      setTests(data.data)
-
-      const allDataParts: ExerciseSchema[] = await exerciseApi.getAllExercise()
-
-      setParts(allDataParts)
+      setExams(data.data)
     } catch (error) {
-      console.error('Error fetching courses:', error)
+      console.error('Error fetching exams:', error)
     }
   }
 
-  useEffect(() => {
-    fetchExams()
-  }, [])
+  const fetchExercises = async () => {
+    try {
+      const allDataParts: ExerciseSchema[] = await exerciseApi.getAllExercise()
+      setParts(allDataParts)
+      console.log(allDataParts)
+    } catch (error) {
+      console.error('Error fetching exercises:', error)
+    }
+  }
 
-  const columnsTest: ColumnsType<TestInfo> = [
+  const columnsExam: ColumnsType<ExamInfo> = [
     {
       title: 'Title',
       dataIndex: 'title',
@@ -68,7 +79,7 @@ const ManageExam = () => {
     },
     {
       title: (
-        <Link to="./edit-test">
+        <Link to="./edit-exam">
           <Button type="primary">Add new</Button>
         </Link>
       ),
@@ -76,7 +87,7 @@ const ManageExam = () => {
       render: (record) => (
         <a className="flex justify-end">
           <Dropdown
-            menu={{ items, onClick: (e) => handleTestMenuClick(e, record) }}
+            menu={{ items, onClick: (e) => handleExamMenuClick(e, record) }}
             className=" text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
           >
             <span onClick={(e) => e.preventDefault()} role="presentation">
@@ -129,7 +140,7 @@ const ManageExam = () => {
     },
   ]
 
-  const renderTable = (data: ExerciseSchema[] | TestInfo[]) => {
+  const renderTable = (data: ExerciseSchema[] | ExamInfo[]) => {
     if (Array.isArray(data) && data.length > 0 && 'type' in data[0]) {
       return (
         <Table
@@ -141,22 +152,50 @@ const ManageExam = () => {
     } else {
       return (
         <Table
-          columns={columnsTest}
-          dataSource={data as TestInfo[]}
+          columns={columnsExam}
+          dataSource={data as ExamInfo[]}
           pagination={{ pageSize: 5 }}
         />
       )
     }
   }
 
-  const showModal = (record: any) => {
+  const NotiModal = (title: any, description: any) => {
+    return (
+      <Modal
+        title={title}
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <p>{description}</p>
+      </Modal>
+    )
+  }
+
+  const showModalExam = (exam: ExamInfo) => {
     setIsModalOpen(true)
-    setCurrentTest(record)
+    setTitleNotiModal('Delete Exam')
+    setDescriptionNotiModal('Are you sure you want to delete this exam?')
+    setCurrentExam(exam)
+  }
+
+  const showModalPart = (part: ExerciseSchema) => {
+    setIsModalOpen(true)
+    setTitleNotiModal('Delete Part')
+    setDescriptionNotiModal('Are you sure you want to delete this exercise?')
+    setCurrentExercise(part)
   }
 
   const handleOk = async () => {
-    await examApi.deleteExam(currentTest?.id as string)
-    fetchExams()
+    if (titleNotiModal === 'Delete Exam') {
+      await examApi.deleteExam(currentExam?.id as string)
+      fetchExams()
+    } else if (titleNotiModal === 'Delete Part') {
+      await exerciseApi.deleteExercise(currentExercise?.id as string)
+      fetchExercises()
+    }
+
     setIsModalOpen(false)
   }
 
@@ -164,22 +203,21 @@ const ManageExam = () => {
     setIsModalOpen(false)
   }
 
-  const handleTestMenuClick = (e: any, record: TestInfo) => {
+  const handleExamMenuClick = (e: any, record: ExamInfo) => {
     if (e.key === 'edit') {
-      console.log(record)
-      navigate(ADMIN_ROUTES.editTest, { state: { record: record } })
+      navigate(ADMIN_ROUTES.editExam, { state: { record: record } })
     }
     if (e.key === 'remove') {
-      showModal(record)
+      showModalExam(record)
     }
   }
 
   const handlePartMenuClick = (e: any, exercise: ExerciseSchema) => {
     if (e.key === 'edit') {
-      navigate(ADMIN_ROUTES.editPart, { state: { record: tests } })
+      navigate(ADMIN_ROUTES.editPart, { state: { record: exams } })
     }
     if (e.key === 'remove') {
-      showModal(exercise)
+      showModalPart(exercise)
     }
   }
 
@@ -191,18 +229,11 @@ const ManageExam = () => {
           <div>{renderTable(parts)}</div>
         </div>
         <div>
-          <h1 className="text-2xl font-bold mb-2">Test</h1>
-          <div>{renderTable(tests)}</div>
+          <h1 className="text-2xl font-bold mb-2">Exam</h1>
+          <div>{renderTable(exams)}</div>
         </div>
       </Form>
-      <Modal
-        title="Basic Modal"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <p>Do you really want to delete this test ?</p>
-      </Modal>
+      <NotiModal title={titleNotiModal} description={descriptionNotiModal} />
     </>
   )
 }

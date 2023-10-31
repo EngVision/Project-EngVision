@@ -32,7 +32,7 @@ const adminRoutes: RouteObject[] = [
           },
           {
             element: <EditTest />,
-            path: 'edit-test',
+            path: 'edit-exam',
           },
         ],
       },

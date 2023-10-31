@@ -62,7 +62,7 @@ export const ADMIN_ROUTES = {
   manageUsers: '/manage-users',
 
   exams: '/exams',
-  editTest: '/exams/edit-test',
+  editExam: '/exams/edit-exam',
   createPart: '/exams/create-part',
   editPart: '/exams/edit-part',
 }
