@@ -11,7 +11,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ReactGA from 'react-ga4'
 import * as Sentry from '@sentry/react'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN
 

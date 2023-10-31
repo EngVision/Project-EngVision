@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Button, Collapse, Form, Space, Tooltip } from 'antd'
+import { Button, Collapse, Form, Tooltip } from 'antd'
 import { FormInstance } from 'antd/lib/form/Form'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { Link } from 'react-router-dom'
@@ -18,7 +18,6 @@ interface SectionProps {
 }
 
 const Section = ({ form }: SectionProps) => {
-
   const onDragEnd = (result: any, move: (from: number, to: number) => void) => {
     if (!result.destination) return
 
@@ -61,9 +60,12 @@ const Section = ({ form }: SectionProps) => {
                               header={
                                 <Form.Item
                                   name={[field.name, 'title']}
-                                  className="mb-0 w-fit"
+                                  className="mb-0 w-full"
                                 >
-                                  <CustomInput placeholder="New section" />
+                                  <CustomInput
+                                    placeholder="New section"
+                                    className="pr-16"
+                                  />
                                 </Form.Item>
                               }
                               className="mb-4 !border-dashed border-2 !border-b-2 !border-gray-300 !rounded-lg"
@@ -73,67 +75,76 @@ const Section = ({ form }: SectionProps) => {
                                   {(subFields, subOpt) => (
                                     <div className="flex flex-col gap-4">
                                       {subFields.map((subField) => {
+                                        const lessonId =
+                                          form.getFieldValue('sections')[
+                                            field.name
+                                          ].lessons[subField.name].id
 
-                                        const lessonId = form.getFieldValue('sections')[field.name].lessons[subField.name].id
+                                        return (
+                                          <div
+                                            key={subField.key}
+                                            className="ml-8 flex"
+                                          >
+                                            <div className="flex-1 flex items-center gap-2">
+                                              <MenuIcon />
+                                              <Form.Item
+                                                name={[subField.name, 'title']}
+                                                className="mb-0 flex-1"
+                                              >
+                                                <CustomInput placeholder="New lesson" />
+                                              </Form.Item>
+                                            </div>
 
+                                            <div className="flex gap-4 items-center">
+                                              {lessonId ? (
+                                                <Tooltip title="Edit lesson">
+                                                  <Link
+                                                    to={`lessons/${lessonId}`}
+                                                  >
+                                                    <PencilLineIcon
+                                                      className="hover:cursor-pointer"
+                                                      width={20}
+                                                      height={20}
+                                                    />
+                                                  </Link>
+                                                </Tooltip>
+                                              ) : (
+                                                <Tooltip title="Please save the course to edit this lesson">
+                                                  <div className="flex">
+                                                    <PencilLineIcon
+                                                      className="opacity-40 hover:cursor-not-allowed"
+                                                      width={20}
+                                                      height={20}
+                                                    />
+                                                  </div>
+                                                </Tooltip>
+                                              )}
 
-                                        return <Space
-                                          key={subField.key}
-                                          className="ml-8 flex justify-between"
-                                        >
-                                          <div className="flex items-center gap-2">
-                                            <MenuIcon />
-                                            <Form.Item
-                                              noStyle
-                                              name={[subField.name, 'title']}
-                                            >
-                                              <CustomInput placeholder="New lesson" />
-                                            </Form.Item>
-                                          </div>
-
-                                          <div className="flex gap-4">
-                                            {lessonId ? (
-                                              <Tooltip title="Edit lesson">
-                                                <Link to={`lessons/${lessonId}`}>
-                                                  <PencilLineIcon
+                                              <Tooltip title="Delete lesson">
+                                                <div className="flex">
+                                                  <TrashIcon
+                                                    onClick={() => {
+                                                      subOpt.remove(
+                                                        subField.name,
+                                                      )
+                                                    }}
                                                     className="hover:cursor-pointer"
-                                                    width={20}
-                                                    height={20}
-                                                  />
-                                                </Link>
-                                              </Tooltip>
-                                            ) : (
-                                              <Tooltip title="Please save the course to edit this lesson">
-                                                <div className='flex'>
-                                                  <PencilLineIcon
-                                                    className='opacity-40 hover:cursor-not-allowed'
                                                     width={20}
                                                     height={20}
                                                   />
                                                 </div>
                                               </Tooltip>
-                                            )}
+                                            </div>
 
-
-                                            <Tooltip title="Delete lesson">
-                                              <div className="flex">
-                                                <TrashIcon
-                                                  onClick={() => {
-                                                    subOpt.remove(subField.name)
-                                                  }}
-                                                  className="hover:cursor-pointer"
-                                                  width={20}
-                                                  height={20}
-                                                />
-                                              </div>
-                                            </Tooltip>
+                                            <Form.Item
+                                              noStyle
+                                              name={[
+                                                subField.name,
+                                                'exercises',
+                                              ]}
+                                            ></Form.Item>
                                           </div>
-
-                                          <Form.Item
-                                            noStyle
-                                            name={[subField.name, 'exercises']}
-                                          ></Form.Item>
-                                        </Space>
+                                        )
                                       })}
                                       <div className="flex gap-4 absolute right-0 top-[-48px]">
                                         <Tooltip title="Add lesson">
@@ -198,7 +209,7 @@ const Section = ({ form }: SectionProps) => {
           </Form.Item>
         </>
       )}
-    </Form.List >
+    </Form.List>
   )
 }
 

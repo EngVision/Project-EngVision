@@ -11,6 +11,7 @@ import { setUser } from '../../redux/app/slice'
 import { useAppDispatch } from '../../hooks/redux'
 import { NotificationContext } from '../../contexts/notification'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
+import { useMutation } from '@tanstack/react-query'
 
 const CreateProfile = () => {
   const [form] = useForm<SignUpParams>()
@@ -32,22 +33,25 @@ const CreateProfile = () => {
     getUser()
   }, [])
 
+  const updateAccountMutation = useMutation({
+    mutationFn: accountApi.updateWhenSignUp,
+  })
+
   const onFinish = async (values: SignUpParams) => {
     if (!values.accepted) {
       setError('Please accept Terms of Service')
       return
     }
 
-    try {
-      const { data } = await accountApi.updateWhenSignUp(values)
-      dispatch(setUser(data))
-      apiNotification.success({
-        message: 'Create account successfully!',
-      })
-      navigate(PRIVATE_ROUTES.home)
-    } catch (error) {
-      setError(error.data.message)
-    }
+    updateAccountMutation.mutate(values, {
+      onSuccess: (data) => {
+        dispatch(setUser(data.data))
+        apiNotification.success({
+          message: 'Create account successfully!',
+        })
+        navigate(PRIVATE_ROUTES.home)
+      },
+    })
   }
 
   const validatePassword = (password: string) => {
@@ -66,6 +70,10 @@ const CreateProfile = () => {
     if (!phone) return true
     const phoneRegex = /^\d{10,}$/
     return phoneRegex.test(phone)
+  }
+
+  const validateAcceptTerm = (accepted: boolean) => {
+    return accepted
   }
 
   return (
@@ -184,7 +192,6 @@ const CreateProfile = () => {
             name="phoneNumber"
             label="Phone number"
             rules={[
-              { message: 'Please input your phone number!', required: true },
               {
                 async validator(_, value) {
                   return new Promise((resolve, reject) => {
@@ -237,7 +244,21 @@ const CreateProfile = () => {
             />
           </Form.Item>
 
-          <Form.Item<SignUpParams> name="accepted" valuePropName="checked">
+          <Form.Item<SignUpParams>
+            name="accepted"
+            valuePropName="checked"
+            rules={[
+              {
+                async validator(_, value) {
+                  return new Promise((resolve, reject) => {
+                    if (validateAcceptTerm(value)) {
+                      resolve('')
+                    } else reject(new Error('Please accept Terms of Service'))
+                  })
+                },
+              },
+            ]}
+          >
             <Checkbox>
               I accept
               <Link
@@ -257,6 +278,7 @@ const CreateProfile = () => {
               shape="round"
               htmlType="submit"
               className="h-[40px] min-w-[200px] font-semibold"
+              loading={updateAccountMutation.isPending}
             >
               Sign Up
             </Button>
