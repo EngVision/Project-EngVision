@@ -217,7 +217,7 @@ export class UsersService {
 
   async approveUser(id: string): Promise<void> {
     const user = await this.userModel.findByIdAndUpdate(id, {
-      isApprove: true,
+      isApproved: true,
     });
 
     if (!user) {
