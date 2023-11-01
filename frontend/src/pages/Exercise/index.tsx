@@ -81,19 +81,20 @@ function Exercise() {
   }, [submission])
 
   useEffect(() => {
-    // setHasResult(!!submission?.detail[questionIndex])
-    // if (submissionId) {
-    //   form.setFieldValue('grade', submission?.detail[questionIndex]?.grade)
-    //   form.setFieldValue(
-    //     'explanation',
-    //     submission?.detail[questionIndex]?.explanation,
-    //   )
-    //   setGrade(
-    //     submission?.detail[questionIndex]?.grade
-    //       ? submission?.detail[questionIndex]?.grade
-    //       : -1,
-    //   )
-    // }
+    setHasResult(!!submission?.detail[questionIndex])
+
+    if (submissionId) {
+      form.setFieldValue('grade', submission?.detail[questionIndex]?.grade)
+      form.setFieldValue(
+        'explanation',
+        submission?.detail[questionIndex]?.explanation,
+      )
+      setGrade(
+        submission?.detail[questionIndex]?.grade
+          ? submission?.detail[questionIndex]?.grade
+          : -1,
+      )
+    }
   }, [submission, questionIndex])
 
   const submitAnswer = async (data: any, questionId: string): Promise<void> => {
