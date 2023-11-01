@@ -72,7 +72,7 @@ jobs:
         name: Changing the deployment yaml
         with:
           repository: "EngVision/Engvision-Deployment"
-          token: ${{ secrets.GIT_PASSWORD }}
+
       - name: Modify the image
         run: |
           git config --global user.name 'GitHub Actions'
@@ -83,6 +83,4 @@ jobs:
           git commit -m 'Github Actions - Deploy build ver ${{ github.run_number }}'
           git push origin main
         env:
-          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
           RUN_NUMBER: ${{ github.run_number }}
