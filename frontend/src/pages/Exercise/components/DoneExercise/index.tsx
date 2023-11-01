@@ -10,7 +10,7 @@ function DoneExercise({ grade }: DoneExerciseProps) {
       <p className="text-2xl font-semibold">
         Your test result has completed with
       </p>
-      <p className="text-4xl font-bold">{grade || 0} / 10</p>
+      <p className="text-4xl font-bold">{grade?.toFixed(2) || 0} / 10</p>
       <p className="text-xl font-medium">
         You just ranking up to <span className="font-bold">B2</span>
       </p>

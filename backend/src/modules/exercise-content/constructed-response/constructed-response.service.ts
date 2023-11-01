@@ -63,9 +63,20 @@ export class ConstructedResponseService extends ExerciseContentService {
       throw new BadRequestException('answer must be a string');
     }
 
-    const { detail, explanation } = (
+    const correctAnswer = (
       await this.constructedResponseModel.findById(id).select('correctAnswer')
     ).correctAnswer;
+
+    if (!correctAnswer) {
+      return {
+        question: id,
+        answer,
+        correctAnswer: null,
+        explanation: null,
+      };
+    }
+
+    const { detail, explanation } = correctAnswer;
 
     const submission = {
       question: id,
@@ -73,10 +84,6 @@ export class ConstructedResponseService extends ExerciseContentService {
       correctAnswer: detail,
       explanation,
     };
-
-    if (!detail) {
-      return submission;
-    }
 
     const isCorrect = answer.toLowerCase() === detail.toLowerCase();
 

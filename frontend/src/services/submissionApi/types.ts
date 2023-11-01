@@ -15,3 +15,8 @@ export interface SubmissionResponse {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface GradePayload {
+  grade?: number
+  explanation?: string
+}

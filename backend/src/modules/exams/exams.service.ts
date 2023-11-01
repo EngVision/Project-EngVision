@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 import { ExercisesService } from '../exercises/exercises.service';
 import { CEFRLevel } from 'src/common/enums';
 import { shuffleArray } from 'src/common/utils';
+import { QueryDto } from 'src/common/dto/query.dto';
 
 @Injectable()
 export class ExamsService {
@@ -27,10 +28,14 @@ export class ExamsService {
     return await newExam.save();
   }
 
-  async findAll(): Promise<ExamDocument[]> {
-    const exams = await this.examModel.find();
+  async findAll(queryDto: QueryDto): Promise<[ExamDocument[], number]> {
+    const exams = await this.examModel.find({}, null, {
+      skip: queryDto.page * queryDto.limit,
+      limit: queryDto.limit,
+    });
+    const total = await this.examModel.countDocuments({});
 
-    return exams;
+    return [exams, total];
   }
 
   async findOne(id: string): Promise<ExamDocument> {
@@ -83,6 +88,22 @@ export class ExamsService {
         _id: id,
       },
       { $addToSet: { parts: partId } },
+      { new: true },
+    );
+
+    if (!exam) {
+      throw new NotFoundException(`Exam #${id} not found`);
+    }
+
+    return exam.populate('parts', 'id title description');
+  }
+
+  async removePart(id: string, partId: string): Promise<ExamDocument> {
+    const exam = await this.examModel.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      { $pull: { parts: partId } },
       { new: true },
     );
 

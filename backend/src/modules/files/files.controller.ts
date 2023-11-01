@@ -29,7 +29,7 @@ export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   @Post('')
-  @UseGuards(AtGuard)
+  // @UseGuards(AtGuard)
   @UseInterceptors(
     FileInterceptor('file', { limits: { fileSize: maxFileSize } }),
   )
