@@ -26,6 +26,7 @@ import { ExamDetailDto } from './dto/exam-detail.dto';
 import { AddPartDto } from './dto/add-part.dto';
 import { JwtPayload } from '../auth/types';
 import { EntranceExamQueryDto } from './dto/entrance-exam-query.dto';
+import { QueryDto } from 'src/common/dto/query.dto';
 
 @ApiTags('Exams')
 @Controller('exams')
@@ -67,16 +68,16 @@ export class ExamsController {
   }
 
   @Get()
-  async findAll(@Res() res: Response) {
-    const exams = await this.examsService.findAll();
+  async findAll(@Query() queryDto: QueryDto, @Res() res: Response) {
+    const [exams, total] = await this.examsService.findAll(queryDto);
 
     return res.status(HttpStatus.CREATED).send(
       GetResponseList({
         dataType: ExamDto,
         data: exams,
-        limit: 0,
-        offset: 0,
-        total: 0,
+        limit: queryDto.limit,
+        offset: queryDto.page,
+        total,
       }),
     );
   }
@@ -105,7 +106,7 @@ export class ExamsController {
       .send(GetResponse({ dataType: ExamDetailDto, data: exam }));
   }
 
-  @Post(':id')
+  @Post(':id/parts')
   @ApiResponseData(ExamDetailDto)
   async addPart(
     @Param('id') id: string,
@@ -113,6 +114,20 @@ export class ExamsController {
     @Res() res: Response,
   ) {
     const exam = await this.examsService.addPart(id, addPartDto.partId);
+
+    return res
+      .status(HttpStatus.OK)
+      .send(GetResponse({ dataType: ExamDetailDto, data: exam }));
+  }
+
+  @Delete(':id/parts/:partId')
+  @ApiResponseData(ExamDetailDto)
+  async removePart(
+    @Param('id') id: string,
+    @Param('partId') partId: string,
+    @Res() res: Response,
+  ) {
+    const exam = await this.examsService.removePart(id, partId);
 
     return res
       .status(HttpStatus.OK)
