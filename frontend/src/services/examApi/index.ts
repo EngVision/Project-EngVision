@@ -10,7 +10,7 @@ export const examApi = {
     return res
   },
 
-  getExamById: async (id: string): Promise<ResponseData<ExamParams>> => {
+  getExamById: async (id: string): Promise<ExamParams> => {
     const res = await axiosClient.get(`${PREFIX}/${id}`)
     return res.data
   },
@@ -20,11 +20,23 @@ export const examApi = {
     return res.data
   },
 
+  postPartForExam: async (
+    id: string,
+    data: string[],
+  ): Promise<ResponseData<ExamParams>> => {
+    const res = await axiosClient.post(`${PREFIX}/${id}`, data)
+    return res.data
+  },
+
   updateExam: async (
     id: string,
     data: ExamParams,
-  ): Promise<ResponseData<ExamParams>> =>
-    axiosClient.patch(`${PREFIX}/${id}`, data),
+  ): Promise<ResponseData<ExamParams>> => {
+    console.log('data', data)
+    const res = await axiosClient.patch(`${PREFIX}/${id}`, data)
+    console.log('res', res.data)
+    return res.data
+  },
 
   deleteExam: async (id: string): Promise<ResponseData<unknown>> =>
     axiosClient.delete(`${PREFIX}/${id}`),

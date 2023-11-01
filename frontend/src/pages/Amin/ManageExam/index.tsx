@@ -57,9 +57,8 @@ const ManageExam = () => {
 
   const fetchExercises = async () => {
     try {
-      const allDataParts: ExerciseSchema[] = await exerciseApi.getAllExercise()
-      setParts(allDataParts)
-      console.log(allDataParts)
+      const data: any = await exerciseApi.getAllExercise()
+      setParts(data)
     } catch (error) {
       console.error('Error fetching exercises:', error)
     }
@@ -79,7 +78,7 @@ const ManageExam = () => {
     },
     {
       title: (
-        <Link to="./edit-exam">
+        <Link to={ADMIN_ROUTES.createExam}>
           <Button type="primary">Add new</Button>
         </Link>
       ),
@@ -162,14 +161,16 @@ const ManageExam = () => {
 
   const NotiModal = (title: any, description: any) => {
     return (
-      <Modal
-        title={title}
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <p>{description}</p>
-      </Modal>
+      <>
+        <Modal
+          title={title}
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <span>{description}</span>
+        </Modal>
+      </>
     )
   }
 
@@ -205,7 +206,7 @@ const ManageExam = () => {
 
   const handleExamMenuClick = (e: any, record: ExamInfo) => {
     if (e.key === 'edit') {
-      navigate(ADMIN_ROUTES.editExam, { state: { record: record } })
+      navigate(ADMIN_ROUTES.exams + '/' + record.id)
     }
     if (e.key === 'remove') {
       showModalExam(record)
@@ -214,7 +215,7 @@ const ManageExam = () => {
 
   const handlePartMenuClick = (e: any, exercise: ExerciseSchema) => {
     if (e.key === 'edit') {
-      navigate(ADMIN_ROUTES.editPart, { state: { record: exams } })
+      navigate(ADMIN_ROUTES.partDetail + '/' + exercise.id)
     }
     if (e.key === 'remove') {
       showModalPart(exercise)
@@ -233,7 +234,14 @@ const ManageExam = () => {
           <div>{renderTable(exams)}</div>
         </div>
       </Form>
-      <NotiModal title={titleNotiModal} description={descriptionNotiModal} />
+      <Modal
+        title={titleNotiModal}
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <span>{descriptionNotiModal}</span>
+      </Modal>
     </>
   )
 }
