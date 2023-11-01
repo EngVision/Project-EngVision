@@ -35,4 +35,5 @@ export interface SubmitAnswerResponse {
   answer: any
   correctAnswer: any
   explanation: string
+  grade: number
 }

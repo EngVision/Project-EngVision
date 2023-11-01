@@ -96,6 +96,10 @@ const teacherRoutes: RouteObject[] = [
         element: <Statistic />,
         path: PRIVATE_ROUTES.statistic,
       },
+      {
+        element: <Exercise />,
+        path: 'grading/exercises/:id/submissions/:submissionId',
+      },
     ],
   },
   {

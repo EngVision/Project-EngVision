@@ -1,23 +1,21 @@
 import { Button, Checkbox, Divider, Form, Input, Select } from 'antd'
-import { FormSubmit } from '../..'
 import TextArea from 'antd/es/input/TextArea'
-import { useState } from 'react'
-import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
-import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
+import { FormSubmit } from '../..'
+import CustomUpload from '../../../../../components/CustomUpload'
 import {
   ExerciseSchema,
   QuestionPayload,
 } from '../../../../../services/exerciseApi/types'
-import CustomUpload from '../../../../../components/CustomUpload'
+import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
+import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
 
 interface QuestionFormProps {
-  strict: boolean
+  needGrade: boolean
   index: number
   remove: ((index: number) => void) | null
 }
 
-const QuestionForm = ({ strict, index, remove }: QuestionFormProps) => {
-  const [isStrict, setStrict] = useState<boolean>(strict)
+const QuestionForm = ({ needGrade, index, remove }: QuestionFormProps) => {
   return (
     <>
       <div className="flex items-center justify-between gap-4">
@@ -91,36 +89,19 @@ const QuestionForm = ({ strict, index, remove }: QuestionFormProps) => {
           label="Answer"
           name={[index, 'answer']}
           className="flex-1"
-          rules={[{ required: !isStrict }]}
+          rules={[{ required: !needGrade }]}
         >
           <TextArea
-            placeholder="Answer (Optional)"
+            placeholder="Answer"
             autoSize={{ minRows: 2, maxRows: 4 }}
-            disabled={isStrict}
+            disabled={needGrade}
           />
-        </Form.Item>
-        <Form.Item
-          name={[index, 'strict']}
-          valuePropName="checked"
-          rules={[
-            ({ setFieldValue }) => ({
-              async validator(_, value) {
-                if (value) {
-                  setFieldValue(['content', index, 'answer'], '')
-                  setFieldValue(['content', index, 'explanation'], '')
-                }
-              },
-            }),
-          ]}
-        >
-          <Checkbox onChange={() => setStrict(!isStrict)}>Strict</Checkbox>
         </Form.Item>
       </div>
       <Form.Item label="Explanation" name={[index, 'explanation']}>
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 4 }}
           placeholder="Explanation (optional)"
-          disabled={isStrict}
         />
       </Form.Item>
     </>
@@ -135,7 +116,6 @@ interface QuestionFormSchema {
   questionLevel: CEFRLevel
   explanation: string
   answer: string
-  strict: boolean
   id?: string
 }
 
@@ -154,7 +134,7 @@ interface ConstructedResponsePayload extends QuestionPayload {
 }
 
 const transformSubmitData = (exercise: any) => {
-  const { content } = exercise
+  const { content, needGrade } = exercise
 
   exercise.content = content.map((question: QuestionFormSchema) => {
     const transformQuestion: ConstructedResponsePayload = {
@@ -166,7 +146,7 @@ const transformSubmitData = (exercise: any) => {
         audio: question.questionAudio,
       },
       correctAnswer: {
-        detail: question.strict ? null : question.answer,
+        detail: needGrade ? null : question.answer,
         explanation: question.explanation,
       },
     }
@@ -188,7 +168,6 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
       answer: q.correctAnswer?.detail ? q.correctAnswer?.detail : '',
-      strict: q.correctAnswer?.detail ? false : true,
     }
     return questionForm
   })
@@ -197,11 +176,16 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
 }
 
 function ConstructedResponseForm({ form }: { form: FormSubmit }) {
+  const needGrade = Form.useWatch('needGrade', form)
+
   form.transform = transformSubmitData
   form.setInitialContent = setInitialContent
 
   return (
     <>
+      <Form.Item name="needGrade" valuePropName="checked">
+        <Checkbox>Need grade</Checkbox>
+      </Form.Item>
       <Form.List name="content" initialValue={[{}]}>
         {(fields, { add, remove }) => {
           form.addQuestion = add
@@ -209,12 +193,7 @@ function ConstructedResponseForm({ form }: { form: FormSubmit }) {
           return fields.map(({ key, name }) => (
             <div key={key}>
               <QuestionForm
-                strict={
-                  form.getFieldValue('content')?.[name]?.correctAnswer
-                    ?.detail === null
-                    ? true
-                    : false
-                }
+                needGrade={needGrade}
                 index={name}
                 remove={fields.length > 1 ? remove : null}
               />

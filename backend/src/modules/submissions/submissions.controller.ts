@@ -56,17 +56,17 @@ export class SubmissionsController {
     );
   }
 
-  @Get(':exerciseId')
+  @Get(':id') // idSubmission for teacher, id exercise for student get
   @UseGuards(AtGuard)
   @ApiResponseData(SubmissionDto)
   async findOne(
     @CurrentUser() user: JwtPayload,
-    @Param('exerciseId') exerciseId: string,
+    @Param('id') id: string,
     @Res() res: Response,
   ) {
-    const submission = await this.submissionsService.findByUserAndExercise(
-      user.sub,
-      exerciseId,
+    const submission = await this.submissionsService.findSubmission(
+      !user.roles.includes(Role.Student) ? '' : user.sub,
+      id,
     );
 
     return res.status(HttpStatus.OK).send(
