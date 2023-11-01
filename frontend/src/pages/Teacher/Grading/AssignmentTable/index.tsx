@@ -11,8 +11,8 @@ interface DataType {
   index: string
   type: string
   submitDate: string
-  grade: string
-  status: string
+  grade: number | null
+  status: boolean
   createDate: string
 }
 const AssignmentTable = () => {
@@ -39,28 +39,65 @@ const AssignmentTable = () => {
         </Space>
       ),
     },
-    { title: 'Section', dataIndex: 'section', key: 'section' },
-    { title: 'Lesson', dataIndex: 'lesson', key: 'lesson' },
-    { title: 'Index', dataIndex: 'index', key: 'index' },
+    { title: 'Section', dataIndex: 'section', key: 'section', align: 'center' },
+    { title: 'Lesson', dataIndex: 'lesson', key: 'lesson', align: 'center' },
+    { title: 'Index', dataIndex: 'index', key: 'index', align: 'center' },
     { title: 'Type', dataIndex: 'type', key: 'type' },
-    { title: 'Submit Date', dataIndex: 'submitDate', key: 'submitDate' },
-    { title: 'Grade', dataIndex: 'grade', key: 'grade' },
-    { title: 'Status', dataIndex: 'status', key: 'status' },
+    {
+      title: 'Submit Date',
+      dataIndex: 'submitDate',
+      key: 'submitDate',
+      align: 'center',
+    },
+    {
+      title: 'Grade',
+      dataIndex: 'grade',
+      key: 'grade',
+      align: 'center',
+      render: (grade) =>
+        grade ? (
+          <Tag className="bg-alternative text-white text-base px-4">
+            {grade}/10
+          </Tag>
+        ) : (
+          <Tag className="bg-[#D3D3D3] text-white text-base px-4">.../10</Tag>
+        ),
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) =>
+        status ? (
+          <Tag
+            color="blue"
+            className="text-base px-4 w-1/2 flex justify-center"
+          >
+            Submitted
+          </Tag>
+        ) : (
+          <Tag
+            color="green"
+            className="text-base px-4 w-1/2 flex justify-center"
+          >
+            Pending
+          </Tag>
+        ),
+    },
     {
       title: 'Action',
       key: 'action',
+      align: 'center',
       render: (_, record) => (
-        <Space size="middle">
-          <Tag
-            className="cursor-pointer bg-alternative text-white"
-            onClick={(e) => {
-              e.preventDefault()
-              navigate(`./${record.id}`)
-            }}
-          >
-            Grade
-          </Tag>
-        </Space>
+        <Tag
+          className="cursor-pointer bg-alternative text-white px-4 py-1"
+          onClick={(e) => {
+            e.preventDefault()
+            navigate(`./${record.id}`)
+          }}
+        >
+          Grade
+        </Tag>
       ),
     },
   ]
@@ -74,8 +111,8 @@ const AssignmentTable = () => {
       index: '1',
       type: 'Exam',
       submitDate: '2021-09-01',
-      grade: 'A',
-      status: 'Submitted',
+      grade: 9.33,
+      status: true,
       createDate: '2021-09-01',
     },
     {
@@ -87,8 +124,8 @@ const AssignmentTable = () => {
       index: '1',
       type: 'Exam',
       submitDate: '2021-09-01',
-      grade: 'A',
-      status: 'Submitted',
+      grade: 9.33,
+      status: true,
       createDate: '2021-09-01',
     },
     {
@@ -100,8 +137,8 @@ const AssignmentTable = () => {
       index: '1',
       type: 'Exam',
       submitDate: '2021-09-01',
-      grade: 'A',
-      status: 'Submitted',
+      grade: null,
+      status: false,
       createDate: '2021-09-01',
     },
   ]

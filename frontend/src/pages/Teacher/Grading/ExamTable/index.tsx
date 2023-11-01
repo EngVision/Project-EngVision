@@ -1,34 +1,34 @@
 import React from 'react'
-import { Space, Table, Tag } from 'antd'
+import { Table, Tag } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import type { ColumnsType } from 'antd/es/table'
 import { LEVELS } from '../../../../utils/constants'
-interface DataType {
-  id: string
-  key: string
-  exam: string
-  level: string
-  pending: string
-  submitted: string
-  createDate: string
+import { ExamParams } from '../../../../services/examApi/type'
+
+interface ExamProps {
+  exams: ExamParams[]
 }
-const ExamTable = () => {
+const ExamTable = ({ exams }: ExamProps) => {
   const navigate = useNavigate()
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<ExamParams> = [
     {
       title: 'Exam',
-      dataIndex: 'exam',
-      key: 'exam',
+      dataIndex: 'title',
+      key: 'title',
     },
     {
       title: 'Level',
       dataIndex: 'level',
       key: 'level',
+      align: 'center',
       render: (level) => {
         const levelObj = LEVELS.find((l) => l.level === level)
         return (
-          <Tag className={`${levelObj?.color} text-white px-4`} key={level}>
+          <Tag
+            className={`${levelObj?.color} text-white px-6 py-1`}
+            key={level}
+          >
             {level}
           </Tag>
         )
@@ -36,21 +36,28 @@ const ExamTable = () => {
     },
     {
       title: 'Create Date',
-      dataIndex: 'createDate',
-      key: 'createDate',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      align: 'center',
+      render: (createdAt) => {
+        const date = new Date(createdAt)
+        const formattedDate = date.toLocaleDateString('en-GB')
+        return <span>{formattedDate}</span>
+      },
     },
     {
       title: 'Pending',
       dataIndex: 'pending',
       key: 'pending',
+      align: 'center',
       render: (pending) => {
         return (
           <Tag
-            className="w-[50%] flex justify-center"
+            className="px-4 py-1 text-sm font-bold"
             color="red"
             key={pending}
           >
-            {pending}
+            17
           </Tag>
         )
       },
@@ -59,67 +66,41 @@ const ExamTable = () => {
       title: 'Submitted',
       dataIndex: 'submitted',
       key: 'submitted',
+      align: 'center',
       render: (submitted) => {
         return (
           <Tag
             color="green"
-            className="w-[50%] flex justify-center"
+            className="px-4 py-1 text-sm font-bold"
             key={submitted}
           >
-            {submitted}
+            123
           </Tag>
         )
       },
     },
     {
       title: 'Action',
+      dataIndex: 'id',
       key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
+      align: 'center',
+      render: (id) => {
+        return (
           <Tag
-            className="cursor-pointer bg-alternative text-white"
+            className="cursor-pointer bg-alternative font-bold text-white px-4 py-1 hover:bg-alternativeHover"
             onClick={(e) => {
               e.preventDefault()
-              navigate(`./exam/${record.id}`)
+              navigate(`./exam/${id}`)
             }}
           >
-            Grade
+            Grade Now
           </Tag>
-        </Space>
-      ),
-    },
-  ]
-  const data: DataType[] = [
-    {
-      id: '1',
-      key: '1',
-      exam: 'IELTS Exam Strategies and Practice',
-      level: 'A1',
-      pending: '47',
-      submitted: '123',
-      createDate: '2021-09-01',
-    },
-    {
-      id: '2',
-      key: '2',
-      exam: 'IELTS Exam Strategies and Practice',
-      level: 'A2',
-      pending: '47',
-      submitted: '123',
-      createDate: '2021-09-01',
-    },
-    {
-      id: '3',
-      key: '3',
-      exam: 'IELTS Exam Strategies and Practice',
-      level: 'C1',
-      pending: '47',
-      submitted: '123',
-      createDate: '2021-09-01',
+        )
+      },
     },
   ]
 
-  return <Table columns={columns} dataSource={data} />
+  return <Table columns={columns} dataSource={exams} />
 }
 
 export default ExamTable
