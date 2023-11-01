@@ -65,7 +65,7 @@ jobs:
             VITE_SENTRY_DSN
 
   modify-yaml:
-    needs: docker
+    needs: build-and-push-image
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
