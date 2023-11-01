@@ -93,7 +93,7 @@ export class FilesService {
       });
     }
 
-    if (updatedFile.userId !== userId) {
+    if (updatedFile.userId && updatedFile.userId !== userId) {
       throw new ForbiddenException('Access denied');
     }
 
