@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class GradingDto {
   @IsNumber()
@@ -7,6 +7,7 @@ export class GradingDto {
   grade: number;
 
   @IsString()
-  @ApiProperty({ type: String, description: 'Feedback' })
-  feedback: string;
+  @IsOptional()
+  @ApiProperty({ type: String, description: 'Explanation' })
+  explanation: string;
 }

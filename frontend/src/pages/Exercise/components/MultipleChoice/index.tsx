@@ -58,7 +58,7 @@ function MultipleChoice(props: MultipleChoiceProps) {
         dangerouslySetInnerHTML={{ __html: question.text }}
       />
       <Form.Item name="answer" initialValue={[]} noStyle>
-        <div className="flex flex-row justify-between flex-wrap gap-5 mt-14">
+        <div className="flex flex-row justify-between flex-wrap gap-5 mt-5">
           {question.answers.map((answer) => {
             const isSubmitAnswer = result && result.answer?.includes(answer.id)
             const isCorrectAnswer =

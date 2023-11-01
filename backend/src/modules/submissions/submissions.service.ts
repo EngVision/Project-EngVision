@@ -22,7 +22,7 @@ export class SubmissionsService {
     exerciseId: string,
     submissionDto: SubmissionDto,
   ): Promise<SubmissionDto> {
-    const submission = await this.findByUserAndExercise(userId, exerciseId);
+    const submission = await this.findSubmission(userId, exerciseId);
 
     let detail: QuestionResult[] = [];
     if (submission) {
@@ -71,14 +71,9 @@ export class SubmissionsService {
     };
   }
 
-  async findByUserAndExercise(
-    userId: string,
-    exerciseId: string,
-  ): Promise<SubmissionDto> {
-    const submission = await this.submissionModel.findOne({
-      user: userId,
-      exercise: exerciseId,
-    });
+  async findSubmission(userId: string, id: string): Promise<SubmissionDto> {
+    const queryObject = userId ? { user: userId, exercise: id } : { _id: id };
+    const submission = await this.submissionModel.findOne(queryObject);
 
     if (!submission) {
       return null;
@@ -163,7 +158,7 @@ export class SubmissionsService {
     );
 
     submission.detail[i].grade = gradingDto.grade;
-    submission.detail[i].explanation = gradingDto.feedback;
+    submission.detail[i].explanation = gradingDto.explanation;
 
     submission.grade =
       submission.detail.reduce((accumulator, q) => q.grade + accumulator, 0) /
