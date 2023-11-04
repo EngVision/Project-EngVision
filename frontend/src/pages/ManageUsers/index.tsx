@@ -152,12 +152,14 @@ const ManageUsers = () => {
     {
       title: 'Name',
       dataIndex: 'name',
+      width: '18%',
       key: 'name',
       render: (text) => <a>{text}</a>,
     },
     {
       title: 'Email',
       dataIndex: 'email',
+      width: '18%',
       key: 'email',
     },
     {
@@ -174,6 +176,7 @@ const ManageUsers = () => {
     {
       title: 'Level',
       dataIndex: 'level',
+      width: '100px',
       key: 'level',
       render: (level: string) => {
         level = level ? level : 'B1'
@@ -190,6 +193,7 @@ const ManageUsers = () => {
     {
       title: 'Create Date',
       dataIndex: 'createdAt',
+      width: '120px',
       key: 'createDate',
       render: (date) => {
         return date ? date.substring(0, 10) : ''
@@ -220,6 +224,7 @@ const ManageUsers = () => {
     {
       title: 'Action',
       key: 'action',
+      width: '80px',
       render: (_, user) => (
         <Dropdown
           menu={

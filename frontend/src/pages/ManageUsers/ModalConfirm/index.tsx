@@ -23,6 +23,7 @@ const ModalConfirm = ({
   }
 
   const handleCancel = () => {
+    form.resetFields()
     setIsModalOpen(false)
   }
 
