@@ -1,3 +1,4 @@
+import { getQueryParamsUrl } from '../../utils/common'
 import axiosClient from '../axiosClient'
 import type { ResponseData } from '../types'
 
@@ -7,6 +8,8 @@ import type {
   ResetPasswordCode,
   ProfileParams,
   ChangePassword,
+  GetAccountParams,
+  ReasonBlock,
 } from './types'
 
 const PREFIX = 'account/'
@@ -54,6 +57,31 @@ const accountApi = {
 
   changePassword: async (data: ChangePassword) => {
     const res: ResponseData = await axiosClient.put(`${PREFIX}password`, data)
+    return res
+  },
+
+  getAccount: async (data?: GetAccountParams) => {
+    const res: ResponseData = await axiosClient.get(
+      `${PREFIX}${getQueryParamsUrl(data)}`,
+    )
+    return res
+  },
+
+  approveAccount: async (id: string) => {
+    const res: ResponseData = await axiosClient.post(`${PREFIX}${id}/approve`)
+    return res
+  },
+
+  blockAccount: async (id: string, data: ReasonBlock) => {
+    const res: ResponseData = await axiosClient.post(
+      `${PREFIX}${id}/block`,
+      data,
+    )
+    return res
+  },
+
+  unblockAccount: async (id: string) => {
+    const res: ResponseData = await axiosClient.post(`${PREFIX}${id}/unblock`)
     return res
   },
 }
