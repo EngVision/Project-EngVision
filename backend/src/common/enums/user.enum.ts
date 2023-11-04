@@ -9,3 +9,9 @@ export enum Role {
   Teacher = 'Teacher',
   Admin = 'Admin',
 }
+
+export enum AccountStatus {
+  Active = 'Active',
+  Blocked = 'Blocked',
+  Pending = 'Pending',
+}

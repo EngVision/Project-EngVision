@@ -1,8 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsBoolean, IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional } from 'class-validator';
 import { QueryDto } from 'src/common/dto/query.dto';
 import { Role } from 'src/common/enums';
+import { AccountStatus } from './../../../common/enums/user.enum';
 
 export class UserQueryDto extends QueryDto {
   @IsOptional()
@@ -11,14 +11,7 @@ export class UserQueryDto extends QueryDto {
   role?: string;
 
   @IsOptional()
-  @IsBoolean()
-  @Transform(({ value }) => value === 'true')
-  @ApiPropertyOptional({ type: Boolean, description: 'isApproved' })
-  isApproved?: boolean;
-
-  @IsOptional()
-  @IsBoolean()
-  @Transform(({ value }) => value === 'true')
-  @ApiPropertyOptional({ type: Boolean, description: 'isBlocked' })
-  isBlocked?: boolean;
+  @IsEnum(AccountStatus)
+  @ApiPropertyOptional({ enum: AccountStatus, description: 'Account status' })
+  status?: AccountStatus;
 }
