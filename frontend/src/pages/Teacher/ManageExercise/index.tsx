@@ -299,7 +299,9 @@ function ManageExercise() {
                 shape="circle"
                 size="large"
                 icon={<ArrowLeftIcon />}
-                onClick={() => navigate('../..', { relative: 'path' })}
+                onClick={() =>
+                  navigate(exerciseId ? '../..' : '..', { relative: 'path' })
+                }
               />
               <p className="text-2xl font-bold">General</p>
             </div>

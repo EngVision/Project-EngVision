@@ -1,11 +1,30 @@
-import React, { useRef } from 'react'
+import React, { MouseEvent, MouseEventHandler, useEffect, useRef } from 'react'
 
-const CustomInput = (props: any) => {
+interface CustomInputProps {
+  autoFocus?: boolean
+  className?: string
+  onClick?: (e: MouseEvent) => MouseEventHandler<HTMLInputElement> | undefined
+  placeholder?: string
+}
+
+const CustomInput = ({
+  autoFocus,
+  onClick,
+  className,
+  placeholder,
+  ...props
+}: CustomInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleFocus = () => {
     inputRef.current?.select()
   }
+
+  useEffect(() => {
+    if (autoFocus) {
+      handleFocus()
+    }
+  }, [autoFocus])
 
   return (
     <input
@@ -14,11 +33,12 @@ const CustomInput = (props: any) => {
       type="text"
       onClick={(e) => {
         e.stopPropagation()
-        if (props.onClick) props.onClick(e)
+        if (onClick) onClick(e)
       }}
       onFocus={handleFocus}
-      className={`${props?.className || ''}
-         h-9 w-2/3 max-w-full px-3 bg-transparent rounded-lg border-none hover:!bg-grey-200 focus:border focus:border-solid focus:!border-grey-300 focus:!shadow-none`}
+      className={`${className || ''}
+         h-9 w-2/3 max-w-full px-3 bg-transparent rounded-lg border-none hover:!bg-stone-200 focus:border focus:border-solid focus:!border-grey-300 focus:!shadow-none`}
+      placeholder={placeholder}
     />
   )
 }

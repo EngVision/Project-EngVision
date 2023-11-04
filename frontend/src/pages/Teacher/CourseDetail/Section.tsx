@@ -10,6 +10,8 @@ import {
   TrashIcon,
 } from '../../../components/Icons'
 import CustomInput from '../../../components/common/CustomInput'
+import { useMeasure } from '@uidotdev/usehooks'
+import { useState } from 'react'
 
 const { Panel } = Collapse
 
@@ -18,6 +20,9 @@ interface SectionProps {
 }
 
 const Section = ({ form }: SectionProps) => {
+  const [ref, { height }] = useMeasure()
+  const [autoFocus, setAutoFocus] = useState(false)
+
   const onDragEnd = (result: any, move: (from: number, to: number) => void) => {
     if (!result.destination) return
 
@@ -34,6 +39,7 @@ const Section = ({ form }: SectionProps) => {
                 <div
                   ref={dropProvided.innerRef}
                   {...dropProvided.droppableProps}
+                  className="flex flex-col gap-4 mb-4"
                 >
                   {fields.map((field, index) => (
                     <Draggable
@@ -41,19 +47,21 @@ const Section = ({ form }: SectionProps) => {
                       draggableId={index.toString()}
                       index={index}
                     >
-                      {(dragProvided) => (
+                      {(dragProvided, { isDragging }) => (
                         <div
                           ref={dragProvided.innerRef}
                           {...dragProvided.draggableProps}
                           {...dragProvided.dragHandleProps}
                         >
                           <Collapse
+                            ref={isDragging ? ref : null}
                             bordered={false}
                             expandIcon={({ isActive }) => (
                               <MenuIcon
                                 className={isActive ? '' : 'opacity-40'}
                               />
                             )}
+                            onChange={() => setAutoFocus(false)}
                           >
                             <Panel
                               key={field.key}
@@ -68,7 +76,7 @@ const Section = ({ form }: SectionProps) => {
                                   />
                                 </Form.Item>
                               }
-                              className="mb-4 !border-dashed border-2 !border-b-2 !border-gray-300 !rounded-lg"
+                              className="!border-dashed border-2 !border-b-2 !border-gray-300 !rounded-lg"
                             >
                               <Form.Item>
                                 <Form.List name={[field.name, 'lessons']}>
@@ -91,7 +99,10 @@ const Section = ({ form }: SectionProps) => {
                                                 name={[subField.name, 'title']}
                                                 className="mb-0 flex-1"
                                               >
-                                                <CustomInput placeholder="New lesson" />
+                                                <CustomInput
+                                                  placeholder="New lesson"
+                                                  autoFocus={autoFocus}
+                                                />
                                               </Form.Item>
                                             </div>
 
@@ -150,12 +161,13 @@ const Section = ({ form }: SectionProps) => {
                                         <Tooltip title="Add lesson">
                                           <div className="flex">
                                             <PlusIcon
-                                              onClick={() =>
+                                              onClick={() => {
+                                                setAutoFocus(true)
                                                 subOpt.add({
                                                   title: 'New lesson',
                                                   exercises: [],
                                                 })
-                                              }
+                                              }}
                                               className="hover:cursor-pointer"
                                               width={20}
                                               height={20}
@@ -186,7 +198,9 @@ const Section = ({ form }: SectionProps) => {
                     </Draggable>
                   ))}
                   {isUsingPlaceholder && (
-                    <div className="h-[60px] w-full mb-5">&nbsp;</div>
+                    <div className="w-full" style={{ height: height || 0 }}>
+                      &nbsp;
+                    </div>
                   )}
                 </div>
               )}
@@ -202,7 +216,7 @@ const Section = ({ form }: SectionProps) => {
                 })
               }
               type="primary"
-              className="mt-4 w-full h-10"
+              className="w-full h-10"
             >
               Add section
             </Button>
