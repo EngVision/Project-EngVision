@@ -1,19 +1,46 @@
-import React, { forwardRef } from 'react'
+import React, { MouseEvent, MouseEventHandler, useEffect, useRef } from 'react'
 
-const CustomInput = (props: any, ref: React.Ref<HTMLInputElement>) => {
+interface CustomInputProps {
+  autoFocus?: boolean
+  className?: string
+  onClick?: (e: MouseEvent) => MouseEventHandler<HTMLInputElement> | undefined
+  placeholder?: string
+}
+
+const CustomInput = ({
+  autoFocus,
+  onClick,
+  className,
+  placeholder,
+  ...props
+}: CustomInputProps) => {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const handleFocus = () => {
+    inputRef.current?.select()
+  }
+
+  useEffect(() => {
+    if (autoFocus) {
+      handleFocus()
+    }
+  }, [autoFocus])
+
   return (
     <input
-      ref={ref}
+      ref={inputRef}
       {...props}
       type="text"
       onClick={(e) => {
         e.stopPropagation()
-        if (props.onClick) props.onClick(e)
+        if (onClick) onClick(e)
       }}
-      className={`${props?.className || ''}
-         h-9 px-3 bg-transparent rounded-lg border-none hover:!bg-bgNeutral focus:!border-grey-300 focus:!shadow-none`}
+      onFocus={handleFocus}
+      className={`${className || ''}
+         h-9 w-2/3 max-w-full px-3 bg-transparent rounded-lg border-none hover:!bg-stone-200 focus:border focus:border-solid focus:!border-grey-300 focus:!shadow-none`}
+      placeholder={placeholder}
     />
   )
 }
 
-export default forwardRef<HTMLInputElement, any>(CustomInput)
+export default CustomInput

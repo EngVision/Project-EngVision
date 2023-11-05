@@ -150,7 +150,16 @@ const TeacherCourseDetail = () => {
 
         <div className="flex justify-between mt-8">
           <div className="flex gap-4">
-            <Button type="primary" danger onClick={handleDelete}>
+            <Button
+              type="primary"
+              danger
+              onClick={handleDelete}
+              loading={deleteCourseMutation.isPending}
+              disabled={
+                updateCourseMutation.isPending ||
+                publishCourseMutation.isPending
+              }
+            >
               Delete
             </Button>
 
@@ -165,7 +174,15 @@ const TeacherCourseDetail = () => {
           </div>
 
           <div className="flex gap-4">
-            <Button type="primary" onClick={handleSave}>
+            <Button
+              type="primary"
+              onClick={handleSave}
+              loading={updateCourseMutation.isPending}
+              disabled={
+                publishCourseMutation.isPending ||
+                deleteCourseMutation.isPending
+              }
+            >
               Save
             </Button>
 
@@ -174,7 +191,12 @@ const TeacherCourseDetail = () => {
                 <Button
                   type="primary"
                   onClick={handlePublish}
-                  disabled={isPublished}
+                  disabled={
+                    isPublished ||
+                    updateCourseMutation.isPending ||
+                    deleteCourseMutation.isPending
+                  }
+                  loading={publishCourseMutation.isPending}
                 >
                   Publish
                 </Button>

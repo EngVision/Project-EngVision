@@ -6,6 +6,7 @@ import {
   ExerciseSchema,
   QuestionPayload,
 } from '../../../../../services/exerciseApi/types'
+import { addAnswersToQuestionTextOfMakeSentenceExercise } from '../../../../../utils/common'
 
 interface QuestionFormProps {
   index: number
@@ -95,6 +96,7 @@ interface MakeSentencePayload extends QuestionPayload {
   question: {
     text: string
     image?: string | null
+    answers?: string[][]
   }
   correctAnswer: {
     explanation: string
@@ -105,6 +107,7 @@ interface MakeSentenceResponse
   extends Omit<MakeSentencePayload, 'correctAnswer'> {
   correctAnswer: {
     explanation: string
+    detail?: string
   }
 }
 
@@ -132,9 +135,25 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
   const { content } = exercise
 
   const transformedContent = content.map((q: MakeSentenceResponse) => {
+    const {
+      question: { answers },
+      correctAnswer: { detail },
+    } = q
+
+    const answersString =
+      answers?.map((answer, index) => {
+        const a = answer.map((ans: string) =>
+          detail?.[index]?.includes(ans) ? '*' + ans : ans,
+        )
+        return a.join('|') || ''
+      }) || []
+
     const questionForm: QuestionFormSchema = {
       id: q.id,
-      questionText: q.question.text,
+      questionText: addAnswersToQuestionTextOfMakeSentenceExercise(
+        answersString,
+        q.question.text,
+      ),
       questionTags: q.tags,
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
