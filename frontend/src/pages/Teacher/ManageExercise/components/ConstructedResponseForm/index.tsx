@@ -84,7 +84,7 @@ const QuestionForm = ({ needGrade, index, remove }: QuestionFormProps) => {
           />
         </Form.Item>
       </div>
-      <div className="flex gap-8 w-full">
+      <div className="flex items-center gap-8 w-full">
         <Form.Item
           label="Answer"
           name={[index, 'answer']}

@@ -22,6 +22,7 @@ import MultipleChoiceForm from './components/MultipleChoiceForm'
 import CustomUpload from '../../../components/CustomUpload'
 import AppLoading from '../../../components/common/AppLoading'
 import MakeSentenceForm from './components/MakeSentence'
+import { ArrowLeftIcon } from '../../../components/Icons'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -291,7 +292,17 @@ function ManageExercise() {
           scrollToFirstError
         >
           <div className="overflow-y-scroll px-8 pb-4">
-            <div className="flex items-center justify-between my-4">
+            <div className="flex items-center gap-4 my-4">
+              <Button
+                type="primary"
+                ghost
+                shape="circle"
+                size="large"
+                icon={<ArrowLeftIcon />}
+                onClick={() =>
+                  navigate(exerciseId ? '../..' : '..', { relative: 'path' })
+                }
+              />
               <p className="text-2xl font-bold">General</p>
             </div>
             <GeneralInfoForm />

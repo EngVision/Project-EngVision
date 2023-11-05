@@ -42,13 +42,13 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
     createTeacherCourseMutation.mutate(newCourse, {
       onSuccess: () => {
         apiNotification.success({ message: 'Create successfully.' })
+        onClose()
       },
     })
-    onClose()
   }
 
   return (
-    <div className="flex flex-col bg-[#FFFCF7] p-[1.5rem] rounded-md h-full">
+    <div className="flex flex-col p-[1.5rem] rounded-md h-full">
       <div>
         <h4 className="text-primary text-2xl mb-4 font-semibold">
           Create new course
@@ -135,7 +135,11 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
             </Button>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={createTeacherCourseMutation.isPending}
+              >
                 Save
               </Button>
             </Form.Item>

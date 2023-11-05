@@ -20,7 +20,7 @@ const Preview = ({ form }: PreviewProps) => {
   return (
     <div className="flex flex-col gap-4 min-h-[12rem] select-none lg:flex-row">
       <CustomImage
-        className="object-cover min-w-[300px] h-[12rem] rounded-md"
+        className="hidden lg:block object-cover min-w-[300px] h-[12rem] rounded-md"
         src={`${UPLOAD_FILE_URL}${thumbnail}`}
       />
       <div className="flex flex-col h-full justify-between flex-1 gap-2">

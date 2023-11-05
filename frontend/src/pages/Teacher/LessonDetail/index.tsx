@@ -1,11 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import AppLoading from '../../../components/common/AppLoading'
 import { lessonApi } from '../../../services/lessonApi'
 import ExerciseTable from './ExerciseTable'
+import { Button } from 'antd'
+import { ArrowLeftIcon } from '../../../components/Icons'
 
 const LessonDetail = () => {
   const { lessonId = '' } = useParams()
+  const navigate = useNavigate()
 
   const { data: lesson, isLoading } = useQuery({
     queryKey: ['lesson', lessonId],
@@ -16,7 +19,17 @@ const LessonDetail = () => {
 
   return (
     <div>
-      <h2 className="mb-8">{lesson?.title}</h2>
+      <div className="flex items-center gap-4 mb-8">
+        <Button
+          type="primary"
+          ghost
+          shape="circle"
+          size="large"
+          icon={<ArrowLeftIcon />}
+          onClick={() => navigate('../..', { relative: 'path' })}
+        />
+        <h2>{lesson?.title}</h2>
+      </div>
       <ExerciseTable exerciseList={lesson?.exercises ?? []} />
     </div>
   )

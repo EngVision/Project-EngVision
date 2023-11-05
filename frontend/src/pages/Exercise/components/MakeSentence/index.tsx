@@ -14,6 +14,7 @@ interface MakeSentenceProps extends QuestionPayload {
   }
   exerciseId: string
   result?: MakeSentenceResponse
+  setIsSubmittable: (value: boolean) => void
 }
 
 interface MakeSentenceResponse extends SubmitAnswerResponse {
@@ -22,7 +23,7 @@ interface MakeSentenceResponse extends SubmitAnswerResponse {
 }
 
 function MakeSentence(props: MakeSentenceProps) {
-  const { question, result } = props
+  const { question, result, setIsSubmittable } = props
   const selectedAnswers = Form.useWatch('answer')
   const form = Form.useFormInstance()
 
@@ -35,6 +36,9 @@ function MakeSentence(props: MakeSentenceProps) {
     } else {
       form.setFieldValue('answer', Array(questionArr.length - 1).fill(''))
     }
+    setIsSubmittable(
+      selectedAnswers?.every((answer: string) => answer !== '') || false,
+    )
   }
 
   useEffect(() => {
