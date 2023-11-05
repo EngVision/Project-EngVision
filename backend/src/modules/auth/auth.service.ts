@@ -41,7 +41,7 @@ export class AuthService {
     }
 
     const tokens = await this.getTokens(user);
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    // await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return {
       tokens,
@@ -53,7 +53,7 @@ export class AuthService {
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
 
-    await this.updateRefreshToken(userId, null);
+    // await this.updateRefreshToken(userId, null);
   }
 
   async register(
@@ -67,18 +67,18 @@ export class AuthService {
     const user = await this.usersService.create(createUserDto);
 
     const tokens = await this.getTokens(user);
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    // await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return { tokens, user };
   }
 
   async refreshTokens(id: string, refreshToken: string): Promise<Tokens> {
-    const user = await this.validateRefreshToken(id, refreshToken);
+    const user = await this.usersService.getById(id);
 
     if (!user) throw new ForbiddenException('Access denied');
 
     const tokens = await this.getTokens(user);
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    // await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
   }
@@ -154,7 +154,7 @@ export class AuthService {
       });
 
       const tokens = await this.getTokens(newUser);
-      await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+      // await this.updateRefreshToken(newUser.id, tokens.refreshToken);
       return { tokens, user: newUser };
     }
 
@@ -163,7 +163,7 @@ export class AuthService {
     }
 
     const tokens = await this.getTokens(user);
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    // await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return { tokens, user };
   }

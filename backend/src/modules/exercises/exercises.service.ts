@@ -163,8 +163,6 @@ export class ExercisesService {
       exercise.type,
     );
 
-    console.log(exercise);
-
     const result = await service.checkAnswer(questionId, answer);
 
     await this.submissionsService.update(userId, exercise.id, {
