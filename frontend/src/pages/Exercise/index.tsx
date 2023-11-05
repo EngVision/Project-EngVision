@@ -44,9 +44,10 @@ function Exercise() {
     const submission = await submissionApi.getSubmission(id)
 
     if (firstLoad.current && !submissionId) {
-      setQuestionIndex(submission.totalDone || 0)
       firstLoad.current = false
+      setQuestionIndex(submission.totalDone || 0)
     }
+
     return submission
   }
 
@@ -74,11 +75,6 @@ function Exercise() {
       data: GradePayload
     }) => submissionApi.gradeSubmission(submissionId, questionId, data),
   })
-
-  useEffect(() => {
-    if (submissionId) return
-    setQuestionIndex(submission?.totalDone || 0)
-  }, [submission])
 
   useEffect(() => {
     setHasResult(!!submission?.detail[questionIndex])
