@@ -16,7 +16,7 @@ import { UsersService } from './../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './types';
 import { Tokens } from './types/tokens.type';
-import { Role } from 'src/common/enums';
+import { Role, AccountStatus } from 'src/common/enums';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +36,7 @@ export class AuthService {
       throw new UnauthorizedException('Email or password is incorrect');
     }
 
-    if (user.isBlocked) {
+    if (user.status === AccountStatus.Blocked) {
       throw new ForbiddenException('Your account has been blocked');
     }
 
@@ -156,6 +156,10 @@ export class AuthService {
       const tokens = await this.getTokens(newUser);
       await this.updateRefreshToken(newUser.id, tokens.refreshToken);
       return { tokens, user: newUser };
+    }
+
+    if (user.status === AccountStatus.Blocked) {
+      throw new ForbiddenException('Your account has been blocked');
     }
 
     const tokens = await this.getTokens(user);

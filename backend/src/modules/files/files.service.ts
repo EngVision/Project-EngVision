@@ -61,7 +61,7 @@ export class FilesService {
     return newFile;
   }
 
-  async createWithUrl(url: string, userId): Promise<LocalFileDocument> {
+  async createWithUrl(url: string, userId: string): Promise<LocalFileDocument> {
     const newFile = new this.fileModel({
       url,
       userId,
@@ -146,7 +146,7 @@ export class FilesService {
       throw new NotFoundException('File not found');
     }
 
-    if (file.userId !== userId) {
+    if (file.userId && file.userId !== userId) {
       throw new ForbiddenException('Access denied');
     }
 

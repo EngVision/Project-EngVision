@@ -76,11 +76,6 @@ function Exercise() {
   })
 
   useEffect(() => {
-    if (submissionId) return
-    setQuestionIndex(submission?.totalDone || 0)
-  }, [submission])
-
-  useEffect(() => {
     setHasResult(!!submission?.detail[questionIndex])
 
     if (submissionId) {
@@ -166,6 +161,7 @@ function Exercise() {
               {...content}
               exerciseId={id}
               result={submission?.detail[questionIndex]}
+              setIsSubmittable={setIsSubmittable}
             />
           )
         default:

@@ -139,3 +139,7 @@ input[type='number']::-webkit-outer-spin-button {
   border: 6px solid transparent;
   background-clip: content-box;
 }
+
+.table-bg-white table {
+  background-color: white;
+}
