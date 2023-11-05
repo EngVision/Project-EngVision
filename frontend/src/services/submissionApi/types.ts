@@ -3,6 +3,7 @@ import type { SubmitAnswerResponse } from '../exerciseApi/types'
 
 export interface SubmissionResponse {
   id: string
+  course: string
   exercise: string
   user: string
   detail: SubmitAnswerResponse[]
