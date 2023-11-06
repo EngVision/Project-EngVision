@@ -44,9 +44,10 @@ function Exercise() {
     const submission = await submissionApi.getSubmission(id)
 
     if (firstLoad.current && !submissionId) {
-      setQuestionIndex(submission.totalDone || 0)
       firstLoad.current = false
+      setQuestionIndex(submission.totalDone || 0)
     }
+
     return submission
   }
 

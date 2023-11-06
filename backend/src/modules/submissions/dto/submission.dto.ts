@@ -23,22 +23,93 @@ class QuestionResultDto {
   grade?: number;
 }
 
+class ExerciseDto {
+  @Expose({ name: '_id' })
+  @Transform(value => value.obj._id.toString())
+  @ApiProperty({ description: 'Exercise id' })
+  id?: string;
+
+  @ApiProperty({ description: 'Exercise name' })
+  title: string;
+}
+
+class UserDto {
+  @Expose({ name: '_id' })
+  @Transform(value => value.obj._id.toString())
+  @ApiProperty({ description: 'User id' })
+  id?: string;
+
+  @ApiProperty({ description: 'First name' })
+  firstName: string;
+
+  @ApiProperty({ description: 'Last name' })
+  lastName: string;
+}
+
+class CourseDto {
+  @Expose({ name: '_id' })
+  @Transform(value => value.obj._id.toString())
+  @ApiProperty({ description: 'Course id' })
+  id?: string;
+
+  @ApiProperty({ description: 'Course name' })
+  title: string;
+
+  @Exclude()
+  sections: any[];
+}
+
+class SectionDto {
+  @Expose({ name: '_id' })
+  @Transform(value => value.obj._id.toString())
+  @ApiProperty({ description: 'Section id' })
+  id?: string;
+
+  @ApiProperty({ description: 'Section name' })
+  title: string;
+
+  @Exclude()
+  lessons: any[];
+}
+
+class LessonDto {
+  @Expose({ name: '_id' })
+  @Transform(value => value.obj._id.toString())
+  @ApiProperty({ description: 'Lesson id' })
+  id?: string;
+
+  @ApiProperty({ description: 'Lesson name' })
+  title: string;
+
+  @Exclude()
+  exercises: any[];
+}
+
 export class SubmissionDto {
   @Expose({ name: '_id' })
   @Transform(value => value.obj._id.toString())
   @ApiProperty({ description: 'Submission id' })
   id?: string;
 
-  @Transform(value => value.obj.user.toString())
-  @ApiProperty({ description: 'User id' })
-  user: string;
+  @Type(() => UserDto)
+  @ApiProperty({ description: 'User' })
+  user: UserDto;
 
-  @Transform(value => value.obj.teacher.toString())
-  @ApiProperty({ description: 'Teacher id' })
-  teacher: string;
+  @Type(() => UserDto)
+  @ApiProperty({ description: 'Teacher' })
+  teacher: UserDto;
 
+  @Type(() => CourseDto)
   @ApiProperty({ description: 'Course id' })
-  course?: string;
+  course?: CourseDto;
+
+  @Type(() => SectionDto)
+  @ApiProperty({ description: 'Section id' })
+  section?: SectionDto;
+
+  @Type(() => LessonDto)
+  @ApiProperty({ description: 'Lesson id' })
+  lesson?: LessonDto;
 
   @ApiPropertyOptional({ description: 'Exercise grade' })
   grade?: number;
@@ -47,9 +118,9 @@ export class SubmissionDto {
   @ApiPropertyOptional({ description: 'Exercise need grade' })
   needGrade?: boolean;
 
-  @Transform(value => value.obj.exercise.toString())
-  @ApiProperty({ description: 'Exercise id' })
-  exercise: string;
+  @Type(() => ExerciseDto)
+  @ApiProperty({ description: 'Exercise' })
+  exercise: ExerciseDto;
 
   @ApiProperty({ description: 'Exercise type' })
   exerciseType: ExerciseType;
