@@ -6,9 +6,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Star from '../../components/Icons/Star'
 import AppLoading from '../../components/common/AppLoading'
 import coursesApi from '../../services/coursesApi'
+import { UPLOAD_FILE_URL } from '../../utils/constants'
 import CourseContent from './CourseContent'
 import Overview from './Overview'
 import Reviews from './Reviews'
+import React from 'react'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {
@@ -46,7 +48,7 @@ const CourseDetailsPage = () => {
           <div className="h-full w-[18.75rem] mr-8 rounded-lg overflow-hidden">
             <img
               className="object-cover w-full h-full"
-              src="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+              src={`${UPLOAD_FILE_URL}${courseDetail.thumbnail}`}
               alt="thumbnail"
             />
           </div>

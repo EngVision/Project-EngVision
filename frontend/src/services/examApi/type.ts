@@ -9,4 +9,5 @@ export interface ExamParams {
   level: CEFRLevel
   tag?: ExerciseTag[]
   parts: string[]
+  createdAt?: string
 }

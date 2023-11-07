@@ -277,7 +277,7 @@ function Exercise() {
 
   const nextQuestion = () => {
     if (questionIndex >= (exercise?.content?.length || 0)) {
-      navigate('../..', { relative: 'path' })
+      navigate(-1)
     } else {
       if (!hasResult) {
         form.submit()
@@ -324,7 +324,7 @@ function Exercise() {
             shape="circle"
             size="large"
             icon={<ArrowLeft />}
-            onClick={() => navigate('../..', { relative: 'path' })}
+            onClick={() => navigate(-1)}
           />
           <div className="flex flex-col items-center">
             <p>Quiz progress</p>
