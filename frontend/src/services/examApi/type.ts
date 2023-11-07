@@ -11,3 +11,14 @@ export interface ExamParams {
   tag: ExerciseTag[]
   parts: ExerciseSchema[]
 }
+
+export interface Entrance {
+  id: string
+  title: string
+  description: string
+  course: string
+  teacher: string
+  level: CEFRLevel
+  tag: ExerciseTag[]
+  parts: string[]
+}

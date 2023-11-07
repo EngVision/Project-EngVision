@@ -30,6 +30,11 @@ export const PRIVATE_ROUTES = {
 }
 
 export const STUDENT_ROUTES = {
+  //Get started
+  getStarted: '/get-started',
+  doEntranceExam: '/get-started/exercise/:id',
+  entranceExam: '/get-started/:level',
+
   // Menu
   myHub: '/my-hub',
   exercisesAndExams: '/exercises-exams',

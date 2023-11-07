@@ -7,12 +7,42 @@ import MyHub from '../pages/MyHub'
 import Statistic from '../pages/Statistic'
 import { PRIVATE_ROUTES, STUDENT_ROUTES } from '../utils/constants'
 import ExercisesAndExams from '../pages/ExercisesAndExams'
+import GetStarted from '../pages/Student/GetStarted'
+import EntranceExam from '../pages/Student/EntranceExam'
+import NoLayout from '../layouts/NoLayout'
 
 export const studentRoutes: RouteObject[] = [
   {
     element: <DefaultLayout />,
     children: [
       { element: <MyHub />, path: STUDENT_ROUTES.myHub },
+      {
+        path: 'get-started',
+        children: [
+          {
+            element: <GetStarted />,
+            path: '',
+          },
+          {
+            path: ':level',
+            children: [
+              {
+                path: 'exercise',
+                children: [
+                  {
+                    element: <Exercise />,
+                    path: ':id',
+                  },
+                ],
+              },
+              {
+                element: <EntranceExam />,
+                path: '',
+              },
+            ],
+          },
+        ],
+      },
       {
         element: <ExercisesAndExams />,
         path: STUDENT_ROUTES.exercisesAndExams,
@@ -50,6 +80,9 @@ export const studentRoutes: RouteObject[] = [
         ],
       },
     ],
+  },
+  {
+    element: <NoLayout />,
   },
 ]
 

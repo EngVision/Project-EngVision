@@ -1,6 +1,6 @@
 import axiosClient from '../axiosClient'
 import { ResponseData } from '../types'
-import { ExamParams } from './type'
+import { Entrance, ExamParams } from './type'
 
 const PREFIX = 'exams'
 
@@ -12,6 +12,11 @@ export const examApi = {
 
   getExamById: async (id: string): Promise<ExamParams> => {
     const res = await axiosClient.get(`${PREFIX}/${id}`)
+    return res.data
+  },
+
+  getEntranceExam: async (level: string): Promise<Entrance> => {
+    const res = await axiosClient.get(`${PREFIX}/entrance-exam?level=${level}`)
     return res.data
   },
 

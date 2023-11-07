@@ -24,9 +24,6 @@ import exerciseApi from '../../../../../services/exerciseApi'
 import { ExerciseSchema } from '../../../../../services/exerciseApi/types'
 import { ADMIN_ROUTES, CEFRLevel } from '../../../../../utils/constants'
 import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
-import { as, c } from 'vitest/dist/reporters-5f784f42'
-import { set } from 'lodash'
-import { use } from 'i18next'
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error'
 
