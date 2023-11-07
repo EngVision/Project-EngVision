@@ -178,3 +178,9 @@ export enum NextDue {
   in2weeks = 'In 2 weeks',
   in1month = 'In 1 month',
 }
+
+export enum AccountStatus {
+  Active = 'Active',
+  Pending = 'Pending',
+  Blocked = 'Blocked',
+}
