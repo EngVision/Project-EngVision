@@ -10,6 +10,7 @@ import {
 import { Order, Role } from 'src/common/enums';
 import { QueryDto } from 'src/common/dto/query.dto';
 import { GradingDto } from './dto/grading.dto';
+import { UpdateSubmissionDto } from './dto/update-submission.dto';
 
 @Injectable()
 export class SubmissionsService {
@@ -20,8 +21,8 @@ export class SubmissionsService {
   async update(
     userId: string,
     exerciseId: string,
-    submissionDto: SubmissionDto,
-  ): Promise<SubmissionDto> {
+    submissionDto: UpdateSubmissionDto,
+  ): Promise<UpdateSubmissionDto> {
     const submission = await this.findSubmission(userId, exerciseId);
 
     let detail: QuestionResult[] = [];
@@ -49,9 +50,7 @@ export class SubmissionsService {
         (submissionDto.totalCorrect / submissionDto.totalDone) * 10;
     }
 
-    console.log(submissionDto);
-
-    const newAssignment = await this.submissionModel.findOneAndUpdate(
+    const newSubmission = await this.submissionModel.findOneAndUpdate(
       {
         user: userId,
         exercise: exerciseId,
@@ -64,9 +63,9 @@ export class SubmissionsService {
     );
 
     return {
-      ...newAssignment,
+      ...newSubmission,
       progress: Math.round(
-        newAssignment.totalDone / newAssignment.totalQuestion,
+        newSubmission.totalDone / newSubmission.totalQuestion,
       ),
     };
   }
@@ -91,42 +90,52 @@ export class SubmissionsService {
     query: QueryDto,
     userId: string,
     roles: Role[],
-  ): Promise<[SubmissionDocument[], number]> {
+  ): Promise<[SubmissionDto[], number]> {
     const documentQuery = {
       skip: query.page * query.limit,
       limit: query.limit,
       sort: { [query.sortBy]: query.order === Order.asc ? 1 : -1 },
     };
 
+    let filterQuery;
+
     if (roles.includes(Role.Teacher)) {
-      const submissions = await this.submissionModel.find(
-        {
-          teacher: userId,
-          needGrade: true,
-        },
-        null,
-        documentQuery,
-      );
-      const total = await this.submissionModel.countDocuments({
+      filterQuery = {
         teacher: userId,
         needGrade: true,
-      });
-
-      return [submissions, total];
+      };
+    } else {
+      filterQuery = {
+        user: userId,
+      };
     }
 
-    const submissions = await this.submissionModel.find(
-      {
-        user: userId,
-      },
-      null,
-      documentQuery,
-    );
-    const total = await this.submissionModel.countDocuments({
-      user: userId,
+    const submissions = await this.submissionModel
+      .find(filterQuery, null, documentQuery)
+      .populate('exercise', 'title')
+      .populate('user', 'firstName lastName')
+      .populate('course', 'title sections')
+      .populate('teacher', 'firstName lastName');
+    const total = await this.submissionModel.countDocuments(filterQuery);
+
+    const res: SubmissionDto[] = submissions.map(submission => {
+      const section = submission.course['sections'].find(section =>
+        section['lessons'].some(lesson =>
+          lesson['exercises'].includes(submission.exercise['_id']),
+        ),
+      );
+      const lesson = section.lessons.find(lesson =>
+        lesson['exercises'].includes(submission.exercise['_id']),
+      );
+
+      return {
+        ...submission.toObject(),
+        section: { ...section.toObject() },
+        lesson: { ...lesson.toObject() },
+      };
     });
 
-    return [submissions, total];
+    return [res, total];
   }
 
   async findOne(id: string): Promise<SubmissionDocument> {

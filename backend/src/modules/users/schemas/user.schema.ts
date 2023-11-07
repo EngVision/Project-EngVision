@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Document, SchemaTypes } from 'mongoose';
-import { Gender, Role } from 'src/common/enums';
+import { Gender, Role, AccountStatus } from 'src/common/enums';
 import { hashString } from 'src/common/utils';
 import { LocalFile } from 'src/modules/files/schemas/local-file.schema';
 
@@ -53,11 +53,8 @@ export class User {
   @Prop({ default: null })
   resetPasswordCode?: string;
 
-  @Prop({ default: true })
-  isApproved?: boolean;
-
-  @Prop({ default: false })
-  isBlocked?: boolean;
+  @Prop({ default: AccountStatus.Active, enum: AccountStatus })
+  status?: AccountStatus;
 
   validatePassword?: (password: string) => Promise<boolean>;
   validateRefreshToken?: (refreshToken: string) => Promise<boolean>;

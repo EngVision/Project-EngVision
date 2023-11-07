@@ -45,13 +45,13 @@ export class FilesController {
     },
   })
   @ApiConsumes('multipart/form-data')
-  async uploadImage(
+  async uploadFile(
     @CurrentUser() user: JwtPayload,
     @UploadedFile()
     file: Express.Multer.File,
     @Res() res: Response,
   ) {
-    const newFile = await this.filesService.create(file, user.sub);
+    const newFile = await this.filesService.create(file, user?.sub);
 
     return res
       .status(HttpStatus.CREATED)

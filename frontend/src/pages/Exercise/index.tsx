@@ -44,9 +44,10 @@ function Exercise() {
     const submission = await submissionApi.getSubmission(id)
 
     if (firstLoad.current && !submissionId) {
-      setQuestionIndex(submission.totalDone || 0)
       firstLoad.current = false
+      setQuestionIndex(submission.totalDone || 0)
     }
+
     return submission
   }
 
@@ -74,11 +75,6 @@ function Exercise() {
       data: GradePayload
     }) => submissionApi.gradeSubmission(submissionId, questionId, data),
   })
-
-  useEffect(() => {
-    if (submissionId) return
-    setQuestionIndex(submission?.totalDone || 0)
-  }, [submission])
 
   useEffect(() => {
     setHasResult(!!submission?.detail[questionIndex])
@@ -166,6 +162,7 @@ function Exercise() {
               {...content}
               exerciseId={id}
               result={submission?.detail[questionIndex]}
+              setIsSubmittable={setIsSubmittable}
             />
           )
         default:
@@ -280,7 +277,7 @@ function Exercise() {
 
   const nextQuestion = () => {
     if (questionIndex >= (exercise?.content?.length || 0)) {
-      navigate('../..', { relative: 'path' })
+      navigate(-1)
     } else {
       if (!hasResult) {
         form.submit()
@@ -327,7 +324,7 @@ function Exercise() {
             shape="circle"
             size="large"
             icon={<ArrowLeft />}
-            onClick={() => navigate('../..', { relative: 'path' })}
+            onClick={() => navigate(-1)}
           />
           <div className="flex flex-col items-center">
             <p>Quiz progress</p>

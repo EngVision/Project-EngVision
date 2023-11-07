@@ -1,8 +1,8 @@
 import { Button, Card, Popover } from 'antd'
 import { StarIcon, VideoPlayIcon } from '../Icons'
 import { Link } from 'react-router-dom'
-import { LEVELS, STUDENT_ROUTES } from '../../utils/constants'
-
+import { LEVELS, STUDENT_ROUTES, UPLOAD_FILE_URL } from '../../utils/constants'
+import CustomImage from '../common/CustomImage'
 export const CourseCard = (course: any) => {
   const { Meta } = Card
 
@@ -21,9 +21,9 @@ export const CourseCard = (course: any) => {
       <Card
         hoverable
         cover={
-          <img
-            alt="example"
-            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+          <CustomImage
+            className="object-cover w-full h-48"
+            src={`${UPLOAD_FILE_URL}${course.course.thumbnail}`}
           />
         }
       >

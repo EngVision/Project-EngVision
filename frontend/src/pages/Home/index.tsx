@@ -3,12 +3,17 @@ import TeacherLearn from '../../components/Icons/TeacherLearn'
 import { useAppSelector } from '../../hooks/redux'
 import coursesApi from '../../services/coursesApi'
 import submissionApi from '../../services/submissionApi'
-import { CEFRLevel, COURSE_STATUS, NextDue } from '../../utils/constants'
+import { CEFRLevel, COURSE_STATUS, NextDue, Role } from '../../utils/constants'
 import { useMemo } from 'react'
 
 const Home = () => {
-  const status: any = { status: COURSE_STATUS.attended }
   const user = useAppSelector((state) => state.app.user)
+  const status: any = {
+    status:
+      user?.role === Role.Teacher
+        ? COURSE_STATUS.published
+        : COURSE_STATUS.attended,
+  }
 
   const level = CEFRLevel
   const nextDue = NextDue

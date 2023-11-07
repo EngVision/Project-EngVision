@@ -21,4 +21,5 @@ export interface Entrance {
   level: CEFRLevel
   tag: ExerciseTag[]
   parts: string[]
+  createdAt?: string
 }

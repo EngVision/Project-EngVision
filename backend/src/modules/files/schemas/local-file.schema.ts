@@ -14,8 +14,8 @@ export class LocalFile {
   @Prop({ default: null })
   mimetype?: string;
 
-  @Prop({ required: true })
-  userId: string;
+  @Prop({ required: false, default: null })
+  userId?: string;
 
   @Prop({ default: null })
   path?: string;

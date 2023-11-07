@@ -49,9 +49,29 @@ export const getQueryParamsUrl = (queries: any) => {
   let url = ''
   for (const key in queries) {
     const value = queries[key]
-    if (value && value.length !== 0) {
+    if (value !== undefined && value !== null && value.length !== 0) {
       url += `${key}=${value}&`
     }
   }
+
   return url ? `?${url.slice(0, -1)}` : ''
+}
+
+export const addAnswersToQuestionTextOfMakeSentenceExercise = (
+  answers: string[],
+  questionText: string,
+) => {
+  let questionTextWithAnswers = questionText
+
+  for (let i = 0; i < answers.length; i++) {
+    const answer = answers[i]
+    const index = questionTextWithAnswers.indexOf('[]')
+
+    questionTextWithAnswers =
+      questionTextWithAnswers.slice(0, index + 1) +
+      answer +
+      questionTextWithAnswers.slice(index + 1)
+  }
+
+  return questionTextWithAnswers
 }

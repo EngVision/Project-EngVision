@@ -53,7 +53,7 @@ export const TEACHER_ROUTES = {
   createCourse: '/courses/new',
 
   assignmentExam: '/assignment-exam',
-
+  grading: '/grading',
   lessonDetail: '/courses/:courseId/lessons/:lessonId',
   createExercise: '/courses/:courseId/lessons/:lessonId/exercises',
   editExercise: '/courses/:courseId/lessons/:lessonId/exercises/:exerciseId',

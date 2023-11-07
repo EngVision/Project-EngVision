@@ -14,7 +14,7 @@ import { User, UserDocument } from './schemas/user.schema';
 import { emailContent } from './template/email.content';
 import { FilesService } from '../files/files.service';
 import { UserQueryDto } from './dto/user-query.dto';
-import { Order } from 'src/common/enums';
+import { Order, AccountStatus, Role } from 'src/common/enums';
 
 @Injectable()
 export class UsersService {
@@ -42,7 +42,7 @@ export class UsersService {
     ).id;
 
     if (newUser.role === 'Teacher') {
-      newUser.isApproved = false;
+      newUser.status = AccountStatus.Pending;
     }
 
     await newUser.save();
@@ -64,7 +64,7 @@ export class UsersService {
     }
 
     if (newUser.role === 'Teacher') {
-      newUser.isApproved = false;
+      newUser.status = AccountStatus.Pending;
     }
 
     await newUser.save();
@@ -80,7 +80,7 @@ export class UsersService {
     );
 
     if (updatedUser.role === 'Teacher') {
-      updatedUser.isApproved = false;
+      updatedUser.status = AccountStatus.Pending;
     }
 
     return updatedUser;
@@ -90,13 +90,17 @@ export class UsersService {
   async getAll(userQuery: UserQueryDto): Promise<[UserDocument[], number]> {
     const { limit, page, sortBy, order, ...query } = userQuery;
 
-    const users = await this.userModel.find(query, null, {
+    const documentQuery = {
+      $and: [{ role: { $ne: Role.Admin } }, { ...query }],
+    };
+
+    const users = await this.userModel.find(documentQuery, null, {
       skip: page * limit,
       limit: limit,
       sort: { [sortBy]: order === Order.desc ? -1 : 1 },
     });
 
-    const total = await this.userModel.countDocuments(query);
+    const total = await this.userModel.countDocuments(documentQuery);
 
     return [users, total];
   }
@@ -217,7 +221,7 @@ export class UsersService {
 
   async approveUser(id: string): Promise<void> {
     const user = await this.userModel.findByIdAndUpdate(id, {
-      isApprove: true,
+      status: AccountStatus.Active,
     });
 
     if (!user) {
@@ -228,14 +232,14 @@ export class UsersService {
       from: 'engvision.dev@gmail.com',
       to: user.email,
       subject: 'Your account has been approved',
-      html: 'Welcome to Engvision, your account has been approved',
+      html: 'Welcome to EngVision, your account has been approved',
     };
     await this.transporter.sendMail(mailOptions);
   }
 
   async blockUser(id: string, reason: string): Promise<void> {
     const user = await this.userModel.findByIdAndUpdate(id, {
-      isBlocked: true,
+      status: AccountStatus.Blocked,
     });
 
     if (!user) {
@@ -246,14 +250,14 @@ export class UsersService {
       from: 'engvision.dev@gmail.com',
       to: user.email,
       subject: 'Your account has been blocked',
-      html: 'Your account has been blocked. Reason:' + reason,
+      html: 'Your account has been blocked. Reason: ' + reason,
     };
     await this.transporter.sendMail(mailOptions);
   }
 
   async unblockUser(id: string): Promise<void> {
     const user = await this.userModel.findByIdAndUpdate(id, {
-      isBlocked: false,
+      status: AccountStatus.Active,
     });
 
     if (!user) {

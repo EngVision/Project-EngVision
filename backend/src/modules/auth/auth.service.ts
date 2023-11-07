@@ -16,7 +16,7 @@ import { UsersService } from './../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './types';
 import { Tokens } from './types/tokens.type';
-import { Role } from 'src/common/enums';
+import { Role, AccountStatus } from 'src/common/enums';
 
 @Injectable()
 export class AuthService {
@@ -36,12 +36,12 @@ export class AuthService {
       throw new UnauthorizedException('Email or password is incorrect');
     }
 
-    if (user.isBlocked) {
+    if (user.status === AccountStatus.Blocked) {
       throw new ForbiddenException('Your account has been blocked');
     }
 
     const tokens = await this.getTokens(user);
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    // await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return {
       tokens,
@@ -53,7 +53,7 @@ export class AuthService {
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
 
-    await this.updateRefreshToken(userId, null);
+    // await this.updateRefreshToken(userId, null);
   }
 
   async register(
@@ -67,18 +67,18 @@ export class AuthService {
     const user = await this.usersService.create(createUserDto);
 
     const tokens = await this.getTokens(user);
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    // await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return { tokens, user };
   }
 
   async refreshTokens(id: string, refreshToken: string): Promise<Tokens> {
-    const user = await this.validateRefreshToken(id, refreshToken);
+    const user = await this.usersService.getById(id);
 
     if (!user) throw new ForbiddenException('Access denied');
 
     const tokens = await this.getTokens(user);
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    // await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
   }
@@ -154,12 +154,16 @@ export class AuthService {
       });
 
       const tokens = await this.getTokens(newUser);
-      await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+      // await this.updateRefreshToken(newUser.id, tokens.refreshToken);
       return { tokens, user: newUser };
     }
 
+    if (user.status === AccountStatus.Blocked) {
+      throw new ForbiddenException('Your account has been blocked');
+    }
+
     const tokens = await this.getTokens(user);
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    // await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return { tokens, user };
   }
