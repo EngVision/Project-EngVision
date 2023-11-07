@@ -62,6 +62,7 @@ function PrivateRoutes() {
       routes = StudentRoutes
       break
     default:
+      routes = [...AdminRoutes, ...TeacherRoutes, ...StudentRoutes]
       break
   }
 
