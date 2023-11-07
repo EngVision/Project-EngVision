@@ -3,9 +3,27 @@ import type { SubmitAnswerResponse } from '../exerciseApi/types'
 
 export interface SubmissionResponse {
   id: string
-  course: string
-  exercise: string
-  user: string
+  course: {
+    id: string
+    title: string
+  }
+  section: {
+    id: string
+    title: string
+  }
+  lesson: {
+    id: string
+    title: string
+  }
+  exercise: {
+    id: string
+    title: string
+  }
+  user: {
+    id: string
+    firstName: string
+    lastName: string
+  }
   detail: SubmitAnswerResponse[]
   exerciseType: ExerciseType
   totalCorrect: number

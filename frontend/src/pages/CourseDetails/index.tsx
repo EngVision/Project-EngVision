@@ -10,6 +10,7 @@ import { UPLOAD_FILE_URL } from '../../utils/constants'
 import CourseContent from './CourseContent'
 import Overview from './Overview'
 import Reviews from './Reviews'
+import React from 'react'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {

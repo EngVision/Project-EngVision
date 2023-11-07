@@ -88,10 +88,10 @@ const ExamTable = ({ exams }: ExamProps) => {
         return (
           <Tag
             className="cursor-pointer bg-alternative font-bold text-white px-4 py-1 hover:bg-alternativeHover"
-            onClick={(e) => {
-              e.preventDefault()
-              navigate(`./exam/${id}`)
-            }}
+            // onClick={(e) => {
+            //   e.preventDefault()
+            //   navigate(`./exam/${id}`)
+            // }}
           >
             Grade Now
           </Tag>

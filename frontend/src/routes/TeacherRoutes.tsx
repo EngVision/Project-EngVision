@@ -76,8 +76,17 @@ const teacherRoutes: RouteObject[] = [
             path: 'course',
             children: [
               {
-                element: <AssignmentTable />,
                 path: ':courseID',
+                children: [
+                  {
+                    element: <AssignmentTable />,
+                    path: '',
+                  },
+                  {
+                    element: <Exercise />,
+                    path: 'exercises/:id/submissions/:submissionId',
+                  },
+                ],
               },
             ],
           },
@@ -95,10 +104,6 @@ const teacherRoutes: RouteObject[] = [
       {
         element: <Statistic />,
         path: PRIVATE_ROUTES.statistic,
-      },
-      {
-        element: <Exercise />,
-        path: 'grading/exercises/:id/submissions/:submissionId',
       },
     ],
   },
