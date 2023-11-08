@@ -30,6 +30,11 @@ class ExamDto {
 }
 
 export class ExamSubmissionDto {
+  @Expose({ name: '_id' })
+  @Transform(value => value.obj._id.toString())
+  @ApiProperty({ description: 'Exam id' })
+  id?: string;
+
   @Type(() => UserDto)
   @ApiProperty({ description: 'User' })
   user: UserDto;
