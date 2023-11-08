@@ -127,11 +127,6 @@ const ExamDetail = () => {
 
   const columnsPart: ColumnsType<ExerciseSchema> = [
     {
-      title: 'Id',
-      dataIndex: '_id',
-      key: '_id',
-    },
-    {
       title: 'Title',
       dataIndex: 'title',
       key: 'title',
@@ -299,9 +294,8 @@ const ExamDetail = () => {
         ...(reuse as ExerciseSchema[]),
       ]
     }
-    console.log(currentDataPart, 'currentDataPart')
     setDataPart(currentDataPart)
-    handleCancel()
+    setIsReuseModalOpen(false)
   }
 
   const handleCancel = () => {
