@@ -17,33 +17,6 @@ export const studentRoutes: RouteObject[] = [
     children: [
       { element: <MyHub />, path: STUDENT_ROUTES.myHub },
       {
-        path: 'get-started',
-        children: [
-          {
-            element: <GetStarted />,
-            path: '',
-          },
-          {
-            path: ':level',
-            children: [
-              {
-                path: 'exercise',
-                children: [
-                  {
-                    element: <Exercise />,
-                    path: ':id',
-                  },
-                ],
-              },
-              {
-                element: <EntranceExam />,
-                path: '',
-              },
-            ],
-          },
-        ],
-      },
-      {
         element: <ExercisesAndExams />,
         path: STUDENT_ROUTES.exercisesAndExams,
       },
@@ -83,6 +56,35 @@ export const studentRoutes: RouteObject[] = [
   },
   {
     element: <NoLayout />,
+    children: [
+      {
+        path: 'get-started',
+        children: [
+          {
+            element: <GetStarted />,
+            path: '',
+          },
+          {
+            path: ':level',
+            children: [
+              {
+                path: 'exercise',
+                children: [
+                  {
+                    element: <Exercise />,
+                    path: ':id',
+                  },
+                ],
+              },
+              {
+                element: <EntranceExam />,
+                path: '',
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
 ]
 

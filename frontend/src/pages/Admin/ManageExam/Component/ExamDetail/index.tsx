@@ -44,21 +44,22 @@ const ExamDetail = () => {
   )
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([])
 
-  const { data: examDetail, isLoading } = useQuery({
+  const { isLoading } = useQuery({
     queryKey: ['examDetail', examId],
-    queryFn: async () => examApi.getExamById(examId),
   })
 
   useEffect(() => {
     const fetchExercises = async () => {
       try {
         const examData = await examApi.getExamById(examId)
+        console.log(examData, 'examData')
         setExamDetail(examData)
         setDataPart(examData?.parts as ExerciseSchema[])
 
         const data: any = await exerciseApi.getAllExercise()
         data.forEach((part: any) => {
           part.key = part.id
+          part._id = part.id
         })
         setDataPartModal(data)
       } catch (error) {
@@ -125,6 +126,11 @@ const ExamDetail = () => {
   }
 
   const columnsPart: ColumnsType<ExerciseSchema> = [
+    {
+      title: 'Id',
+      dataIndex: '_id',
+      key: '_id',
+    },
     {
       title: 'Title',
       dataIndex: 'title',
@@ -266,11 +272,11 @@ const ExamDetail = () => {
       try {
         const index = dataPart.findIndex((item) => item.id === currentPart?.id)
         if (index !== -1) {
-          const updatedDataPart = [...dataPart] // Create a copy of the array
-          updatedDataPart.splice(index, 1) // Remove the item at the specified index
+          const updatedDataPart = [...dataPart]
+          updatedDataPart.splice(index, 1)
           setDataPart(updatedDataPart)
         }
-        openNotificationWithIcon('success', 'Delete successfully.')
+        openNotificationWithIcon('success', 'Delete part successfully.')
       } catch (error) {
         openNotificationWithIcon(
           'error',
@@ -293,6 +299,7 @@ const ExamDetail = () => {
         ...(reuse as ExerciseSchema[]),
       ]
     }
+    console.log(currentDataPart, 'currentDataPart')
     setDataPart(currentDataPart)
     handleCancel()
   }
@@ -307,7 +314,7 @@ const ExamDetail = () => {
 
   const handlePartMenuClick = (e: any, exercise: ExerciseSchema) => {
     if (e.key === 'edit') {
-      navigate(ADMIN_ROUTES.partDetail + '/' + exercise.id)
+      navigate(ADMIN_ROUTES.partDetail + '/' + exercise._id)
     }
     if (e.key === 'remove') {
       showModal(exercise, 'part')
@@ -327,7 +334,7 @@ const ExamDetail = () => {
     const newPartId = dataPart?.map((part) => part.id)
     const partId = newPartId as string[]
     if (partId) {
-      values.part = partId
+      values.parts = partId
     }
 
     try {

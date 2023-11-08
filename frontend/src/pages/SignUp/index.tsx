@@ -16,6 +16,7 @@ import {
   PRIVATE_ROUTES,
   PUBLIC_ROUTES,
   ROLES,
+  STUDENT_ROUTES,
 } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
 
@@ -32,7 +33,7 @@ const SignUp: React.FC = () => {
       apiNotification.success({
         message: 'Sign up successfully!',
       })
-      navigate(PRIVATE_ROUTES.home)
+      navigate(STUDENT_ROUTES.getStarted)
     },
   })
   console.log('🚀 ~ file: index.tsx:38 ~ error:', error)

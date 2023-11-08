@@ -37,9 +37,15 @@ export const examApi = {
     id: string,
     data: ExamParams,
   ): Promise<ResponseData<ExamParams>> => {
-    console.log('data', data)
     const res = await axiosClient.patch(`${PREFIX}/${id}`, data)
-    console.log('res', res.data)
+    return res.data
+  },
+
+  deletePartForExam: async (
+    id: string,
+    partId: string,
+  ): Promise<ResponseData<ExamParams>> => {
+    const res = await axiosClient.delete(`${PREFIX}/${id}/parts/${partId}`)
     return res.data
   },
 

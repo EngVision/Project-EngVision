@@ -1,7 +1,7 @@
 import { Button, Select } from 'antd'
-import { CEFRLevel, STUDENT_ROUTES } from '../../../utils/constants'
-import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { CEFRLevel, STUDENT_ROUTES } from '../../../utils/constants'
 
 const GetStarted = () => {
   const navigate = useNavigate()
@@ -46,7 +46,7 @@ const GetStarted = () => {
     return (
       <div className="flex flex-col my-5">
         <h1>Do you want to take a retest of your level?</h1>
-        <div className="flex flex-row gap-5 my-4">
+        <div className="flex flex-row gap-5 my-4 justify-center">
           <Button className="w-30" type="primary" onClick={yesTest}>
             Yes
           </Button>
@@ -74,23 +74,28 @@ const GetStarted = () => {
   ) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
   return (
     <div className="flex flex-col justify-center content-center ">
-      <h1>Please select your current level</h1>
-      <span>
-        Choose your current level from the list below. If you are not sure, you
-        can take a test to find out.
-      </span>
-      <Select
-        className="mt-5"
-        style={{ width: 120 }}
-        showSearch
-        placeholder="Select a level"
-        optionFilterProp="children"
-        onChange={onChange}
-        onSearch={onSearch}
-        filterOption={filterOption}
-        options={items}
-      />
-      {userLevel && optionTest()}
+      {!userLevel ? (
+        <>
+          <h1>Please select your current level</h1>
+          <span>
+            Choose your current level from the list below. If you are not sure,
+            you can take a test to find out.
+          </span>
+          <Select
+            className="mt-5"
+            style={{ width: 120 }}
+            showSearch
+            placeholder="Select a level"
+            optionFilterProp="children"
+            onChange={onChange}
+            onSearch={onSearch}
+            filterOption={filterOption}
+            options={items}
+          />
+        </>
+      ) : (
+        optionTest()
+      )}
     </div>
   )
 }
