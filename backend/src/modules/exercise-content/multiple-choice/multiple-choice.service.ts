@@ -61,7 +61,7 @@ export class MultipleChoiceService extends ExerciseContentService {
   }
 
   async checkAnswer(id: string, answer: number[]): Promise<QuestionResult> {
-    if (Array.isArray(answer) && typeof answer[0] !== 'number') {
+    if (!Array.isArray(answer) || typeof answer[0] !== 'number') {
       throw new BadRequestException('answer must be a number array');
     }
 

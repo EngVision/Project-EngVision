@@ -25,6 +25,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { QueryDto } from 'src/common/dto/query.dto';
 import { Role } from 'src/common/enums';
 import { GradingDto } from './dto/grading.dto';
+import { ExamSubmissionDto } from '../exam-submissions/dto/exam-submission.dto';
 
 @ApiTags('Submissions')
 @Controller('submissions')
@@ -56,7 +57,7 @@ export class SubmissionsController {
     );
   }
 
-  @Get(':id') // idSubmission for teacher, id exercise for student get
+  @Get(':id')
   @UseGuards(AtGuard)
   @ApiResponseData(SubmissionDto)
   async findOne(
@@ -64,8 +65,26 @@ export class SubmissionsController {
     @Param('id') id: string,
     @Res() res: Response,
   ) {
-    const submission = await this.submissionsService.findSubmission(
-      !user.roles.includes(Role.Student) ? '' : user.sub,
+    const submission = await this.submissionsService.findById(id);
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        dataType: SubmissionDto,
+        data: submission,
+      }),
+    );
+  }
+
+  @Get('exercise/:id')
+  @UseGuards(AtGuard)
+  @ApiResponseData(SubmissionDto)
+  async findSubmissionByExercise(
+    @CurrentUser() user: JwtPayload,
+    @Param('id') id: string,
+    @Res() res: Response,
+  ) {
+    const submission = await this.submissionsService.findByExerciseUser(
+      user.sub,
       id,
     );
 

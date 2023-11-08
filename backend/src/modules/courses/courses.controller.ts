@@ -98,6 +98,20 @@ export class CoursesController {
     );
   }
 
+  @Get('suggested-courses')
+  @ApiResponseData(CourseDto)
+  @UseGuards(AtGuard)
+  async getSuggested(@CurrentUser() user: JwtPayload, @Res() res: Response) {
+    const courses = await this.coursesService.getSuggestedCourses(user.sub);
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        dataType: CourseDto,
+        data: courses,
+      }),
+    );
+  }
+
   @Get('/exercises-due')
   @ApiResponseData(Array)
   @UseGuards(AtGuard, RoleGuard(Role.Student))

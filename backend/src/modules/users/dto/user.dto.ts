@@ -37,7 +37,7 @@ export class UserDto {
   @ApiProperty({ type: String, description: 'Country' })
   country?: string;
 
-  @ApiProperty({ type: String, description: 'Country' })
+  @ApiProperty({ type: String, description: 'Is first login' })
   firstLogin?: boolean;
 
   @Exclude()
@@ -48,7 +48,4 @@ export class UserDto {
 
   @Exclude()
   resetPasswordCode?: string;
-
-  @Exclude()
-  certificates?: string[];
 }

@@ -27,11 +27,17 @@ import { AddPartDto } from './dto/add-part.dto';
 import { JwtPayload } from '../auth/types';
 import { EntranceExamQueryDto } from './dto/entrance-exam-query.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
+import { CreateExamSubmissionDto } from '../exam-submissions/dto/create-exam-submission.dto';
+import { ExercisesService } from '../exercises/exercises.service';
+import { QuestionResult } from '../submissions/schemas/submission.schema';
 
 @ApiTags('Exams')
 @Controller('exams')
 export class ExamsController {
-  constructor(private readonly examsService: ExamsService) {}
+  constructor(
+    private readonly examsService: ExamsService,
+    private readonly exercisesService: ExercisesService,
+  ) {}
 
   @Post()
   @UseGuards(AtGuard, RoleGuard(Role.Teacher))
