@@ -25,8 +25,9 @@ export class MakeSentenceService extends ExerciseContentService {
 
     this.setDefaultExplain(transformedContent);
 
-    const questionList =
-      await this.MakeSentenceModel.insertMany(transformedContent);
+    const questionList = await this.MakeSentenceModel.insertMany(
+      transformedContent,
+    );
 
     return questionList.map(q => q.id);
   }
@@ -117,7 +118,7 @@ export class MakeSentenceService extends ExerciseContentService {
     questionList.forEach(q => {
       const detail: string[] = [];
       const questionText = q.question.text;
-      var answerMatches = questionText.match(regexBrackets);
+      const answerMatches = questionText.match(regexBrackets);
 
       const answersGroupArray = answerMatches.map(answer =>
         answer.substring(1, answer.length - 1).split('|'),

@@ -183,6 +183,31 @@ export class CoursesService {
     return [courses, totalItem];
   }
 
+  async getSuggestedCourses(userId: string): Promise<CourseDocument[]> {
+    const courses = await this.courseModel.aggregate<CourseDocument>([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'teacher',
+          foreignField: '_id',
+          as: 'teacher',
+        },
+      },
+      {
+        $match: {
+          'teacher.role': { $eq: Role.Admin },
+          isPublished: { $eq: true },
+        },
+      },
+    ]);
+
+    courses.forEach(course => {
+      course.teacher = course.teacher[0];
+    });
+
+    return courses;
+  }
+
   async getCourse(id: string, user: JwtPayload) {
     let course, courseMap: CourseDetailDto;
     const courseCheck = await this.courseModel.findById(id);

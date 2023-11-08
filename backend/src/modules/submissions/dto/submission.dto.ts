@@ -104,15 +104,15 @@ export class SubmissionDto {
   teacher: UserDto;
 
   @Type(() => CourseDto)
-  @ApiProperty({ description: 'Course id' })
+  @ApiProperty({ description: 'Course' })
   course?: CourseDto;
 
   @Type(() => SectionDto)
-  @ApiProperty({ description: 'Section id' })
+  @ApiProperty({ description: 'Section' })
   section?: SectionDto;
 
   @Type(() => LessonDto)
-  @ApiProperty({ description: 'Lesson id' })
+  @ApiProperty({ description: 'Lesson' })
   lesson?: LessonDto;
 
   @ApiPropertyOptional({ description: 'Exercise grade' })
