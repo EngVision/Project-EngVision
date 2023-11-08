@@ -59,7 +59,6 @@ const ExamDetail = () => {
         const data: any = await exerciseApi.getAllExercise()
         data.forEach((part: any) => {
           part.key = part.id
-          part._id = part.id
         })
         setDataPartModal(data)
       } catch (error) {
@@ -308,7 +307,7 @@ const ExamDetail = () => {
 
   const handlePartMenuClick = (e: any, exercise: ExerciseSchema) => {
     if (e.key === 'edit') {
-      navigate(ADMIN_ROUTES.partDetail + '/' + exercise._id)
+      navigate(ADMIN_ROUTES.partDetail + '/' + exercise.id)
     }
     if (e.key === 'remove') {
       showModal(exercise, 'part')
