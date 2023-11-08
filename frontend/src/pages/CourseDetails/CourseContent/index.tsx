@@ -17,7 +17,6 @@ const CourseContent = (course: CourseDetails) => {
     queryKey: ['submissions'],
     queryFn: submissionApi.getSubmissionList,
   })
-
   if (course.isAttended && rawSubmissionList) {
     rawSubmissionList.data.forEach((assignment) => {
       if (assignment.totalDone === assignment.totalQuestion) {

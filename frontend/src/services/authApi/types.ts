@@ -1,4 +1,4 @@
-import { Gender, Role } from '../../utils/constants'
+import { AccountStatus, Gender, Role } from '../../utils/constants'
 
 export interface SignInParams {
   email: string
@@ -34,4 +34,5 @@ export interface IUser {
   role: Role
   createdAt: Date
   updatedAt: Date
+  status: AccountStatus
 }
