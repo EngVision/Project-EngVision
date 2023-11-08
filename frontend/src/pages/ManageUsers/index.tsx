@@ -20,6 +20,7 @@ import Filter from './Filter'
 import Sort from './Sort'
 import { Order } from '../../services/types'
 import ModalConfirm from './ModalConfirm'
+import { getFormattedDate } from '../../utils/common'
 
 let firstLoad = true
 
@@ -196,7 +197,7 @@ const ManageUsers = () => {
       width: '120px',
       key: 'createDate',
       render: (date) => {
-        return date ? date.substring(0, 10) : ''
+        return date ? getFormattedDate(date) : ''
       },
     },
     {

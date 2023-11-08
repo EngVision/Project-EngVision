@@ -6,23 +6,28 @@ import CreateProfile from '../pages/CreateProfile'
 import HelpCenter from '../pages/HelpCenter'
 import Home from '../pages/Home'
 import { UpdateProfile } from '../pages/UpdateProfile'
-import { PRIVATE_ROUTES, PUBLIC_ROUTES, ROLES } from '../utils/constants'
+import {
+  AccountStatus,
+  PRIVATE_ROUTES,
+  PUBLIC_ROUTES,
+  ROLES,
+} from '../utils/constants'
 import AdminRoutes from './AdminRoutes'
 import StudentRoutes from './StudentRoutes'
 import TeacherRoutes from './TeacherRoutes'
+import BlockScreen from '../pages/BlockScreen'
 
 const ProtectedLayout = () => {
   const user = useAppSelector((state) => state.app.user)
 
-  return user ? (
-    user.firstLogin ? (
-      <CreateProfile />
-    ) : (
-      <Outlet />
-    )
-  ) : (
-    <Navigate to={PUBLIC_ROUTES.signIn} />
-  )
+  if (user) {
+    if (user.status !== AccountStatus.Active)
+      return <BlockScreen isBlocked={user.status === AccountStatus.Blocked} />
+    else if (user.firstLogin) return <CreateProfile />
+    else return <Outlet />
+  }
+
+  return <Navigate to={PUBLIC_ROUTES.signIn} />
 }
 
 const privateRoutes: RouteObject[] = [

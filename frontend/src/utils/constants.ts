@@ -48,7 +48,7 @@ export const TEACHER_ROUTES = {
   createCourse: '/courses/new',
 
   assignmentExam: '/assignment-exam',
-
+  grading: '/grading',
   lessonDetail: '/courses/:courseId/lessons/:lessonId',
   createExercise: '/courses/:courseId/lessons/:lessonId/exercises',
   editExercise: '/courses/:courseId/lessons/:lessonId/exercises/:exerciseId',
@@ -177,4 +177,10 @@ export enum NextDue {
   in1week = 'In 1 week',
   in2weeks = 'In 2 weeks',
   in1month = 'In 1 month',
+}
+
+export enum AccountStatus {
+  Active = 'Active',
+  Pending = 'Pending',
+  Blocked = 'Blocked',
 }

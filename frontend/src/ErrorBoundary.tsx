@@ -48,6 +48,7 @@ function ErrorScreen() {
         <Paragraph>
           <CloseCircleOutlined className="site-result-demo-error-icon" />
           &nbsp;Contact to our site.
+          <a href="https://forms.gle/c8mwvUgqfPeJmaG16">Feedback Form</a>
         </Paragraph>
       </div>
     </Result>
