@@ -35,7 +35,7 @@ export class ExercisesService {
   }
 
   async find(
-    query: UpdateExerciseDto = {},
+    query: UpdateExerciseDto & { _id?: any } = {},
     roles?: Role[],
   ): Promise<ExerciseDocument[]> {
     if (roles && roles.includes(Role.Admin)) {
@@ -143,7 +143,7 @@ export class ExercisesService {
       {
         $match: {
           level: level,
-          'creator.role': Role.Teacher,
+          'creator.role': Role.Admin,
         },
       },
     ]);
@@ -156,7 +156,7 @@ export class ExercisesService {
     exerciseId: string,
     questionId: string,
     answer: any,
-  ): Promise<QuestionResult> {
+  ): Promise<QuestionResult & { id: string }> {
     const exercise = await this.findOne(exerciseId);
 
     const service = await this.exerciseContentServiceFactory.createService(
@@ -165,7 +165,7 @@ export class ExercisesService {
 
     const result = await service.checkAnswer(questionId, answer);
 
-    await this.submissionsService.update(userId, exercise.id, {
+    const { id } = await this.submissionsService.update(userId, exercise.id, {
       user: userId,
       exercise: exerciseId,
       exerciseType: exercise.type,
@@ -176,6 +176,6 @@ export class ExercisesService {
       course: exercise.course,
     });
 
-    return result;
+    return { ...result, id };
   }
 }

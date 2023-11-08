@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, SchemaTypes } from 'mongoose';
 import { ExerciseType } from 'src/common/enums';
 import { Course } from 'src/modules/courses/schemas/course.schema';
+import { Exam } from 'src/modules/exams/schemas/exam.schema';
 import { Exercise } from 'src/modules/exercises/schemas/exercise.schema';
 import { User } from 'src/modules/users/schemas/user.schema';
 

@@ -67,15 +67,6 @@ export class ConstructedResponseService extends ExerciseContentService {
       await this.constructedResponseModel.findById(id).select('correctAnswer')
     ).correctAnswer;
 
-    if (!correctAnswer) {
-      return {
-        question: id,
-        answer,
-        correctAnswer: null,
-        explanation: null,
-      };
-    }
-
     const { detail, explanation } = correctAnswer;
 
     const submission = {
@@ -92,7 +83,10 @@ export class ConstructedResponseService extends ExerciseContentService {
       isCorrect,
     };
   }
+
   setDefaultExplain(questionList: ExerciseQuestionDto[]): void {
-    // throw new Error('Method not implemented.');
+    questionList.forEach(q => {
+      q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail}`;
+    });
   }
 }

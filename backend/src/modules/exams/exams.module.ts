@@ -12,5 +12,6 @@ import { ExercisesModule } from '../exercises/exercises.module';
   ],
   controllers: [ExamsController],
   providers: [ExamsService],
+  exports: [ExamsService],
 })
 export class ExamsModule {}
