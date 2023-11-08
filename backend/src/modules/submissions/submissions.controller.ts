@@ -9,6 +9,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import {
   ApiResponseData,
@@ -17,15 +18,13 @@ import {
 } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
-import { AtGuard, RoleGuard } from 'src/common/guards';
-import { JwtPayload } from '../auth/types';
-import { SubmissionDto } from './dto/submission.dto';
-import { SubmissionsService } from './submissions.service';
-import { ApiTags } from '@nestjs/swagger';
 import { QueryDto } from 'src/common/dto/query.dto';
 import { Role } from 'src/common/enums';
+import { AtGuard, RoleGuard } from 'src/common/guards';
+import { JwtPayload } from '../auth/types';
 import { GradingDto } from './dto/grading.dto';
-import { ExamSubmissionDto } from '../exam-submissions/dto/exam-submission.dto';
+import { SubmissionDto } from './dto/submission.dto';
+import { SubmissionsService } from './submissions.service';
 
 @ApiTags('Submissions')
 @Controller('submissions')

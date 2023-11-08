@@ -9,8 +9,13 @@ const submissionApi = {
   getSubmissionList: async (): Promise<ResponseData<SubmissionResponse[]>> =>
     axiosClient.get(`${PREFIX}`),
 
-  // idSubmission for teacher, id exercise for student get
-  getSubmission: async (id: string): Promise<SubmissionResponse> => {
+  getSubmissionByExercise: async (id: string): Promise<SubmissionResponse> => {
+    const res = await axiosClient.get(`${PREFIX}/exercise/${id}`)
+
+    return res.data
+  },
+
+  getSubmissionById: async (id: string): Promise<SubmissionResponse> => {
     const res = await axiosClient.get(`${PREFIX}/${id}`)
 
     return res.data

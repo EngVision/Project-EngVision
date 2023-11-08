@@ -40,8 +40,10 @@ function Exercise() {
 
   const navigate = useNavigate()
 
-  const getSubmission = async (id: string) => {
-    const submission = await submissionApi.getSubmission(id)
+  const getSubmission = async () => {
+    const submission = submissionId
+      ? await submissionApi.getSubmissionById(submissionId)
+      : await submissionApi.getSubmissionByExercise(id)
 
     if (firstLoad.current && !submissionId) {
       firstLoad.current = false
@@ -53,7 +55,7 @@ function Exercise() {
 
   const { data: submission, isLoading: isLoadingSubmission } = useQuery({
     queryKey: ['submission', id],
-    queryFn: () => getSubmission(submissionId ? submissionId : id),
+    queryFn: () => getSubmission(),
   })
 
   const { data: exercise, isLoading: isLoadingExercise } = useQuery({
