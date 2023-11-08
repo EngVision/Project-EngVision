@@ -305,9 +305,9 @@ function Exercise() {
 
   const getBackground = (index: number) => {
     if (index === questionIndex) return 'bg-sky-600'
-    else if (index >= (submission?.totalDone || 0)) return 'bg-slate-300'
+    else if (submission?.detail[index].isCorrect === false) return 'bg-red-500'
     else if (submission?.detail[index].isCorrect) return 'bg-green-500'
-    else return 'bg-red-500'
+    else return 'bg-slate-300'
   }
 
   return (
@@ -342,11 +342,9 @@ function Exercise() {
                   {submission?.detail[index]?.isCorrect && (
                     <TickIcon className="bg-transparent" />
                   )}
-                  {submission?.totalDone &&
-                    index < submission?.totalDone &&
-                    !submission?.detail[index]?.isCorrect && (
-                      <XMarkIcon className="bg-transparent" />
-                    )}
+                  {!submission?.detail[index]?.isCorrect === false && (
+                    <XMarkIcon className="bg-transparent" />
+                  )}
                 </div>
               ))}
             </Space>

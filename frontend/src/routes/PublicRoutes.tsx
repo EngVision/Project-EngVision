@@ -7,8 +7,13 @@ import SSOSuccess from '../pages/SignIn/components/SSOSuccess'
 import SignUp from '../pages/SignUp'
 import TeacherSignUp from '../pages/SignUp/TeacherSignUp'
 import { PUBLIC_ROUTES } from '../utils/constants'
+import NotFound from '../pages/NotFound'
 
 const publicRoutes: RouteObject[] = [
+  {
+    element: <NotFound />,
+    path: '*',
+  },
   {
     element: <AuthLayout />,
     children: [
