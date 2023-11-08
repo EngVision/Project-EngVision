@@ -45,7 +45,14 @@ export function TwoColumnLayout({
           alt=""
           className="w-full rounded-sm"
         />
-        <p style={{ fontSize: fontSize }}>{contentQuestion.text}</p>
+        <p
+          style={{
+            fontSize: fontSize,
+            transition: 'font-size 0.5s ease-in-out',
+          }}
+        >
+          {contentQuestion.text}
+        </p>
       </div>
       <div className="flex-1 overflow-y-auto overflow-x-hidden">{children}</div>
     </div>

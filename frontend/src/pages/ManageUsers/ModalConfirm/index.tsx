@@ -29,6 +29,7 @@ const ModalConfirm = ({
 
   const onFinish = (values: ReasonBlock) => {
     blockUserFunc(user ? user.id : '', values)
+    form.resetFields()
     setIsModalOpen(false)
   }
 
