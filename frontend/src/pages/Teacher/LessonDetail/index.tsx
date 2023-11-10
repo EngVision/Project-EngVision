@@ -24,8 +24,7 @@ const LessonDetail = () => {
           type="primary"
           ghost
           shape="circle"
-          size="large"
-          icon={<ArrowLeftIcon />}
+          icon={<ArrowLeftIcon width={20} height={20} />}
           onClick={() => navigate('../..', { relative: 'path' })}
         />
         <h2>{lesson?.title}</h2>

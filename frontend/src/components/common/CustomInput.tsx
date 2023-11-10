@@ -37,7 +37,7 @@ const CustomInput = ({
       }}
       onFocus={handleFocus}
       className={`${className || ''}
-         h-9 w-2/3 max-w-full px-3 bg-transparent rounded-lg border-none hover:!bg-stone-200 focus:border focus:border-solid focus:!border-grey-300 focus:!shadow-none`}
+         h-9 w-2/3 max-w-full px-3 bg-transparent rounded-lg border-none hover:!bg-[#eee] focus:border focus:border-solid focus:!border-grey-300 focus:!shadow-none`}
       placeholder={placeholder}
     />
   )

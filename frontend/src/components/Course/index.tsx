@@ -1,7 +1,7 @@
 import { Card } from 'antd'
 
 import { getFormattedPrice } from '../../utils/common'
-import { MoreIcon, PeopleIcon, StarIcon, VideoPlayIcon } from '../Icons'
+import { PeopleIcon, StarIcon, VideoPlayIcon } from '../Icons'
 import { useNavigate } from 'react-router-dom'
 import { CourseDetails } from '../../services/coursesApi/types'
 import CustomImage from '../common/CustomImage'
@@ -41,7 +41,7 @@ const Course = ({ course }: CourseProps) => {
 
       <p className="text-sm font-bold uppercase py-4">{course.title}</p>
 
-      <div className="flex justify-between items-center text-xs pt-3">
+      <div className="flex justify-between items-center text-xs pt-3 mb-2">
         <div className="flex items-center gap-1">
           <StarIcon className="text-negative-200" width={20} height={20} />
           <p className="font-semibold">{course.avgStar || '0'}</p>
@@ -54,13 +54,9 @@ const Course = ({ course }: CourseProps) => {
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-2">
-        <span className="text-primary text-2xl font-semibold">
-          {getFormattedPrice(course.price)}
-        </span>
-
-        <MoreIcon className="text-primary" />
-      </div>
+      <span className="text-primary text-2xl font-semibold">
+        {getFormattedPrice(course.price)}
+      </span>
     </Card>
   )
 }

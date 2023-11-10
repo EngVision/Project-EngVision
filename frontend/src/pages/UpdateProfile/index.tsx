@@ -109,7 +109,7 @@ export const UpdateProfile = () => {
                   <Input
                     defaultValue={user.firstName}
                     size="large"
-                    className="w-[100%] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
+                    className="w-[100%] shadow-sm text-sm border-slate-300 hover:border-slate-40 rounded-md"
                   />
                 </Form.Item>
                 <Form.Item<ProfileParams>
@@ -120,7 +120,7 @@ export const UpdateProfile = () => {
                   <Input
                     defaultValue={user.lastName}
                     size="large"
-                    className="w-[100%] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
+                    className="w-[100%] text-sm shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
                   />
                 </Form.Item>
               </div>
@@ -132,7 +132,7 @@ export const UpdateProfile = () => {
                   className="flex-1"
                 >
                   <Select
-                    className="shadow-sm"
+                    className="text-sm shadow-sm"
                     size="large"
                     defaultValue={user.gender}
                     options={gender}
@@ -146,7 +146,7 @@ export const UpdateProfile = () => {
                   <Input
                     defaultValue={user.email}
                     size="large"
-                    className="w-[100%] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
+                    className="text-sm w-[100%] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
                   />
                 </Form.Item>
                 {/* {user.phone && (

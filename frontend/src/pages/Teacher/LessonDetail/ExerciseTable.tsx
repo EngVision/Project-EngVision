@@ -67,6 +67,7 @@ const ExerciseTable = ({ exerciseList }: ExerciseTableProps) => {
                 type="text"
                 className="w-full text-left"
                 onClick={async () => handleDeleteExercise(id)}
+                loading={deleteCourseMutation.isPending}
               >
                 Delete
               </Button>
