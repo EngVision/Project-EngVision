@@ -74,12 +74,11 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         name: Changing the deployment yaml
         with:
           repository: "EngVision/Engvision-Deployment"
-        env:
-          ACCESS_TOKEN: ${{ secrets.PAT_GH_ACTION }}
+          token: ${{ secrets.PAT_GH_ACTION }}
       - name: Modify the image
         run: |
           git config --global user.name 'minhtringuyennn'
@@ -91,3 +90,4 @@ jobs:
           git push origin main
         env:
           RUN_NUMBER: ${{ github.run_number }}
+          PAT_GH_ACTION: ${{ secrets.PAT_GH_ACTION }}
