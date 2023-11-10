@@ -30,6 +30,11 @@ export const PRIVATE_ROUTES = {
 }
 
 export const STUDENT_ROUTES = {
+  //Get started
+  getStarted: '/get-started',
+  doEntranceExam: '/get-started/exercise/:id',
+  entranceExam: '/get-started/:level',
+
   // Menu
   myHub: '/my-hub',
   exercisesAndExams: '/exercises-exams',
@@ -62,9 +67,10 @@ export const ADMIN_ROUTES = {
   manageUsers: '/manage-users',
 
   exams: '/exams',
-  editTest: '/exams/edit-test',
-  createPart: '/exams/create-part',
-  editPart: '/exams/edit-part',
+  examDetail: '/exams/:examId',
+  createExam: '/exams/new',
+  partDetail: '/exams/parts',
+  createPart: '/exams/parts',
 }
 
 export const ROLES = {

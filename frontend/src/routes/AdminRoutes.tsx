@@ -1,7 +1,7 @@
 import { RouteObject } from 'react-router-dom'
 import DefaultLayout from '../layouts/DefaultLayout'
-import ManageExam from '../pages/Amin/ManageExam'
-import EditTest from '../pages/Amin/ManageExam/Component/EditTest'
+import ManageExam from '../pages/Admin/ManageExam'
+import ExamDetail from '../pages/Admin/ManageExam/Component/ExamDetail'
 import Exercise from '../pages/Exercise'
 import ManageUsers from '../pages/ManageUsers'
 import Statistic from '../pages/Statistic'
@@ -23,16 +23,25 @@ const adminRoutes: RouteObject[] = [
             path: '',
           },
           {
-            element: <ManageExercise />,
-            path: 'edit-part',
+            element: <ExamDetail />,
+            path: ':examId',
           },
           {
-            element: <ManageExercise />,
-            path: 'create-part',
+            element: <ExamDetail />,
+            path: 'new',
           },
           {
-            element: <EditTest />,
-            path: 'edit-test',
+            path: 'parts',
+            children: [
+              {
+                element: <ManageExercise />,
+                path: '',
+              },
+              {
+                element: <ManageExercise />,
+                path: ':exerciseId',
+              },
+            ],
           },
         ],
       },

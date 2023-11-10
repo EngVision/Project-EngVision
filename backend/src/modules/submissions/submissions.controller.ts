@@ -9,6 +9,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import {
   ApiResponseData,
@@ -17,14 +18,13 @@ import {
 } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
-import { AtGuard, RoleGuard } from 'src/common/guards';
-import { JwtPayload } from '../auth/types';
-import { SubmissionDto } from './dto/submission.dto';
-import { SubmissionsService } from './submissions.service';
-import { ApiTags } from '@nestjs/swagger';
 import { QueryDto } from 'src/common/dto/query.dto';
 import { Role } from 'src/common/enums';
+import { AtGuard, RoleGuard } from 'src/common/guards';
+import { JwtPayload } from '../auth/types';
 import { GradingDto } from './dto/grading.dto';
+import { SubmissionDto } from './dto/submission.dto';
+import { SubmissionsService } from './submissions.service';
 
 @ApiTags('Submissions')
 @Controller('submissions')
@@ -56,7 +56,7 @@ export class SubmissionsController {
     );
   }
 
-  @Get(':id') // idSubmission for teacher, id exercise for student get
+  @Get(':id')
   @UseGuards(AtGuard)
   @ApiResponseData(SubmissionDto)
   async findOne(
@@ -64,8 +64,26 @@ export class SubmissionsController {
     @Param('id') id: string,
     @Res() res: Response,
   ) {
-    const submission = await this.submissionsService.findSubmission(
-      !user.roles.includes(Role.Student) ? '' : user.sub,
+    const submission = await this.submissionsService.findById(id);
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        dataType: SubmissionDto,
+        data: submission,
+      }),
+    );
+  }
+
+  @Get('exercise/:id')
+  @UseGuards(AtGuard)
+  @ApiResponseData(SubmissionDto)
+  async findSubmissionByExercise(
+    @CurrentUser() user: JwtPayload,
+    @Param('id') id: string,
+    @Res() res: Response,
+  ) {
+    const submission = await this.submissionsService.findByExerciseUser(
+      user.sub,
       id,
     );
 

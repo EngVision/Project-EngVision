@@ -1,4 +1,5 @@
 import { CEFRLevel, ExerciseTag } from '../../utils/constants'
+import { ExerciseSchema } from '../exerciseApi/types'
 
 export interface ExamParams {
   id?: string
@@ -7,7 +8,18 @@ export interface ExamParams {
   course?: string
   teacher?: string
   level: CEFRLevel
-  tag?: ExerciseTag[]
+  tag: ExerciseTag[]
+  parts: ExerciseSchema[]
+}
+
+export interface Entrance {
+  id: string
+  title: string
+  description: string
+  course: string
+  teacher: string
+  level: CEFRLevel
+  tag: ExerciseTag[]
   parts: string[]
   createdAt?: string
 }

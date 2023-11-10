@@ -11,27 +11,31 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { ApiResponseData, CurrentUser } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
+import { GetResponseList } from 'src/common/dto/paginated-response.dto';
+import { QueryDto } from 'src/common/dto/query.dto';
 import { Role } from 'src/common/enums';
 import { AtGuard, RoleGuard } from 'src/common/guards';
+import { JwtPayload } from '../auth/types';
+import { ExercisesService } from '../exercises/exercises.service';
+import { AddPartDto } from './dto/add-part.dto';
 import { CreateExamDto } from './dto/create-exam.dto';
+import { EntranceExamQueryDto } from './dto/entrance-exam-query.dto';
+import { ExamDetailDto } from './dto/exam-detail.dto';
 import { ExamDto } from './dto/exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { ExamsService } from './exams.service';
-import { ApiResponseData, CurrentUser } from 'src/common/decorators';
-import { GetResponseList } from 'src/common/dto/paginated-response.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { ExamDetailDto } from './dto/exam-detail.dto';
-import { AddPartDto } from './dto/add-part.dto';
-import { JwtPayload } from '../auth/types';
-import { EntranceExamQueryDto } from './dto/entrance-exam-query.dto';
-import { QueryDto } from 'src/common/dto/query.dto';
 
 @ApiTags('Exams')
 @Controller('exams')
 export class ExamsController {
-  constructor(private readonly examsService: ExamsService) {}
+  constructor(
+    private readonly examsService: ExamsService,
+    private readonly exercisesService: ExercisesService,
+  ) {}
 
   @Post()
   @UseGuards(AtGuard, RoleGuard(Role.Teacher))

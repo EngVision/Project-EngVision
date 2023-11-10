@@ -1,16 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { QueryDto } from 'src/common/dto/query.dto';
+import { Order, Role, SubmissionStatus } from 'src/common/enums';
+import { GradingDto } from './dto/grading.dto';
 import { SubmissionDto } from './dto/submission.dto';
+import { UpdateSubmissionDto } from './dto/update-submission.dto';
 import {
   QuestionResult,
   Submission,
   SubmissionDocument,
 } from './schemas/submission.schema';
-import { Order, Role } from 'src/common/enums';
-import { QueryDto } from 'src/common/dto/query.dto';
-import { GradingDto } from './dto/grading.dto';
-import { UpdateSubmissionDto } from './dto/update-submission.dto';
 
 @Injectable()
 export class SubmissionsService {
@@ -23,7 +23,7 @@ export class SubmissionsService {
     exerciseId: string,
     submissionDto: UpdateSubmissionDto,
   ): Promise<UpdateSubmissionDto> {
-    const submission = await this.findSubmission(userId, exerciseId);
+    const submission = await this.findByExerciseUser(userId, exerciseId);
 
     let detail: QuestionResult[] = [];
     if (submission) {
@@ -64,26 +64,41 @@ export class SubmissionsService {
 
     return {
       ...newSubmission,
+      id: newSubmission._id.toString(),
       progress: Math.round(
         newSubmission.totalDone / newSubmission.totalQuestion,
       ),
     };
   }
 
-  async findSubmission(userId: string, id: string): Promise<SubmissionDto> {
-    const queryObject = userId ? { user: userId, exercise: id } : { _id: id };
-    const submission = await this.submissionModel.findOne(queryObject);
+  async findById(id: string): Promise<SubmissionDto> {
+    const submission = await this.submissionModel
+      .findOne({ _id: id })
+      .populate('exercise', 'title')
+      .populate('user', 'firstName lastName avatar')
+      .populate('course', 'title sections')
+      .populate('teacher', 'firstName lastName');
 
     if (!submission) {
       return null;
     }
 
-    return {
-      ...submission.toObject(),
-      progress: +(submission.totalDone / submission.totalQuestion).toPrecision(
-        2,
-      ),
-    };
+    return this.transformSubmission(submission);
+  }
+
+  async findByExerciseUser(userId: string, exerciseId: string) {
+    const submission = await this.submissionModel
+      .findOne({ user: userId, exercise: exerciseId })
+      .populate('exercise', 'title')
+      .populate('user', 'firstName lastName avatar')
+      .populate('course', 'title sections')
+      .populate('teacher', 'firstName lastName');
+
+    if (!submission) {
+      return null;
+    }
+
+    return this.transformSubmission(submission);
   }
 
   async findByUser(
@@ -103,6 +118,7 @@ export class SubmissionsService {
       filterQuery = {
         teacher: userId,
         needGrade: true,
+        $expr: { $eq: ['$totalDone', '$totalQuestion'] },
       };
     } else {
       filterQuery = {
@@ -113,27 +129,14 @@ export class SubmissionsService {
     const submissions = await this.submissionModel
       .find(filterQuery, null, documentQuery)
       .populate('exercise', 'title')
-      .populate('user', 'firstName lastName')
+      .populate('user', 'firstName lastName avatar')
       .populate('course', 'title sections')
       .populate('teacher', 'firstName lastName');
     const total = await this.submissionModel.countDocuments(filterQuery);
 
-    const res: SubmissionDto[] = submissions.map(submission => {
-      const section = submission.course['sections'].find(section =>
-        section['lessons'].some(lesson =>
-          lesson['exercises'].includes(submission.exercise['_id']),
-        ),
-      );
-      const lesson = section.lessons.find(lesson =>
-        lesson['exercises'].includes(submission.exercise['_id']),
-      );
-
-      return {
-        ...submission.toObject(),
-        section: { ...section.toObject() },
-        lesson: { ...lesson.toObject() },
-      };
-    });
+    const res: SubmissionDto[] = submissions.map(submission =>
+      this.transformSubmission(submission),
+    );
 
     return [res, total];
   }
@@ -176,5 +179,33 @@ export class SubmissionsService {
     await submission.save();
 
     return submission;
+  }
+
+  transformSubmission(submission: SubmissionDocument): SubmissionDto {
+    let section = null;
+    let lesson = null;
+    if (submission.course) {
+      section = submission.course?.['sections'].find(section =>
+        section['lessons'].some(lesson =>
+          lesson['exercises'].includes(submission.exercise['_id']),
+        ),
+      );
+      lesson = section?.lessons.find(lesson =>
+        lesson['exercises'].includes(submission.exercise['_id']),
+      );
+    }
+
+    return {
+      ...submission.toObject(),
+      section: section ? { ...section.toObject() } : null,
+      lesson: lesson ? { ...lesson.toObject() } : null,
+      progress: +(submission.totalDone / submission.totalQuestion).toPrecision(
+        2,
+      ),
+      status:
+        submission.needGrade && submission.detail.every(res => res.grade)
+          ? SubmissionStatus.Graded
+          : SubmissionStatus.Pending,
+    };
   }
 }

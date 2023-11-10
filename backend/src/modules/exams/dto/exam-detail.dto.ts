@@ -1,5 +1,5 @@
 import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { ExamDto } from './exam.dto';
 
 class PartDto {
@@ -18,6 +18,7 @@ class PartDto {
 export class ExamDetailDto extends PartialType(
   OmitType(ExamDto, ['parts'] as const),
 ) {
+  @Type(() => PartDto)
   @ApiProperty({ description: 'Exam parts', type: [PartDto] })
   parts: PartDto[];
 }

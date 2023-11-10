@@ -37,7 +37,7 @@ export class ConstructedResponse {
   @Prop({ type: QuestionSchema, required: true })
   question: Question;
 
-  @Prop({ type: CorrectAnswerSchema })
+  @Prop({ type: CorrectAnswerSchema, default: {} })
   correctAnswer: CorrectAnswer;
 }
 
