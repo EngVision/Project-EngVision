@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import AppLoading from '../../../../components/common/AppLoading'
 import submissionApi from '../../../../services/submissionApi'
 import { SubmissionResponse } from '../../../../services/submissionApi/types'
+import { UPLOAD_FILE_URL } from '../../../../utils/constants'
 const AssignmentTable = () => {
   const navigate = useNavigate()
   const params = useParams()
@@ -24,9 +25,11 @@ const AssignmentTable = () => {
       render: (user) => {
         return (
           <Space size="middle">
-            <Avatar size="large" className="bg-primary">
-              {user.firstName.charAt(0)}
-            </Avatar>
+            <Avatar
+              size="large"
+              className="bg-primary"
+              src={`${UPLOAD_FILE_URL}${user?.avatar}`}
+            ></Avatar>
             <span>{`${user.firstName} ${user.lastName}`}</span>
           </Space>
         )
@@ -66,10 +69,10 @@ const AssignmentTable = () => {
       dataIndex: 'grade',
       key: 'grade',
       align: 'center',
-      render: (grade) =>
-        grade ? (
+      render: (_, record) =>
+        record.grade && record.status === 'graded' ? (
           <Tag className="bg-alternative text-white text-base px-4">
-            {grade}/10
+            {record.grade}/10
           </Tag>
         ) : (
           <Tag className="bg-[#D3D3D3] text-white text-base px-4">.../10</Tag>
@@ -81,9 +84,9 @@ const AssignmentTable = () => {
       key: 'status',
       align: 'center',
       render: (status) =>
-        status ? (
+        status === 'graded' ? (
           <Tag color="blue" className="text-base px-4 flex justify-center">
-            Submitted
+            Graded
           </Tag>
         ) : (
           <Tag color="green" className="text-base px-4 flex justify-center">
@@ -118,9 +121,11 @@ const AssignmentTable = () => {
       ) : (
         <>
           <h3 className="text-primary text-2xl mb-4">
-            {submissionList ? submissionList[0].course?.title : ''}
+            {submissionList ? submissionList[0]?.course?.title : ''}
           </h3>
-          <Table columns={columns} dataSource={submissionList} />
+          {submissionList && (
+            <Table columns={columns} dataSource={submissionList} />
+          )}
         </>
       )}
     </>

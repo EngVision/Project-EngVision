@@ -7,16 +7,13 @@ import ExamTable from './ExamTable'
 import { useQuery } from '@tanstack/react-query'
 import coursesApi from '../../../services/coursesApi'
 import { examApi } from '../../../services/examApi'
-import { useAppSelector } from '../../../hooks/redux'
 import AppLoading from '../../../components/common/AppLoading'
+import { COURSE_STATUS } from '../../../utils/constants'
 enum Direction {
   left = 'left',
   right = 'right',
 }
 const Grading = () => {
-  const status = useAppSelector((state) => state.course.status)
-  const sortOption = useAppSelector((state) => state.course.sortOption)
-  const filterOptions = useAppSelector((state) => state.course.filterOptions)
   const [disabledScrollLeft, setDisabledScrollLeft] = useState<boolean>(true)
   const [disabledScrollRight, setDisabledScrollRight] = useState<boolean>(true)
   useEffect(() => {
@@ -63,9 +60,9 @@ const Grading = () => {
     } else setDisabledScrollRight(false)
   }
   const { data: rawCourseList, isLoading } = useQuery({
-    queryKey: ['courses', { status, ...filterOptions, ...sortOption }],
+    queryKey: ['courses', { status: COURSE_STATUS.published }],
     queryFn: async () =>
-      coursesApi.getCourses({ status, ...filterOptions, ...sortOption }),
+      coursesApi.getCourses({ status: COURSE_STATUS.published }),
   })
   const { data: rawExamList } = useQuery({
     queryKey: ['exam'],

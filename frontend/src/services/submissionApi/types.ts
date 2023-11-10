@@ -23,6 +23,7 @@ export interface SubmissionResponse {
     id: string
     firstName: string
     lastName: string
+    avatar: string
   }
   detail: SubmitAnswerResponse[]
   exerciseType: ExerciseType
@@ -31,6 +32,7 @@ export interface SubmissionResponse {
   totalDone: number
   progress: number
   grade: number
+  status: string
   createdAt: Date
   updatedAt: Date
 }

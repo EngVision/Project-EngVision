@@ -5,10 +5,11 @@ import Circle from '../../../components/Icons/Circle'
 import { CourseDetails } from '../../../services/coursesApi/types'
 import submissionApi from '../../../services/submissionApi'
 import { useNavigate } from 'react-router-dom'
-
+import { useParams } from 'react-router-dom'
 const { Panel } = Collapse
 
 const CourseContent = (course: CourseDetails) => {
+  const params = useParams()
   const completedExerciseIds: string[] = []
 
   const navigate = useNavigate()
@@ -17,10 +18,13 @@ const CourseContent = (course: CourseDetails) => {
     queryKey: ['submissions'],
     queryFn: submissionApi.getSubmissionList,
   })
-  if (course.isAttended && rawSubmissionList) {
-    rawSubmissionList.data.forEach((assignment) => {
-      if (assignment.totalDone === assignment.totalQuestion) {
-        completedExerciseIds.push(assignment.exercise)
+  const courseSubmissionList = rawSubmissionList?.data?.filter(
+    (submission) => submission.course?.id === params.courseId,
+  )
+  if (course.isAttended && courseSubmissionList?.length) {
+    courseSubmissionList.forEach((submission) => {
+      if (submission.totalDone === submission.totalQuestion) {
+        completedExerciseIds.push(submission.exercise?.id)
       }
     })
     course.sections?.forEach((section) => {
@@ -31,7 +35,7 @@ const CourseContent = (course: CourseDetails) => {
         section.completed = false
       } else {
         section?.lessons?.forEach((lesson) => {
-          if (lesson.exercises === undefined) return
+          if (!lesson.exercises) return
           lesson.completed = true
           let countExerciseCompleted: number = 0
 
@@ -134,7 +138,11 @@ const CourseContent = (course: CourseDetails) => {
                       course.isAttended &&
                       lesson.exercises?.length > 0 && (
                         <div className="text-xs text-wolfGrey">
-                          {`${lesson.totalExerciseCompleted} / ${lesson.exercises?.length}`}
+                          {`${
+                            lesson.totalExerciseCompleted
+                              ? lesson.totalExerciseCompleted
+                              : 0
+                          } / ${lesson.exercises?.length}`}
                         </div>
                       )
                     }
