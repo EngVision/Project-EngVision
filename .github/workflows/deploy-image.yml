@@ -67,6 +67,7 @@ jobs:
   modify-yaml:
     needs: build-and-push-image
     runs-on: ubuntu-latest
+    environment: EngVision
 
     permissions:
       contents: write
@@ -78,6 +79,8 @@ jobs:
         with:
           repository: "EngVision/Engvision-Deployment"
           token: ${{ secrets.PAT_GH_ACTION }}
+          persist-credentials: false
+          fetch-depth: 0
 
       - name: Modify the image
         run: |
