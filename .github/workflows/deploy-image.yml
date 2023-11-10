@@ -67,6 +67,10 @@ jobs:
   modify-yaml:
     needs: build-and-push-image
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
         name: Changing the deployment yaml
