@@ -26,7 +26,7 @@ const TeacherSignUp: React.FC = () => {
   const apiNotification = useContext(NotificationContext)
   const [form] = Form.useForm<SignUpParams>()
 
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending, error, reset } = useMutation({
     mutationFn: authApi.signUp,
     onSuccess: (data) => {
       dispatch(setUser(data.data))
@@ -151,6 +151,7 @@ const TeacherSignUp: React.FC = () => {
         className="w-[560px] flex flex-col"
         layout="vertical"
         form={form}
+        onChange={reset}
       >
         <div className="flex gap-4">
           <Form.Item<SignUpParams>

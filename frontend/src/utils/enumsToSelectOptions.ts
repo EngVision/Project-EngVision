@@ -1,7 +1,7 @@
 import { SelectProps } from 'antd/es/select'
 
 export default function enumToSelectOptions(
-  enumType: Object,
+  enumType: object,
 ): SelectProps['options'] {
   return Object.values(enumType).map((v) => ({
     value: v,

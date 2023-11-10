@@ -22,14 +22,15 @@ const App: React.FC = () => {
           algorithm: theme
             ? themeAntd.darkAlgorithm
             : themeAntd.defaultAlgorithm,
+          token: {
+            fontFamily: 'Poppins, sans-serif',
+          },
           // token: {
           //   colorPrimary: theme ? '#5287ec' : '#2769e7',
           //   colorBgBase: theme ? '#1f1f1f' : '#ffffff',
           //   colorBgBlur: theme ? '#1f1f1f' : '#ffffff',
           //   colorTextPlaceholder: theme ? '#ffffff' : '#000000',
           //   colorText: theme ? '#ffffff' : '#000000',
-          //   fontFamily: 'Poppins, sans-serif',
-          //   fontSize: 14,
           // },
         }}
       >

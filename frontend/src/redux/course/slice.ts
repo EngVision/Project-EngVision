@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { COURSE_STATUS } from '../../utils/constants'
+import { COURSE_STATUS, SortByEnum } from '../../utils/constants'
 import { CourseDetails } from '../../services/coursesApi/types'
 
 export interface CourseState {
   list: CourseDetails[]
   status: COURSE_STATUS
   sortOption: {
-    sortBy: string
+    sortBy: SortByEnum
     order: 'asc' | 'desc' | ''
   }
   filterOptions: {
@@ -19,8 +19,8 @@ const initialState: CourseState = {
   list: [],
   status: COURSE_STATUS.all,
   sortOption: {
-    sortBy: '',
-    order: '',
+    sortBy: SortByEnum.createdAt,
+    order: 'desc',
   },
   filterOptions: {
     keyword: '',
@@ -44,6 +44,9 @@ const courseSlice = createSlice({
     setSortOption: (state, action) => {
       state.sortOption = action.payload
     },
+    clearSortOption: (state) => {
+      state.sortOption = initialState.sortOption
+    },
     setFilterOptions: (state, action) => {
       state.filterOptions = { ...state.filterOptions, ...action.payload }
     },
@@ -58,6 +61,7 @@ export const {
   addNewCourse,
   setCourseStatus,
   setSortOption,
+  clearSortOption,
   setFilterOptions,
   clearFilterOptions,
 } = courseSlice.actions

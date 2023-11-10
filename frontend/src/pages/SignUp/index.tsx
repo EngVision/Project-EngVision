@@ -13,7 +13,6 @@ import {
   FACEBOOK_LOGIN,
   GOOGLE_LOGIN,
   Gender,
-  PRIVATE_ROUTES,
   PUBLIC_ROUTES,
   ROLES,
   STUDENT_ROUTES,
@@ -26,7 +25,7 @@ const SignUp: React.FC = () => {
   const apiNotification = useContext(NotificationContext)
   const [form] = Form.useForm<SignUpParams>()
 
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending, error, reset } = useMutation({
     mutationFn: authApi.signUp,
     onSuccess: (data) => {
       dispatch(setUser(data.data))
@@ -36,7 +35,6 @@ const SignUp: React.FC = () => {
       navigate(STUDENT_ROUTES.getStarted)
     },
   })
-  console.log('🚀 ~ file: index.tsx:38 ~ error:', error)
 
   const onFinish = async (values: SignUpParams) => {
     const newUser = {
@@ -151,6 +149,7 @@ const SignUp: React.FC = () => {
         className="w-[560px] flex flex-col"
         layout="vertical"
         form={form}
+        onChange={reset}
       >
         <div className="flex gap-4">
           <Form.Item<SignUpParams>

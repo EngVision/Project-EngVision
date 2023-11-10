@@ -15,7 +15,7 @@ const SignIn: React.FC = () => {
   const dispatch = useAppDispatch()
   const apiNotification = useContext(NotificationContext)
 
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending, error, reset } = useMutation({
     mutationFn: authApi.signIn,
   })
 
@@ -98,6 +98,7 @@ const SignIn: React.FC = () => {
         autoComplete="off"
         layout="vertical"
         className="w-[36rem]"
+        onChange={reset}
       >
         <Form.Item<SignInParams>
           name="email"
