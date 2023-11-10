@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { QueryDto } from 'src/common/dto/query.dto';
 import { Order, Role, SubmissionStatus } from 'src/common/enums';
 import { GradingDto } from './dto/grading.dto';
+import { SubmissionQueryDto } from './dto/submission-query.dto';
 import { SubmissionDto } from './dto/submission.dto';
 import { UpdateSubmissionDto } from './dto/update-submission.dto';
 import {
@@ -102,26 +102,30 @@ export class SubmissionsService {
   }
 
   async findByUser(
-    query: QueryDto,
+    query: SubmissionQueryDto,
     userId: string,
     roles: Role[],
   ): Promise<[SubmissionDto[], number]> {
+    const { limit, page, sortBy, order, ...filter } = query;
+
     const documentQuery = {
-      skip: query.page * query.limit,
-      limit: query.limit,
-      sort: { [query.sortBy]: query.order === Order.asc ? 1 : -1 },
+      skip: page * limit,
+      limit: limit,
+      sort: { [sortBy]: order === Order.asc ? 1 : -1 },
     };
 
     let filterQuery;
 
     if (roles.includes(Role.Teacher)) {
       filterQuery = {
+        ...filter,
         teacher: userId,
         needGrade: true,
         $expr: { $eq: ['$totalDone', '$totalQuestion'] },
       };
     } else {
       filterQuery = {
+        ...filter,
         user: userId,
       };
     }

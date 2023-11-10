@@ -22,7 +22,7 @@ export class Exam {
   })
   course: string;
 
-  @Prop({ required: true, type: SchemaTypes.ObjectId, ref: User.name })
+  @Prop({ type: SchemaTypes.ObjectId, ref: User.name, default: null })
   creator: string;
 
   @Prop({ required: true })

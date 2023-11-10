@@ -25,6 +25,7 @@ import { JwtPayload } from '../auth/types';
 import { GradingDto } from './dto/grading.dto';
 import { SubmissionDto } from './dto/submission.dto';
 import { SubmissionsService } from './submissions.service';
+import { SubmissionQueryDto } from './dto/submission-query.dto';
 
 @ApiTags('Submissions')
 @Controller('submissions')
@@ -35,7 +36,7 @@ export class SubmissionsController {
   @UseGuards(AtGuard)
   @ApiResponseList(SubmissionDto)
   async findAll(
-    @Query() query: QueryDto,
+    @Query() query: SubmissionQueryDto,
     @CurrentUser() user: JwtPayload,
     @Res() res: Response,
   ) {
