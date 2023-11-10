@@ -77,7 +77,7 @@ jobs:
         name: Changing the deployment yaml
         with:
           repository: "EngVision/Engvision-Deployment"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_GH_ACTION }}
 
       - name: Modify the image
         run: |
