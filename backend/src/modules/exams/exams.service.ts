@@ -74,12 +74,15 @@ export class ExamsService {
 
     shuffleArray(exercises);
 
-    return new this.examModel({
+    const newExam = new this.examModel({
       title: 'Entrance Exam',
       description: 'Entrance Exam',
       level: level,
       parts: exercises.slice(0, 4).map(exercise => exercise._id),
     });
+    newExam.save();
+
+    return newExam;
   }
 
   async addPart(id: string, partId: string): Promise<ExamDocument> {
