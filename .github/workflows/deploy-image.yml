@@ -74,14 +74,12 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v2
         name: Changing the deployment yaml
         with:
           repository: "EngVision/Engvision-Deployment"
-          token: ${{ secrets.PAT_GH_ACTION }}
-          persist-credentials: false
-          fetch-depth: 0
-
+        env:
+          ACCESS_TOKEN: ${{ secrets.PAT_GH_ACTION }}
       - name: Modify the image
         run: |
           git config --global user.name 'minhtringuyennn'
