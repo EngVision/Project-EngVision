@@ -1,18 +1,13 @@
 import { Outlet } from 'react-router-dom'
-import { LogoIcon, LogoImageIcon } from '../components/Icons'
+import { LogoIcon } from '../components/Icons'
 
 const NoLayout = () => {
   return (
-    <div className="h-screen overflow-y-hidden">
-      <div className="m-5 h-[1vh]">
-        <LogoImageIcon
-          className="block lg:hidden ml-[6px]"
-          width={40}
-          height={40}
-        />
+    <div className="h-screen overflow-y-hidden flex flex-col">
+      <div className="m-4">
         <LogoIcon className="hidden lg:block" />
       </div>
-      <div className="flex justify-center items-center h-[90vh]">
+      <div className="flex flex-1 justify-center items-center py-10 px-20 pt-2">
         <Outlet />
       </div>
     </div>
