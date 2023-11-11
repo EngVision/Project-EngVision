@@ -11,6 +11,7 @@ import Preview from './Preview'
 import Section from './Section'
 import { CourseDetails } from '../../../services/coursesApi/types'
 import { NotificationContext } from '../../../contexts/notification'
+import ConfirmDeleteModal from '../../../components/Modal/ConfirmDeleteModal'
 
 const { TabPane } = Tabs
 
@@ -21,13 +22,15 @@ const TeacherCourseDetail = () => {
   const isPublished = useWatch('isPublished', form)
   const apiNotification = useContext(NotificationContext)
 
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   const fetchCourseDetail = async () => {
     const courseDetail = await coursesApi.getCourseDetails(courseId)
     form.setFieldsValue(courseDetail)
     return courseDetail
   }
 
-  const { isLoading } = useQuery({
+  const { isLoading, isRefetching } = useQuery({
     queryKey: ['course', courseId],
     queryFn: fetchCourseDetail,
   })
@@ -86,7 +89,7 @@ const TeacherCourseDetail = () => {
     setActiveKey(key)
   }
 
-  if (isLoading) return <AppLoading />
+  if (isLoading || isRefetching) return <AppLoading />
 
   return (
     <div className="flex flex-col bg-[#FFFCF7] p-[1.5rem] rounded-md h-full">
@@ -150,18 +153,27 @@ const TeacherCourseDetail = () => {
 
         <div className="flex justify-between mt-8">
           <div className="flex gap-4">
-            <Button
-              type="primary"
-              danger
-              onClick={handleDelete}
-              loading={deleteCourseMutation.isPending}
-              disabled={
-                updateCourseMutation.isPending ||
-                publishCourseMutation.isPending
-              }
-            >
-              Delete
-            </Button>
+            <div>
+              <Button
+                type="primary"
+                danger
+                onClick={() => setIsModalOpen(true)}
+                loading={deleteCourseMutation.isPending}
+                disabled={
+                  updateCourseMutation.isPending ||
+                  publishCourseMutation.isPending
+                }
+              >
+                Delete
+              </Button>
+              <ConfirmDeleteModal
+                isOpen={isModalOpen}
+                type="course"
+                isLoading={deleteCourseMutation.isPending}
+                onClose={() => setIsModalOpen(false)}
+                onDelete={handleDelete}
+              />
+            </div>
 
             <Button
               className="text-primary border-primary"

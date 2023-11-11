@@ -1,7 +1,8 @@
 import { Button, Popover } from 'antd'
 import React from 'react'
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
-import { setSortOption } from '../../../redux/course/slice'
+import { clearSortOption, setSortOption } from '../../../redux/course/slice'
+import { SortByEnum } from '../../../utils/constants'
 
 const SortDropdown = () => {
   const dispatch = useAppDispatch()
@@ -10,12 +11,12 @@ const SortDropdown = () => {
   const sortOptions = [
     {
       label: 'Price ascending',
-      sortBy: 'price',
+      sortBy: SortByEnum.price,
       order: 'asc',
     },
     {
       label: 'Price descending',
-      sortBy: 'price',
+      sortBy: SortByEnum.price,
       order: 'desc',
     },
   ]
@@ -33,12 +34,7 @@ const SortDropdown = () => {
               key={index}
               onClick={() => {
                 if (isActive) {
-                  dispatch(
-                    setSortOption({
-                      sortBy: '',
-                      order: '',
-                    }),
-                  )
+                  dispatch(clearSortOption())
                 } else {
                   dispatch(
                     setSortOption({

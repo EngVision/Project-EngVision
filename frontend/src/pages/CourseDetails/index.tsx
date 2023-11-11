@@ -11,6 +11,7 @@ import CourseContent from './CourseContent'
 import Overview from './Overview'
 import Reviews from './Reviews'
 import React from 'react'
+import CustomImage from '../../components/common/CustomImage'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {
@@ -46,11 +47,10 @@ const CourseDetailsPage = () => {
       <div className="flex flex-col bg-bgNeutral p-5 rounded-md shadow-lg">
         <div className="flex h-60 mb-8">
           <div className="h-full w-[18.75rem] mr-8 rounded-lg overflow-hidden">
-            <img
+            <CustomImage
               className="object-cover w-full h-full"
               src={`${UPLOAD_FILE_URL}${courseDetail.thumbnail}`}
-              alt="thumbnail"
-            />
+            ></CustomImage>
           </div>
           <div className="flex flex-col h-full justify-between">
             <div className="flex text-sm">

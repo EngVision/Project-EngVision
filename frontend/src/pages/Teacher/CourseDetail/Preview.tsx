@@ -48,7 +48,7 @@ const Preview = ({ form }: PreviewProps) => {
         <div className="flex items-center leading-6">
           <StarIcon className="text-[#FD6267] mr-1.5" />
           <span className="mr-1.5 font-bold">
-            {form.getFieldValue('avgStar')}
+            {form.getFieldValue('avgStar') || 0}
           </span>
           <Form.Item name="reviews" noStyle>
             <div className="mr-1.5 text-[#706E68]">

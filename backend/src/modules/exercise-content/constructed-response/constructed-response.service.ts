@@ -66,17 +66,16 @@ export class ConstructedResponseService extends ExerciseContentService {
     const correctAnswer = (
       await this.constructedResponseModel.findById(id).select('correctAnswer')
     ).correctAnswer;
-
     const { detail, explanation } = correctAnswer;
-
     const submission = {
       question: id,
       answer,
       correctAnswer: detail,
       explanation,
     };
-
-    const isCorrect = answer.toLowerCase() === detail.toLowerCase();
+    const isCorrect = detail
+      ? answer.toLowerCase() === detail.toLowerCase()
+      : null;
 
     return {
       ...submission,

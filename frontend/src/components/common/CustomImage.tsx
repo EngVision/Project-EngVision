@@ -12,7 +12,7 @@ const CustomImage = ({
   src = '',
   alt = '',
   fallback = 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-  onClick = () => { },
+  onClick = () => {},
   className = '',
 }: CustomImageProps) => {
   const imageRef = useRef<HTMLImageElement | null>(null)

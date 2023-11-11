@@ -190,3 +190,8 @@ export enum AccountStatus {
   Pending = 'Pending',
   Blocked = 'Blocked',
 }
+
+export enum SortByEnum {
+  createdAt = 'createdAt',
+  price = 'price',
+}

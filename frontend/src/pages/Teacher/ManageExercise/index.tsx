@@ -297,8 +297,7 @@ function ManageExercise() {
                 type="primary"
                 ghost
                 shape="circle"
-                size="large"
-                icon={<ArrowLeftIcon />}
+                icon={<ArrowLeftIcon width={20} height={20} />}
                 onClick={() =>
                   navigate(exerciseId ? '../..' : '..', { relative: 'path' })
                 }

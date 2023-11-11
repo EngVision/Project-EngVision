@@ -67,20 +67,27 @@ jobs:
   modify-yaml:
     needs: build-and-push-image
     runs-on: ubuntu-latest
+    environment: EngVision
+
+    permissions:
+      contents: write
+      packages: write
+
     steps:
       - uses: actions/checkout@v3
         name: Changing the deployment yaml
         with:
           repository: "EngVision/Engvision-Deployment"
-
+          token: ${{ secrets.PAT_GH_ACTION }}
       - name: Modify the image
         run: |
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
-          sed -i "s+ghcr.io/engvision/project-engvision:frontend.*+ghcr.io/engvision/project-engvision:frontend-${{ github.run_number }}+g" evs-fe-deployment.yml
-          sed -i "s+ghcr.io/engvision/project-engvision:backend.*+ghcr.io/engvision/project-engvision:backend-${{ github.run_number }}+g" evs-be-deployment.yml
+          git config --global user.name 'minhtringuyennn'
+          git config --global user.email 'contact@minhtringuyennn.com'
+          sed -i "s+ghcr.io/engvision/project-engvision:frontend.*+ghcr.io/engvision/project-engvision:frontend-${{ github.run_number }}+g" ./k8s/evs-fe-deployment.yml
+          sed -i "s+ghcr.io/engvision/project-engvision:backend.*+ghcr.io/engvision/project-engvision:backend-${{ github.run_number }}+g" ./k8s/evs-be-deployment.yml
           git add .
           git commit -m 'Github Actions - Deploy build ver ${{ github.run_number }}'
           git push origin main
         env:
           RUN_NUMBER: ${{ github.run_number }}
+          PAT_GH_ACTION: ${{ secrets.PAT_GH_ACTION }}
