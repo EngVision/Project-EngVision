@@ -22,6 +22,7 @@ export interface ExerciseSchema {
   level?: CEFRLevel
   content: QuestionPayload[]
   id?: string
+  needGrade?: boolean
   contentQuestion?: {
     text: string
     image: string

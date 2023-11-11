@@ -153,14 +153,12 @@ const ManageUsers = () => {
     {
       title: 'Name',
       dataIndex: 'name',
-      width: '18%',
       key: 'name',
       render: (text) => <a>{text}</a>,
     },
     {
       title: 'Email',
       dataIndex: 'email',
-      width: '18%',
       key: 'email',
     },
     {
@@ -177,7 +175,6 @@ const ManageUsers = () => {
     {
       title: 'Level',
       dataIndex: 'level',
-      width: '100px',
       key: 'level',
       render: (level: string) => {
         level = level ? level : 'B1'
@@ -194,7 +191,6 @@ const ManageUsers = () => {
     {
       title: 'Create Date',
       dataIndex: 'createdAt',
-      width: '120px',
       key: 'createDate',
       render: (date) => {
         return date ? getFormattedDate(date) : ''
@@ -225,7 +221,8 @@ const ManageUsers = () => {
     {
       title: 'Action',
       key: 'action',
-      width: '80px',
+      fixed: 'right',
+      width: '100px',
       render: (_, user) => (
         <Dropdown
           menu={
@@ -363,7 +360,6 @@ const ManageUsers = () => {
         blockUserFunc={blockUser}
       />
       <Table
-        className="table-bg-white"
         loading={
           (isLoading && !firstLoad) ||
           approveMutation.isPending ||
@@ -380,7 +376,7 @@ const ManageUsers = () => {
           showSizeChanger: false,
         }}
         onChange={handleTableChange}
-        scroll={{ y: 'calc(100vh - 401px)' }}
+        scroll={{ y: 'calc(100vh - 401px)', x: 'calc(100%)' }}
       />
     </div>
   )

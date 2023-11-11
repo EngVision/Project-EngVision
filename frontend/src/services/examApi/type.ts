@@ -23,3 +23,13 @@ export interface Entrance {
   parts: string[]
   createdAt?: string
 }
+
+export interface Part {
+  id: string
+  title: string
+  description: string
+}
+
+export interface ExamDetail extends Omit<ExamParams, 'parts'> {
+  parts: Part[]
+}

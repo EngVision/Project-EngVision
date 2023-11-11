@@ -12,7 +12,7 @@ interface MakeSentenceProps extends QuestionPayload {
     answers: string[][]
     audio?: string
   }
-  exerciseId: string
+  exerciseId?: string
   result?: MakeSentenceResponse
   setIsSubmittable: (value: boolean) => void
 }
