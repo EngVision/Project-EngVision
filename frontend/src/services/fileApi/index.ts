@@ -13,7 +13,7 @@ const fileApi = {
     formData.append('file', file)
 
     try {
-      const res: ResponseData = await axiosClient.post(`${PREFIX}`, formData, {
+      const res: ResponseData = await axiosClient.post(PREFIX, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -21,7 +21,7 @@ const fileApi = {
           onProgress?.({ percent: (event.loaded / (event.total ?? 1)) * 100 })
         },
       })
-      return res
+      return res.data
     } catch (error) {
       console.error('Error post file details:', error)
       throw error
@@ -48,7 +48,7 @@ const fileApi = {
           },
         },
       )
-      return res
+      return res.data
     } catch (error) {
       console.error('Error post file details:', error)
       throw error
@@ -57,7 +57,7 @@ const fileApi = {
   delete: async (id: string): Promise<ResponseData> => {
     try {
       const res: ResponseData = await axiosClient.delete(`${PREFIX}${id}`)
-      return res
+      return res.data
     } catch (error) {
       console.error('Error post file details:', error)
       throw error
