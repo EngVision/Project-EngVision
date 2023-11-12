@@ -10,7 +10,7 @@ const Header = () => {
   const user = useAppSelector((state) => state.app.user)
 
   return (
-    <div className="flex items-center py-9">
+    <div className="flex items-center pt-9 pb-6">
       <div className="flex-1 flex justify-end">
         {/* <Search /> */}
 
