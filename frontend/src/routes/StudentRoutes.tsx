@@ -7,7 +7,6 @@ import Statistic from '../pages/Statistic'
 import { PRIVATE_ROUTES, STUDENT_ROUTES } from '../utils/constants'
 import ExercisesAndExams from '../pages/ExercisesAndExams'
 import GetStarted from '../pages/Student/GetStarted'
-import EntranceExam from '../pages/Student/EntranceExam'
 import NoLayout from '../layouts/NoLayout'
 import DoExercise from '../pages/DoExercise'
 import DoExam from '../pages/DoExam'
@@ -73,17 +72,13 @@ export const studentRoutes: RouteObject[] = [
             path: ':level',
             children: [
               {
-                path: 'exercise',
+                path: 'exam',
                 children: [
                   {
-                    element: <DoExercise />,
-                    path: ':exerciseId',
+                    element: <DoExam />,
+                    path: ':examId',
                   },
                 ],
-              },
-              {
-                element: <EntranceExam />,
-                path: '',
               },
             ],
           },
