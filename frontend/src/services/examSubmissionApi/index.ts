@@ -13,13 +13,13 @@ export const examSubmissionApi = {
       `${PREFIX}/${examId}/submit-answer/`,
       data,
     )
-    return res.data
+    return res.data.data
   },
 
   getExamSubmissionByExamId: async (
     examId: string,
   ): Promise<ExamSubmissionResponse> => {
     const res = await axiosClient.get(`${PREFIX}/exams/${examId}`)
-    return res.data
+    return res.data.data
   },
 }

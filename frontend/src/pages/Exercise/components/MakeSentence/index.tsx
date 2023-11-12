@@ -43,10 +43,7 @@ function MakeSentence(props: MakeSentenceProps) {
 
   useEffect(() => {
     form.setFieldValue('answer', Array(questionArr.length - 1).fill(''))
-    if (result) {
-      form.setFieldValue('answer', result.correctAnswer)
-    }
-  }, [props])
+  }, [question])
 
   return (
     <div>

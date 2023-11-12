@@ -8,23 +8,23 @@ const PREFIX = 'auth/'
 const authApi = {
   fetchAuthUser: async (): Promise<IUser> => {
     const res: ResponseData = await axiosClient.get(`${PREFIX}me`)
-    return res.data
+    return res.data.data
   },
   signIn: async (data: SignInParams) => {
     const res: ResponseData = await axiosClient.post(`${PREFIX}login`, data)
-    return res
+    return res.data
   },
   signInWithGoogle: async () => {
     const res: ResponseData = await axiosClient.get(`${PREFIX}google/login`)
-    return res
+    return res.data
   },
   signUp: async (data: SignUpParams) => {
     const res: ResponseData = await axiosClient.post(`${PREFIX}register`, data)
-    return res
+    return res.data
   },
   logout: async () => {
     const res: ResponseData = await axiosClient.post(`${PREFIX}logout`)
-    return res
+    return res.data
   },
 }
 

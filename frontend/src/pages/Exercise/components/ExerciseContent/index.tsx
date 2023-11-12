@@ -61,7 +61,6 @@ function ExerciseContent({
         return (
           <MakeSentence
             {...content}
-            exerciseId={exercise.id}
             result={submission?.detail[questionIndex]}
             setIsSubmittable={setIsSubmittable}
           />
