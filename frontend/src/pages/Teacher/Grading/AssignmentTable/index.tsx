@@ -98,6 +98,8 @@ const AssignmentTable = () => {
       title: 'Action',
       key: 'action',
       align: 'center',
+      fixed: 'right',
+      width: 100,
       render: (_, record) => (
         <Tag
           className="cursor-pointer bg-alternative text-white px-4 py-1"
@@ -124,7 +126,11 @@ const AssignmentTable = () => {
             {submissionList ? submissionList[0]?.course?.title : ''}
           </h3>
           {submissionList && (
-            <Table columns={columns} dataSource={submissionList} />
+            <Table
+              columns={columns}
+              dataSource={submissionList}
+              scroll={{ x: '80vw' }}
+            />
           )}
         </>
       )}

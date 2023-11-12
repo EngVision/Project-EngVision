@@ -2,6 +2,7 @@ import { Button, Form, Input } from 'antd'
 import React, { useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
+import { useMutation } from '@tanstack/react-query'
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import { NotificationContext } from '../../contexts/notification'
 import { useAppDispatch } from '../../hooks/redux'
@@ -9,7 +10,7 @@ import { setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
 import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
-import { useMutation } from '@tanstack/react-query'
+import Logo from '../../components/Icons/Logo'
 
 const SignIn: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -83,11 +84,9 @@ const SignIn: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col items-center bg-bgNeutral py-8 px-10 rounded-[16px] self-center">
-      <div className="mb-8 flex flex-col items-center">
-        <h4 className=" text-primary text-center font-bold text-4xl mb-4">
-          Welcome back!
-        </h4>
+    <div className="flex flex-col items-center bg-bgNeutral py-8 px-10 rounded-[16px] self-center shadow-2xl">
+      <div className="mb-8 flex flex-col items-center gap-4">
+        <Logo width={250} />
         <p className="text-dark font-light">Let's start learning right now!</p>
       </div>
 
@@ -154,6 +153,9 @@ const SignIn: React.FC = () => {
         {error && (
           <p className="text-secondary">Email or password is incorrect!</p>
         )}
+        <div className="flex justify-end">
+          <Link to="/forgot-password">Forgot Password?</Link>
+        </div>
 
         <Form.Item className="mt-4">
           <Button

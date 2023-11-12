@@ -11,8 +11,8 @@ const Header = () => {
 
   return (
     <div className="flex items-center py-9">
-      <div className="flex-1 flex justify-between">
-        <Search />
+      <div className="flex-1 flex justify-end">
+        {/* <Search /> */}
 
         <div className="flex items-center gap-4">
           <NotificationIcon width={40} height={40} />

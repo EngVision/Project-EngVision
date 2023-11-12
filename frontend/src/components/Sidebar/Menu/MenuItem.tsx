@@ -1,12 +1,13 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { MenuItemType } from '../types'
-
+import { useAppSelector } from '../../../hooks/redux'
 type Props = {
   item: MenuItemType
 }
 
 const MenuItem = ({ item }: Props) => {
+  const isCollapsed = useAppSelector((state) => state.app.isSidebarCollapsed)
   return (
     <NavLink
       to={item.path}
@@ -16,7 +17,7 @@ const MenuItem = ({ item }: Props) => {
       }
     >
       <div className="flex items-center w-[24px]">{item.icon}</div>
-      <span className="hidden lg:block">{item.title}</span>
+      {isCollapsed ? '' : <span>{item.title}</span>}
     </NavLink>
   )
 }
