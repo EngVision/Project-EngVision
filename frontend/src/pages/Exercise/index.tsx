@@ -115,7 +115,7 @@ function Exercise({
       onFinish={onFinish}
       className="h-full w-full flex flex-col md:flex-row md:justify-center relative"
     >
-      <div className="flex-1 min-h-[0px] flex flex-col w-full justify-between align-middle">
+      <div className="flex-1 min-h-[0px] py-[5px] flex flex-col w-full justify-between align-middle">
         <div className="flex justify-between">
           <Button
             type="primary"
