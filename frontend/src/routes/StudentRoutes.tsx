@@ -2,14 +2,14 @@ import { RouteObject } from 'react-router-dom'
 import DefaultLayout from '../layouts/DefaultLayout'
 import CourseDetailsPage from '../pages/CourseDetails'
 import Discover from '../pages/Discover'
-import Exercise from '../pages/Exercise'
 import MyHub from '../pages/MyHub'
 import Statistic from '../pages/Statistic'
 import { PRIVATE_ROUTES, STUDENT_ROUTES } from '../utils/constants'
 import ExercisesAndExams from '../pages/ExercisesAndExams'
 import GetStarted from '../pages/Student/GetStarted'
-import EntranceExam from '../pages/Student/EntranceExam'
 import NoLayout from '../layouts/NoLayout'
+import DoExercise from '../pages/DoExercise'
+import DoExam from '../pages/DoExam'
 
 export const studentRoutes: RouteObject[] = [
   {
@@ -24,6 +24,10 @@ export const studentRoutes: RouteObject[] = [
       {
         element: <Statistic />,
         path: PRIVATE_ROUTES.statistic,
+      },
+      {
+        element: <DoExam />,
+        path: 'exam/:examId',
       },
       {
         path: 'discover',
@@ -43,8 +47,8 @@ export const studentRoutes: RouteObject[] = [
                 path: 'exercise',
                 children: [
                   {
-                    element: <Exercise />,
-                    path: ':id',
+                    element: <DoExercise />,
+                    path: ':exerciseId',
                   },
                 ],
               },
@@ -68,17 +72,13 @@ export const studentRoutes: RouteObject[] = [
             path: ':level',
             children: [
               {
-                path: 'exercise',
+                path: 'exam',
                 children: [
                   {
-                    element: <Exercise />,
-                    path: ':id',
+                    element: <DoExam />,
+                    path: ':examId',
                   },
                 ],
-              },
-              {
-                element: <EntranceExam />,
-                path: '',
               },
             ],
           },

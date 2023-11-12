@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   ExamSubmission,
@@ -107,6 +107,10 @@ export class ExamSubmissionsService {
       .populate('exam', 'title description')
       .populate('user', 'firstName lastName avatar');
 
+    if (!submission) {
+      throw new NotFoundException('Submission not found');
+    }
+
     return {
       ...submission.toObject(),
       progress: Math.round(submission.totalDone / submission.totalQuestion),
@@ -118,6 +122,10 @@ export class ExamSubmissionsService {
       .findById(id)
       .populate('exam', 'title description')
       .populate('user', 'firstName lastName avatar');
+
+    if (!submission) {
+      throw new NotFoundException('Submission not found');
+    }
 
     return {
       ...submission.toObject(),

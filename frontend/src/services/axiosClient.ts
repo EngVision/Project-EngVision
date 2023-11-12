@@ -24,7 +24,7 @@ const setupAxiosInterceptor = () => {
   })
 
   const interceptor = axiosClient.interceptors.response.use(
-    (response) => response.data,
+    (response) => response,
     async (error) => {
       if (error.response?.status !== 401) {
         return Promise.reject(error.response)

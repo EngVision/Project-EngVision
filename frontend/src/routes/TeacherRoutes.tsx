@@ -1,6 +1,5 @@
 import { RouteObject } from 'react-router-dom'
 import Exam from '../pages/Exam'
-import Exercise from '../pages/Exercise'
 import Statistic from '../pages/Statistic'
 import Grading from '../pages/Teacher/Grading/Index'
 import TeacherCourseDetail from '../pages/Teacher/CourseDetail'
@@ -8,9 +7,9 @@ import TeacherCourses from '../pages/Teacher/Courses'
 import LessonDetail from '../pages/Teacher/LessonDetail'
 import ManageExercise from '../pages/Teacher/ManageExercise'
 import { PRIVATE_ROUTES, TEACHER_ROUTES } from '../utils/constants'
-
 import DefaultLayout from '../layouts/DefaultLayout'
 import AssignmentTable from '../pages/Teacher/Grading/AssignmentTable'
+import GradeExercise from '../pages/Teacher/GradeExercise'
 
 const teacherRoutes: RouteObject[] = [
   {
@@ -83,8 +82,8 @@ const teacherRoutes: RouteObject[] = [
                     path: '',
                   },
                   {
-                    element: <Exercise />,
-                    path: 'exercises/:id/submissions/:submissionId',
+                    element: <GradeExercise />,
+                    path: 'exercises/:exerciseId/submissions/:submissionId',
                   },
                 ],
               },
@@ -106,10 +105,6 @@ const teacherRoutes: RouteObject[] = [
         path: PRIVATE_ROUTES.statistic,
       },
     ],
-  },
-  {
-    element: <Exercise />,
-    path: PRIVATE_ROUTES.exercise,
   },
 ]
 

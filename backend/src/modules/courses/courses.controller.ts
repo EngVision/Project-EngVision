@@ -79,6 +79,7 @@ export class CoursesController {
       (user.roles.includes(Role.Teacher) &&
         query.status === StatusCourseSearch.Attended) ||
       (user.roles.includes(Role.Student) &&
+        !user.roles.includes(Role.Admin) &&
         (query.status === StatusCourseSearch.Published ||
           query.status === StatusCourseSearch.Draft))
     ) {
@@ -92,8 +93,8 @@ export class CoursesController {
         data: courses,
         message: 'Courses',
         total: total,
-        limit: query.limit ? query.limit : 20,
-        offset: query.page && query.limit ? (query.page - 1) * query.limit : 0,
+        limit: query.limit,
+        offset: query.page * query.limit,
       }),
     );
   }
