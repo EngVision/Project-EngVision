@@ -1,10 +1,9 @@
-import { Avatar } from 'antd'
 import { useAppSelector } from '../../hooks/redux'
-import { getFileUrl } from '../../utils/common'
 import { NotificationIcon } from '../Icons'
 import DarkModeButton from './DarkModeButton'
 import Search from './Search'
 import LocalesButton from './LocalesButton'
+import UserSettings from './UserSettings'
 
 const Header = () => {
   const user = useAppSelector((state) => state.app.user)
@@ -18,15 +17,7 @@ const Header = () => {
           <NotificationIcon width={40} height={40} />
           <LocalesButton />
           <DarkModeButton />
-          {user && (
-            <Avatar
-              className={`${user?.avatar ? '' : 'bg-blue-400 text-white'}`}
-              src={getFileUrl(user?.avatar)}
-              size="default"
-            >
-              {user?.avatar ? '' : user?.lastName[0]}
-            </Avatar>
-          )}
+          <UserSettings user={user} />
         </div>
       </div>
     </div>
