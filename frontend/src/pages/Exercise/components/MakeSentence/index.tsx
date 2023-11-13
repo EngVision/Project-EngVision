@@ -12,7 +12,7 @@ interface MakeSentenceProps extends QuestionPayload {
     answers: string[][]
     audio?: string
   }
-  exerciseId: string
+  exerciseId?: string
   result?: MakeSentenceResponse
   setIsSubmittable: (value: boolean) => void
 }
@@ -43,10 +43,7 @@ function MakeSentence(props: MakeSentenceProps) {
 
   useEffect(() => {
     form.setFieldValue('answer', Array(questionArr.length - 1).fill(''))
-    if (result) {
-      form.setFieldValue('answer', result.correctAnswer)
-    }
-  }, [props])
+  }, [question])
 
   return (
     <div>

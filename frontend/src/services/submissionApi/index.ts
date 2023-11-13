@@ -6,19 +6,19 @@ import type { GradePayload, SubmissionResponse } from './types'
 const PREFIX = 'submissions'
 
 const submissionApi = {
-  getSubmissionList: async (): Promise<ResponseData<SubmissionResponse[]>> =>
-    axiosClient.get(`${PREFIX}`),
+  getSubmissionList: async (): Promise<ResponseData<SubmissionResponse[]>> => {
+    const res = await axiosClient.get(PREFIX)
+    return res.data
+  },
 
   getSubmissionByExercise: async (id: string): Promise<SubmissionResponse> => {
     const res = await axiosClient.get(`${PREFIX}/exercise/${id}`)
-
-    return res.data
+    return res.data.data
   },
 
   getSubmissionById: async (id: string): Promise<SubmissionResponse> => {
     const res = await axiosClient.get(`${PREFIX}/${id}`)
-
-    return res.data
+    return res.data.data
   },
 
   gradeSubmission: async (
@@ -30,8 +30,7 @@ const submissionApi = {
       `${PREFIX}/${submissionId}/grade/${questionId}`,
       data,
     )
-
-    return res.data
+    return res.data.data
   },
 }
 

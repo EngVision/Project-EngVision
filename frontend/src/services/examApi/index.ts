@@ -1,28 +1,28 @@
 import axiosClient from '../axiosClient'
 import { ResponseData } from '../types'
-import { Entrance, ExamParams } from './type'
+import { ExamDetail, ExamParams, Entrance } from './type'
 
 const PREFIX = 'exams'
 
 export const examApi = {
   getExam: async () => {
-    const res: ResponseData = await axiosClient.get(`${PREFIX}`)
-    return res
+    const res: ResponseData = await axiosClient.get(PREFIX)
+    return res.data
   },
 
-  getExamById: async (id: string): Promise<ExamParams> => {
+  getExamById: async (id: string): Promise<ExamDetail> => {
     const res = await axiosClient.get(`${PREFIX}/${id}`)
-    return res.data
+    return res.data.data
   },
 
   getEntranceExam: async (level: string): Promise<Entrance> => {
     const res = await axiosClient.get(`${PREFIX}/entrance-exam?level=${level}`)
-    return res.data
+    return res.data.data
   },
 
   createExam: async (data: ExamParams): Promise<ExamParams> => {
-    const res = await axiosClient.post(`${PREFIX}`, data)
-    return res.data
+    const res = await axiosClient.post(PREFIX, data)
+    return res.data.data
   },
 
   postPartForExam: async (
@@ -30,7 +30,7 @@ export const examApi = {
     data: string[],
   ): Promise<ResponseData<ExamParams>> => {
     const res = await axiosClient.post(`${PREFIX}/${id}`, data)
-    return res.data
+    return res.data.data
   },
 
   updateExam: async (
@@ -38,7 +38,7 @@ export const examApi = {
     data: ExamParams,
   ): Promise<ResponseData<ExamParams>> => {
     const res = await axiosClient.patch(`${PREFIX}/${id}`, data)
-    return res.data
+    return res.data.data
   },
 
   deletePartForExam: async (
@@ -46,9 +46,11 @@ export const examApi = {
     partId: string,
   ): Promise<ResponseData<ExamParams>> => {
     const res = await axiosClient.delete(`${PREFIX}/${id}/parts/${partId}`)
-    return res.data
+    return res.data.data
   },
 
-  deleteExam: async (id: string): Promise<ResponseData<unknown>> =>
-    axiosClient.delete(`${PREFIX}/${id}`),
+  deleteExam: async (id: string): Promise<ResponseData<unknown>> => {
+    const res = await axiosClient.delete(`${PREFIX}/${id}`)
+    return res.data
+  },
 }

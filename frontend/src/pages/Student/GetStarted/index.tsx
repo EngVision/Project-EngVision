@@ -1,11 +1,12 @@
-import { Button, Select } from 'antd'
+import { Button, ConfigProvider, Select } from 'antd'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CEFRLevel, STUDENT_ROUTES } from '../../../utils/constants'
+import { examApi } from '../../../services/examApi'
 
 const GetStarted = () => {
   const navigate = useNavigate()
-  const [userLevel, setUserLevel] = useState<CEFRLevel>()
+  const [level, setLevel] = useState<string>('')
 
   const items = [
     {
@@ -34,24 +35,33 @@ const GetStarted = () => {
     },
   ]
 
-  const yesTest = () => {
-    navigate(STUDENT_ROUTES.getStarted + '/' + userLevel)
-  }
-
-  const noTest = () => {
-    navigate(STUDENT_ROUTES.discover)
+  const startEntranceTest = async () => {
+    const exam = await examApi.getEntranceExam(level)
+    navigate(`./${level}/exam/${exam.id}`)
   }
 
   const optionTest = () => {
     return (
       <div className="flex flex-col my-5">
-        <h1>Do you want to take a retest of your level?</h1>
+        <h1 className="text-blue-600">
+          Do you want to take a retest of your level?
+        </h1>
         <div className="flex flex-row gap-5 my-4 justify-center">
-          <Button className="w-30" type="primary" onClick={yesTest}>
-            Yes
-          </Button>
-          <Button className="w-30" type="default" onClick={noTest}>
+          <Button
+            className="w-40"
+            type="default"
+            size="large"
+            onClick={() => navigate(STUDENT_ROUTES.discover)}
+          >
             No
+          </Button>
+          <Button
+            className="w-40"
+            size="large"
+            type="primary"
+            onClick={startEntranceTest}
+          >
+            Yes
           </Button>
         </div>
       </div>
@@ -59,40 +69,41 @@ const GetStarted = () => {
   }
 
   const onChange = (value: string) => {
-    console.log(`selected ${value}`)
-    setUserLevel(value as CEFRLevel)
+    setLevel(value)
   }
 
-  const onSearch = (value: string) => {
-    console.log('search:', value)
-  }
-
-  // Filter `option.label` match the user type `input`
-  const filterOption = (
-    input: string,
-    option?: { label: string; value: string },
-  ) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
   return (
-    <div className="flex flex-col justify-center content-center ">
-      {!userLevel ? (
-        <>
-          <h1>Please select your current level</h1>
-          <span>
-            Choose your current level from the list below. If you are not sure,
-            you can take a test to find out.
+    <div className="justify-center content-center">
+      {!level ? (
+        <div className="w-[620px] flex flex-col">
+          <h1 className="text-[38px] text-blue-600">
+            Please select your current level
+          </h1>
+          <span className="text-xl my-2 text-zinc-700">
+            Choose your current level from the list below. Afterward, you can
+            participate in a test to reassess.
           </span>
-          <Select
-            className="mt-5"
-            style={{ width: 120 }}
-            showSearch
-            placeholder="Select a level"
-            optionFilterProp="children"
-            onChange={onChange}
-            onSearch={onSearch}
-            filterOption={filterOption}
-            options={items}
-          />
-        </>
+          <div className="w-full text-center">
+            <ConfigProvider
+              theme={{
+                components: {
+                  Select: {
+                    fontSize: 18,
+                  },
+                },
+              }}
+            >
+              <Select
+                className="mt-5 cursor-pointe"
+                size="large"
+                placeholder="Select a level"
+                optionFilterProp="children"
+                onChange={onChange}
+                options={items}
+              />
+            </ConfigProvider>
+          </div>
+        </div>
       ) : (
         optionTest()
       )}

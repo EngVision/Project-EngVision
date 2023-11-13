@@ -51,10 +51,10 @@ export class CoursesService {
 
     switch (data.status) {
       case StatusCourseSearch.All:
-        if (user.roles.includes(Role.Student))
-          dataFilter.isPublished = { $eq: true };
-        else if (user.roles.includes(Role.Teacher)) {
+        if (user.roles.includes(Role.Teacher)) {
           dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
+        } else if (user.roles.includes(Role.Student)) {
+          dataFilter.isPublished = { $eq: true };
         }
         break;
       case StatusCourseSearch.Attended:
@@ -144,10 +144,10 @@ export class CoursesService {
         $facet: {
           courses: [
             {
-              $skip: data.page && data.limit ? (data.page - 1) * data.limit : 0,
+              $skip: data.page * data.limit,
             },
             {
-              $limit: data.limit ? data.limit : 20,
+              $limit: data.limit,
             },
           ],
           total: [
@@ -215,6 +215,7 @@ export class CoursesService {
     //Teacher get not own course
     if (
       user.roles.includes(Role.Teacher) &&
+      !user.roles.includes(Role.Admin) &&
       courseCheck.teacher.toString() !== user.sub
     ) {
       throw new ForbiddenException('Access denied');

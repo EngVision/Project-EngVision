@@ -6,8 +6,8 @@ const PREFIX = 'exercises'
 
 const exerciseApi = {
   createExercise: async (data: ExerciseSchema): Promise<ExerciseSchema> => {
-    const res = await axiosClient.post(`${PREFIX}`, data)
-    return res.data
+    const res = await axiosClient.post(PREFIX, data)
+    return res.data.data
   },
 
   updateExercise: async (
@@ -15,22 +15,22 @@ const exerciseApi = {
     data: ExerciseSchema,
   ): Promise<ExerciseSchema> => {
     const res = await axiosClient.patch(`${PREFIX}/${id}`, data)
-    return res.data
+    return res.data.data
   },
 
   getExercise: async (id: string): Promise<ExerciseSchema> => {
     const res = await axiosClient.get(`${PREFIX}/${id}`)
-    return res.data
+    return res.data.data
   },
 
   getAllExercise: async (): Promise<ExerciseSchema[]> => {
-    const res = await axiosClient.get(`${PREFIX}`)
-    return res.data
+    const res = await axiosClient.get(PREFIX)
+    return res.data.data
   },
 
   deleteExercise: async (id: string): Promise<ExerciseSchema> => {
     const res = await axiosClient.delete(`${PREFIX}/${id}`)
-    return res.data
+    return res.data.data
   },
 
   submitAnswer: async (
@@ -42,7 +42,7 @@ const exerciseApi = {
       `${PREFIX}/${exerciseId}/submit-answer/${questionId}`,
       data,
     )
-    return res.data
+    return res.data.data
   },
 }
 

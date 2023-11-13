@@ -1,5 +1,5 @@
 import { ROLES, PRIVATE_ROUTES } from '../../../utils/constants'
-import { MessageQuestionIcon, SettingsIcon } from '../../Icons'
+import { SettingsIcon } from '../../Icons'
 
 import { useAppSelector } from '../../../hooks/redux'
 import { MenuItemType } from '../types'
@@ -14,11 +14,11 @@ const SUB_MENU_ITEMS: MenuItemType[] = [
     path: PRIVATE_ROUTES.settings,
     title: 'Account',
   },
-  {
-    icon: <MessageQuestionIcon />,
-    path: PRIVATE_ROUTES.helpCenter,
-    title: 'Help Center',
-  },
+  // {
+  //   icon: <MessageQuestionIcon />,
+  //   path: PRIVATE_ROUTES.helpCenter,
+  //   title: 'Help Center',
+  // },
 ]
 
 const Menu = () => {
