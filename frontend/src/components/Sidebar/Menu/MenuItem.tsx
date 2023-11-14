@@ -8,7 +8,7 @@ type Props = {
 
 const MenuItem = ({ item }: Props) => {
   const isCollapsed = useAppSelector((state) => state.app.isSidebarCollapsed)
-  return (
+  return item.path ? (
     <NavLink
       to={item.path}
       className={({ isActive }) =>
@@ -19,6 +19,11 @@ const MenuItem = ({ item }: Props) => {
       <div className="flex items-center w-[24px]">{item.icon}</div>
       {isCollapsed ? '' : <span>{item.title}</span>}
     </NavLink>
+  ) : (
+    <span className="flex gap-4 text-base font-semibold p-4 rounded-[12px] hover:bg-bgNeutral w-fit lg:w-full cursor-pointer">
+      <div className="flex items-center w-[24px]">{item.icon}</div>
+      {item.element}
+    </span>
   )
 }
 

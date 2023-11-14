@@ -106,7 +106,7 @@ input[type='number']::-webkit-outer-spin-button {
 
 .theme-light {
   --bg-default: #f3efe2;
-  --bg-Neutral: #fffcf7;
+  --bg-Neutral: #091e4212;
   --bg-NeutralHover: #091e4224;
   --primary: #2769e7;
   --primaryHover: #1c4494;
@@ -119,8 +119,8 @@ input[type='number']::-webkit-outer-spin-button {
 }
 .theme-dark {
   --bg-default: #1d2125;
-  --bg-Neutral: #22272b;
-  --bg-NeutralHover: #2c333a;
+  --bg-Neutral: #4d5967ed;
+  --bg-NeutralHover: #272c31d4;
   --primary: #5287ec;
   --primaryHover: #4969a9;
   --primary2: #6695e9;
