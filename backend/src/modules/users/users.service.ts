@@ -14,7 +14,7 @@ import { User, UserDocument } from './schemas/user.schema';
 import { emailContent } from './template/email.content';
 import { FilesService } from '../files/files.service';
 import { UserQueryDto } from './dto/user-query.dto';
-import { Order, AccountStatus, Role } from 'src/common/enums';
+import { Order, AccountStatus, Role, Gender } from 'src/common/enums';
 
 @Injectable()
 export class UsersService {
@@ -31,6 +31,8 @@ export class UsersService {
         pass: process.env.MAIL_PASSWORD,
       },
     });
+
+    this.createAdmin();
   }
 
   /* Create new user */
@@ -41,13 +43,35 @@ export class UsersService {
       await this.filesService.getDefaultAvatar(newUser._id, newUser.email)
     ).id;
 
-    if (newUser.role === 'Teacher') {
+    if (newUser.role === 'Teacher' || newUser.role === 'Admin') {
       newUser.status = AccountStatus.Pending;
     }
 
     await newUser.save();
 
     return newUser;
+  }
+
+  async createAdmin() {
+    const admin = await this.userModel.findOne({
+      email: 'engvision.dev@gmail.com',
+    });
+
+    if (admin) return;
+
+    const newUser = new this.userModel({
+      email: 'engvision.dev@gmail.com',
+      password: 'EngVision2023@',
+      firstName: 'Admin',
+      role: Role.Admin,
+      gender: Gender.Other,
+    });
+
+    newUser.avatar = (
+      await this.filesService.getDefaultAvatar(newUser._id, newUser.email)
+    ).id;
+
+    await newUser.save();
   }
 
   async createWithSSO(user: User): Promise<UserDocument> {
@@ -63,7 +87,7 @@ export class UsersService {
       ).id;
     }
 
-    if (newUser.role === 'Teacher') {
+    if (newUser.role === 'Teacher' || newUser.role === 'Admin') {
       newUser.status = AccountStatus.Pending;
     }
 
@@ -79,9 +103,11 @@ export class UsersService {
       { returnDocument: 'after' },
     );
 
-    if (updatedUser.role === 'Teacher') {
+    if (updatedUser.role === 'Teacher' || updatedUser.role === 'Admin') {
       updatedUser.status = AccountStatus.Pending;
     }
+
+    await updatedUser.save();
 
     return updatedUser;
   }
