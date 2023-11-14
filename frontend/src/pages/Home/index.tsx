@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
+import { useMemo } from 'react'
 import TeacherLearn from '../../components/Icons/TeacherLearn'
 import { useAppSelector } from '../../hooks/redux'
 import coursesApi from '../../services/coursesApi'
 import submissionApi from '../../services/submissionApi'
 import { CEFRLevel, COURSE_STATUS, NextDue, Role } from '../../utils/constants'
-import { useMemo } from 'react'
 
 const Home = () => {
   const user = useAppSelector((state) => state.app.user)
@@ -58,7 +58,7 @@ const Home = () => {
           {exercise.totalInProcess} upcoming assignments due and have to finish
           0 courses!
         </div>
-        <div>
+        <div className="scale-up">
           <TeacherLearn height={241} width={240} />
         </div>
       </div>

@@ -257,7 +257,7 @@ const ExamDetail = () => {
     )
   }
 
-  const handleOk = async (data: any) => {
+  const handleOk = async () => {
     if (currentExam) {
       await examApi.deleteExam(currentExam?.id as string)
       openNotificationWithIcon('success', 'Delete exam successfully.')
