@@ -1,10 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
+import { useMemo } from 'react'
 import TeacherLearn from '../../components/Icons/TeacherLearn'
 import { useAppSelector } from '../../hooks/redux'
 import coursesApi from '../../services/coursesApi'
 import submissionApi from '../../services/submissionApi'
 import { CEFRLevel, COURSE_STATUS, NextDue, Role } from '../../utils/constants'
-import { useMemo } from 'react'
+import StudentLearn from '../../components/Icons/StudentLearn'
+import AdminLearn from '../../components/Icons/AdminLearn'
 
 const Home = () => {
   const user = useAppSelector((state) => state.app.user)
@@ -52,14 +54,26 @@ const Home = () => {
 
   const DashboardNoti = () => {
     return (
-      <div className="flex flex-row px-5 justify-between bg-[#41AB3F] rounded-xl items-center">
+      <div
+        className={`${user?.role == Role.Teacher && ' bg-[#41AB3F] '} 
+        ${user?.role == Role.Student && ' bg-blue-600 '} 
+        ${
+          user?.role == Role.Admin && ' bg-yellow-600 '
+        } flex flex-row px-5 justify-between rounded-xl items-center`}
+      >
         <div className="basis-1/4 text-xl text-white">
           Hi, {user?.firstName + ' ' + user?.lastName}! <br /> You have{' '}
           {exercise.totalInProcess} upcoming assignments due and have to finish
           0 courses!
         </div>
-        <div>
-          <TeacherLearn height={241} width={240} />
+        <div className="scale-up">
+          {user?.role == Role.Teacher && (
+            <TeacherLearn height={241} width={240} />
+          )}
+          {user?.role == Role.Student && (
+            <StudentLearn height={241} width={240} />
+          )}
+          {user?.role == Role.Admin && <AdminLearn height={241} width={240} />}
         </div>
       </div>
     )
