@@ -17,12 +17,12 @@ const Course = ({ course }: CourseProps) => {
 
   return (
     <Card
-      className="w-full"
+      className="min-w-[19rem] max-w-[21rem]"
       cover={
         <CustomImage
           src={`${UPLOAD_FILE_URL}${course.thumbnail}`}
           onClick={() => navigate(course.id)}
-          className="cursor-pointer h-[200px]"
+          className="cursor-pointer h-[200px] object-cover"
         />
       }
     >

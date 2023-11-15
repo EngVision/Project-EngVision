@@ -22,6 +22,10 @@ const coursesApi = {
     const res = await axiosClient.get(`${PREFIX}${getQueryParamsUrl(query)}`)
     return res.data
   },
+  getSuggestedCourses: async (): Promise<ResponseData<CourseDetails[]>> => {
+    const res = await axiosClient.get(`${PREFIX}suggested-courses`)
+    return res.data
+  },
 
   create: async (
     data: Omit<CourseDetails, 'id'>,

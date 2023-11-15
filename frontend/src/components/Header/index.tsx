@@ -1,7 +1,7 @@
 import { useAppSelector } from '../../hooks/redux'
 import { NotificationIcon } from '../Icons'
 import DarkModeButton from './DarkModeButton'
-import Search from './Search'
+// import Search from './Search'
 import LocalesButton from './LocalesButton'
 import UserSettings from './UserSettings'
 

@@ -106,3 +106,7 @@ export interface ReviewParams {
 export interface GetCourseProps {
   status: COURSE_STATUS
 }
+
+export interface GetSubmissionProps {
+  course?: string
+}
