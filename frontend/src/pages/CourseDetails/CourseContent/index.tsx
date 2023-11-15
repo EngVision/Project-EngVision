@@ -16,13 +16,10 @@ const CourseContent = (course: CourseDetails) => {
 
   const { data: rawSubmissionList } = useQuery({
     queryKey: ['submissions'],
-    queryFn: submissionApi.getSubmissionList,
+    queryFn: () => submissionApi.getSubmissionList({ course: params.courseId }),
   })
-  const courseSubmissionList = rawSubmissionList?.data?.filter(
-    (submission) => submission.course?.id === params.courseId,
-  )
-  if (course.isAttended && courseSubmissionList?.length) {
-    courseSubmissionList.forEach((submission) => {
+  if (course.isAttended && rawSubmissionList?.data?.length) {
+    rawSubmissionList.data.map((submission) => {
       if (submission.totalDone === submission.totalQuestion) {
         completedExerciseIds.push(submission.exercise?.id)
       }
@@ -78,14 +75,14 @@ const CourseContent = (course: CourseDetails) => {
 
       <div className="border-dashed border-[1px] rounded-lg">
         {/* Sections */}
-        {course.sections.map((section, sectionIndex) => (
-          <Collapse
-            key={section.id}
-            accordion={true} // Set accordion for each panel
-            bordered={false} // Remove borders if desired
-            expandIconPosition="end"
-            onChange={() => {}} // Custom function when panel is expanded/collapsed
-          >
+
+        <Collapse
+          accordion={true} // Set accordion for each panel
+          bordered={false} // Remove borders if desired
+          expandIconPosition="end"
+          onChange={() => {}} // Custom function when panel is expanded/collapsed
+        >
+          {course.sections.map((section, sectionIndex) => (
             <Panel
               header={
                 <div className="flex items-center text-xl">
@@ -109,20 +106,20 @@ const CourseContent = (course: CourseDetails) => {
                   / {section.lessons.length}
                 </div>
               }
-              key={sectionIndex.toString()}
+              key={section.id}
             >
               {/* Lessons */}
-              {section.lessons?.map((lesson, lessonIndex) => (
-                <Collapse
-                  key={lesson.id}
-                  collapsible={course.isAttended ? 'header' : 'disabled'}
-                  className="pl-4"
-                  accordion={true} // Set accordion for each panel
-                  bordered={false} // Remove borders if desired
-                  expandIconPosition="end"
-                  onChange={() => {}} // Custom function when panel is expanded/collapsed
-                >
+
+              <Collapse
+                className="pl-4"
+                accordion={true} // Set accordion for each panel
+                bordered={false} // Remove borders if desired
+                expandIconPosition="end"
+                onChange={() => {}} // Custom function when panel is expanded/collapsed
+              >
+                {section.lessons?.map((lesson, lessonIndex) => (
                   <Panel
+                    collapsible={course.isAttended ? undefined : 'disabled'}
                     header={
                       <div className="flex items-center text-lg">
                         {lesson.completed && lesson.exercises?.length ? (
@@ -146,7 +143,7 @@ const CourseContent = (course: CourseDetails) => {
                         </div>
                       )
                     }
-                    key={lessonIndex.toString()}
+                    key={lesson.id}
                   >
                     {/* Exercise */}
                     {course.isAttended &&
@@ -188,11 +185,11 @@ const CourseContent = (course: CourseDetails) => {
                         </div>
                       ))}
                   </Panel>
-                </Collapse>
-              ))}
+                ))}
+              </Collapse>
             </Panel>
-          </Collapse>
-        ))}
+          ))}
+        </Collapse>
       </div>
     </div>
   )

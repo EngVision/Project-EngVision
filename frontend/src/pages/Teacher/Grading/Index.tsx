@@ -9,6 +9,7 @@ import coursesApi from '../../../services/coursesApi'
 import { examApi } from '../../../services/examApi'
 import AppLoading from '../../../components/common/AppLoading'
 import { COURSE_STATUS } from '../../../utils/constants'
+import submissionApi from '../../../services/submissionApi'
 enum Direction {
   left = 'left',
   right = 'right',
@@ -64,6 +65,23 @@ const Grading = () => {
     queryFn: async () =>
       coursesApi.getCourses({ status: COURSE_STATUS.published }),
   })
+  const { data: rawSubmissionList } = useQuery({
+    queryKey: ['submissions'],
+    queryFn: async () => submissionApi.getSubmissionList(null),
+  })
+  rawCourseList?.data?.map((course) => {
+    course.submissionAmount = 0
+    course.pendingSubmissionAmount = 0
+    rawSubmissionList?.data?.map((submission) => {
+      if (submission.course?.id === course.id) {
+        course.submissionAmount++
+        if (submission.grade) {
+          course.pendingSubmissionAmount++
+        }
+      }
+    })
+  })
+  console.log(rawCourseList?.data)
   const { data: rawExamList } = useQuery({
     queryKey: ['exam'],
     queryFn: async () => examApi.getExam(),
