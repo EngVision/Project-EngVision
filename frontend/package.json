@@ -28,7 +28,7 @@
     "@types/react-beautiful-dnd": "^13.1.5",
     "@uidotdev/usehooks": "^2.4.1",
     "antd": "^5.10.1",
-    "axios": "^1.5.0",
+    "axios": "^1.6.0",
     "classnames": "^2.3.2",
     "clsx": "^2.0.0",
     "history": "^5.3.0",
