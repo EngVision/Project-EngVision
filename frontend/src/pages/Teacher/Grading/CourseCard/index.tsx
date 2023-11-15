@@ -46,13 +46,9 @@ const CourseCard = ({ course }: CourseProps) => {
 
       <p className="text-sm font-bold uppercase py-4">{course.title}</p>
 
-      <p className="text-alternative">
-        {/* {course.ongoingExercises}  */}
-        123 assignments submitted
-      </p>
+      <p className="text-alternative">{course.submissionAmount} submissions</p>
       <p className="text-secondary">
-        {/* {course.dueExercises} */}
-        47 assignments are pending
+        {course.pendingSubmissionAmount} submission are pending
       </p>
     </Card>
   )

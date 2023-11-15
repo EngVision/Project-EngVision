@@ -83,6 +83,8 @@ export interface CourseDetails {
   isPublished: boolean
   tags: string[]
   totalLessons: number
+  submissionAmount: number
+  pendingSubmissionAmount: number
   createdAt: string
   updatedAt: string
 }
