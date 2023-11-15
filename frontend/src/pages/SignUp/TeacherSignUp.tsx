@@ -135,12 +135,12 @@ const TeacherSignUp: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col bg-bgNeutral p-8 rounded-[16px] gap-6">
+    <div className="flex flex-col bg-surface p-8 rounded-[16px] gap-6">
       <div className="flex flex-col items-center">
         <h4 className="text-center font-semibold text-4xl mb-4 text-primary">
           Welcome to EngVision
         </h4>
-        <p>Create an account and start learning!</p>
+        <p className="text-textSubtle">Create an account and start learning!</p>
       </div>
 
       <Form

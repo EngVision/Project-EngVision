@@ -14,6 +14,7 @@ module.exports = {
       },
       colors: {
         bgDefault: 'var(--bg-default)',
+        surface: 'var(--bg-surface)',
         bgNeutral: 'var(--bg-Neutral)',
         bgNeutralHover: 'var(--bg-NeutralHover)',
         primary: 'var(--primary)',

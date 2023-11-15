@@ -7,11 +7,10 @@ import { useEffect, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 
 type LogoutProps = {
-  open?: boolean
   className?: string
 }
 
-const Logout = ({ open = false, className }: LogoutProps) => {
+const Logout = ({ className }: LogoutProps) => {
   const dispatch = useAppDispatch()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -25,10 +24,6 @@ const Logout = ({ open = false, className }: LogoutProps) => {
   const handleLogout = async () => {
     logoutMutation.mutate()
   }
-
-  useEffect(() => {
-    setIsOpen(open)
-  }, [open])
 
   return (
     <>

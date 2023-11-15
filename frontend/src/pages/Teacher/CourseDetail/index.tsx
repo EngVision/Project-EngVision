@@ -92,7 +92,7 @@ const TeacherCourseDetail = () => {
   if (isLoading || isRefetching) return <AppLoading />
 
   return (
-    <div className="flex flex-col bg-[#FFFCF7] p-[1.5rem] rounded-md h-full">
+    <div className="flex flex-col bg-surface p-[1.5rem] rounded-md h-full">
       <Form
         name="teacher_course_overview"
         autoComplete="off"

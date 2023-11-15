@@ -1,4 +1,4 @@
-import { Button, Space } from 'antd'
+import { Button } from 'antd'
 import { useEffect, useState } from 'react'
 import ArrowLeft from '../../../components/Icons/ArrowLeft'
 import ArrowRight from '../../../components/Icons/ArrowRight'
@@ -94,7 +94,7 @@ const Grading = () => {
           <p className="font-bold text-3xl text-primary">
             {/* {t('Exercises.exercises')} */}
           </p>
-          <Space>
+          <div className="flex gap-3 mb-4">
             <Button
               type="primary"
               shape="circle"
@@ -113,7 +113,7 @@ const Grading = () => {
               disabled={disabledScrollRight}
               icon={<ArrowRight width={20} height={20} />}
             ></Button>
-          </Space>
+          </div>
         </div>
         {isLoading ? (
           <AppLoading />

@@ -109,7 +109,7 @@ export const UpdateProfile = () => {
                   <Input
                     defaultValue={user.firstName}
                     size="large"
-                    className="w-[100%] shadow-sm text-sm border-slate-300 hover:border-slate-40 rounded-md"
+                    className="w-[100%] shadow-sm text-sm hover:border-slate-40 rounded-md"
                   />
                 </Form.Item>
                 <Form.Item<ProfileParams>
@@ -120,7 +120,7 @@ export const UpdateProfile = () => {
                   <Input
                     defaultValue={user.lastName}
                     size="large"
-                    className="w-[100%] text-sm shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
+                    className="w-[100%] text-sm shadow-sm hover:border-slate-40 rounded-md"
                   />
                 </Form.Item>
               </div>
@@ -146,7 +146,7 @@ export const UpdateProfile = () => {
                   <Input
                     defaultValue={user.email}
                     size="large"
-                    className="text-sm w-[100%] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
+                    className="text-sm w-[100%] shadow-sm hover:border-slate-40 rounded-md"
                   />
                 </Form.Item>
                 {/* {user.phone && (
@@ -193,14 +193,14 @@ export const UpdateProfile = () => {
                 <Input.Password
                   placeholder="Enter old password"
                   size="large"
-                  className="border-slate-300 hover:border-slate-40 rounded-md shadow-sm"
+                  className="hover:border-slate-40 rounded-md shadow-sm"
                 />
               </Form.Item>
               <Form.Item<ProfileParams> name="password" label="New Password">
                 <Input.Password
                   placeholder="Enter new password"
                   size="large"
-                  className="border-slate-300 hover:border-slate-40 rounded-md shadow-sm"
+                  className="hover:border-slate-40 rounded-md shadow-sm"
                 />
               </Form.Item>
               <Form.Item<ProfileParams>
@@ -210,7 +210,7 @@ export const UpdateProfile = () => {
                 <Input.Password
                   placeholder="Enter retype new password"
                   size="large"
-                  className="border-slate-300 hover:border-slate-40 rounded-md shadow-sm"
+                  className="hover:border-slate-40 rounded-md shadow-sm"
                 />
               </Form.Item>
             </div>
@@ -221,7 +221,7 @@ export const UpdateProfile = () => {
   ]
 
   return (
-    <div>
+    <div className="h-full">
       {contextHolder}
       <Form
         name="validateOnly"
@@ -229,6 +229,7 @@ export const UpdateProfile = () => {
         autoComplete="off"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
+        className="h-full p-6 rounded-lg"
       >
         <Tabs
           defaultActiveKey="1"
@@ -240,11 +241,7 @@ export const UpdateProfile = () => {
             <Link to={PRIVATE_ROUTES.home}>
               <Button className="h-10 w-20">Cancel</Button>
             </Link>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="h-10 w-20 bg-[#2563EB]"
-            >
+            <Button type="primary" htmlType="submit" className="h-10 w-20 ">
               Save
             </Button>
           </Space>

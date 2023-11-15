@@ -76,7 +76,7 @@ const Section = ({ form }: SectionProps) => {
                                   />
                                 </Form.Item>
                               }
-                              className="!border-dashed border-2 !border-b-2 !border-gray-300 !rounded-lg"
+                              className="!border-dashed border-2 !border-b-2 !border-wolfGrey !rounded-lg"
                             >
                               <Form.Item>
                                 <Form.List name={[field.name, 'lessons']}>

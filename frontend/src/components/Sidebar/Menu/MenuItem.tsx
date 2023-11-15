@@ -22,7 +22,7 @@ const MenuItem = ({ item }: Props) => {
   ) : (
     <span className="flex gap-4 text-base font-semibold p-4 rounded-[12px] hover:bg-bgNeutral w-fit lg:w-full cursor-pointer">
       <div className="flex items-center w-[24px]">{item.icon}</div>
-      {item.element}
+      {!isCollapsed && item.element}
     </span>
   )
 }

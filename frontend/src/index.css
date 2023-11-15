@@ -106,6 +106,7 @@ input[type='number']::-webkit-outer-spin-button {
 
 .theme-light {
   --bg-default: #f3efe2;
+  --bg-surface: #ffffff;
   --bg-Neutral: #091e4212;
   --bg-NeutralHover: #091e4224;
   --primary: #2769e7;
@@ -119,6 +120,7 @@ input[type='number']::-webkit-outer-spin-button {
 }
 .theme-dark {
   --bg-default: #1d2125;
+  --bg-surface: #272a2d;
   --bg-Neutral: #4d5967ed;
   --bg-NeutralHover: #272c31d4;
   --primary: #5287ec;
@@ -163,4 +165,18 @@ input[type='number']::-webkit-outer-spin-button {
   to {
     transform: scale(1);
   }
+}
+
+:is(.css-dev-only-do-not-override-le3245):not(.ant-btn-primary),
+:is(.css-dev-only-do-not-override-aa3ixb).ant-btn-default,
+:is(.css-dev-only-do-not-override-le3245).ant-table-wrapper .ant-table {
+  background-color: var(--bg-surface);
+}
+
+.ant-select-selector {
+  background-color: var(--bg-surface) !important;
+}
+
+.ant-dropdown-menu {
+  background-color: #272a2d !important;
 }
