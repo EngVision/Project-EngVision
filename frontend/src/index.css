@@ -151,3 +151,16 @@ input[type='number']::-webkit-outer-spin-button {
 .ant-select-selection-item {
   font-size: 14px;
 }
+
+.scale-up {
+  animation: scaleUp 0.5s ease-in-out;
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.5);
+  }
+  to {
+    transform: scale(1);
+  }
+}

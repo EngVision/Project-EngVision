@@ -159,21 +159,6 @@ const ManageExam = () => {
     }
   }
 
-  const NotiModal = (title: any, description: any) => {
-    return (
-      <>
-        <Modal
-          title={title}
-          open={isModalOpen}
-          onOk={handleOk}
-          onCancel={handleCancel}
-        >
-          <span>{description}</span>
-        </Modal>
-      </>
-    )
-  }
-
   const showModalExam = (exam: ExamInfo) => {
     setIsModalOpen(true)
     setTitleNotiModal('Delete Exam')

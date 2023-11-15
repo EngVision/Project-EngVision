@@ -3,9 +3,14 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CEFRLevel, STUDENT_ROUTES } from '../../../utils/constants'
 import { examApi } from '../../../services/examApi'
+import React, { ReactNode } from 'react'
+interface ScaleUpProps {
+  children: ReactNode
+}
 
 const GetStarted = () => {
   const navigate = useNavigate()
+  const [tempLevel, setTempLevel] = useState<string>('')
   const [level, setLevel] = useState<string>('')
 
   const items = [
@@ -40,42 +45,52 @@ const GetStarted = () => {
     navigate(`./${level}/exam/${exam.id}`)
   }
 
+  const ScaleUp: React.FC<ScaleUpProps> = ({ children }) => {
+    return <div className="scale-up">{children}</div>
+  }
+
   const optionTest = () => {
     return (
-      <div className="flex flex-col my-5">
-        <h1 className="text-blue-600">
-          Do you want to take a retest of your level?
-        </h1>
-        <div className="flex flex-row gap-5 my-4 justify-center">
-          <Button
-            className="w-40"
-            type="default"
-            size="large"
-            onClick={() => navigate(STUDENT_ROUTES.discover)}
-          >
-            No
-          </Button>
-          <Button
-            className="w-40"
-            size="large"
-            type="primary"
-            onClick={startEntranceTest}
-          >
-            Yes
-          </Button>
+      <ScaleUp>
+        <div className="flex flex-col my-5 scale-up">
+          <h1 className="text-blue-600">
+            Would you like to take the English proficiency test or skip?
+          </h1>
+          <div className="flex flex-row gap-5 my-4 justify-center">
+            <Button
+              className="w-40"
+              type="default"
+              size="large"
+              onClick={() => navigate(STUDENT_ROUTES.discover)}
+            >
+              Skip
+            </Button>
+            <Button
+              className="w-40"
+              size="large"
+              type="primary"
+              onClick={startEntranceTest}
+            >
+              Confirm
+            </Button>
+          </div>
         </div>
-      </div>
+      </ScaleUp>
     )
   }
 
   const onChange = (value: string) => {
-    setLevel(value)
+    setTempLevel(value)
+  }
+
+  const onClick = () => {
+    setLevel(tempLevel)
   }
 
   return (
     <div className="justify-center content-center">
       {!level ? (
-        <div className="w-[620px] flex flex-col">
+        <div className="w-[620px] flex flex-col scale-up">
           <h1 className="text-[38px] text-blue-600">
             Please select your current level
           </h1>
@@ -101,6 +116,14 @@ const GetStarted = () => {
                 onChange={onChange}
                 options={items}
               />
+
+              <Button
+                disabled={!tempLevel ? true : false}
+                onClick={onClick}
+                size="large"
+              >
+                Confirm
+              </Button>
             </ConfigProvider>
           </div>
         </div>
