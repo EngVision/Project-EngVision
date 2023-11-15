@@ -1,86 +1,91 @@
-import Chat from '../pages/Chat'
+import { RouteObject } from 'react-router-dom'
+import DefaultLayout from '../layouts/DefaultLayout'
 import CourseDetailsPage from '../pages/CourseDetails'
 import Discover from '../pages/Discover'
-import Exam from '../pages/Exam'
-import Exercise from '../pages/Exercise'
-import HelpCenter from '../pages/HelpCenter'
-import Home from '../pages/Home'
-import MakeSentences from '../pages/Lesson/MakeSentences'
-import MultipleChoice from '../pages/Lesson/MultipleChoice'
 import MyHub from '../pages/MyHub'
 import Statistic from '../pages/Statistic'
-import { UpdateProfile } from '../pages/UpdateProfile'
 import { PRIVATE_ROUTES, STUDENT_ROUTES } from '../utils/constants'
-import RoleRoutes from './RoleRoutes'
-import type { RouteElement } from './types'
+import ExercisesAndExams from '../pages/ExercisesAndExams'
+import GetStarted from '../pages/Student/GetStarted'
+import NoLayout from '../layouts/NoLayout'
+import DoExercise from '../pages/DoExercise'
+import DoExam from '../pages/DoExam'
 
-const studentRoutes: RouteElement[] = [
+export const studentRoutes: RouteObject[] = [
   {
-    element: Home,
-    path: PRIVATE_ROUTES.home,
+    element: <DefaultLayout />,
+    children: [
+      { element: <MyHub />, path: STUDENT_ROUTES.myHub },
+      {
+        element: <ExercisesAndExams />,
+        path: STUDENT_ROUTES.exercisesAndExams,
+      },
+
+      {
+        element: <Statistic />,
+        path: PRIVATE_ROUTES.statistic,
+      },
+      {
+        element: <DoExam />,
+        path: 'exam/:examId',
+      },
+      {
+        path: 'discover',
+        children: [
+          {
+            element: <Discover />,
+            path: '',
+          },
+          {
+            path: ':courseId',
+            children: [
+              {
+                path: '',
+                element: <CourseDetailsPage />,
+              },
+              {
+                path: 'exercise',
+                children: [
+                  {
+                    element: <DoExercise />,
+                    path: ':exerciseId',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
   {
-    element: MyHub,
-    path: STUDENT_ROUTES.myHub,
-  },
-  {
-    element: Exam,
-    path: STUDENT_ROUTES.exam,
-  },
-  {
-    element: Exercise,
-    layout: null,
-    path: PRIVATE_ROUTES.exercise,
-  },
-  {
-    element: Discover,
-    path: STUDENT_ROUTES.discover,
-  },
-  {
-    element: Statistic,
-    path: PRIVATE_ROUTES.statistic,
-  },
-  {
-    element: Chat,
-    path: PRIVATE_ROUTES.chat,
-  },
-  {
-    element: MakeSentences,
-    path: PRIVATE_ROUTES.makeSentence,
-  },
-  {
-    element: UpdateProfile,
-    path: PRIVATE_ROUTES.settings,
-  },
-  {
-    element: HelpCenter,
-    path: PRIVATE_ROUTES.helpCenter,
-  },
-  {
-    element: CourseDetailsPage,
-    path: STUDENT_ROUTES.courseDetails,
-  },
-  {
-    element: Exercise,
-    layout: null,
-    path: PRIVATE_ROUTES.exercise,
-  },
-  {
-    element: Discover,
-    path: STUDENT_ROUTES.courses,
-  },
-  {
-    element: MultipleChoice,
-    path: PRIVATE_ROUTES.multipleChoice,
-  },
-  {
-    element: UpdateProfile,
-    path: PRIVATE_ROUTES.updateProfile,
+    element: <NoLayout />,
+    children: [
+      {
+        path: 'get-started',
+        children: [
+          {
+            element: <GetStarted />,
+            path: '',
+          },
+          {
+            path: ':level',
+            children: [
+              {
+                path: 'exam',
+                children: [
+                  {
+                    element: <DoExam />,
+                    path: ':examId',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
 ]
 
-const StudentRoutes = () => {
-  return <RoleRoutes routes={studentRoutes} />
-}
-
-export default StudentRoutes
+export default studentRoutes

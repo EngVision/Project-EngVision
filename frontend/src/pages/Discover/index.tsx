@@ -1,59 +1,62 @@
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
+import { useQuery } from '@tanstack/react-query'
 import { CourseCard } from '../../components/CourseCard'
 import coursesApi from '../../services/coursesApi'
-import type { CourseParams } from '../../services/coursesApi/types'
 import { COURSE_STATUS } from '../../utils/constants'
+import AppLoading from '../../components/common/AppLoading'
+
 const Discover = () => {
   const { t } = useTranslation()
-  const [courseList, setCourseList] = useState<CourseParams[]>([])
   const status: any = { status: COURSE_STATUS.all }
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const courses: any = await coursesApi.getCourses({ status })
-        setCourseList(courses.data)
-      } catch (error) {
-        console.error('Error fetching courses:', error)
-      }
-    }
 
-    fetchCourses()
-  }, [])
+  const { data: rawSuggestedList } = useQuery({
+    queryKey: ['suggestedCourses'],
+    queryFn: () => coursesApi.getSuggestedCourses(),
+  })
 
+  const { data: rawCourseList, isLoading } = useQuery({
+    queryKey: ['courses', status],
+    queryFn: () => coursesApi.getCourses(status),
+  })
+
+  if (isLoading) return <AppLoading />
   return (
     <>
-      <div>
-        <div className="m-6 mt-0">
-          <p className="font-bold text-3xl text-blue-600">
-            {t('Discover.discover')}
-          </p>
-        </div>
-        <div className="m-6">
-          <div
-            style={{
-              background: 'rgba(0,255,0,0.02)',
-            }}
-            className="grid gap-4 grid-cols-4"
-          >
-            {courseList &&
-              courseList.map((course) => <CourseCard course={course} />)}
+      {isLoading ? (
+        <AppLoading />
+      ) : (
+        <>
+          {rawSuggestedList && (
+            <div className="m-6">
+              <p className="font-bold text-3xl text-primary mb-6">
+                Recommended
+              </p>
+              <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+                {rawSuggestedList.data.map((course) => (
+                  <CourseCard course={course} key={course.id} />
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="m-6">
+            <div className="flex justify-between items-center">
+              <p className="font-bold text-3xl text-primary mb-6">All Course</p>
+            </div>
+
+            <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+              {rawCourseList?.data.length ? (
+                rawCourseList.data.map((course) => (
+                  <CourseCard course={course} key={course.id} />
+                ))
+              ) : (
+                <div className="col-span-4 text-center italic text-textSubtle">
+                  <p className="text-lg">No courses found</p>
+                </div>
+              )}
+            </div>
           </div>
-          <div
-            id="active"
-            style={{
-              background: 'rgba(0,0,255,0.02)',
-            }}
-          />
-          <div
-            id="completed"
-            style={{
-              background: '#FFFBE9',
-            }}
-          />
-        </div>
-      </div>
+        </>
+      )}
     </>
   )
 }

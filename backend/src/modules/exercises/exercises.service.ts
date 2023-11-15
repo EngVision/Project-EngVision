@@ -1,13 +1,10 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AssignmentsService } from '../assignments/assignments.service';
-import { QuestionResult } from '../assignments/schemas/assignment.schema';
+import { CEFRLevel, Role } from 'src/common/enums';
 import { ExerciseContentServiceFactory } from '../exercise-content/exercise-content-factory.service';
+import { QuestionResult } from '../submissions/schemas/submission.schema';
+import { SubmissionsService } from '../submissions/submissions.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise, ExerciseDocument } from './schemas/exercise.schema';
@@ -17,7 +14,7 @@ export class ExercisesService {
   constructor(
     @InjectModel(Exercise.name) private exerciseModel: Model<Exercise>,
     private readonly exerciseContentServiceFactory: ExerciseContentServiceFactory,
-    private readonly assignmentsService: AssignmentsService,
+    private readonly submissionsService: SubmissionsService,
   ) {}
 
   async create(
@@ -37,8 +34,34 @@ export class ExercisesService {
     return await newExercise.populate('content');
   }
 
-  async find(): Promise<ExerciseDocument[]> {
-    const exercises = await this.exerciseModel.find({}).populate('content');
+  async find(
+    query: UpdateExerciseDto & { _id?: any } = {},
+    roles?: Role[],
+  ): Promise<ExerciseDocument[]> {
+    if (roles && roles.includes(Role.Admin)) {
+      const exercises = await this.exerciseModel.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'creator',
+            foreignField: '_id',
+            as: 'creator',
+          },
+        },
+        {
+          $match: {
+            'creator.role': Role.Admin,
+          },
+        },
+      ]);
+
+      return exercises.map(exercise => ({
+        ...exercise,
+        creator: exercise.creator[0]._id,
+      }));
+    }
+
+    const exercises = await this.exerciseModel.find(query);
 
     return exercises;
   }
@@ -60,7 +83,7 @@ export class ExercisesService {
   ): Promise<ExerciseDocument> {
     const exercise = await this.exerciseModel.findById(id);
 
-    if (!exercise || exercise.creator !== userId) {
+    if (!exercise || exercise.creator.toString() !== userId) {
       throw new NotFoundException('Exercise not found');
     }
 
@@ -69,15 +92,16 @@ export class ExercisesService {
     );
 
     const prevQuestions = exercise.content.map(id => id.toString());
-    const currQuestions = updateExerciseDto.content.map(({ id }) => id);
+    const currQuestions = updateExerciseDto.content
+      ? updateExerciseDto.content.map(({ id }) => id)
+      : prevQuestions;
     const removedQuestions = prevQuestions.filter(
       id => !currQuestions.includes(id),
     );
 
-    const content = await service.updateContent(
-      updateExerciseDto.content,
-      removedQuestions,
-    );
+    const content = updateExerciseDto.content
+      ? await service.updateContent(updateExerciseDto.content, removedQuestions)
+      : exercise.content;
 
     const updatedExercise = await this.exerciseModel.findByIdAndUpdate(
       id,
@@ -106,12 +130,33 @@ export class ExercisesService {
     await exercise.deleteOne();
   }
 
+  async getEntranceExercises(level: CEFRLevel): Promise<ExerciseDocument[]> {
+    const exercises = await this.exerciseModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'creator',
+          foreignField: '_id',
+          as: 'creator',
+        },
+      },
+      {
+        $match: {
+          level: level,
+          'creator.role': Role.Admin,
+        },
+      },
+    ]);
+
+    return exercises;
+  }
+
   async submitAnswer(
     userId: string,
     exerciseId: string,
     questionId: string,
     answer: any,
-  ): Promise<QuestionResult> {
+  ): Promise<QuestionResult & { id: string }> {
     const exercise = await this.findOne(exerciseId);
 
     const service = await this.exerciseContentServiceFactory.createService(
@@ -120,15 +165,17 @@ export class ExercisesService {
 
     const result = await service.checkAnswer(questionId, answer);
 
-    await this.assignmentsService.update(userId, exercise.id, {
+    const { id } = await this.submissionsService.update(userId, exercise.id, {
       user: userId,
       exercise: exerciseId,
       exerciseType: exercise.type,
       totalQuestion: exercise.content.length,
       detail: [result],
       teacher: exercise.creator,
+      needGrade: exercise.needGrade,
+      course: exercise.course,
     });
 
-    return result;
+    return { ...result, id };
   }
 }

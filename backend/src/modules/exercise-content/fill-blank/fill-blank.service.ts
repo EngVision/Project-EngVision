@@ -1,11 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { QuestionResult } from 'src/modules/assignments/schemas/assignment.schema';
+import { QuestionResult } from 'src/modules/submissions/schemas/submission.schema';
 import { ExerciseContentService } from '../base-exercise-content.service';
 import { CreateFillBlankDto } from './dto/create-fill-blank.dto';
 import { FillBlank } from './schemas/fill-blank.schema';
-import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 
 @Injectable()
 export class FillBlankService extends ExerciseContentService {
@@ -24,34 +23,47 @@ export class FillBlankService extends ExerciseContentService {
       CreateFillBlankDto,
     );
 
-    if (!this.isValidQuestionList(validatedContent)) {
-      throw new BadRequestException(
-        `question.text, correctAnswer.detail: Number of answer must match with number of blank`,
-      );
-    }
+    this.validateQuestionList(validatedContent);
+    const transformedContent = this.transformAnswerList(validatedContent);
+    this.setDefaultExplain(transformedContent);
 
-    this.transformAnswerList(validatedContent);
-    this.setDefaultExplain(validatedContent);
-
-    const questionList = await this.fillBlankModel.insertMany(validatedContent);
+    const questionList = await this.fillBlankModel.insertMany(
+      transformedContent,
+    );
 
     return questionList.map(q => q.id);
   }
 
-  updateContent(
-    questionListDto: ExerciseQuestionDto[],
+  async updateContent(
+    updateQuestionListDto: CreateFillBlankDto[],
     removedQuestions: string[],
   ): Promise<string[]> {
-    throw new Error('Method not implemented.');
+    const validatedContent = await this.validate(
+      updateQuestionListDto,
+      CreateFillBlankDto,
+    );
+
+    this.validateQuestionList(validatedContent);
+    const transformedContent = this.transformAnswerList(validatedContent);
+    this.setDefaultExplain(transformedContent);
+
+    const bulkOps = this.updateBulkOps(transformedContent, removedQuestions);
+
+    const res = await this.fillBlankModel.bulkWrite(bulkOps);
+
+    return [
+      ...validatedContent.map(({ id }) => id).filter(id => !!id),
+      ...Object.values(res.insertedIds).map(id => id.toString()),
+    ];
   }
 
   async deleteContent(removedQuestion: string[]): Promise<void> {
     await this.fillBlankModel.bulkWrite([this.deleteBulkOps(removedQuestion)]);
   }
 
-  async checkAnswer(id: string, answer: string): Promise<QuestionResult> {
-    if (typeof answer !== 'string') {
-      throw new BadRequestException('Answer must be a string');
+  async checkAnswer(id: string, answer: string[]): Promise<QuestionResult> {
+    if (Array.isArray(answer) && typeof answer[0] !== 'string') {
+      throw new BadRequestException('Answer must be not empty string array');
     }
 
     const {
@@ -59,67 +71,72 @@ export class FillBlankService extends ExerciseContentService {
       correctAnswer: { detail, explanation },
     } = await this.fillBlankModel.findById(id);
 
-    if (!this.isValidQuestion(question.text, answer)) {
-      throw new BadRequestException(
-        'Number of answer must match with number of blank',
-      );
-    }
+    this.validateQuestion(question.text, this.answerToString(answer));
 
-    const transformAnswer = this.transformAnswer(question.text, answer);
-
-    const isCorrect = detail.toLowerCase() === transformAnswer.toLowerCase();
+    const isCorrect =
+      this.answerToString(detail) === this.answerToString(answer);
 
     return {
       question: id,
       isCorrect,
-      answer: transformAnswer,
+      answer,
       correctAnswer: detail,
       explanation,
     };
   }
 
-  isValidQuestionList(questionList: FillBlank[]): boolean {
-    return questionList.every(q =>
-      this.isValidQuestion(q.question.text, q.correctAnswer.detail),
+  validateQuestionList(questionList: CreateFillBlankDto[]): void {
+    questionList.forEach(q =>
+      this.validateQuestion(q.question.text, q.correctAnswer.detail),
     );
   }
 
-  isValidQuestion(question: string, answer: string): boolean {
+  validateQuestion(question: string, answer: string): void {
     const count = (question.match(/\[]/g) || []).length;
 
-    if (count === answer.split('/').length) {
-      return true; // return true if question text number of '[]' is match with number of correct answer
+    if (count !== answer.split(',').length) {
+      throw new BadRequestException(
+        `question.text, correctAnswer.detail: Number of answer must match with number of blank`,
+      ); // return true if question text number of '[]' is match with number of correct answer
     }
-
-    return false; // return false if question text does not contain '[]' or not valid
   }
 
-  transformAnswerList(questionList: FillBlank[]): void {
+  transformAnswerList(questionList: CreateFillBlankDto[]): FillBlank[] {
+    const res: FillBlank[] = [];
+
     questionList.forEach(q => {
-      q.correctAnswer.detail = this.transformAnswer(
-        q.question.text,
-        q.correctAnswer.detail,
-      );
+      res.push({
+        ...q,
+        correctAnswer: {
+          ...q.correctAnswer,
+          detail: this.transformAnswer(q.correctAnswer.detail),
+        },
+        question: {
+          ...q.question,
+          limits: q.correctAnswer.detail.split(',').map(s => s.trim().length),
+        },
+      });
     });
+
+    return res;
   }
 
-  transformAnswer(question: string, answer: string): string {
-    const answerSplitted = answer.split('/').map(s => s.trim());
+  transformAnswer(answer: string): string[] {
+    return answer.split(',').map(s => s.trim());
+  }
 
-    return question
-      .split('[]')
-      .reduce(
-        (prev, s, i) =>
-          `${prev}${s}${
-            answerSplitted[i] ? '<b>' + answerSplitted[i] + '</b>' : ''
-          }`,
-        '',
-      );
+  answerToString(answer: string[]): string {
+    return answer
+      .map(s => s.trim())
+      .join()
+      .toLowerCase();
   }
 
   setDefaultExplain(questionList: FillBlank[]): void {
     questionList.forEach(q => {
-      q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail}`;
+      q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail.join(
+        ', ',
+      )}`;
     });
   }
 }

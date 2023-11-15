@@ -1,40 +1,39 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { IUser } from '../../services/authApi/types'
 
 interface AppState {
-  userAccountId?: string
-  role: 'Student' | 'Teacher' | 'Admin' | ''
-  theme: string
+  user: IUser | null
+  darkMode: boolean
   locales: string
+  isSidebarCollapsed: boolean
 }
 
 const initialState: AppState = {
-  userAccountId: '',
-  role: '',
-  theme: localStorage.getItem('theme') || 'light',
-  locales: localStorage.getItem('locales') || 'en',
+  user: null,
+  darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
+  locales: 'en',
+  isSidebarCollapsed: false,
 }
 
 const appSlice = createSlice({
   initialState,
   name: 'app',
   reducers: {
-    setUserAccountId: (state, action) => {
-      state.userAccountId = action.payload
+    setUser: (state, action) => {
+      state.user = action.payload
     },
-    setRole: (state, action) => {
-      state.role = action.payload
-    },
-    toggleDarkMode: (state, action) => {
-      state.theme = action.payload
-      localStorage.setItem('theme', state.theme)
+    toggleDarkMode: (state) => {
+      state.darkMode = !state.darkMode
     },
     toggleLocales: (state, action) => {
       state.locales = action.payload
-      localStorage.setItem('locales', state.locales)
+    },
+    setSidebarCollapsed: (state, action) => {
+      state.isSidebarCollapsed = action.payload
     },
   },
 })
-export const { setUserAccountId, setRole, toggleDarkMode, toggleLocales } =
+export const { setUser, toggleDarkMode, toggleLocales, setSidebarCollapsed } =
   appSlice.actions
 
 export default appSlice.reducer

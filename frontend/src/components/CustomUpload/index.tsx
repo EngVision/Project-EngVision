@@ -2,23 +2,28 @@ import { UploadOutlined } from '@ant-design/icons'
 import { Button, Modal, Upload, UploadFile, UploadProps, message } from 'antd'
 import { useEffect, useState } from 'react'
 import fileApi from '../../services/fileApi'
+import { getFileUrl } from '../../utils/common'
 
 const MAX_COUNT = 20
 
 interface CustomUploadProps {
   fileList?: string[] | string
   onChange?: (value: any) => void
+  onRemove?: (value: any) => Promise<void>
   multiple?: boolean
   type?: UploadProps['listType']
   accept?: 'image' | 'audio' | 'video'
+  className?: string
 }
 
 function CustomUpload({
-  fileList: value = [],
+  className,
+  fileList: value,
   onChange,
   type = 'text',
   multiple = false,
   accept = 'image',
+  onRemove,
 }: CustomUploadProps) {
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewImage, setPreviewImage] = useState('')
@@ -34,26 +39,27 @@ function CustomUpload({
           ...value.map((v) => ({
             uid: v,
             name: v,
-            url: `${import.meta.env.VITE_SERVER_FILES_URL}${v}`,
+            url: getFileUrl(v),
           })),
         )
       } else {
         initialValue.push({
           uid: value,
           name: value,
-          url: `${import.meta.env.VITE_SERVER_FILES_URL}${value}`,
+          url: getFileUrl(value),
         })
+        setCurrFileId(value)
       }
 
       setFileList(initialValue)
     }
-  }, [])
+  }, [value])
 
   const handleCancel = () => setPreviewOpen(false)
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url) {
-      file.url = `${import.meta.env.VITE_SERVER_FILES_URL}${file.uid}`
+      file.url = getFileUrl(file.uid)
     }
 
     setPreviewImage(file.url)
@@ -73,8 +79,16 @@ function CustomUpload({
       if (status === 'done') {
         const { fileId } = file.response.data
         file.uid = fileId
-        file.url = `${import.meta.env.VITE_SERVER_FILES_URL}${file.uid}`
+        file.url = getFileUrl(file.uid)
         setCurrFileId(fileId)
+
+        onChange?.(
+          multiple
+            ? newFileList.map((file) => file.uid)
+            : file.status === 'done'
+            ? file.uid
+            : null,
+        )
 
         message.success(`${file.name} uploaded.`)
       } else if (status === 'error') {
@@ -82,22 +96,16 @@ function CustomUpload({
           newFileList.push({
             uid: currFileId,
             name: currFileId,
-            url: `${import.meta.env.VITE_SERVER_FILES_URL}${currFileId}`,
+            url: getFileUrl(currFileId),
           })
         }
+
         message.error(`${file.name} upload failed. (${file.error.message})`)
       }
 
       const resList = newFileList.filter((file) => file.status !== 'error')
 
       setFileList(resList)
-      onChange?.(
-        multiple
-          ? resList.map((file) => file.uid)
-          : file.status === 'done'
-          ? file.uid
-          : null,
-      )
     } catch (error) {
       message.error(String(error))
     }
@@ -105,8 +113,10 @@ function CustomUpload({
 
   const handleRemove: UploadProps['onRemove'] = async (file) => {
     try {
+      message.loading(`Removing ${file.name}...`)
       await fileApi.delete(file.uid)
 
+      await onRemove?.(null)
       setCurrFileId(null)
       message.success(`${file.name} removed.`)
     } catch (error) {
@@ -118,6 +128,8 @@ function CustomUpload({
     const { onSuccess, onError, file, onProgress } = options
 
     try {
+      message.loading(`uploading...`)
+
       let res
       if (multiple || !currFileId) {
         res = await fileApi.create(file, onProgress)
@@ -132,14 +144,30 @@ function CustomUpload({
         url: err.request.responseURL,
         method: err.config.method,
         name: err.statusText,
-        message: err.data.message,
+        message: err.data?.message,
       })
+    }
+  }
+
+  const uploadButton = () => {
+    switch (type) {
+      case 'text':
+      case 'picture':
+        return <Button icon={<UploadOutlined />}>Upload</Button>
+      default:
+        return (
+          <div className="flex flex-col items-center gap-1">
+            <UploadOutlined />
+            <div>Upload</div>
+          </div>
+        )
     }
   }
 
   return (
     <>
       <Upload
+        className={className}
         name="file"
         listType={type}
         accept={`${accept}/*`}
@@ -151,11 +179,7 @@ function CustomUpload({
         onPreview={handlePreview}
         onRemove={handleRemove}
       >
-        {type === 'text' ? (
-          <Button icon={<UploadOutlined />}>Upload</Button>
-        ) : (
-          'Upload'
-        )}
+        {uploadButton()}
       </Upload>
       <Modal
         open={previewOpen}

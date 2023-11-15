@@ -1,78 +1,61 @@
 import { Button, Form, Input } from 'antd'
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useContext, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
+import { useMutation } from '@tanstack/react-query'
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
+import { NotificationContext } from '../../contexts/notification'
 import { useAppDispatch } from '../../hooks/redux'
-import { setRole, setUserAccountId } from '../../redux/app/slice'
+import { setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
-import { PRIVATE_ROUTES, PUBLIC_ROUTES } from '../../utils/constants'
+import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
+import Logo from '../../components/Icons/Logo'
 
 const SignIn: React.FC = () => {
-  const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const apiNotification = useContext(NotificationContext)
 
-  const [error, setError] = useState<string>('')
+  const { mutate, isPending, error, reset } = useMutation({
+    mutationFn: authApi.signIn,
+  })
 
   const onFinish = async (values: SignInParams) => {
-    try {
-      const { data } = await authApi.signIn(values)
-      dispatch(setUserAccountId(data.id))
-      dispatch(setRole(data.role))
-      navigate(PRIVATE_ROUTES.home)
-    } catch (error) {
-      setError(error.response.data.message)
-    }
+    mutate(values, {
+      onSuccess: (data) => {
+        dispatch(setUser(data.data))
+        apiNotification.success({
+          message: 'Sign in successfully!',
+        })
+      },
+    })
   }
 
-  const fetchAuthUser = async (timer: ReturnType<typeof setInterval>) => {
+  const fetchAuthUser = async () => {
     try {
-      const { data } = await authApi.fetchAuthUser()
+      const data = await authApi.fetchAuthUser()
 
-      dispatch(setUserAccountId(data.id))
-      dispatch(setRole(data.role))
-      navigate(PRIVATE_ROUTES.home)
-      clearInterval(timer)
+      dispatch(setUser(data))
     } catch (error) {
       console.log('error: ', error)
     }
   }
 
+  useEffect(() => {
+    window.addEventListener('storage', fetchAuthUser)
+    return () => window.removeEventListener('storage', fetchAuthUser)
+  }, [])
+
   const signInWithGoogle = async () => {
-    let timer: ReturnType<typeof setInterval>
-
-    const newWindow = window.open(
-      `${import.meta.env.VITE_BASE_URL}auth/google/login`,
-      '_blank',
-      'width=500,height=600,left=400,top=200',
-    )
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser(timer)
-        }
-      }, 1000)
-    }
+    window.open(GOOGLE_LOGIN, '_blank', 'width=500,height=600,left=400,top=200')
   }
 
   const signInWithFacebook = async () => {
-    let timer: ReturnType<typeof setInterval>
-
-    const newWindow = window.open(
-      `${import.meta.env.VITE_BASE_URL}auth/facebook/login`,
+    window.open(
+      FACEBOOK_LOGIN,
       '_blank',
       'width=500,height=600,left=400,top=200',
     )
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser(timer)
-        }
-      }, 1000)
-    }
   }
 
   const SIGN_IN_VENDORS = [
@@ -88,92 +71,125 @@ const SignIn: React.FC = () => {
     },
   ]
 
+  const validateEmail = (email: string) => {
+    if (!email) return true
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+    return emailRegex.test(email)
+  }
+
+  const validatePassword = (password: string) => {
+    if (!password) return true
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/
+    return password && password.length >= 8 && passwordRegex.test(password)
+  }
+
   return (
-    <div className="bg-white p-[40px] rounded-[16px]">
-      <div>
-        <h4 className="text-center font-semibold text-[40px] mb-[32px]">
-          Welcome to EngVision!
-        </h4>
-        <p className=" text-textSubtle my-[20px]">Start learning right now!</p>
+    <div className="flex flex-col items-center bg-bgNeutral py-8 px-10 rounded-[16px] self-center shadow-2xl">
+      <div className="mb-8 flex flex-col items-center gap-4">
+        <Logo width={250} />
+        <p className="text-dark font-light">Let's start learning right now!</p>
       </div>
 
-      <div>
-        <Form
-          name="basic"
-          style={{ maxWidth: 600 }}
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          autoComplete="off"
-          onChange={() => setError('')}
+      <Form
+        name="basic"
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        autoComplete="off"
+        layout="vertical"
+        className="w-[36rem]"
+        onChange={reset}
+      >
+        <Form.Item<SignInParams>
+          name="email"
+          label="Email"
+          rules={[
+            { message: 'Please input your email!', required: true },
+            {
+              async validator(_, value) {
+                return new Promise((resolve, reject) => {
+                  if (validateEmail(value)) {
+                    resolve('')
+                  } else reject(new Error('Invalid email'))
+                })
+              },
+            },
+          ]}
         >
-          <Form.Item<SignInParams>
-            name="email"
-            rules={[{ message: 'Please input your email!', required: true }]}
+          <Input
+            placeholder="Email"
+            size="middle"
+            className="rounded-[8px] px-3 py-2"
+          />
+        </Form.Item>
+
+        <Form.Item<SignInParams>
+          name="password"
+          label="Password"
+          rules={[
+            { message: 'Please input your password!', required: true },
+            {
+              async validator(_, value) {
+                return new Promise((resolve, reject) => {
+                  if (validatePassword(value)) {
+                    resolve('')
+                  } else
+                    reject(
+                      new Error(
+                        'The password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number or special character',
+                      ),
+                    )
+                })
+              },
+            },
+          ]}
+        >
+          <Input.Password
+            placeholder="Password"
+            size="large"
+            className="rounded-[8px] px-3 py-2"
+          />
+        </Form.Item>
+
+        {error && (
+          <p className="text-secondary">Email or password is incorrect!</p>
+        )}
+        <div className="flex justify-end">
+          <Link to="/forgot-password">Forgot Password?</Link>
+        </div>
+
+        <Form.Item className="mt-4">
+          <Button
+            type="primary"
+            size="large"
+            shape="round"
+            htmlType="submit"
+            className="w-full h-11 rounded-xl mt-3"
+            loading={isPending}
           >
-            <Input
-              placeholder="Email"
-              size="middle"
-              className="rounded-[8px] h-[40px]"
-            />
-          </Form.Item>
+            Sign In
+          </Button>
+        </Form.Item>
 
-          <Form.Item<SignInParams>
-            name="password"
-            rules={[{ message: 'Please input your password!', required: true }]}
-          >
-            <Input.Password
-              placeholder="Password"
-              size="large"
-              className="rounded-[8px] h-[40px]"
-            />
-          </Form.Item>
-
-          {error && <p className="text-red-500">{error}</p>}
-
-          <p className="text-[#CECED6] text-center my-[18px]">
-            or continue with
-          </p>
-
-          <div className="flex items-center justify-center gap-[32px]">
-            {SIGN_IN_VENDORS.map((vendor) => (
-              <div
-                key={vendor.name}
-                className="flex border-[1px] border-solid border-[#CECED6] rounded-[12px] px-[20px] py-[16px] cursor-pointer"
-                onClick={vendor.onClick}
-                role="presentation"
-              >
-                {vendor.icon}
-              </div>
-            ))}
-          </div>
-
-          <p
-            className="text-[#0073EA] font-semibold text-right cursor-pointer my-[28px]"
-            onClick={() => navigate(PUBLIC_ROUTES.sendMailResetPassword)}
-            role="presentation"
-          >
-            Forgot password?
-          </p>
-
-          <Form.Item className="text-center">
-            <Button
-              type="primary"
-              shape="round"
-              htmlType="submit"
-              className="min-w-[200px] font-semibold h-[40px] "
+        <div className="flex items-center justify-center gap-5 mb-6">
+          {SIGN_IN_VENDORS.map((vendor) => (
+            <div
+              key={vendor.name}
+              className="flex border-2 border-solid border-wolfGrey rounded-[10px] p-3 cursor-pointer"
+              onClick={vendor.onClick}
+              role="presentation"
             >
-              Sign In
-            </Button>
-          </Form.Item>
+              {vendor.icon}
+            </div>
+          ))}
+        </div>
 
-          <p className="text-center text-textSubtle ">
-            Didn't have an account?
-            <Link to="/sign-up" className="font-semibold text-primary pl-2">
-              Sign Up
-            </Link>
-          </p>
-        </Form>
-      </div>
+        <p className="text-center text-wolfGrey ">
+          Didn't have an account?
+          <Link to="/sign-up" className="font-semibold text-primary pl-2">
+            Sign Up
+          </Link>
+        </p>
+      </Form>
     </div>
   )
 }

@@ -1,51 +1,46 @@
 import React, { useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-
-import { useAppDispatch, useAppSelector } from './hooks/redux'
-import { setRole, setUserAccountId } from './redux/app/slice'
+import { ConfigProvider, theme as themeAntd } from 'antd'
+import { notification } from 'antd'
+import { useTranslation } from 'react-i18next'
+import { NotificationContext } from './contexts/notification'
+import { useAppSelector } from './hooks/redux'
 import AppRoutes from './routes'
-import authApi from './services/authApi'
-import { publicRoutes } from './routes/PublicRoutes'
-import { PRIVATE_ROUTES, PUBLIC_ROUTES } from './utils/constants'
-
 const App: React.FC = () => {
-  const userAccountId = useAppSelector((state) => state.app.userAccountId)
-
-  const dispatch = useAppDispatch()
-  const navigate = useNavigate()
-
-  const { pathname } = useLocation()
-
-  const fetchAuthUser = async () => {
-    if (!userAccountId) {
-      try {
-        const { data } = await authApi.fetchAuthUser()
-
-        if (data?.id) {
-          dispatch(setUserAccountId(data.id))
-          dispatch(setRole(data.role))
-
-          if (
-            pathname === PUBLIC_ROUTES.signIn ||
-            pathname.includes(PUBLIC_ROUTES.signUp)
-          ) {
-            navigate(PRIVATE_ROUTES.home)
-          }
-        }
-      } catch (error) {
-        if (!publicRoutes.find((route) => route.path === pathname)) {
-          navigate(PUBLIC_ROUTES.signIn)
-        }
-        console.log(error)
-      }
-    }
-  }
+  const { i18n } = useTranslation()
+  const [apiNotification, contextHolder] = notification.useNotification()
+  const locales = useAppSelector((state) => state.app.locales)
+  const theme = useAppSelector((state) => state.app.darkMode)
 
   useEffect(() => {
-    fetchAuthUser()
+    i18n.changeLanguage(locales)
   }, [])
 
-  return <AppRoutes />
+  return (
+    <div className={`${theme ? 'theme-dark' : 'theme-light'}`}>
+      <ConfigProvider
+        theme={{
+          algorithm: theme
+            ? themeAntd.darkAlgorithm
+            : themeAntd.defaultAlgorithm,
+          token: {
+            fontFamily: 'Poppins, sans-serif',
+          },
+          // token: {
+          //   colorPrimary: theme ? '#5287ec' : '#2769e7',
+          //   colorBgBase: theme ? '#1f1f1f' : '#ffffff',
+          //   colorBgBlur: theme ? '#1f1f1f' : '#ffffff',
+          //   colorTextPlaceholder: theme ? '#ffffff' : '#000000',
+          //   colorText: theme ? '#ffffff' : '#000000',
+          // },
+        }}
+      >
+        <NotificationContext.Provider value={apiNotification}>
+          {contextHolder}
+          <AppRoutes />
+        </NotificationContext.Provider>
+      </ConfigProvider>
+    </div>
+  )
 }
 
 export default App

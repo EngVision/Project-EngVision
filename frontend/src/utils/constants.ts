@@ -14,11 +14,10 @@ export const PRIVATE_ROUTES = {
   home: '/',
   statistic: '/statistic',
   chat: '/chat',
-  manageUsers: '/manage-users',
   settings: '/settings',
   helpCenter: '/help-center',
-
   updateProfile: '/update-profile',
+  manageUsers: '/manage-users',
 
   // Exercise
   exercise: '/exercise/:id',
@@ -31,9 +30,14 @@ export const PRIVATE_ROUTES = {
 }
 
 export const STUDENT_ROUTES = {
+  //Get started
+  getStarted: '/get-started',
+  doEntranceExam: '/get-started/exercise/:id',
+  entranceExam: '/get-started/:level',
+
   // Menu
   myHub: '/my-hub',
-  exam: '/exam',
+  exercisesAndExams: '/exercises-exams',
   discover: '/discover',
 
   appearance: '/appearance',
@@ -49,7 +53,7 @@ export const TEACHER_ROUTES = {
   createCourse: '/courses/new',
 
   assignmentExam: '/assignment-exam',
-
+  grading: '/grading',
   lessonDetail: '/courses/:courseId/lessons/:lessonId',
   createExercise: '/courses/:courseId/lessons/:lessonId/exercises',
   editExercise: '/courses/:courseId/lessons/:lessonId/exercises/:exerciseId',
@@ -62,7 +66,11 @@ export const ADMIN_ROUTES = {
   createCourse: '/courses/new',
   manageUsers: '/manage-users',
 
-  assignmentExam: '/assignment-exam',
+  exams: '/exams',
+  examDetail: '/exams/:examId',
+  createExam: '/exams/new',
+  partDetail: '/exams/parts',
+  createPart: '/exams/parts',
 }
 
 export const ROLES = {
@@ -84,6 +92,7 @@ export enum ExerciseType {
   MultipleChoice = 'MultipleChoice',
   FillBlank = 'FillBlank',
   ConstructedResponse = 'ConstructedResponse',
+  MakeSentence = 'MakeSentence',
 }
 
 export enum ExerciseTag {
@@ -112,13 +121,13 @@ export enum CEFRLevel {
   A1 = 'A1',
 }
 
-export const Level = [
-  { level: CEFRLevel.A1, color: 'bg-green-300' },
-  { level: CEFRLevel.A2, color: 'bg-green-500' },
-  { level: CEFRLevel.B1, color: 'bg-blue-300' },
-  { level: CEFRLevel.B2, color: 'bg-blue-500' },
-  { level: CEFRLevel.C1, color: 'bg-red-300' },
-  { level: CEFRLevel.C2, color: 'bg-red-500' },
+export const LEVELS = [
+  { level: CEFRLevel.A1, color: 'bg-alternative' },
+  { level: CEFRLevel.A2, color: 'bg-alternative' },
+  { level: CEFRLevel.B1, color: 'bg-primary' },
+  { level: CEFRLevel.B2, color: 'bg-primary' },
+  { level: CEFRLevel.C1, color: 'bg-secondary' },
+  { level: CEFRLevel.C2, color: 'bg-secondary' },
 ]
 
 export const GENDERS = [
@@ -137,7 +146,10 @@ export const SEARCH_OPTIONS = {
   course: 'Courses',
 }
 
-export const UPLOAD_FILE_URL = `${import.meta.env.VITE_BASE_URL}/files`
+export const BASE_URL = import.meta.env.VITE_BASE_URL
+export const UPLOAD_FILE_URL = import.meta.env.VITE_SERVER_FILES_URL
+export const GOOGLE_LOGIN = `${BASE_URL}auth/google/login`
+export const FACEBOOK_LOGIN = `${BASE_URL}auth/facebook/login`
 
 export enum COURSE_STATUS {
   draft = 'Draft',
@@ -150,4 +162,36 @@ export const TEACHER_COURSE_TABS = {
   overview: 'Overview',
   course: 'Courses',
   statistic: 'Statistic',
+}
+
+export enum Role {
+  Student = 'Student',
+  Teacher = 'Teacher',
+  Admin = 'Admin',
+}
+
+export enum Gender {
+  Male = 'Male',
+  Female = 'Female',
+  Other = 'Other',
+}
+
+export enum NextDue {
+  none = 'None',
+  tomorrow = 'Tomorrow',
+  today = 'Today',
+  in1week = 'In 1 week',
+  in2weeks = 'In 2 weeks',
+  in1month = 'In 1 month',
+}
+
+export enum AccountStatus {
+  Active = 'Active',
+  Pending = 'Pending',
+  Blocked = 'Blocked',
+}
+
+export enum SortByEnum {
+  createdAt = 'createdAt',
+  price = 'price',
 }

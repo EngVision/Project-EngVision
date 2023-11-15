@@ -1,15 +1,11 @@
 import { Card } from 'antd'
 
 import { getFormattedPrice } from '../../utils/common'
-import {
-  MoreIcon,
-  PeopleIcon,
-  PlayCircleIcon,
-  StarIcon,
-  VideoPlayIcon,
-} from '../Icons'
+import { PeopleIcon, StarIcon, VideoPlayIcon } from '../Icons'
 import { useNavigate } from 'react-router-dom'
 import { CourseDetails } from '../../services/coursesApi/types'
+import CustomImage from '../common/CustomImage'
+import { LEVELS, UPLOAD_FILE_URL } from '../../utils/constants'
 
 interface CourseProps {
   course: CourseDetails
@@ -17,22 +13,21 @@ interface CourseProps {
 
 const Course = ({ course }: CourseProps) => {
   const navigate = useNavigate()
+  const level = LEVELS.find((l) => l.level === course.level)
 
   return (
     <Card
-      className="w-full"
+      className="min-w-[19rem] max-w-[21rem]"
       cover={
-        <img
-          alt="example"
-          src={`${import.meta.env.VITE_SERVER_FILES_URL}${course.thumbnail}`}
+        <CustomImage
+          src={`${UPLOAD_FILE_URL}${course.thumbnail}`}
           onClick={() => navigate(course.id)}
-          role="presentation"
-          className="cursor-pointer h-[200px]"
+          className="cursor-pointer h-[200px] object-cover"
         />
       }
     >
       <p
-        className={`absolute left-3 top-3 bg-primary text-white py-0.5 rounded-md min-w-[40px] text-center`}
+        className={`${level?.color} absolute left-3 top-3 text-white py-0.5 rounded-md min-w-[40px] text-center`}
       >
         {course.level}
       </p>
@@ -40,37 +35,28 @@ const Course = ({ course }: CourseProps) => {
       <div className="flex justify-between text-xs">
         <div className="flex items-center">
           <VideoPlayIcon className="pr-1" />
-          <p>10 Lessons</p>
-        </div>
-
-        <div className="flex items-center">
-          <PlayCircleIcon className="pr-1" />
-          <p>25 hr 3 min </p>
+          <p>{course.totalLessons} Lessons</p>
         </div>
       </div>
 
       <p className="text-sm font-bold uppercase py-4">{course.title}</p>
 
-      <div className="flex justify-between items-center text-xs pt-3">
+      <div className="flex justify-between items-center text-xs pt-3 mb-2">
         <div className="flex items-center gap-1">
-          <StarIcon className="text-blue-600" width={20} height={20} />
-          <p className="font-semibold">{course.avgStar}</p>
+          <StarIcon className="text-negative-200" width={20} height={20} />
+          <p className="font-semibold">{course.avgStar || '0'}</p>
         </div>
 
         <div className="flex items-center gap-1">
           <PeopleIcon width={20} height={20} />
-          <p className="text-blue-700">400+</p>
+          <p className="text-blue-700">{course.attendance}+</p>
           <p>Students</p>
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-2">
-        <span className="text-primary text-2xl font-semibold">
-          {getFormattedPrice(course.price)}
-        </span>
-
-        <MoreIcon className="text-primary" />
-      </div>
+      <span className="text-primary text-2xl font-semibold">
+        {getFormattedPrice(course.price)}
+      </span>
     </Card>
   )
 }

@@ -1,8 +1,9 @@
+import { Input } from 'antd'
 import React, { forwardRef } from 'react'
 
 const PreviewInput = (props: any, ref: React.Ref<HTMLInputElement>) => {
   return (
-    <input
+    <Input
       ref={ref}
       {...props}
       type="text"

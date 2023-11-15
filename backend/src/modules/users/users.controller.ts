@@ -2,10 +2,13 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpStatus,
+  Param,
   Patch,
   Post,
   Put,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -14,7 +17,9 @@ import { Throttle } from '@nestjs/throttler';
 import { Response } from 'express';
 import { ApiResponseData, CurrentUser } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
-import { AtGuard } from 'src/common/guards';
+import { GetResponseList } from 'src/common/dto/paginated-response.dto';
+import { Role } from 'src/common/enums';
+import { AtGuard, RoleGuard } from 'src/common/guards';
 import { EmailDto } from '../auth/dto/login.dto';
 import { JwtPayload } from '../auth/types';
 import {
@@ -25,7 +30,9 @@ import {
   UpdateUserDto,
   UserDto,
 } from './dto';
+import { UserQueryDto } from './dto/user-query.dto';
 import { UsersService } from './users.service';
+import { BlockUserDto } from './dto/block-user.dto';
 
 @ApiTags('Account')
 @Controller('account')
@@ -127,5 +134,55 @@ export class UsersController {
     return res
       .status(HttpStatus.OK)
       .send(GetResponse({ message: 'New password have been updated' }));
+  }
+
+  @Get()
+  @UseGuards(AtGuard, RoleGuard(Role.Admin))
+  async getUsers(@Query() userQuery: UserQueryDto, @Res() res: Response) {
+    const [users, total] = await this.usersService.getAll(userQuery);
+
+    return res.status(HttpStatus.OK).send(
+      GetResponseList({
+        dataType: UserDto,
+        data: users,
+        offset: userQuery.page,
+        limit: userQuery.limit,
+        total,
+      }),
+    );
+  }
+
+  @Post(':id/approve')
+  @UseGuards(AtGuard, RoleGuard(Role.Admin))
+  async approveUser(@Param('id') id: string, @Res() res: Response) {
+    await this.usersService.approveUser(id);
+
+    return res
+      .status(HttpStatus.OK)
+      .send(GetResponse({ message: 'User approved' }));
+  }
+
+  @Post(':id/block')
+  @UseGuards(AtGuard, RoleGuard(Role.Admin))
+  async blockUser(
+    @Param('id') id: string,
+    @Body() blockUserDto: BlockUserDto,
+    @Res() res: Response,
+  ) {
+    await this.usersService.blockUser(id, blockUserDto.reason);
+
+    return res
+      .status(HttpStatus.OK)
+      .send(GetResponse({ message: 'User blocked' }));
+  }
+
+  @Post(':id/unblock')
+  @UseGuards(AtGuard, RoleGuard(Role.Admin))
+  async unblockUser(@Param('id') id: string, @Res() res: Response) {
+    await this.usersService.unblockUser(id);
+
+    return res
+      .status(HttpStatus.OK)
+      .send(GetResponse({ message: 'User unblocked' }));
   }
 }

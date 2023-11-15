@@ -3,6 +3,7 @@ import type {
   ExerciseTag,
   ExerciseType,
 } from '../../utils/constants'
+import { Dayjs } from 'dayjs'
 
 export interface QuestionPayload {
   id?: string
@@ -16,11 +17,17 @@ export interface ExerciseSchema {
   type: ExerciseType
   title: string
   description?: string
-  deadline?: Date
+  deadline?: Dayjs
   tags?: ExerciseTag[]
   level?: CEFRLevel
   content: QuestionPayload[]
   id?: string
+  needGrade?: boolean
+  contentQuestion?: {
+    text: string
+    image: string
+    audio: string
+  }
 }
 
 export interface SubmitAnswerResponse {
@@ -29,4 +36,5 @@ export interface SubmitAnswerResponse {
   answer: any
   correctAnswer: any
   explanation: string
+  grade: number
 }

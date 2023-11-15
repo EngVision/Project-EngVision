@@ -1,144 +1,151 @@
-import { Button, Progress } from 'antd'
+import { Button, Form } from 'antd'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import assignmentApi from '../../services/assignmentApi'
-import { AssignmentResponse } from '../../services/assignmentApi/types'
-import exerciseApi from '../../services/exerciseApi'
-import { ExerciseResponse } from '../../services/exerciseApi/types'
-import { ExerciseType } from '../../utils/constants'
-import FillBlank from './components/FillBlank'
-import MultipleChoice from './components/MultipleChoice'
+import { useNavigate } from 'react-router-dom'
 import ArrowLeft from '../../components/Icons/ArrowLeft'
-import DoneExercise from './components/DoneExercise'
+import { TwoColumnLayout } from './layouts/TwoColumnLayout'
+import { OneColumnLayout } from './layouts/OneColumnLayout'
+import { SubmissionResponse } from '../../services/submissionApi/types'
+import ExerciseContent from './components/ExerciseContent'
+import Explain from './components/Explain'
+import GradingExercise from './components/GradingExercise'
+import { ExerciseSchema } from '../../services/exerciseApi/types'
 
-function Exercise() {
-  const { id } = useParams()
+interface ExerciseProps {
+  exercise?: ExerciseSchema
+  submission?: SubmissionResponse
+  isGrading?: boolean
+  btnConfirmLoading?: boolean
+  btnGradeLoading?: boolean
+  hasPreviousPart?: boolean
+  grade?: number
+  questionIndex: number
+  QuizProgressComponent: React.ComponentType
+  setQuestion: (questionIndex: number) => void
+  onFinishFunc: (values: any) => void
+  backUrl?: string
+}
 
-  const [exercise, setExercise] = useState<ExerciseResponse>()
-  const [assignment, setAssignment] = useState<AssignmentResponse>()
-  const [questionIndex, setQuestionIndex] = useState<number>(0)
+function Exercise({
+  exercise,
+  submission,
+  questionIndex,
+  btnConfirmLoading,
+  btnGradeLoading,
+  QuizProgressComponent,
+  setQuestion,
+  onFinishFunc,
+  isGrading = false,
+  hasPreviousPart = false,
+  grade,
+  backUrl,
+}: ExerciseProps) {
+  const [form] = Form.useForm()
   const [hasResult, setHasResult] = useState<boolean>(false)
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(false)
 
   const navigate = useNavigate()
 
   useEffect(() => {
-    getExercise()
-    getAssignment()
-  }, [])
+    setHasResult(
+      !!submission?.detail[questionIndex] ||
+        questionIndex >= (exercise?.content?.length || 0),
+    )
+  }, [submission, questionIndex])
 
-  useEffect(() => {
-    setHasResult(!!assignment?.detail[questionIndex])
-  }, [assignment, questionIndex])
-
-  const getAssignment = async () => {
-    if (id) {
-      const assignment = await assignmentApi.getAssignment(id)
-
-      setAssignment(assignment)
-      setQuestionIndex(assignment?.totalDone || 0)
-    }
-  }
-
-  const getExercise = async () => {
-    if (id) {
-      const exercise = await exerciseApi.getExercise(id)
-
-      setExercise(exercise)
-    }
-  }
-
-  const submitAnswer = async (data: any, questionId: string): Promise<void> => {
-    if (id) {
-      await exerciseApi.submitAnswer(id, questionId, data)
-      const assignment = await assignmentApi.getAssignment(id)
-
-      setAssignment(assignment)
-    }
-  }
-
-  const ExerciseComponent = () => {
-    const content = exercise?.content[questionIndex]
-
-    if (questionIndex >= (exercise?.content?.length || 0)) {
-      return assignment && <DoneExercise {...assignment} />
-    }
-
-    if (content && id) {
-      switch (exercise?.type) {
-        case ExerciseType.MultipleChoice:
-          return (
-            <MultipleChoice
-              {...content}
-              exerciseId={id}
-              result={assignment?.detail[questionIndex]}
-              submitAnswer={submitAnswer}
+  const Content = () => {
+    return (
+      <>
+        <div className={isGrading ? 'mb-10' : 'mt-5'}>
+          <ExerciseContent
+            exercise={exercise}
+            submission={submission}
+            questionIndex={questionIndex}
+            setIsSubmittable={setIsSubmittable}
+            grade={grade}
+          />
+        </div>
+        {isGrading ? (
+          <GradingExercise
+            exercise={exercise}
+            submission={submission}
+            questionIndex={questionIndex}
+            isButtonLoading={btnGradeLoading}
+          />
+        ) : (
+          !exercise?.needGrade &&
+          submission?.detail[questionIndex] && (
+            <Explain
+              isCorrect={submission?.detail[questionIndex]?.isCorrect}
+              explanation={submission?.detail[questionIndex]?.explanation}
             />
           )
-        case ExerciseType.FillBlank:
-          return (
-            <FillBlank
-              {...content}
-              exerciseId={id}
-              result={assignment?.detail[questionIndex]}
-              submitAnswer={submitAnswer}
-            />
-          )
-        default:
-          return <></>
-      }
-    }
+        )}
+      </>
+    )
   }
 
   const previousQuestion = () => {
-    setQuestionIndex((prev) => prev - 1)
+    setQuestion(questionIndex - 1)
   }
 
   const nextQuestion = () => {
     if (questionIndex >= (exercise?.content?.length || 0)) {
-      console.log('nextExerciseId')
+      back()
     } else {
-      setQuestionIndex((prev) => prev + 1)
+      if (!hasResult) {
+        form.submit()
+      } else {
+        setQuestion(questionIndex + 1)
+      }
     }
   }
 
-  return (
-    <div className="h-screen flex flex-col md:flex-row md:justify-center">
-      <div className="flex justify-between">
-        <Button
-          type="primary"
-          ghost
-          shape="circle"
-          size="large"
-          icon={<ArrowLeft />}
-          className="ml-5 mt-5 md:ml-10 md:top-0 md:left-0 md:fixed"
-          onClick={() => navigate('..', { relative: 'path' })}
-        />
-        <Button
-          type="primary"
-          ghost
-          shape="circle"
-          size="large"
-          icon={'?'}
-          className="mr-5 mt-5 md:mr-10 md:top-0 md:right-0 md:fixed"
-        />
-      </div>
+  const onFinish = (values: any) => {
+    onFinishFunc(values)
+  }
 
-      <div className="flex-1 flex flex-col w-full p-5 md:w-2/3 md:flex-none">
-        <div className="flex-1 flex flex-col">
-          <Progress
-            percent={Math.floor(
-              (questionIndex / (exercise?.content.length || 1)) * 100,
-            )}
+  const back = () => {
+    if (backUrl) navigate(backUrl)
+    else navigate(-1)
+  }
+
+  return (
+    <Form
+      form={form}
+      onFinish={onFinish}
+      className="h-full w-full flex flex-col md:flex-row md:justify-center relative"
+    >
+      <div className="flex-1 min-h-[0px] py-[5px] flex flex-col w-full justify-between align-middle">
+        <div className="flex justify-between">
+          <Button
+            type="primary"
+            ghost
+            shape="circle"
+            size="large"
+            icon={<ArrowLeft />}
+            onClick={() => back()}
           />
-          <div className="flex-1 px-5 py-10">{ExerciseComponent()}</div>
+          <div className="flex flex-col items-center">
+            <QuizProgressComponent />
+          </div>
+          <Button type="primary" ghost shape="circle" size="large" icon={'?'} />
         </div>
-        <div className="flex justify-between mb-5">
+        <div className="flex-1 flex flex-col min-h-[0px]">
+          {exercise?.contentQuestion ? (
+            <TwoColumnLayout contentQuestion={exercise.contentQuestion}>
+              {Content()}
+            </TwoColumnLayout>
+          ) : (
+            <OneColumnLayout>{Content()}</OneColumnLayout>
+          )}
+        </div>
+        <div className="flex justify-between">
           <Button
             type="primary"
             size="large"
             ghost
             className="w-[150px]"
-            disabled={questionIndex <= 0}
+            disabled={questionIndex <= 0 && !hasPreviousPart}
             onClick={previousQuestion}
           >
             Previous
@@ -147,20 +154,17 @@ function Exercise() {
             type="primary"
             size="large"
             className="w-[150px]"
+            disabled={!isSubmittable && !hasResult}
             onClick={nextQuestion}
-            disabled={
-              !hasResult && questionIndex < (exercise?.content?.length || 0)
-            }
+            loading={btnConfirmLoading}
           >
-            {`${
-              questionIndex >= (exercise?.content?.length || 0)
-                ? 'Next exercise'
-                : 'Next'
-            }`}
+            {!hasResult || questionIndex >= (exercise?.content?.length || 0)
+              ? 'Confirm'
+              : 'Next'}
           </Button>
         </div>
       </div>
-    </div>
+    </Form>
   )
 }
 

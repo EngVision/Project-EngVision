@@ -79,6 +79,7 @@ export class CoursesController {
       (user.roles.includes(Role.Teacher) &&
         query.status === StatusCourseSearch.Attended) ||
       (user.roles.includes(Role.Student) &&
+        !user.roles.includes(Role.Admin) &&
         (query.status === StatusCourseSearch.Published ||
           query.status === StatusCourseSearch.Draft))
     ) {
@@ -92,8 +93,38 @@ export class CoursesController {
         data: courses,
         message: 'Courses',
         total: total,
-        limit: query.limit ? query.limit : 20,
-        offset: query.page && query.limit ? (query.page - 1) * query.limit : 0,
+        limit: query.limit,
+        offset: query.page * query.limit,
+      }),
+    );
+  }
+
+  @Get('suggested-courses')
+  @ApiResponseData(CourseDto)
+  @UseGuards(AtGuard)
+  async getSuggested(@CurrentUser() user: JwtPayload, @Res() res: Response) {
+    const courses = await this.coursesService.getSuggestedCourses(user.sub);
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        dataType: CourseDto,
+        data: courses,
+      }),
+    );
+  }
+
+  @Get('/exercises-due')
+  @ApiResponseData(Array)
+  @UseGuards(AtGuard, RoleGuard(Role.Student))
+  async getCoursesExercises(
+    @Res() res: Response,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const courses = await this.coursesService.getCoursesExercisesDue(user);
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        data: courses,
       }),
     );
   }

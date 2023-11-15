@@ -63,6 +63,7 @@ export interface CourseDetails {
     id: string
     firstName: string
     lastName: string
+    fullName: string
     email: string
     avatar: string
     gender: string
@@ -76,9 +77,27 @@ export interface CourseDetails {
   posts: string[]
   reviews: Review[]
   avgStar: number
-  updatedAt: string
   isAttended: boolean
   isReviewed: boolean
+  attendance: number
+  isPublished: boolean
+  tags: string[]
+  totalLessons: number
+  submissionAmount: number
+  pendingSubmissionAmount: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CourseExercisesDue {
+  id: string
+  title: string
+  thumbnail: string
+  level: string
+  attendance: number
+  totalLessons: number
+  dueExercises: number
+  ongoingExercises: number
 }
 
 export interface ReviewParams {
@@ -87,5 +106,9 @@ export interface ReviewParams {
 }
 
 export interface GetCourseProps {
-  status: COURSE_STATUS | ''
+  status: COURSE_STATUS
+}
+
+export interface GetSubmissionProps {
+  course?: string
 }

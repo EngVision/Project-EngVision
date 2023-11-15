@@ -2,20 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: Poppins, sans-serif;
-  background: var(--theme-page-background);
-  color: var(--theme-page-text);
 }
-
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #313134;
+  color: var(--text-color);
 }
 
 button,
@@ -25,8 +26,8 @@ input {
 }
 
 a {
-  color: #313134;
   text-decoration: none;
+  color: var(--text-color);
 }
 
 code {
@@ -72,10 +73,94 @@ code {
   overflow: auto !important;
 }
 
+.ant-popover-inner {
+  padding: 0 !important;
+}
+
+.ant-select-selector {
+  font-size: unset !important;
+}
+
+.ant-input-password {
+  font-size: unset !important;
+}
+
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   margin: 0;
+}
+
+/* For Webkit-based browsers (Chrome, Safari and Opera) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.theme-light {
+  --bg-default: #f3efe2;
+  --bg-Neutral: #fffcf7;
+  --bg-NeutralHover: #091e4224;
+  --primary: #2769e7;
+  --primaryHover: #1c4494;
+  --primary2: #407ae4;
+  --secondary: #fd6267;
+  --secondaryHover: #ec6064;
+  --alternative: #41ab3f;
+  --alternativeHover: #409c46;
+  --text-color: #313134;
+}
+.theme-dark {
+  --bg-default: #1d2125;
+  --bg-Neutral: #22272b;
+  --bg-NeutralHover: #2c333a;
+  --primary: #5287ec;
+  --primaryHover: #4969a9;
+  --primary2: #6695e9;
+  --secondary: #fd8185;
+  --secondaryHover: #f08083;
+  --alternative: #67bc65;
+  --alternativeHover: #66b06b;
+  --text-color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d4d4d4;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+.table-bg-white table {
+  background-color: white;
+}
+
+.ant-select-selection-item {
+  font-size: 14px;
+}
+
+.scale-up {
+  animation: scaleUp 0.5s ease-in-out;
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.5);
+  }
+  to {
+    transform: scale(1);
+  }
 }

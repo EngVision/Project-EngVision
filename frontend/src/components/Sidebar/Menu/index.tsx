@@ -1,5 +1,5 @@
 import { ROLES, PRIVATE_ROUTES } from '../../../utils/constants'
-import { MessageQuestionIcon, SettingsIcon } from '../../Icons'
+import { SettingsIcon } from '../../Icons'
 
 import { useAppSelector } from '../../../hooks/redux'
 import { MenuItemType } from '../types'
@@ -12,20 +12,20 @@ const SUB_MENU_ITEMS: MenuItemType[] = [
   {
     icon: <SettingsIcon />,
     path: PRIVATE_ROUTES.settings,
-    title: 'Settings',
+    title: 'Account',
   },
-  {
-    icon: <MessageQuestionIcon />,
-    path: PRIVATE_ROUTES.helpCenter,
-    title: 'Help Center',
-  },
+  // {
+  //   icon: <MessageQuestionIcon />,
+  //   path: PRIVATE_ROUTES.helpCenter,
+  //   title: 'Help Center',
+  // },
 ]
 
 const Menu = () => {
-  const role = useAppSelector((state) => state.app.role)
+  const user = useAppSelector((state) => state.app.user)
 
   const renderMenu = () => {
-    switch (role) {
+    switch (user?.role) {
       case ROLES.student.value: {
         return <StudentMenu />
       }

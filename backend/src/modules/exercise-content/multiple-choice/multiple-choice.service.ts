@@ -1,11 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { QuestionResult } from 'src/modules/assignments/schemas/assignment.schema';
 import { ExerciseContentService } from '../base-exercise-content.service';
-import { UpdateMultipleChoiceDto } from './dto';
 import { CreateMultipleChoiceDto } from './dto/create-multiple-choice.dto';
 import { MultipleChoice } from './schemas/multiple-choice.schema';
+import { QuestionResult } from 'src/modules/submissions/schemas/submission.schema';
 
 export class MultipleChoiceService extends ExerciseContentService {
   constructor(
@@ -34,12 +33,12 @@ export class MultipleChoiceService extends ExerciseContentService {
   }
 
   async updateContent(
-    updateQuestionListDto: UpdateMultipleChoiceDto[],
+    updateQuestionListDto: CreateMultipleChoiceDto[],
     removedQuestions: string[],
   ): Promise<string[]> {
     const validatedContent = await this.validate(
       updateQuestionListDto,
-      UpdateMultipleChoiceDto,
+      CreateMultipleChoiceDto,
     );
 
     this.setDefaultExplain(validatedContent);
@@ -62,7 +61,7 @@ export class MultipleChoiceService extends ExerciseContentService {
   }
 
   async checkAnswer(id: string, answer: number[]): Promise<QuestionResult> {
-    if (Array.isArray(answer) && typeof answer[0] !== 'number') {
+    if (!Array.isArray(answer) || typeof answer[0] !== 'number') {
       throw new BadRequestException('answer must be a number array');
     }
 

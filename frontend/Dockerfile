@@ -2,22 +2,21 @@
 FROM node:18 as build-stage
 
 WORKDIR /frontend
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
 COPY . .
+
+ARG VITE_BASE_URL
+ARG VITE_SERVER_FILES_URL
+ARG VITE_GA4_TRACKING_ID
+ARG VITE_SENTRY_DSN
+
+ENV VITE_BASE_URL ${VITE_BASE_URL}
+ENV VITE_SERVER_FILES_URL ${VITE_SERVER_FILES_URL}
+ENV VITE_GA4_TRACKING_ID ${VITE_GA4_TRACKING_ID}
+ENV VITE_SENTRY_DSN ${VITE_SENTRY_DSN}
+
+RUN yarn ci
 RUN yarn build
 
-# Stage 2: Production stage
-FROM nginx:alpine as production-stage
+CMD ["yarn", "preview" ]
 
-# Remove default NGINX configuration
-RUN rm /etc/nginx/conf.d/default.conf
-
-# Copy built frontend files
-COPY --from=build-stage /frontend/dist /usr/share/nginx/html
-
-# Copy custom NGINX configuration
-COPY nginx/default.conf /etc/nginx/conf.d/
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3000

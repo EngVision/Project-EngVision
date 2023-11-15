@@ -24,8 +24,8 @@ const ADMIN_MENU_ITEMS: MenuItemType[] = [
   },
   {
     icon: <NoteIcon />,
-    path: ADMIN_ROUTES.assignmentExam,
-    title: 'Assignments & Exams',
+    path: ADMIN_ROUTES.exams,
+    title: 'Exams',
   },
   {
     icon: <ChartIcon />,

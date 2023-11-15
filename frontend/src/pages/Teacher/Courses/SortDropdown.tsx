@@ -1,45 +1,70 @@
-import { Button, Dropdown } from 'antd'
+import { Button, Popover } from 'antd'
 import React from 'react'
-import { useAppDispatch } from '../../../hooks/redux'
-import { setSortOption } from '../../../redux/course/slice'
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
+import { clearSortOption, setSortOption } from '../../../redux/course/slice'
+import { SortByEnum } from '../../../utils/constants'
 
 const SortDropdown = () => {
   const dispatch = useAppDispatch()
+  const sortOption = useAppSelector((state) => state.course.sortOption)
 
-  const items: any[] = [
+  const sortOptions = [
     {
-      label: (
-        <span
-          onClick={() => dispatch(setSortOption('asc'))}
-          role="presentation"
-        >
-          Từ A đến Z
-        </span>
-      ),
-      key: '0',
+      label: 'Price ascending',
+      sortBy: SortByEnum.price,
+      order: 'asc',
     },
     {
-      label: (
-        <span
-          onClick={() => dispatch(setSortOption('desc'))}
-          role="presentation"
-        >
-          Từ Z đến A
-        </span>
-      ),
-      key: '1',
+      label: 'Price descending',
+      sortBy: SortByEnum.price,
+      order: 'desc',
     },
   ]
 
+  const renderContent = () => {
+    return (
+      <div className="py-2">
+        {sortOptions.map((option, index) => {
+          const isActive =
+            option.sortBy === sortOption.sortBy &&
+            option.order === sortOption.order
+
+          return (
+            <div
+              key={index}
+              onClick={() => {
+                if (isActive) {
+                  dispatch(clearSortOption())
+                } else {
+                  dispatch(
+                    setSortOption({
+                      sortBy: option.sortBy,
+                      order: option.order,
+                    }),
+                  )
+                }
+              }}
+              className={`py-2 px-4 rounded-lg hover:bg-grey-100 cursor-pointer 
+              ${isActive ? 'bg-grey-100 font-semibold' : ''}`}
+              role="presentation"
+            >
+              {option.label}
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+
   return (
-    <Dropdown menu={{ items }} trigger={['click']}>
+    <Popover content={renderContent()} trigger="click" placement="bottom">
       <Button
         className="border-primary text-primary"
         onClick={(e) => e.preventDefault()}
       >
         Sort
       </Button>
-    </Dropdown>
+    </Popover>
   )
 }
 

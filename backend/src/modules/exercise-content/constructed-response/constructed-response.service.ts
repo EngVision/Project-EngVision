@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { QuestionResult } from 'src/modules/submissions/schemas/submission.schema';
 import { ExerciseContentService } from '../base-exercise-content.service';
-import { QuestionResult } from 'src/modules/assignments/schemas/assignment.schema';
 import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 import { CreateConstructedResponseDto } from './dto/create-constructed-response.dto';
-import { InjectModel } from '@nestjs/mongoose';
 import { ConstructedResponse } from './schemas/constructed-response.schema';
-import { Model } from 'mongoose';
 
 @Injectable()
 export class ConstructedResponseService extends ExerciseContentService {
@@ -31,21 +31,61 @@ export class ConstructedResponseService extends ExerciseContentService {
     return questionList.map(q => q.id);
   }
 
-  updateContent(
-    questionListDto: ExerciseQuestionDto[],
+  async updateContent(
+    updateQuestionListDto: CreateConstructedResponseDto[],
     removedQuestions: string[],
   ): Promise<string[]> {
-    throw new Error('Method not implemented.');
+    const validatedContent = await this.validate(
+      updateQuestionListDto,
+      CreateConstructedResponseDto,
+    );
+
+    this.setDefaultExplain(validatedContent);
+
+    const bulkOps = this.updateBulkOps(validatedContent, removedQuestions);
+
+    const res = await this.constructedResponseModel.bulkWrite(bulkOps);
+
+    return [
+      ...validatedContent.map(({ id }) => id).filter(id => !!id),
+      ...Object.values(res.insertedIds).map(id => id.toString()),
+    ];
   }
 
-  deleteContent(removedQuestion: string[]): Promise<void> {
-    throw new Error('Method not implemented.');
+  async deleteContent(removedQuestion: string[]): Promise<void> {
+    await this.constructedResponseModel.bulkWrite([
+      this.deleteBulkOps(removedQuestion),
+    ]);
   }
 
-  checkAnswer(id: string, answer: any): Promise<QuestionResult> {
-    throw new Error('Method not implemented.');
+  async checkAnswer(id: string, answer: string): Promise<QuestionResult> {
+    if (typeof answer !== 'string') {
+      throw new BadRequestException('answer must be a string');
+    }
+
+    const correctAnswer = (
+      await this.constructedResponseModel.findById(id).select('correctAnswer')
+    ).correctAnswer;
+    const { detail, explanation } = correctAnswer;
+    const submission = {
+      question: id,
+      answer,
+      correctAnswer: detail,
+      explanation,
+    };
+    const isCorrect = detail
+      ? answer.toLowerCase() === detail.toLowerCase()
+      : null;
+
+    return {
+      ...submission,
+      isCorrect,
+    };
   }
+
   setDefaultExplain(questionList: ExerciseQuestionDto[]): void {
-    throw new Error('Method not implemented.');
+    questionList.forEach(q => {
+      q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail}`;
+    });
   }
 }

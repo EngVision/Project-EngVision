@@ -33,33 +33,34 @@ const SendMailResetPassword: React.FC = () => {
         })
     } catch (error) {
       setSentMail(false)
-      setError(error.response.data.message)
+      setError(error.data.message)
     }
   }
 
   return (
     <>
       {contextHolder}
-      <div className="w-[535px] bg-white px-[32px] py-[24px] rounded-[16px] w">
-        <div>
-          <h4 className="text-center text-[40px]">Forgot Your Password?</h4>
-          <p className=" text-[#9D9DAD] my-[20px] text-lg">
-            Just enter your email and we’ll send you a link to reset your
-            password
+      <div className=" bg-bgNeutral rounded-2xl p-8">
+        <div className="mb-6">
+          <h4 className="text-center text-3xl text-primary mb-4">
+            Forgot Your Password?
+          </h4>
+          <p className=" text-wolfGrey text-lg text-center">
+            Just enter your email and <br></br>we’ll send you a link to reset
+            your password
           </p>
         </div>
 
         <div>
           <Form
             name="basic"
-            style={{ maxWidth: 600 }}
             initialValues={{ remember: true }}
             onFinish={onFinish}
             autoComplete="off"
           >
             <Form.Item
               name="email"
-              className="mb-[0px]"
+              className="mb-2"
               rules={[
                 {
                   async validator(_, value) {
@@ -75,27 +76,27 @@ const SendMailResetPassword: React.FC = () => {
               <Input
                 placeholder="Email"
                 size="middle"
-                className="rounded-[8px] h-[44px]"
+                className="rounded-lg text-xs p-3"
                 onChange={() => setError('')}
               />
             </Form.Item>
 
-            {error && <p className="text-[#ff4d4f] mt-[3px]">{error}</p>}
+            {error && <p className="text-secondary">{error}</p>}
 
-            <Form.Item className="text-center">
+            <Form.Item className="text-center mt-6">
               <Button
                 type="primary"
                 shape="round"
                 htmlType="submit"
                 disabled={sentMail}
-                className="w-full font-semibold h-[44px] text-xl mt-[20px]"
+                className="w-full h-11 font-semibold text-lg"
               >
                 Reset Password
               </Button>
             </Form.Item>
 
             <p
-              className="text-[#0073EA] text-xl font-semibold text-center cursor-pointer my-[28px]"
+              className="text-primary mb-6 font-semibold text-center cursor-pointer"
               onClick={() => navigate(PUBLIC_ROUTES.signIn)}
               role="presentation"
             >
@@ -103,15 +104,15 @@ const SendMailResetPassword: React.FC = () => {
             </p>
 
             {sentMail && (
-              <p className="text-center text-[#9D9DAD] text-xl mb-[30px]">
+              <p className="text-center text-[#9D9DAD]">
                 Didn’t receive any email? Try looking up in your Spams or try
                 again after
               </p>
             )}
 
-            <p className="text-center text-[#9D9DAD] text-xl">
+            <p className="text-center text-[#9D9DAD]">
               Having troubles?
-              <Link to="/sign-up" className="font-semibold text-[#0073EA] pl-2">
+              <Link to="/sign-up" className="font-semibold text-primary pl-2">
                 Contact Us
               </Link>
             </p>

@@ -14,15 +14,16 @@ import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ApiResponseData, CurrentUser } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
+import { Role } from 'src/common/enums';
 import { AtGuard, RoleGuard } from 'src/common/guards';
-import { QuestionResult } from '../assignments/schemas/assignment.schema';
 import { JwtPayload } from '../auth/types';
+import { CreateConstructedResponseDto } from '../exercise-content/constructed-response/dto/create-constructed-response.dto';
+import { CreateFillBlankDto } from '../exercise-content/fill-blank/dto/create-fill-blank.dto';
 import { CreateMultipleChoiceDto } from '../exercise-content/multiple-choice/dto/create-multiple-choice.dto';
+import { QuestionResult } from '../submissions/schemas/submission.schema';
 import { CreateExerciseDto, ExerciseDto, UpdateExerciseDto } from './dto';
 import { ExercisesService } from './exercises.service';
-import { Role } from 'src/common/enums';
-import { CreateFillBlankDto } from '../exercise-content/fill-blank/dto';
-import { CreateConstructedResponseDto } from '../exercise-content/constructed-response/dto/create-constructed-response.dto';
+import { GetResponseList } from 'src/common/dto/paginated-response.dto';
 
 @Controller('exercises')
 @ApiTags('Exercises')
@@ -48,6 +49,25 @@ export class ExercisesController {
       .send(GetResponse({ dataType: ExerciseDto, data: exercise }));
   }
 
+  @Get()
+  @UseGuards(AtGuard)
+  async findAll(@CurrentUser() user: JwtPayload, @Res() res: Response) {
+    const exercises = await this.exercisesService.find(
+      { creator: user.sub },
+      user.roles,
+    );
+
+    return res.status(HttpStatus.OK).send(
+      GetResponseList({
+        dataType: ExerciseDto,
+        data: exercises,
+        limit: 0,
+        offset: 0,
+        total: exercises.length,
+      }),
+    );
+  }
+
   @Get(':id')
   @UseGuards(AtGuard)
   async findOne(
@@ -67,7 +87,7 @@ export class ExercisesController {
   }
 
   @Post(':exerciseId/submit-answer/:questionId')
-  @UseGuards(AtGuard, RoleGuard(Role.Student))
+  @UseGuards(AtGuard)
   async submitAnswer(
     @CurrentUser() user: JwtPayload,
     @Param('exerciseId') exerciseId: string,

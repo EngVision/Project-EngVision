@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose, Transform, Type } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import { Types } from 'mongoose';
 import { Role } from 'src/common/enums';
 
@@ -37,6 +37,9 @@ export class UserDto {
   @ApiProperty({ type: String, description: 'Country' })
   country?: string;
 
+  @ApiProperty({ type: String, description: 'Is first login' })
+  firstLogin?: boolean;
+
   @Exclude()
   password?: string;
 
@@ -45,7 +48,4 @@ export class UserDto {
 
   @Exclude()
   resetPasswordCode?: string;
-
-  @Exclude()
-  certificates?: string[];
 }

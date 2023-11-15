@@ -2,15 +2,21 @@ name: Deploy EngVision Image
 on:
   push:
     branches: ["develop", "master"]
+  pull_request:
+    branches: ["develop", "master"]
 
 env:
-  ENVIRONMENT: production
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+  VITE_SERVER_FILES_URL: ${{ secrets.VITE_SERVER_FILES_URL }}
+  VITE_GA4_TRACKING_ID: ${{ secrets.VITE_GA4_TRACKING_ID }}
+  VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
 
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
+    environment: EngVision
     strategy:
       fail-fast: false
       matrix:
@@ -50,5 +56,38 @@ jobs:
         with:
           context: ${{ matrix.context }}
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ matrix.tags }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ matrix.tags }}-${{ github.head_ref || github.ref_name }}-${{ github.run_number }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VITE_BASE_URL
+            VITE_SERVER_FILES_URL
+            VITE_GA4_TRACKING_ID
+            VITE_SENTRY_DSN
+
+  modify-yaml:
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    environment: EngVision
+
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+        name: Changing the deployment yaml
+        with:
+          repository: "EngVision/Engvision-Deployment"
+          token: ${{ secrets.PAT_GH_ACTION }}
+      - name: Modify the image
+        run: |
+          git config --global user.name 'minhtringuyennn'
+          git config --global user.email 'contact@minhtringuyennn.com'
+          sed -i "s+ghcr.io/engvision/project-engvision:frontend.*+ghcr.io/engvision/project-engvision:frontend-${{ github.head_ref || github.ref_name }}-${{ github.run_number }}+g" ./k8s/evs-fe-deployment.yml
+          sed -i "s+ghcr.io/engvision/project-engvision:backend.*+ghcr.io/engvision/project-engvision:backend-${{ github.head_ref || github.ref_name }}-${{ github.run_number }}+g" ./k8s/evs-be-deployment.yml
+          git add .
+          git commit -m 'Github Actions - Deploy ${{ github.head_ref || github.ref_name }} build ver ${{ github.run_number }}'
+          git push origin main
+        env:
+          RUN_NUMBER: ${{ github.run_number }}
+          PAT_GH_ACTION: ${{ secrets.PAT_GH_ACTION }}

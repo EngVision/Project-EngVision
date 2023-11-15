@@ -4,13 +4,15 @@ import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
-import { AssignmentsModule } from './modules/assignments/assignments.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CoursesModule } from './modules/courses/courses.module';
 import { ExercisesModule } from './modules/exercises/exercises.module';
 import { FilesModule } from './modules/files/files.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+import { SubmissionsModule } from './modules/submissions/submissions.module';
 import { UsersModule } from './modules/users/users.module';
+import { ExamsModule } from './modules/exams/exams.module';
+import { ExamSubmissionsModule } from './modules/exam-submissions/exam-submissions.module';
 
 @Module({
   imports: [
@@ -31,7 +33,9 @@ import { UsersModule } from './modules/users/users.module';
     CoursesModule,
     ReviewsModule,
     FilesModule,
-    AssignmentsModule,
+    SubmissionsModule,
+    ExamsModule,
+    ExamSubmissionsModule,
   ],
   providers: [
     {

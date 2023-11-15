@@ -11,12 +11,6 @@ import {
 import { ExerciseQuestionDto } from '../../dto/exercise-content.dto';
 
 class QuestionDto {
-  @IsOptional()
-  @IsNotEmpty()
-  @IsString()
-  @ApiPropertyOptional({ type: String, description: 'Question title' })
-  title: string;
-
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ type: String, description: 'Question text' })

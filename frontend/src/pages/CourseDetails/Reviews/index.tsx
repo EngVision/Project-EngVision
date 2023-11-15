@@ -6,22 +6,28 @@ import {
   Review,
   ReviewParams,
 } from '../../../services/coursesApi/types'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+const { TextArea } = Input
 
 interface ReviewsProps {
   course: CourseDetails
-  onReviewSubmit: () => Promise<void>
 }
 
-const Reviews: React.FC<ReviewsProps> = ({ course, onReviewSubmit }) => {
-  const { TextArea } = Input
+const Reviews: React.FC<ReviewsProps> = ({ course }) => {
+  const queryClient = useQueryClient()
+
+  const reviewMutation = useMutation({
+    mutationFn: (review: ReviewParams) =>
+      coursesApi.postReview(course.id, review),
+  })
+
   const onFinish = async (values: ReviewParams) => {
-    try {
-      const review = values
-      await coursesApi.postReview(course.id, review)
-    } catch (error) {
-      throw error
-    }
-    onReviewSubmit()
+    reviewMutation.mutate(values, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['courseDetail'] })
+      },
+    })
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -31,10 +37,10 @@ const Reviews: React.FC<ReviewsProps> = ({ course, onReviewSubmit }) => {
   return (
     <div>
       <div className="mb-4">
-        <h3 className="text-2xl text-[#2769E7] mb-6">Reviews</h3>
+        <h3 className="text-2xl text-primary mb-6">Reviews</h3>
       </div>
       {course.isAttended && !course.isReviewed && (
-        <div className="mb-8">
+        <div className="mb-8 ">
           <Form
             name="validateOnly"
             layout="vertical"
@@ -55,7 +61,7 @@ const Reviews: React.FC<ReviewsProps> = ({ course, onReviewSubmit }) => {
             <div className="flex items-center w-full justify-between">
               <Form.Item<ReviewParams> name="star" label="Reviews">
                 <Rate
-                  className="text-[#FD6267] mr-5"
+                  className="text-secondary mr-5"
                   character={<Star width={24} height={24}></Star>}
                   defaultValue={0}
                 />
@@ -88,7 +94,7 @@ const Reviews: React.FC<ReviewsProps> = ({ course, onReviewSubmit }) => {
                   <div className="flex items-center mb-4">
                     <Rate
                       disabled
-                      className="text-[#FD6267] mr-5"
+                      className="text-secondary mr-5"
                       character={<Star width={18} height={18}></Star>}
                       value={review.star}
                     ></Rate>

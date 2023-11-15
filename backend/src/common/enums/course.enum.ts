@@ -6,7 +6,7 @@ export enum StatusCourseSearch {
 }
 
 export enum SortBy {
-  time = 'time',
+  time = 'createdAt',
   price = 'price',
 }
 

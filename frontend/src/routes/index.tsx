@@ -1,23 +1,30 @@
-import React from 'react'
-
-import AdminRoutes from './AdminRoutes'
+import { useRoutes } from 'react-router-dom'
+import PrivateRoutes from './PrivateRoutes'
 import PublicRoutes from './PublicRoutes'
-import StudentRoutes from './StudentRoutes'
-import TeacherRoutes from './TeacherRoutes'
-import { useAppSelector } from '../hooks/redux'
-import { ROLES } from '../utils/constants'
+import { useAppDispatch } from '../hooks/redux'
+import { setUser } from '../redux/app/slice'
+import { useEffect } from 'react'
+import authApi from '../services/authApi'
 
 const AppRoutes = () => {
-  const role = useAppSelector((state) => state.app.role)
+  const dispatch = useAppDispatch()
+  const fetchAuthUser = async () => {
+    try {
+      const data = await authApi.fetchAuthUser()
 
-  return (
-    <div>
-      <PublicRoutes />
-      {role === ROLES.admin.value && <AdminRoutes />}
-      {role === ROLES.teacher.value && <TeacherRoutes />}
-      {role === ROLES.student.value && <StudentRoutes />}
-    </div>
-  )
+      dispatch(setUser(data))
+    } catch (error) {
+      console.error('error: ', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchAuthUser()
+  }, [])
+
+  const element = useRoutes([...PublicRoutes, ...PrivateRoutes()])
+
+  return element
 }
 
 export default AppRoutes

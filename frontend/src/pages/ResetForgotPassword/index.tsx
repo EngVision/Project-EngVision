@@ -60,10 +60,9 @@ const ResetForgotPassword: React.FC = () => {
     <>
       {contextHolder}
       <div
-        className={classNames(
-          'w-[515px] bg-white px-[32px] py-[24px] rounded-[16px]',
-          { hidden: !isValidatedUrl },
-        )}
+        className={classNames(' bg-white px-[32px] py-[24px] rounded-[16px]', {
+          hidden: !isValidatedUrl,
+        })}
       >
         <div>
           <h4 className="text-center text-[40px] mb-[32px]">

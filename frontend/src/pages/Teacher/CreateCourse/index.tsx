@@ -1,10 +1,11 @@
-import { Button, Form, Input, Select, message } from 'antd'
-import { Link } from 'react-router-dom'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Button, Form, Input, Select } from 'antd'
+import { useContext } from 'react'
 import CustomUpload from '../../../components/CustomUpload'
+import { NotificationContext } from '../../../contexts/notification'
+import { useAppSelector } from '../../../hooks/redux'
 import coursesApi from '../../../services/coursesApi'
-import { CEFRLevel, TEACHER_ROUTES } from '../../../utils/constants'
-import { useAppDispatch } from '../../../hooks/redux'
-import { addNewCourse } from '../../../redux/course/slice'
+import { CEFRLevel } from '../../../utils/constants'
 
 type FieldType = {
   title: string
@@ -21,22 +22,33 @@ interface TeacherCreateCourseProps {
 const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
   onClose,
 }) => {
-  const dispatch = useAppDispatch()
+  const status = useAppSelector((state) => state.course.status)
+  const queryClient = useQueryClient()
+  const apiNotification = useContext(NotificationContext)
+
+  const createTeacherCourseMutation = useMutation({
+    mutationFn: coursesApi.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['courses', { status }] })
+    },
+  })
 
   const handleSave = async (values: FieldType) => {
-    const newCourse = {
+    const newCourse: any = {
       ...values,
       price: parseFloat(values.price),
       thumbnail: values.thumbnail,
     }
-    const { data } = await coursesApi.create(newCourse)
-    dispatch(addNewCourse({ ...newCourse, id: data.id }))
-    message.success(`Create successfully.`)
-    onClose()
+    createTeacherCourseMutation.mutate(newCourse, {
+      onSuccess: () => {
+        apiNotification.success({ message: 'Create successfully.' })
+        onClose()
+      },
+    })
   }
 
   return (
-    <div className="flex flex-col bg-[#FFFCF7] p-[1.5rem] rounded-md h-full">
+    <div className="flex flex-col p-[1.5rem] rounded-md h-full">
       <div>
         <h4 className="text-primary text-2xl mb-4 font-semibold">
           Create new course
@@ -48,7 +60,7 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
           onFinish={handleSave}
           autoComplete="off"
           layout="vertical"
-          className="flex flex-col gap-4"
+          className="flex flex-col"
         >
           <Form.Item<FieldType>
             name="title"
@@ -118,12 +130,16 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
           </Form.Item>
 
           <div className="flex gap-4 mt-8 justify-end">
-            <Button className="text-primary border-primary">
-              <Link to={TEACHER_ROUTES.courses}>Cancel</Link>
+            <Button className="text-primary border-primary" onClick={onClose}>
+              Cancel
             </Button>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={createTeacherCourseMutation.isPending}
+              >
                 Save
               </Button>
             </Form.Item>

@@ -1,30 +1,35 @@
-import { Select } from 'antd'
-import { useAppDispatch } from '../../hooks/redux'
+import type { MenuProps } from 'antd'
+import { Dropdown, Space } from 'antd'
+import { useTranslation } from 'react-i18next'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { toggleLocales } from '../../redux/app/slice'
-import Gobal from '../Icons/Gobal'
 
 const LocalesButton = () => {
+  const { i18n } = useTranslation()
   const dispatch = useAppDispatch()
-  const defaultValue = localStorage.getItem('locales')
+  const defaultValue = useAppSelector((state) => state.app.locales)
 
-  const handleChangeLocales = (value: any) => {
-    if (value) {
-      dispatch(toggleLocales(value))
-      location.reload()
+  const onClick: MenuProps['onClick'] = ({ key }) => {
+    if (key) {
+      dispatch(toggleLocales(key))
+      i18n.changeLanguage(key)
     }
   }
 
+  const items: MenuProps['items'] = [
+    { key: 'en', label: 'English' },
+    { key: 'vi', label: 'VietNam' },
+  ]
+
   return (
-    <Select
-      suffixIcon={<Gobal />}
-      defaultValue={defaultValue}
-      style={{ width: 120 }}
-      onChange={(value) => handleChangeLocales(value)}
-      options={[
-        { value: 'en', label: 'English' },
-        { value: 'vi', label: 'VietNam' },
-      ]}
-    />
+    <Dropdown
+      menu={{ items, onClick }}
+      className=" text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
+    >
+      <span onClick={(e) => e.preventDefault()} role="presentation">
+        <Space className="uppercase font-semibold">{defaultValue}</Space>
+      </span>
+    </Dropdown>
   )
 }
 export default LocalesButton

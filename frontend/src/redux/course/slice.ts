@@ -1,17 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { COURSE_STATUS } from '../../utils/constants'
+import { COURSE_STATUS, SortByEnum } from '../../utils/constants'
 import { CourseDetails } from '../../services/coursesApi/types'
 
-interface CourseState {
+export interface CourseState {
   list: CourseDetails[]
   status: COURSE_STATUS
-  sortOption: 'asc' | 'desc' | ''
+  sortOption: {
+    sortBy: SortByEnum
+    order: 'asc' | 'desc' | ''
+  }
+  filterOptions: {
+    keyword: string
+    selectedLevels: string[]
+  }
 }
 
 const initialState: CourseState = {
   list: [],
   status: COURSE_STATUS.all,
-  sortOption: '',
+  sortOption: {
+    sortBy: SortByEnum.createdAt,
+    order: 'desc',
+  },
+  filterOptions: {
+    keyword: '',
+    selectedLevels: [],
+  },
 }
 
 const courseSlice = createSlice({
@@ -30,10 +44,26 @@ const courseSlice = createSlice({
     setSortOption: (state, action) => {
       state.sortOption = action.payload
     },
+    clearSortOption: (state) => {
+      state.sortOption = initialState.sortOption
+    },
+    setFilterOptions: (state, action) => {
+      state.filterOptions = { ...state.filterOptions, ...action.payload }
+    },
+    clearFilterOptions: (state) => {
+      state.filterOptions = initialState.filterOptions
+    },
   },
 })
 
-export const { setCourseList, addNewCourse, setCourseStatus, setSortOption } =
-  courseSlice.actions
+export const {
+  setCourseList,
+  addNewCourse,
+  setCourseStatus,
+  setSortOption,
+  clearSortOption,
+  setFilterOptions,
+  clearFilterOptions,
+} = courseSlice.actions
 
 export default courseSlice.reducer

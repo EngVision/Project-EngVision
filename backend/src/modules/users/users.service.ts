@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -12,6 +13,8 @@ import { CreateAccountDto } from './dto/create-account.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { emailContent } from './template/email.content';
 import { FilesService } from '../files/files.service';
+import { UserQueryDto } from './dto/user-query.dto';
+import { Order, AccountStatus, Role } from 'src/common/enums';
 
 @Injectable()
 export class UsersService {
@@ -25,10 +28,8 @@ export class UsersService {
       service: 'Gmail',
       auth: {
         user: 'engvision.dev@gmail.com',
-        pass: 'EngVision2023',
+        pass: process.env.MAIL_PASSWORD,
       },
-      secure: false,
-      requireTLS: true,
     });
   }
 
@@ -39,6 +40,10 @@ export class UsersService {
     newUser.avatar = (
       await this.filesService.getDefaultAvatar(newUser._id, newUser.email)
     ).id;
+
+    if (newUser.role === 'Teacher') {
+      newUser.status = AccountStatus.Pending;
+    }
 
     await newUser.save();
 
@@ -58,6 +63,10 @@ export class UsersService {
       ).id;
     }
 
+    if (newUser.role === 'Teacher') {
+      newUser.status = AccountStatus.Pending;
+    }
+
     await newUser.save();
 
     return newUser;
@@ -70,10 +79,32 @@ export class UsersService {
       { returnDocument: 'after' },
     );
 
+    if (updatedUser.role === 'Teacher') {
+      updatedUser.status = AccountStatus.Pending;
+    }
+
     return updatedUser;
   }
 
   /* Get user */
+  async getAll(userQuery: UserQueryDto): Promise<[UserDocument[], number]> {
+    const { limit, page, sortBy, order, ...query } = userQuery;
+
+    const documentQuery = {
+      $and: [{ role: { $ne: Role.Admin } }, { ...query }],
+    };
+
+    const users = await this.userModel.find(documentQuery, null, {
+      skip: page * limit,
+      limit: limit,
+      sort: { [sortBy]: order === Order.desc ? -1 : 1 },
+    });
+
+    const total = await this.userModel.countDocuments(documentQuery);
+
+    return [users, total];
+  }
+
   async getById(id: string): Promise<UserDocument> {
     return await this.userModel.findOne({ _id: id });
   }
@@ -87,12 +118,22 @@ export class UsersService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UserDocument> {
-    if (updateUserDto.avatar) {
+    const user = await this.getById(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
+
+    if (!updateUserDto.avatar) {
+      updateUserDto.avatar = (
+        await this.filesService.getDefaultAvatar(id, user.email)
+      ).id;
+    }
+
     const updatedUser = await this.userModel.findByIdAndUpdate(
       id,
       { ...updateUserDto },
-      { returnDocument: 'after' },
+      { new: true },
     );
 
     return updatedUser;
@@ -176,5 +217,59 @@ export class UsersService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async approveUser(id: string): Promise<void> {
+    const user = await this.userModel.findByIdAndUpdate(id, {
+      status: AccountStatus.Active,
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const mailOptions = {
+      from: 'engvision.dev@gmail.com',
+      to: user.email,
+      subject: 'Your account has been approved',
+      html: 'Welcome to EngVision, your account has been approved',
+    };
+    await this.transporter.sendMail(mailOptions);
+  }
+
+  async blockUser(id: string, reason: string): Promise<void> {
+    const user = await this.userModel.findByIdAndUpdate(id, {
+      status: AccountStatus.Blocked,
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const mailOptions = {
+      from: 'engvision.dev@gmail.com',
+      to: user.email,
+      subject: 'Your account has been blocked',
+      html: 'Your account has been blocked. Reason: ' + reason,
+    };
+    await this.transporter.sendMail(mailOptions);
+  }
+
+  async unblockUser(id: string): Promise<void> {
+    const user = await this.userModel.findByIdAndUpdate(id, {
+      status: AccountStatus.Active,
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const mailOptions = {
+      from: 'engvision.dev@gmail.com',
+      to: user.email,
+      subject: 'Your account has been unblocked',
+      html: 'Your account has been unblocked. Welcome back!',
+    };
+    await this.transporter.sendMail(mailOptions);
   }
 }

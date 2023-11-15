@@ -1,15 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { SchemaTypes } from 'mongoose';
 import { CEFRLevel, ExerciseTag } from 'src/common/enums';
-import { LocalFile } from 'src/modules/files/schemas/local-file.schema';
 
 @Schema({ _id: false, versionKey: false })
 class Question {
   @Prop({ required: true })
   text: string;
 
-  @Prop({ type: SchemaTypes.ObjectId, ref: LocalFile.name, default: null })
+  @Prop({ default: null })
   image?: string;
+
+  @Prop({ required: true, default: [] })
+  limits: number[];
 }
 const QuestionSchema = SchemaFactory.createForClass(Question);
 
@@ -17,8 +18,8 @@ export type FillBlankDocument = FillBlank & Document;
 
 @Schema({ _id: false, versionKey: false })
 class CorrectAnswer {
-  @Prop({ type: String, required: true })
-  detail: string;
+  @Prop({ type: [String], required: true })
+  detail: string[];
 
   @Prop({ type: String, default: null })
   explanation: string;

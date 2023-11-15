@@ -21,6 +21,7 @@ import {
   SearchCourseDto,
   UpdateCourseDto,
   CourseDetailDto,
+  CourseExercisesDto,
 } from './dto';
 import { Order, Role, SortBy, StatusCourseSearch } from 'src/common/enums';
 import { JwtPayload } from '../auth/types';
@@ -50,8 +51,11 @@ export class CoursesService {
 
     switch (data.status) {
       case StatusCourseSearch.All:
-        if (user.roles.includes(Role.Student))
+        if (user.roles.includes(Role.Teacher)) {
+          dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
+        } else if (user.roles.includes(Role.Student)) {
           dataFilter.isPublished = { $eq: true };
+        }
         break;
       case StatusCourseSearch.Attended:
         dataFilter.isPublished = { $eq: true };
@@ -140,10 +144,10 @@ export class CoursesService {
         $facet: {
           courses: [
             {
-              $skip: data.page && data.limit ? (data.page - 1) * data.limit : 0,
+              $skip: data.page * data.limit,
             },
             {
-              $limit: data.limit ? data.limit : 20,
+              $limit: data.limit,
             },
           ],
           total: [
@@ -179,6 +183,31 @@ export class CoursesService {
     return [courses, totalItem];
   }
 
+  async getSuggestedCourses(userId: string): Promise<CourseDocument[]> {
+    const courses = await this.courseModel.aggregate<CourseDocument>([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'teacher',
+          foreignField: '_id',
+          as: 'teacher',
+        },
+      },
+      {
+        $match: {
+          'teacher.role': { $eq: Role.Admin },
+          isPublished: { $eq: true },
+        },
+      },
+    ]);
+
+    courses.forEach(course => {
+      course.teacher = course.teacher[0];
+    });
+
+    return courses;
+  }
+
   async getCourse(id: string, user: JwtPayload) {
     let course, courseMap: CourseDetailDto;
     const courseCheck = await this.courseModel.findById(id);
@@ -186,15 +215,17 @@ export class CoursesService {
     //Teacher get not own course
     if (
       user.roles.includes(Role.Teacher) &&
+      !user.roles.includes(Role.Admin) &&
       courseCheck.teacher.toString() !== user.sub
     ) {
       throw new ForbiddenException('Access denied');
     }
 
-    // Student not attend course yet
+    // Student not attend course yet or course's teacher
     if (
-      user.roles.includes(Role.Student) &&
-      !courseCheck.attendanceList.includes(user.sub)
+      (user.roles.includes(Role.Student) &&
+        !courseCheck.attendanceList.includes(user.sub)) ||
+      user.roles.includes(Role.Teacher)
     ) {
       course = await this.courseModel
         .findOne({ _id: id })
@@ -212,11 +243,13 @@ export class CoursesService {
 
       courseMap.sections.forEach(section => {
         section.lessons.forEach(lesson => {
-          delete lesson.exercises;
+          lesson.exercises = lesson.exercises.map(
+            exercise => exercise.id,
+          ) as any;
         });
       });
     }
-    // Student enrolled or teacher's course or admin
+    // Student enrolled or admin
     else {
       course = await this.courseModel
         .findOne({ _id: id })
@@ -446,8 +479,15 @@ export class CoursesService {
       { arrayFilters: [{ 'index._id': lessonId }], new: true },
     );
 
-    if (!course)
+    if (!course) {
       throw new BadRequestException('Lesson ID is missing or access denied');
+    }
+
+    await this.exercisesService.update(
+      exerciseId,
+      { course: course.id },
+      teacherId,
+    );
 
     return course;
   }
@@ -533,7 +573,10 @@ export class CoursesService {
   }
 
   async attendCourse(courseId: string, studentId: string) {
-    const course = await this.courseModel.findById(courseId);
+    const course = await this.courseModel.findOne({
+      _id: courseId,
+      isPublished: true,
+    });
 
     if (!course) throw new BadRequestException('Course not found');
     if (course.attendanceList.includes(studentId))
@@ -572,5 +615,74 @@ export class CoursesService {
     await course.save();
 
     return true;
+  }
+
+  async getCoursesExercises(user: JwtPayload) {
+    const courses = await this.courseModel.aggregate([
+      {
+        $match: {
+          attendanceList: {
+            $elemMatch: { $eq: new Types.ObjectId(user.sub) },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'exercises',
+          localField: 'sections.lessons.exercises',
+          foreignField: '_id',
+          as: 'exercises',
+        },
+      },
+      {
+        $addFields: {
+          totalLessons: {
+            $reduce: {
+              input: '$sections',
+              initialValue: 0,
+              in: { $add: ['$$value', { $size: '$$this.lessons' }] },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          totalLessons: 1,
+          'exercises._id': 1,
+          'exercises.title': 1,
+          'exercises.deadline': 1,
+          thumbnail: 1,
+          level: 1,
+          attendanceList: 1,
+        },
+      },
+    ]);
+
+    return plainToInstance(CourseExercisesDto, courses);
+  }
+
+  async getCoursesExercisesDue(user: JwtPayload) {
+    const now = new Date();
+    const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    const coursesExercises: CourseExercisesDto[] =
+      await this.getCoursesExercises(user);
+
+    coursesExercises.forEach(course => {
+      let ongoingExercises = 0;
+      let dueExercises = 0;
+
+      course.exercises?.forEach(exercise => {
+        if (new Date(exercise.deadline) < now) dueExercises += 1;
+        else if (new Date(exercise.deadline) < nextWeek) ongoingExercises += 1;
+      });
+
+      course.dueExercises = dueExercises;
+      course.ongoingExercises = ongoingExercises;
+    });
+
+    return coursesExercises;
   }
 }
