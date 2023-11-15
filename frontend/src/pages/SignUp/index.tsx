@@ -134,10 +134,10 @@ const SignUp: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col bg-bgNeutral p-8 rounded-[16px] gap-6 shadow-2xl">
+    <div className="flex flex-col bg-surface p-8 rounded-[16px] gap-6 shadow-2xl">
       <div className="flex flex-col items-center gap-3">
         <Logo width={250} />
-        <div>Create an account and start learning!</div>
+        <p className="text-textSubtle">Create an account and start learning!</p>
       </div>
 
       <Form

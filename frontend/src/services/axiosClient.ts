@@ -39,11 +39,6 @@ const setupAxiosInterceptor = () => {
 
         await refreshingFunction
 
-        error.response.config.transformResponse = (response: any) => {
-          const res = JSON.parse(response)
-          return res.data
-        }
-
         return axios(error.response.config)
       } catch (refreshError) {
         console.error(refreshError)

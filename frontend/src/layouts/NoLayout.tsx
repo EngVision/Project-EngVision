@@ -3,7 +3,7 @@ import { LogoIcon } from '../components/Icons'
 
 const NoLayout = () => {
   return (
-    <div className="h-screen overflow-y-hidden flex flex-col">
+    <div className="h-screen overflow-y-hidden bg-bgDefault flex flex-col">
       <div className="m-4">
         <LogoIcon className="hidden lg:block" />
       </div>

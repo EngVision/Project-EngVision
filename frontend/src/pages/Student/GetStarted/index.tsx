@@ -121,6 +121,7 @@ const GetStarted = () => {
                 disabled={!tempLevel ? true : false}
                 onClick={onClick}
                 size="large"
+                className="ml-4"
               >
                 Confirm
               </Button>
