@@ -53,6 +53,7 @@ jobs:
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4.0.0
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
         with:
           context: ${{ matrix.context }}
           push: true
