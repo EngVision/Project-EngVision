@@ -17,7 +17,6 @@ const Course = ({ course }: CourseProps) => {
 
   return (
     <Card
-      className="min-w-[19rem] max-w-[21rem]"
       cover={
         <CustomImage
           src={`${UPLOAD_FILE_URL}${course.thumbnail}`}

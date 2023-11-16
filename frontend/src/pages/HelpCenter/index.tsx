@@ -1,9 +1,9 @@
-import LogoutButton from '../../components/Header/LogoutButton'
+import Logout from '../../components/Logout'
 
 const HelpCenter = () => {
   return (
     <div className="mt-2">
-      <LogoutButton />
+      <Logout />
     </div>
   )
 }

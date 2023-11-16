@@ -40,7 +40,7 @@ const SendMailResetPassword: React.FC = () => {
   return (
     <>
       {contextHolder}
-      <div className=" bg-bgNeutral rounded-2xl p-8">
+      <div className=" bg-surface rounded-2xl p-8">
         <div className="mb-6">
           <h4 className="text-center text-3xl text-primary mb-4">
             Forgot Your Password?

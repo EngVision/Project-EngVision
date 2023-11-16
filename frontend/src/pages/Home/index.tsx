@@ -80,7 +80,7 @@ const Home = () => {
   }
   const DashboardCard = (title: string, value: any) => {
     return (
-      <div className="w-[100%/4] h-56 p-2 my-4 flex flex-col rounded-xl bg-white items-center justify-center text-xl">
+      <div className="w-[100%/4] h-56 p-2 my-4 flex flex-col rounded-xl bg-surface items-center justify-center text-xl">
         <div className="text-blue-600 text-center">{title}</div>
         <div className="text-blue-700 font-bold">{value}</div>
       </div>

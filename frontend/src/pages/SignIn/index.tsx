@@ -84,7 +84,7 @@ const SignIn: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col items-center bg-bgNeutral py-8 px-10 rounded-[16px] self-center shadow-2xl">
+    <div className="flex flex-col items-center bg-surface py-8 px-10 rounded-[16px] self-center shadow-2xl">
       <div className="mb-8 flex flex-col items-center gap-4">
         <Logo width={250} />
         <p className="text-dark font-light">Let's start learning right now!</p>
