@@ -48,11 +48,12 @@ export class ExamSubmissionsService {
     answer: any,
     examId: string,
   ) {
-    let examSubmission =
-      await this.examSubmissionModel.findOne<ExamSubmissionDocument>({
+    let examSubmission = await this.examSubmissionModel
+      .findOne<ExamSubmissionDocument>({
         user: userId,
         exam: examId,
-      });
+      })
+      .populate('exam');
 
     if (!examSubmission) {
       examSubmission = await this.createSubmission(userId, examId);

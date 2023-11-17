@@ -72,7 +72,7 @@ function MultipleChoice(props: MultipleChoiceProps) {
                 ghost
                 disabled={!!result}
                 className={`flex-1 ${
-                  selectedAnswers?.includes(answer.id)
+                  selectedAnswers?.includes(answer.id) && !isSubmitAnswer
                     ? '!text-white !bg-primary'
                     : isSubmitAnswer || isCorrectAnswer
                     ? `!text-white ${

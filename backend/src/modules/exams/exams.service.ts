@@ -74,15 +74,25 @@ export class ExamsService {
 
     shuffleArray(exercises);
 
-    const newExam = new this.examModel({
+    let exam = await this.examModel.findOne({
       title: 'Entrance Exam',
-      description: 'Entrance Exam',
-      level: level,
-      parts: exercises.slice(0, 4).map(exercise => exercise._id),
+      level,
     });
-    newExam.save();
 
-    return newExam;
+    if (!exam) {
+      exam = new this.examModel({
+        title: 'Entrance Exam',
+        description: 'Entrance Exam',
+        level: level,
+        parts: exercises.slice(0, 4).map(exercise => exercise._id),
+      });
+      await exam.save();
+    } else {
+      exam.parts = exercises.slice(0, 4).map(exercise => exercise._id);
+      await exam.save();
+    }
+
+    return exam;
   }
 
   async addPart(id: string, partId: string): Promise<ExamDocument> {

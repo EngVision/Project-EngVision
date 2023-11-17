@@ -13,6 +13,7 @@ import { SubmissionsModule } from './modules/submissions/submissions.module';
 import { UsersModule } from './modules/users/users.module';
 import { ExamsModule } from './modules/exams/exams.module';
 import { ExamSubmissionsModule } from './modules/exam-submissions/exam-submissions.module';
+import { UserLevelModule } from './modules/user-level/user-level.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ExamSubmissionsModule } from './modules/exam-submissions/exam-submissio
     SubmissionsModule,
     ExamsModule,
     ExamSubmissionsModule,
+    UserLevelModule,
   ],
   providers: [
     {

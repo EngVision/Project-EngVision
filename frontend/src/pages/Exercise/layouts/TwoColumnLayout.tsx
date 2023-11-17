@@ -40,11 +40,13 @@ export function TwoColumnLayout({
             A
           </button>
         </Space>
-        <img
-          src={`${UPLOAD_FILE_URL}${contentQuestion.image}`}
-          alt=""
-          className="w-full rounded-sm"
-        />
+        {contentQuestion.image && (
+          <img
+            src={`${UPLOAD_FILE_URL}${contentQuestion.image}`}
+            alt=""
+            className="w-full rounded-sm"
+          />
+        )}
         <p
           style={{
             fontSize: fontSize,
