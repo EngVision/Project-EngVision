@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
@@ -13,6 +14,7 @@ module.exports = {
       },
       colors: {
         bgDefault: 'var(--bg-default)',
+        surface: 'var(--bg-surface)',
         bgNeutral: 'var(--bg-Neutral)',
         bgNeutralHover: 'var(--bg-NeutralHover)',
         primary: 'var(--primary)',

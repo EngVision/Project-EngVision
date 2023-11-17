@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -102,7 +106,8 @@ input[type='number']::-webkit-outer-spin-button {
 
 .theme-light {
   --bg-default: #f3efe2;
-  --bg-Neutral: #fffcf7;
+  --bg-surface: #ffffff;
+  --bg-Neutral: #091e4212;
   --bg-NeutralHover: #091e4224;
   --primary: #2769e7;
   --primaryHover: #1c4494;
@@ -115,8 +120,9 @@ input[type='number']::-webkit-outer-spin-button {
 }
 .theme-dark {
   --bg-default: #1d2125;
-  --bg-Neutral: #22272b;
-  --bg-NeutralHover: #2c333a;
+  --bg-surface: #272a2d;
+  --bg-Neutral: #4d5967ed;
+  --bg-NeutralHover: #272c31d4;
   --primary: #5287ec;
   --primaryHover: #4969a9;
   --primary2: #6695e9;
@@ -146,4 +152,31 @@ input[type='number']::-webkit-outer-spin-button {
 
 .ant-select-selection-item {
   font-size: 14px;
+}
+
+.scale-up {
+  animation: scaleUp 0.5s ease-in-out;
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.5);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+:is(.css-dev-only-do-not-override-le3245):not(.ant-btn-primary),
+:is(.css-dev-only-do-not-override-aa3ixb).ant-btn-default,
+:is(.css-dev-only-do-not-override-le3245).ant-table-wrapper .ant-table {
+  background-color: var(--bg-surface);
+}
+
+.ant-select-selector {
+  background-color: var(--bg-surface) !important;
+}
+
+.ant-dropdown-menu {
+  background-color: #272a2d !important;
 }

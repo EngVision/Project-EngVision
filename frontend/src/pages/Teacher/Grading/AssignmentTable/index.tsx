@@ -11,12 +11,9 @@ const AssignmentTable = () => {
   const params = useParams()
   const { data: rawSubmissionList, isLoading } = useQuery({
     queryKey: ['submissions'],
-    queryFn: async () => submissionApi.getSubmissionList(),
+    queryFn: async () =>
+      submissionApi.getSubmissionList({ course: params.courseID }),
   })
-  const submissionList: SubmissionResponse[] | undefined =
-    rawSubmissionList?.data?.filter(
-      (submission) => submission.course.id === params.courseID,
-    )
   const columns: ColumnsType<SubmissionResponse> = [
     {
       title: 'Name',
@@ -98,6 +95,8 @@ const AssignmentTable = () => {
       title: 'Action',
       key: 'action',
       align: 'center',
+      fixed: 'right',
+      width: 100,
       render: (_, record) => (
         <Tag
           className="cursor-pointer bg-alternative text-white px-4 py-1"
@@ -121,10 +120,16 @@ const AssignmentTable = () => {
       ) : (
         <>
           <h3 className="text-primary text-2xl mb-4">
-            {submissionList ? submissionList[0]?.course?.title : ''}
+            {rawSubmissionList?.data
+              ? rawSubmissionList?.data[0]?.course?.title
+              : ''}
           </h3>
-          {submissionList && (
-            <Table columns={columns} dataSource={submissionList} />
+          {rawSubmissionList?.data && (
+            <Table
+              columns={columns}
+              dataSource={rawSubmissionList.data}
+              scroll={{ x: '80vw' }}
+            />
           )}
         </>
       )}

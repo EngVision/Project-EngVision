@@ -1,44 +1,48 @@
-import { Avatar, Popover } from 'antd'
-import { useAppDispatch } from '../../hooks/redux'
-import authApi from '../../services/authApi'
+import { Avatar, Dropdown, MenuProps } from 'antd'
 import { getFileUrl } from '../../utils/common'
-import { setUser } from '../../redux/app/slice'
-import { useMutation } from '@tanstack/react-query'
+import Logout from '../Logout'
+import { useNavigate } from 'react-router-dom'
+import { PRIVATE_ROUTES } from '../../utils/constants'
+import { LogoutIcon, SettingsIcon } from '../Icons'
 
 type Props = {
   user: any
 }
 
 function UserSettings({ user }: Props) {
-  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
-  const logoutMutation = useMutation({
-    mutationFn: authApi.logout,
-    onSuccess: () => {
-      dispatch(setUser(null))
-    },
-  })
-
-  const handleLogout = async () => {
-    logoutMutation.mutate()
-  }
-
-  const renderContent = () => {
-    return (
-      <div className="min-w-[120px] py-2">
+  const items: MenuProps['items'] = [
+    {
+      key: 'account',
+      label: (
         <div
-          onClick={handleLogout}
-          className="w-full text-left border-none p-2 cursor-pointer hover:bg-grey-200"
+          onClick={() => navigate(PRIVATE_ROUTES.settings)}
+          className="w-full flex gap-2 items-center text-left border-none cursor-pointer"
         >
-          Logout
+          <SettingsIcon width={16} height={16} />
+          Account
         </div>
-      </div>
-    )
-  }
+      ),
+    },
+    {
+      key: 'logout',
+      label: (
+        <div className="flex gap-2 items-center">
+          <LogoutIcon width={22} height={16} />
+          <Logout />
+        </div>
+      ),
+    },
+  ]
 
   return (
     user && (
-      <Popover content={renderContent()} trigger="click" placement="bottomLeft">
+      <Dropdown
+        menu={{ items }}
+        className="text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
+        placement="bottomRight"
+      >
         <Avatar
           className={`${
             user?.avatar ? '' : 'bg-blue-400 text-white'
@@ -48,7 +52,7 @@ function UserSettings({ user }: Props) {
         >
           {user?.avatar ? '' : user?.lastName[0]}
         </Avatar>
-      </Popover>
+      </Dropdown>
     )
   )
 }

@@ -1,4 +1,4 @@
-import { Button, Space } from 'antd'
+import { Button } from 'antd'
 import { useEffect, useState } from 'react'
 import ArrowLeft from '../../../components/Icons/ArrowLeft'
 import ArrowRight from '../../../components/Icons/ArrowRight'
@@ -9,6 +9,7 @@ import coursesApi from '../../../services/coursesApi'
 import { examApi } from '../../../services/examApi'
 import AppLoading from '../../../components/common/AppLoading'
 import { COURSE_STATUS } from '../../../utils/constants'
+import submissionApi from '../../../services/submissionApi'
 enum Direction {
   left = 'left',
   right = 'right',
@@ -64,6 +65,23 @@ const Grading = () => {
     queryFn: async () =>
       coursesApi.getCourses({ status: COURSE_STATUS.published }),
   })
+  const { data: rawSubmissionList } = useQuery({
+    queryKey: ['submissions'],
+    queryFn: async () => submissionApi.getSubmissionList(null),
+  })
+  rawCourseList?.data?.map((course) => {
+    course.submissionAmount = 0
+    course.pendingSubmissionAmount = 0
+    rawSubmissionList?.data?.map((submission) => {
+      if (submission.course?.id === course.id) {
+        course.submissionAmount++
+        if (submission.grade) {
+          course.pendingSubmissionAmount++
+        }
+      }
+    })
+  })
+  console.log(rawCourseList?.data)
   const { data: rawExamList } = useQuery({
     queryKey: ['exam'],
     queryFn: async () => examApi.getExam(),
@@ -76,7 +94,7 @@ const Grading = () => {
           <p className="font-bold text-3xl text-primary">
             {/* {t('Exercises.exercises')} */}
           </p>
-          <Space>
+          <div className="flex gap-3 mb-4">
             <Button
               type="primary"
               shape="circle"
@@ -95,7 +113,7 @@ const Grading = () => {
               disabled={disabledScrollRight}
               icon={<ArrowRight width={20} height={20} />}
             ></Button>
-          </Space>
+          </div>
         </div>
         {isLoading ? (
           <AppLoading />

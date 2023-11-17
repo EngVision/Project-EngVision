@@ -18,6 +18,7 @@ import {
   STUDENT_ROUTES,
 } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
+import Logo from '../../components/Icons/Logo'
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate()
@@ -133,12 +134,10 @@ const SignUp: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col bg-bgNeutral p-8 rounded-[16px] gap-6">
-      <div className="flex flex-col items-center">
-        <h4 className="text-center font-semibold text-4xl mb-4 text-primary">
-          Welcome to EngVision
-        </h4>
-        <p>Create an account and start learning!</p>
+    <div className="flex flex-col bg-surface p-8 rounded-[16px] gap-6 shadow-2xl">
+      <div className="flex flex-col items-center gap-3">
+        <Logo width={250} />
+        <p className="text-textSubtle">Create an account and start learning!</p>
       </div>
 
       <Form

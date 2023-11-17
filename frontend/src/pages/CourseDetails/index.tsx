@@ -44,7 +44,7 @@ const CourseDetailsPage = () => {
 
   return (
     courseDetail && (
-      <div className="flex flex-col bg-bgNeutral p-5 rounded-md shadow-lg">
+      <div className="flex flex-col bg-surface p-5 rounded-md shadow-lg">
         <div className="flex h-60 mb-8">
           <div className="h-full w-[18.75rem] mr-8 rounded-lg overflow-hidden">
             <CustomImage

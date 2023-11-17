@@ -12,7 +12,7 @@ import { useAppDispatch } from '../../hooks/redux'
 import { NotificationContext } from '../../contexts/notification'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
 import { useMutation } from '@tanstack/react-query'
-
+import Logo from '../../components/Icons/Logo'
 const CreateProfile = () => {
   const [form] = useForm<SignUpParams>()
   const dispatch = useAppDispatch()
@@ -77,29 +77,25 @@ const CreateProfile = () => {
   }
 
   return (
-    <div className="w-[100vw] min-h-[100vh] flex items-center justify-center bg-slate-300 py-16">
-      <div className="bg-white p-[40px] rounded-[16px]">
-        <div>
-          <h4 className="text-center font-semibold text-[40px] mb-[40px]">
-            Welcome to EngVision!
-          </h4>
-          <p className="text-textSubtle my-[20px]">
-            Create an account and start learning!
+    <div className="min-h-[100vh] flex items-center justify-center bg-bgDefault py-10">
+      <div className="bg-bgNeutral px-16 py-10 rounded-[16px] shadow-2xl">
+        <div className="flex flex-col justify-center items-center gap-3 mb-6">
+          <Logo width={250} />
+          <p className="text-textSubtle">
+            Update your info and start learning!
           </p>
         </div>
 
         <Form
           form={form}
           name="basic"
-          style={{ maxWidth: 600 }}
           initialValues={{ accepted: false }}
           onFinish={onFinish}
           autoComplete="off"
           onChange={() => setError('')}
           layout="vertical"
-          className="w-[36rem]"
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between gap-20">
             <Form.Item<SignUpParams>
               name="firstName"
               label="First name"
@@ -110,7 +106,7 @@ const CreateProfile = () => {
               <Input
                 placeholder="First Name"
                 size="middle"
-                className="rounded-[8px] h-[40px]"
+                className="rounded-[8px] h-10"
               />
             </Form.Item>
 
@@ -124,7 +120,7 @@ const CreateProfile = () => {
               <Input
                 placeholder="Last Name"
                 size="middle"
-                className="rounded-[8px] h-[40px]"
+                className="rounded-[8px] h-10"
               />
             </Form.Item>
           </div>
@@ -153,7 +149,7 @@ const CreateProfile = () => {
             <Input.Password
               placeholder="Password"
               size="middle"
-              className="rounded-[8px] h-[40px]"
+              className="rounded-[8px] h-10"
             />
           </Form.Item>
 
@@ -184,7 +180,7 @@ const CreateProfile = () => {
             <Input.Password
               placeholder="Confirm password"
               size="middle"
-              className="rounded-[8px] h-[40px]"
+              className="rounded-[8px] h-10"
             />
           </Form.Item>
 
@@ -210,7 +206,7 @@ const CreateProfile = () => {
           >
             <Input
               placeholder="Phone Number"
-              className="rounded-[8px] h-[40px] text-[14px]"
+              className="rounded-[8px] h-10 text-sm"
             />
           </Form.Item>
 
@@ -222,7 +218,7 @@ const CreateProfile = () => {
           >
             <Select
               options={enumToSelectOptions(Gender)}
-              className="h-[40px] !text-[14px]"
+              className="h-10 !text-sm"
               placeholder="Gender"
               size="large"
             />
@@ -239,7 +235,7 @@ const CreateProfile = () => {
                 value: role,
                 label: role,
               }))}
-              className="h-[40px] text-[14px]"
+              className="h-10 text-sm"
               size="large"
             />
           </Form.Item>
@@ -277,10 +273,10 @@ const CreateProfile = () => {
               type="primary"
               shape="round"
               htmlType="submit"
-              className="h-[40px] min-w-[200px] font-semibold"
+              className="h-10 min-w-[200px] font-semibold"
               loading={updateAccountMutation.isPending}
             >
-              Sign Up
+              Confirm
             </Button>
           </Form.Item>
         </Form>
