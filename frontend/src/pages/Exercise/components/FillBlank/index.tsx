@@ -37,7 +37,7 @@ function FillBlank(props: FillBlankProps) {
 
   useEffect(() => {
     firstInput.current?.focus()
-  }, [firstInput.current])
+  }, [firstInput])
 
   return (
     <div>
@@ -52,14 +52,14 @@ function FillBlank(props: FillBlankProps) {
           <>
             {fields.map(({ key }) => {
               return (
-                <>
+                <span key={key}>
                   <span className="text-xl">{questionArr[key]}</span>
                   <Form.Item noStyle name={[key]}>
                     <Input
                       ref={key === 0 ? firstInput : null}
                       className={`font-bold text-xl ${
                         result
-                          ? result.correctAnswer[key] === result.answer[key]
+                          ? result.isCorrect
                             ? '!text-green-500'
                             : '!text-red-500'
                           : ''
@@ -75,7 +75,7 @@ function FillBlank(props: FillBlankProps) {
                       }}
                     />
                   </Form.Item>
-                </>
+                </span>
               )
             })}
             <span className="text-xl">
