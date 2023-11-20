@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsDate,
   IsEnum,
@@ -8,7 +8,7 @@ import {
   IsOptional,
 } from 'class-validator';
 import { QueryDto } from 'src/common/dto/query.dto';
-import { Order, StatusCourseSearch } from 'src/common/enums';
+import { CEFRLevel, StatusCourseSearch } from 'src/common/enums';
 
 export class SearchCourseDto extends QueryDto {
   @IsNotEmpty()
@@ -24,8 +24,14 @@ export class SearchCourseDto extends QueryDto {
   keyword?: string;
 
   @IsOptional()
-  @ApiPropertyOptional({ type: String, description: 'Tag' }) // is []
-  tag?: string;
+  @ApiPropertyOptional({ type: [String], description: 'Tag' }) // is []
+  tag?: string[];
+
+  @IsOptional()
+  @Transform(({ value }) => value.split(','))
+  @IsEnum(CEFRLevel, { each: true })
+  @ApiPropertyOptional({ isArray: true, enum: CEFRLevel, description: 'Level' }) // is []
+  level?: CEFRLevel[];
 
   @IsOptional()
   @Type(() => Date)

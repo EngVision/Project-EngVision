@@ -85,12 +85,21 @@ export class CoursesService {
       if (data.priceMax) dataFilter.price.$lte = data.priceMax;
     }
 
+    if (data.level) {
+      dataFilter.level = {
+        $in: data.level,
+      };
+    }
+
     switch (data.sortBy) {
       case SortBy.time:
         sort.createdAt = data.order === Order.asc ? 1 : -1;
         break;
       case SortBy.price:
         sort.price = data.order === Order.asc ? 1 : -1;
+        break;
+      case SortBy.level:
+        sort.level = data.order === Order.asc ? 1 : -1;
         break;
       default:
         sort.createdAt = -1;
