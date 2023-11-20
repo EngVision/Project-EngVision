@@ -31,7 +31,7 @@ export class SearchCourseDto extends QueryDto {
   @Transform(({ value }) => value.split(','))
   @IsEnum(CEFRLevel, { each: true })
   @ApiPropertyOptional({ isArray: true, enum: CEFRLevel, description: 'Level' }) // is []
-  level?: CEFRLevel[];
+  levels?: CEFRLevel[];
 
   @IsOptional()
   @Type(() => Date)

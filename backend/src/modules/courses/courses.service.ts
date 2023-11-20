@@ -85,9 +85,9 @@ export class CoursesService {
       if (data.priceMax) dataFilter.price.$lte = data.priceMax;
     }
 
-    if (data.level) {
+    if (data.levels) {
       dataFilter.level = {
-        $in: data.level,
+        $in: data.levels,
       };
     }
 
