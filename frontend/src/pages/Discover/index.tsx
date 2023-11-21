@@ -11,6 +11,7 @@ import { COURSE_STATUS } from '../../utils/constants'
 import { CourseCardInLine } from './CourseCardInline'
 import FeaturedCourse from './FeaturedCourse'
 import SortDropDown from './SortDropDown'
+import { useAppSelector } from '../../hooks/redux'
 const { Search } = Input
 
 const Discover = () => {
@@ -19,6 +20,9 @@ const Discover = () => {
   const [keyword, setKeyword] = useState<string>('')
   const [page, setPage] = useState<number>(1)
   const [status, setStatus] = useState<COURSE_STATUS>(COURSE_STATUS.all)
+
+  const currentLevel = useAppSelector((state) => state.app.currentLevel)
+
   const onSearch = (value: string) => {
     setKeyword(value)
     setPage(1)
@@ -57,8 +61,8 @@ const Discover = () => {
     priceMax: 1,
   }
   const { data: rawSuggestedList } = useQuery({
-    queryKey: ['suggestedCourses'],
-    queryFn: () => coursesApi.getSuggestedCourses(),
+    queryKey: ['suggestedCourses', { levels: currentLevel }],
+    queryFn: () => coursesApi.getCourses({ ...status, levels: currentLevel }),
   })
   const { data: rawNewCourseList, isLoading } = useQuery({
     queryKey: ['courses', getNewCoursesParams],
@@ -72,7 +76,6 @@ const Discover = () => {
     queryKey: ['courses', getFreeCoursesParams],
     queryFn: () => coursesApi.getCourses(getFreeCoursesParams),
   })
-  if (isLoading) return <AppLoading />
   return (
     <>
       {isLoading ? (
@@ -96,6 +99,26 @@ const Discover = () => {
               </div> */}
                 </div>
               )}
+
+            {rawSuggestedList && (
+              <div className="m-6">
+                <p className="font-bold text-3xl text-primary mb-6">
+                  Recommended
+                </p>
+                <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+                  {rawSuggestedList?.data.length ? (
+                    rawSuggestedList?.data.map((course) => (
+                      <CourseCard course={course} key={course.id} />
+                    ))
+                  ) : (
+                    <div className="col-span-4 text-center italic text-textSubtle">
+                      <p className="text-lg">No courses found</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {rawAllCourseList && (
               <div className="">
                 <div className="flex justify-between items-center">

@@ -1,12 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { IUser } from '../../services/authApi/types'
+import { CEFRLevel } from '../../utils/constants'
 
 interface AppState {
   user: IUser | null
   darkMode: boolean
   locales: string
   isSidebarCollapsed: boolean
-  showGetStarted: boolean
+  showingGetStarted: boolean
+  showGetStartedAgain: boolean
+  currentLevel: CEFRLevel
+  showingLogoutModal: boolean
 }
 
 const initialState: AppState = {
@@ -14,7 +18,10 @@ const initialState: AppState = {
   darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
   locales: 'en',
   isSidebarCollapsed: false,
-  showGetStarted: true,
+  showingGetStarted: false,
+  showGetStartedAgain: true,
+  currentLevel: CEFRLevel.A1,
+  showingLogoutModal: false,
 }
 
 const appSlice = createSlice({
@@ -33,8 +40,20 @@ const appSlice = createSlice({
     setSidebarCollapsed: (state, action) => {
       state.isSidebarCollapsed = action.payload
     },
+    showGetStarted: (state) => {
+      state.showingGetStarted = true
+    },
     hideGetStarted: (state) => {
-      state.showGetStarted = false
+      state.showingGetStarted = false
+    },
+    setShowGetStartedAgain: (state, action) => {
+      state.showGetStartedAgain = action.payload
+    },
+    setCurrentLevel: (state, action) => {
+      state.currentLevel = action.payload
+    },
+    setShowLogoutModal: (state, action) => {
+      state.showingLogoutModal = action.payload
     },
   },
 })
@@ -43,7 +62,11 @@ export const {
   toggleDarkMode,
   toggleLocales,
   setSidebarCollapsed,
+  showGetStarted,
   hideGetStarted,
+  setShowGetStartedAgain,
+  setCurrentLevel,
+  setShowLogoutModal,
 } = appSlice.actions
 
 export default appSlice.reducer
