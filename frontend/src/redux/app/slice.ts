@@ -6,6 +6,7 @@ interface AppState {
   darkMode: boolean
   locales: string
   isSidebarCollapsed: boolean
+  showGetStarted: boolean
 }
 
 const initialState: AppState = {
@@ -13,6 +14,7 @@ const initialState: AppState = {
   darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
   locales: 'en',
   isSidebarCollapsed: false,
+  showGetStarted: true,
 }
 
 const appSlice = createSlice({
@@ -31,9 +33,17 @@ const appSlice = createSlice({
     setSidebarCollapsed: (state, action) => {
       state.isSidebarCollapsed = action.payload
     },
+    hideGetStarted: (state) => {
+      state.showGetStarted = false
+    },
   },
 })
-export const { setUser, toggleDarkMode, toggleLocales, setSidebarCollapsed } =
-  appSlice.actions
+export const {
+  setUser,
+  toggleDarkMode,
+  toggleLocales,
+  setSidebarCollapsed,
+  hideGetStarted,
+} = appSlice.actions
 
 export default appSlice.reducer

@@ -119,8 +119,8 @@ input[type='number']::-webkit-outer-spin-button {
   --text-color: #313134;
 }
 .theme-dark {
-  --bg-default: #1d2125;
-  --bg-surface: #272a2d;
+  --bg-default: #18191a;
+  --bg-surface: #242526;
   --bg-Neutral: #4d5967ed;
   --bg-NeutralHover: #272c31d4;
   --primary: #5287ec;
@@ -167,10 +167,12 @@ input[type='number']::-webkit-outer-spin-button {
   }
 }
 
-:is(.css-dev-only-do-not-override-le3245):not(.ant-btn-primary),
-:is(.css-dev-only-do-not-override-aa3ixb).ant-btn-default,
+:is(.css-dev-only-do-not-override-le3245).ant-btn:not(.ant-btn-primary),
+:is(.css-dev-only-do-not-override-le3245).ant-card,
+:is(.css-dev-only-do-not-override-le3245).ant-input,
+:is(.css-dev-only-do-not-override-le3245).ant-checkbox .ant-checkbox-inner,
 :is(.css-dev-only-do-not-override-le3245).ant-table-wrapper .ant-table,
 .ant-select-selector,
 .ant-dropdown-menu {
-  background-color: var(--bg-surface);
+  background-color: var(--bg-surface) !important;
 }

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { NotificationContext } from './contexts/notification'
 import { useAppSelector } from './hooks/redux'
 import AppRoutes from './routes'
+import GetStartedModal from './components/GetStartedModal'
 
 const App: React.FC = () => {
   const { i18n } = useTranslation()
@@ -35,6 +36,7 @@ const App: React.FC = () => {
       <NotificationContext.Provider value={apiNotification}>
         {contextHolder}
         <AppRoutes />
+        <GetStartedModal />
       </NotificationContext.Provider>
     </ConfigProvider>
   )

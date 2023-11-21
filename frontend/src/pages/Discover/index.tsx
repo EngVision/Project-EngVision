@@ -12,6 +12,7 @@ import { CourseCardInLine } from './CourseCardInline'
 import FeaturedCourse from './FeaturedCourse'
 import SortDropDown from './SortDropDown'
 const { Search } = Input
+
 const Discover = () => {
   const [sortBy, setSortBy] = useState<string>('createdAt')
   const [isGrid, setIsGrid] = useState<boolean>(true)

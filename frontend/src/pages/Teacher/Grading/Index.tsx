@@ -10,10 +10,12 @@ import { examApi } from '../../../services/examApi'
 import AppLoading from '../../../components/common/AppLoading'
 import { COURSE_STATUS } from '../../../utils/constants'
 import submissionApi from '../../../services/submissionApi'
+
 enum Direction {
   left = 'left',
   right = 'right',
 }
+
 const Grading = () => {
   const [disabledScrollLeft, setDisabledScrollLeft] = useState<boolean>(true)
   const [disabledScrollRight, setDisabledScrollRight] = useState<boolean>(true)
@@ -81,7 +83,7 @@ const Grading = () => {
       }
     })
   })
-  console.log(rawCourseList?.data)
+
   const { data: rawExamList } = useQuery({
     queryKey: ['exam'],
     queryFn: async () => examApi.getExam(),

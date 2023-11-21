@@ -195,3 +195,6 @@ export enum SortByEnum {
   createdAt = 'createdAt',
   price = 'price',
 }
+
+export const GET_STARTED_VIDEO_URL =
+  'https://www.youtube.com/embed/vPz8ftK_4bk?si=5guPvdn6anRxdjFB'
