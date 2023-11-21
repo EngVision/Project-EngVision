@@ -24,7 +24,7 @@ const coursesApi = {
   },
   getSuggestedCourses: async (): Promise<ResponseData<CourseDetails[]>> => {
     const res = await axiosClient.get(`${PREFIX}suggested-courses`)
-    return res.data
+    return res.data.data
   },
 
   create: async (
