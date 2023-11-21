@@ -196,5 +196,9 @@ export enum SortByEnum {
   price = 'price',
 }
 
-export const GET_STARTED_VIDEO_URL =
-  'https://www.youtube.com/embed/vPz8ftK_4bk?si=5guPvdn6anRxdjFB'
+export const STUDENT_GET_STARTED_VIDEO_URL =
+  'https://www.youtube.com/embed/ZIccuK7kSZw?si=i92mMWjOyEH1qjly'
+export const TEACHER_GET_STARTED_VIDEO_URL =
+  'https://www.youtube.com/embed/BrmLUSJsKQU?si=m4YgMTgyMLGWdm7V'
+export const FACEBOOK_SOCIAL_URL = 'https://www.facebook.com/engvision.dev'
+export const YOUTUBE_SOCIAL_URL = 'https://www.youtube.com/@engvisionofficial'

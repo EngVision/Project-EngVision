@@ -4,12 +4,16 @@ import { useNavigate } from 'react-router-dom'
 import { CEFRLevel, STUDENT_ROUTES } from '../../../utils/constants'
 import { examApi } from '../../../services/examApi'
 import React, { ReactNode } from 'react'
+import { useAppDispatch } from '../../../hooks/redux'
+import { setCurrentLevel } from '../../../redux/app/slice'
 interface ScaleUpProps {
   children: ReactNode
 }
 
 const GetStarted = () => {
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+
   const [tempLevel, setTempLevel] = useState<string>('')
   const [level, setLevel] = useState<string>('')
 
@@ -84,6 +88,7 @@ const GetStarted = () => {
   }
 
   const onClick = () => {
+    dispatch(setCurrentLevel(tempLevel))
     setLevel(tempLevel)
   }
 
@@ -109,7 +114,7 @@ const GetStarted = () => {
               }}
             >
               <Select
-                className="mt-5 cursor-pointe"
+                className="mt-5 cursor-pointer min-w-[160px] text-left"
                 size="large"
                 placeholder="Select a level"
                 optionFilterProp="children"

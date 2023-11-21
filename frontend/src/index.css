@@ -73,10 +73,6 @@ code {
   overflow: auto !important;
 }
 
-.ant-popover-inner {
-  padding: 0 !important;
-}
-
 .ant-select-selector {
   font-size: unset !important;
 }
@@ -170,6 +166,7 @@ input[type='number']::-webkit-outer-spin-button {
 :is(.css-dev-only-do-not-override-le3245).ant-btn:not(.ant-btn-primary),
 :is(.css-dev-only-do-not-override-le3245).ant-card,
 :is(.css-dev-only-do-not-override-le3245).ant-input,
+:is(.css-dev-only-do-not-override-le3245).ant-input-password,
 :is(.css-dev-only-do-not-override-le3245).ant-checkbox .ant-checkbox-inner,
 :is(.css-dev-only-do-not-override-le3245).ant-table-wrapper .ant-table,
 .ant-select-selector,
