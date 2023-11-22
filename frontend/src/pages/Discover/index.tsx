@@ -79,39 +79,44 @@ const Discover = () => {
       ) : (
         <>
           <div className="flex flex-col gap-12 mx-10">
-            {Array.isArray(rawSuggestedList) && rawSuggestedList.length > 0 && (
-              <div className="">
-                <p className="font-bold text-2xl text-primary mb-6">
-                  Featured Course
-                </p>
+            {Array.isArray(rawSuggestedList?.data) &&
+              rawSuggestedList?.data.length &&
+              rawSuggestedList?.data.length > 0 && (
+                <div className="">
+                  <p className="font-bold text-2xl text-primary mb-6">
+                    Featured Course
+                  </p>
 
-                <FeaturedCourse course={rawSuggestedList[0]} />
-                {/* <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+                  <FeaturedCourse course={rawSuggestedList.data[0]} />
+                  {/* <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
                 {rawSuggestedList.data.map((course) => (
                   <CourseCard course={course} key={course.id} />
                 ))}
               </div> */}
+                </div>
+              )}
+            {rawAllCourseList && (
+              <div className="">
+                <div className="flex justify-between items-center">
+                  <p className="font-bold text-3xl text-primary mb-6">
+                    New Courses
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+                  {rawNewCourseList?.data.length ? (
+                    rawNewCourseList.data.map((course) => (
+                      <CourseCard course={course} key={course.id} />
+                    ))
+                  ) : (
+                    <div className="col-span-4 text-center italic text-textSubtle">
+                      <p className="text-lg">No courses found</p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
-            <div className="">
-              <div className="flex justify-between items-center">
-                <p className="font-bold text-3xl text-primary mb-6">
-                  New Courses
-                </p>
-              </div>
 
-              <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
-                {rawNewCourseList?.data.length ? (
-                  rawNewCourseList.data.map((course) => (
-                    <CourseCard course={course} key={course.id} />
-                  ))
-                ) : (
-                  <div className="col-span-4 text-center italic text-textSubtle">
-                    <p className="text-lg">No courses found</p>
-                  </div>
-                )}
-              </div>
-            </div>
             <div className="">
               <div className="flex justify-between">
                 <div className="font-bold text-3xl text-primary mb-10">
@@ -179,22 +184,26 @@ const Discover = () => {
                 onChange={(page) => setPage(page)}
                 total={rawAllCourseList?.total}
               />
-              <div>
-                <div className="font-bold text-3xl text-primary mb-10">
-                  Free Courses
-                </div>
-                <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
-                  {rawFreeCourseList?.data.length ? (
-                    rawFreeCourseList.data.map((course) => (
-                      <CourseCard course={course} key={course.id} />
-                    ))
-                  ) : (
-                    <div className="col-span-4 text-center italic text-textSubtle">
-                      <p className="text-lg">No courses found</p>
+              {rawFreeCourseList?.data &&
+                rawFreeCourseList?.data.length &&
+                rawFreeCourseList?.data.length > 0 && (
+                  <div>
+                    <div className="font-bold text-3xl text-primary mb-10">
+                      Free Courses
                     </div>
-                  )}
-                </div>
-              </div>
+                    <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+                      {rawFreeCourseList?.data.length ? (
+                        rawFreeCourseList.data.map((course) => (
+                          <CourseCard course={course} key={course.id} />
+                        ))
+                      ) : (
+                        <div className="col-span-4 text-center italic text-textSubtle">
+                          <p className="text-lg">No courses found</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
         </>
