@@ -96,5 +96,12 @@ export interface ReviewParams {
 }
 
 export interface GetCourseProps {
+  sortBy?: string
+  order?: string
+  page?: number
+  limit?: number
   status: COURSE_STATUS
+  keyword?: string
+  priceMin?: number
+  priceMax?: number
 }
