@@ -3,6 +3,7 @@ import { Expose, Transform, Type } from 'class-transformer';
 import mongoose from 'mongoose';
 import { CEFRLevel } from 'src/common/enums';
 import { ExerciseDto } from './exercise.dto';
+import { UserBriefDto } from 'src/modules/users/dto/user-brief.dto';
 
 export class CourseExercisesDto {
   @Expose({ name: '_id' })
@@ -12,6 +13,10 @@ export class CourseExercisesDto {
 
   @ApiProperty({ type: String, description: 'Title' })
   title: string;
+
+  @Type(() => UserBriefDto)
+  @ApiProperty({ type: UserBriefDto, description: 'Teacher' })
+  teacher: UserBriefDto;
 
   @Transform(value => value.obj.thumbnail?.toString())
   @ApiProperty({

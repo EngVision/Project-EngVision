@@ -644,6 +644,24 @@ export class CoursesService {
         },
       },
       {
+        $lookup: {
+          from: 'users',
+          localField: 'teacher',
+          foreignField: '_id',
+          pipeline: [
+            {
+              $addFields: {
+                fullName: {
+                  $concat: ['$firstName', ' ', '$lastName'],
+                },
+              },
+            },
+          ],
+          as: 'teacher',
+        },
+      },
+      { $unwind: '$teacher' },
+      {
         $addFields: {
           totalLessons: {
             $reduce: {
@@ -658,6 +676,7 @@ export class CoursesService {
         $project: {
           _id: 1,
           title: 1,
+          teacher: 1,
           totalLessons: 1,
           'exercises._id': 1,
           'exercises.title': 1,

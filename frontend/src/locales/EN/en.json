@@ -9,5 +9,10 @@
   },
   "Exercises": {
     "exercises": "Exercises"
+  },
+  "MyHub": {
+    "myHub": "My Hub",
+    "myCourses": "My Courses",
+    "inProgressAndDoneExercises": "In Progress And Done Exercises"
   }
 }
