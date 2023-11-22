@@ -76,7 +76,7 @@ const ExercisesAndExams = () => {
           <p className="font-bold text-3xl text-primary">
             {t('Exercises.exercises')}
           </p>
-          <Space>
+          <div className="flex gap-2">
             <Button
               type="primary"
               shape="circle"
@@ -95,7 +95,7 @@ const ExercisesAndExams = () => {
               onClick={() => scroll(Direction.right)}
               disabled={disabledScrollRight}
             ></Button>
-          </Space>
+          </div>
         </div>
         <div
           id="course-list"

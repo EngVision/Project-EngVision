@@ -1,5 +1,5 @@
-import { Button, Popover } from 'antd'
-import React from 'react'
+import { Button, Dropdown, MenuProps } from 'antd'
+import React, { useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
 import { clearSortOption, setSortOption } from '../../../redux/course/slice'
 import { SortByEnum } from '../../../utils/constants'
@@ -21,18 +21,22 @@ const SortDropdown = () => {
     },
   ]
 
-  const renderContent = () => {
-    return (
-      <div className="py-2">
-        {sortOptions.map((option, index) => {
-          const isActive =
-            option.sortBy === sortOption.sortBy &&
-            option.order === sortOption.order
+  const items: MenuProps['items'] = useMemo(
+    () =>
+      sortOptions.map((option, index) => {
+        const isActive =
+          option.sortBy === sortOption.sortBy &&
+          option.order === sortOption.order
 
-          return (
+        return {
+          key: `${option.sortBy}-${option.order}`,
+          label: (
             <div
               key={index}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+
                 if (isActive) {
                   dispatch(clearSortOption())
                 } else {
@@ -44,27 +48,27 @@ const SortDropdown = () => {
                   )
                 }
               }}
-              className={`py-2 px-4 rounded-lg hover:bg-grey-100 cursor-pointer 
-              ${isActive ? 'bg-grey-100 font-semibold' : ''}`}
+              className={`py-2 px-4 rounded-lg hover:bg-alternative cursor-pointer 
+      ${isActive ? '!bg-alternative font-bold' : ''}`}
               role="presentation"
             >
               {option.label}
             </div>
-          )
-        })}
-      </div>
-    )
-  }
+          ),
+        }
+      }),
+    [sortOption],
+  )
 
   return (
-    <Popover content={renderContent()} trigger="click" placement="bottom">
+    <Dropdown menu={{ items }} placement="bottomRight">
       <Button
         className="border-primary text-primary"
         onClick={(e) => e.preventDefault()}
       >
         Sort
       </Button>
-    </Popover>
+    </Dropdown>
   )
 }
 

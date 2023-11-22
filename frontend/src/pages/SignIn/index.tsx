@@ -71,12 +71,6 @@ const SignIn: React.FC = () => {
     },
   ]
 
-  const validateEmail = (email: string) => {
-    if (!email) return true
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
-    return emailRegex.test(email)
-  }
-
   const validatePassword = (password: string) => {
     if (!password) return true
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/
@@ -84,7 +78,7 @@ const SignIn: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col items-center bg-bgNeutral py-8 px-10 rounded-[16px] self-center shadow-2xl">
+    <div className="flex flex-col items-center bg-surface py-8 px-10 rounded-[16px] self-center shadow-2xl">
       <div className="mb-8 flex flex-col items-center gap-4">
         <Logo width={250} />
         <p className="text-dark font-light">Let's start learning right now!</p>
@@ -103,15 +97,13 @@ const SignIn: React.FC = () => {
           name="email"
           label="Email"
           rules={[
-            { message: 'Please input your email!', required: true },
             {
-              async validator(_, value) {
-                return new Promise((resolve, reject) => {
-                  if (validateEmail(value)) {
-                    resolve('')
-                  } else reject(new Error('Invalid email'))
-                })
-              },
+              message: 'Please input your email!',
+              required: true,
+            },
+            {
+              message: 'Invalid email!',
+              type: 'email',
             },
           ]}
         >

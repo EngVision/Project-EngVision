@@ -1,5 +1,6 @@
 export interface MenuItemType {
   icon: React.ReactNode
-  path: string
+  path?: string
   title: string
+  element?: React.ReactNode
 }

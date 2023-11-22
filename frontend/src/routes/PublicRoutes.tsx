@@ -8,11 +8,16 @@ import SignUp from '../pages/SignUp'
 import TeacherSignUp from '../pages/SignUp/TeacherSignUp'
 import { PUBLIC_ROUTES } from '../utils/constants'
 import NotFound from '../pages/NotFound'
+import HomePage from '../pages/test'
 
 const publicRoutes: RouteObject[] = [
   {
     element: <NotFound />,
     path: '*',
+  },
+  {
+    element: <HomePage />,
+    path: '/homepage',
   },
   {
     element: <AuthLayout />,

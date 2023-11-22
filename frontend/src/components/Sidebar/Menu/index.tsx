@@ -1,12 +1,12 @@
 import { ROLES, PRIVATE_ROUTES } from '../../../utils/constants'
-import { SettingsIcon } from '../../Icons'
-
+import { LogoutIcon, SettingsIcon } from '../../Icons'
 import { useAppSelector } from '../../../hooks/redux'
 import { MenuItemType } from '../types'
 import AdminMenu from './AdminMenu'
 import MenuItem from './MenuItem'
 import StudentMenu from './StudentMenu'
 import TeacherMenu from './TeacherMenu'
+import Logout from '../../Logout'
 
 const SUB_MENU_ITEMS: MenuItemType[] = [
   {
@@ -14,11 +14,11 @@ const SUB_MENU_ITEMS: MenuItemType[] = [
     path: PRIVATE_ROUTES.settings,
     title: 'Account',
   },
-  // {
-  //   icon: <MessageQuestionIcon />,
-  //   path: PRIVATE_ROUTES.helpCenter,
-  //   title: 'Help Center',
-  // },
+  {
+    icon: <LogoutIcon />,
+    title: 'Logout',
+    element: <Logout />,
+  },
 ]
 
 const Menu = () => {
