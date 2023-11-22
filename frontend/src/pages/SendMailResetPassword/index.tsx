@@ -12,11 +12,6 @@ const SendMailResetPassword: React.FC = () => {
   const [apiNotification, contextHolder] = notification.useNotification()
   const navigate = useNavigate()
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
-    return emailRegex.test(email)
-  }
-
   const onFinish = async (values: Email) => {
     setSentMail(true)
     try {
@@ -63,13 +58,12 @@ const SendMailResetPassword: React.FC = () => {
               className="mb-2"
               rules={[
                 {
-                  async validator(_, value) {
-                    return new Promise((resolve, reject) => {
-                      if (validateEmail(value)) {
-                        resolve('')
-                      } else reject(new Error('Invalid email'))
-                    })
-                  },
+                  message: 'Please input your email!',
+                  required: true,
+                },
+                {
+                  message: 'Invalid email!',
+                  type: 'email',
                 },
               ]}
             >

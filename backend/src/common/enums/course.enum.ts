@@ -8,6 +8,7 @@ export enum StatusCourseSearch {
 export enum SortBy {
   time = 'createdAt',
   price = 'price',
+  level = 'level',
 }
 
 export enum Order {
