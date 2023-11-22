@@ -67,7 +67,7 @@ const Grading = () => {
   })
   const { data: rawSubmissionList } = useQuery({
     queryKey: ['submissions'],
-    queryFn: async () => submissionApi.getSubmissionList(null),
+    queryFn: async () => submissionApi.getSubmissionList(),
   })
   rawCourseList?.data?.map((course) => {
     course.submissionAmount = 0

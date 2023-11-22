@@ -85,19 +85,9 @@ export interface CourseDetails {
   totalLessons: number
   submissionAmount: number
   pendingSubmissionAmount: number
+  exercises?: Exercise[]
   createdAt: string
   updatedAt: string
-}
-
-export interface CourseExercisesDue {
-  id: string
-  title: string
-  thumbnail: string
-  level: string
-  attendance: number
-  totalLessons: number
-  dueExercises: number
-  ongoingExercises: number
 }
 
 export interface ReviewParams {
@@ -107,8 +97,4 @@ export interface ReviewParams {
 
 export interface GetCourseProps {
   status: COURSE_STATUS
-}
-
-export interface GetSubmissionProps {
-  course?: string
 }

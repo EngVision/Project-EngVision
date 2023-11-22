@@ -27,7 +27,7 @@ const Home = () => {
 
   const { data: rawSubmissionList } = useQuery({
     queryKey: ['submissions'],
-    queryFn: () => submissionApi.getSubmissionList(null),
+    queryFn: () => submissionApi.getSubmissionList(),
   })
 
   const exercise = useMemo(() => {

@@ -1,3 +1,4 @@
+import { BasePaginate } from './../types'
 import type { ExerciseType } from '../../utils/constants'
 import type { SubmitAnswerResponse } from '../exerciseApi/types'
 
@@ -6,6 +7,7 @@ export interface SubmissionResponse {
   course: {
     id: string
     title: string
+    thumbnail: string
   }
   section: {
     id: string
@@ -18,6 +20,7 @@ export interface SubmissionResponse {
   exercise: {
     id: string
     title: string
+    tags: string[]
   }
   user: {
     id: string
@@ -40,4 +43,8 @@ export interface SubmissionResponse {
 export interface GradePayload {
   grade?: number
   explanation?: string
+}
+
+export interface GetSubmissionProps extends BasePaginate {
+  course?: string
 }
