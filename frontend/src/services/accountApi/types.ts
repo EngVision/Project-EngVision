@@ -50,7 +50,7 @@ export interface UserAccount {
   lastName?: string
   email?: string
   avatar?: string
-  certificates?: string
+  certificates?: string[]
   about?: string
   gender?: string
   phone?: string

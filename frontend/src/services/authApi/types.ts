@@ -15,7 +15,7 @@ export interface SignUpParams {
   confirmPassword: string
   phoneNumber: string
   role: string
-  certificate?: string
+  certificates?: string
   school?: string
   accepted: boolean
 }

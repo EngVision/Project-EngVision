@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose, Transform } from 'class-transformer';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import { Types } from 'mongoose';
 import { Role } from 'src/common/enums';
 
@@ -39,6 +39,10 @@ export class UserDto {
 
   @ApiProperty({ type: String, description: 'Is first login' })
   firstLogin?: boolean;
+
+  @Type(() => String)
+  @ApiProperty({ type: [String], description: 'Certificates' })
+  certificates?: string[];
 
   @Exclude()
   password?: string;
