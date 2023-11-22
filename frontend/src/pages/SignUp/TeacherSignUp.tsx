@@ -297,19 +297,6 @@ const TeacherSignUp: React.FC = () => {
         </Form.Item>
 
         <Form.Item<SignUpParams>
-          name="school"
-          label="School"
-          rules={[
-            { message: 'Please input your working school!', required: true },
-          ]}
-        >
-          <Input
-            placeholder="Working school"
-            className="rounded-lg px-3 py-2"
-          />
-        </Form.Item>
-
-        <Form.Item<SignUpParams>
           name="certificates"
           label="Certificates"
           rules={[
