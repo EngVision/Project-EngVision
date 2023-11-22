@@ -9,5 +9,10 @@
   },
   "Exercises": {
     "exercises": "Bài tập"
+  },
+  "MyHub": {
+    "myHub": "Trung tâm của tôi",
+    "myCourses": "Khóa học của tôi",
+    "inProgressAndDoneExercises": "Bài tập đang làm và hoàn thành"
   }
 }

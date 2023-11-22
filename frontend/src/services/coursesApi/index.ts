@@ -1,12 +1,7 @@
 import { getQueryParamsUrl } from '../../utils/common'
 import axiosClient from '../axiosClient'
 import type { ResponseData } from '../types'
-import {
-  CourseDetails,
-  CourseExercisesDue,
-  type GetCourseProps,
-  type ReviewParams,
-} from './types'
+import { CourseDetails, type GetCourseProps, type ReviewParams } from './types'
 
 const PREFIX = 'courses/'
 
@@ -22,6 +17,12 @@ const coursesApi = {
     const res = await axiosClient.get(`${PREFIX}${getQueryParamsUrl(query)}`)
     return res.data
   },
+
+  getCoursesExercises: async (): Promise<ResponseData<CourseDetails[]>> => {
+    const res = await axiosClient.get(`${PREFIX}exercises`)
+    return res.data
+  },
+
   getSuggestedCourses: async (): Promise<ResponseData<CourseDetails[]>> => {
     const res = await axiosClient.get(`${PREFIX}suggested-courses`)
     return res.data
@@ -83,13 +84,6 @@ const coursesApi = {
     const res = await axiosClient.delete(
       `${PREFIX}lessons/${lessonId}/exercises/${exerciseId}`,
     )
-    return res.data
-  },
-
-  getCoursesExercisesDue: async (): Promise<
-    ResponseData<CourseExercisesDue[]>
-  > => {
-    const res = await axiosClient.get(`${PREFIX}exercises-due`)
     return res.data
   },
 }

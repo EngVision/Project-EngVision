@@ -59,6 +59,10 @@ class CourseDto {
   @ApiProperty({ description: 'Course name' })
   title: string;
 
+  @Transform(value => value.obj.thumbnail?.toString())
+  @ApiProperty({ description: 'Course thumbnail' })
+  thumbnail?: string;
+
   @Exclude()
   sections: any[];
 }
