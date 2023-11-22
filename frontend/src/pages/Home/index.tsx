@@ -37,7 +37,7 @@ const Home = () => {
       totalInProcess: 0,
     }
 
-    if (rawSubmissionList) {
+    if (rawSubmissionList?.data) {
       rawSubmissionList.data.forEach((assignment) => {
         if (assignment.totalDone) {
           exercise.totalDone += assignment.totalDone
