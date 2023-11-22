@@ -6,7 +6,7 @@ import Sun from '../Icons/Sun'
 
 const DarkModeButton = () => {
   const dispatch = useAppDispatch()
-  const theme = useAppSelector((state) => state.app.darkMode)
+  const isDarkMode = useAppSelector((state) => state.app.darkMode)
 
   const handleChangeTheme = () => {
     dispatch(toggleDarkMode())
@@ -14,11 +14,11 @@ const DarkModeButton = () => {
 
   const ButtonDarkMode = () => {
     return (
-      <Tooltip title="Dark Mode">
+      <Tooltip title={isDarkMode ? 'Dark Mode' : 'Light Mode'}>
         <Button
-          type={theme ? 'primary' : 'text'}
+          type={isDarkMode ? 'primary' : 'text'}
           shape="circle"
-          icon={theme ? <Moon /> : <Sun />}
+          icon={isDarkMode ? <Moon /> : <Sun />}
           onClick={() => handleChangeTheme()}
         />
       </Tooltip>
