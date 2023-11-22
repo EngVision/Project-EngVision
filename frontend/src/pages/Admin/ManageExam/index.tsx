@@ -139,26 +139,6 @@ const ManageExam = () => {
     },
   ]
 
-  const renderTable = (data: ExerciseSchema[] | ExamInfo[]) => {
-    if (Array.isArray(data) && data.length > 0 && 'type' in data[0]) {
-      return (
-        <Table
-          columns={columnsPart}
-          dataSource={data as ExerciseSchema[]}
-          pagination={{ pageSize: 5 }}
-        />
-      )
-    } else {
-      return (
-        <Table
-          columns={columnsExam}
-          dataSource={data as ExamInfo[]}
-          pagination={{ pageSize: 5 }}
-        />
-      )
-    }
-  }
-
   const showModalExam = (exam: ExamInfo) => {
     setIsModalOpen(true)
     setTitleNotiModal('Delete Exam')
@@ -212,11 +192,24 @@ const ManageExam = () => {
       <Form>
         <div>
           <h1 className="text-2xl font-bold my-2">Part</h1>
-          <div>{renderTable(parts)}</div>
+          <div>
+            {' '}
+            <Table
+              columns={columnsPart}
+              dataSource={parts as ExerciseSchema[]}
+              pagination={{ pageSize: 5 }}
+            />
+          </div>
         </div>
         <div>
           <h1 className="text-2xl font-bold mb-2">Exam</h1>
-          <div>{renderTable(exams)}</div>
+          <div>
+            <Table
+              columns={columnsExam}
+              dataSource={exams as ExamInfo[]}
+              pagination={{ pageSize: 5 }}
+            />
+          </div>
         </div>
       </Form>
       <Modal

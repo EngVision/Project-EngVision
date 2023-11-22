@@ -63,9 +63,9 @@ export const UpdateProfile = () => {
 
     try {
       if (keyCollapse.includes('1') || !keyCollapse) {
-        await accountApi.update(values)
+        const newInfoUser = await accountApi.update(values)
         openNotificationWithIcon('success', 'Update profile successfully.')
-        dispatch(setUser(values))
+        dispatch(setUser(newInfoUser.data))
       }
       if (
         keyCollapse.includes('2') &&
