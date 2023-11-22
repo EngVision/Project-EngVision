@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { CEFRLevel } from 'src/common/enums';
+import { Score, ScoreSchema } from './score.schema';
 
 @Schema({ _id: false, versionKey: false })
 export class ListeningLevel {
-  @Prop({ default: CEFRLevel.A1, enum: CEFRLevel })
-  comprehension: CEFRLevel;
+  @Prop({ type: ScoreSchema, default: null })
+  comprehension: Score;
 
-  @Prop({ default: CEFRLevel.A1, enum: CEFRLevel })
-  overall: CEFRLevel;
+  @Prop({ type: ScoreSchema, default: null })
+  overall: Score;
 }
 
 export const ListeningLevelSchema =

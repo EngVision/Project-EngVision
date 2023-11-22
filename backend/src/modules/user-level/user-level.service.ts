@@ -19,33 +19,7 @@ export class UserLevelService {
 
     const level = createUserLevelDto.level;
 
-    const newUserLevel = new this.userLevelModel<UserLevel>({
-      overall: level,
-      listening: {
-        overall: level,
-        comprehension: level,
-      },
-      reading: {
-        overall: level,
-        skimming: level,
-        scanning: level,
-        comprehension: level,
-      },
-      writing: {
-        overall: level,
-        coherence: level,
-        organization: level,
-        conciseness: level,
-      },
-      speaking: {
-        pronunciation: level,
-        fluency: level,
-        overall: level,
-      },
-      grammar: level,
-      vocabulary: level,
-      user: userId,
-    });
+    const newUserLevel = new this.userLevelModel(new UserLevel(userId, level));
     await newUserLevel.save();
 
     return this.transform(newUserLevel);

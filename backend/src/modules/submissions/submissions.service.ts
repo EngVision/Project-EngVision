@@ -62,6 +62,8 @@ export class SubmissionsService {
       },
     );
 
+    console.log(newSubmission);
+
     return {
       ...newSubmission,
       id: newSubmission._id.toString(),

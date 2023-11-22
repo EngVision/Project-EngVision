@@ -5,6 +5,7 @@ import { QuestionResult } from 'src/modules/submissions/schemas/submission.schem
 import { ExerciseContentService } from '../base-exercise-content.service';
 import { CreateFillBlankDto } from './dto/create-fill-blank.dto';
 import { FillBlank } from './schemas/fill-blank.schema';
+import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 
 @Injectable()
 export class FillBlankService extends ExerciseContentService {
@@ -13,6 +14,12 @@ export class FillBlankService extends ExerciseContentService {
     private fillBlankModel: Model<FillBlank>,
   ) {
     super();
+  }
+
+  async getContent(id: string): Promise<ExerciseQuestionDto> {
+    const question = await this.fillBlankModel.findById(id);
+
+    return question;
   }
 
   async createContent(

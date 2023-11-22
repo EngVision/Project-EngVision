@@ -54,10 +54,10 @@ export type MultipleChoiceDocument = MultipleChoice & Document;
 @Schema({ versionKey: false, timestamps: true })
 export class MultipleChoice {
   @Prop({ type: [String], enum: ExerciseTag, required: true })
-  tags: string[];
+  tags: ExerciseTag[];
 
   @Prop({ enum: CEFRLevel, required: true })
-  level: string;
+  level: CEFRLevel;
 
   @Prop({ type: QuestionSchema, required: true })
   question: Question;

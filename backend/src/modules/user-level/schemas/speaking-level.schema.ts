@@ -1,16 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { CEFRLevel } from 'src/common/enums';
+import { Score, ScoreSchema } from './score.schema';
 
 @Schema({ _id: false, versionKey: false })
 export class SpeakingLevel {
-  @Prop({ default: CEFRLevel.A1, enum: CEFRLevel })
-  pronunciation: CEFRLevel;
+  @Prop({ type: ScoreSchema, default: null })
+  pronunciation: Score;
 
-  @Prop({ default: CEFRLevel.A1, enum: CEFRLevel })
-  fluency: CEFRLevel;
+  @Prop({ type: ScoreSchema, default: null })
+  fluency: Score;
 
-  @Prop({ default: CEFRLevel.A1, enum: CEFRLevel })
-  overall: CEFRLevel;
+  @Prop({ type: ScoreSchema, default: null })
+  overall: Score;
 }
 
 export const SpeakingLevelSchema = SchemaFactory.createForClass(SpeakingLevel);

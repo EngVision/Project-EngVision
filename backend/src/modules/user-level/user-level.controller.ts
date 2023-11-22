@@ -52,16 +52,16 @@ export class UserLevelController {
       .send(GetResponse({ data: userLevel }));
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateUserLevelDto: UpdateUserLevelDto,
-  ) {
-    return this.userLevelService.update(+id, updateUserLevelDto);
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() updateUserLevelDto: UpdateUserLevelDto,
+  // ) {
+  //   return this.userLevelService.update(+id, updateUserLevelDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userLevelService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.userLevelService.remove(+id);
+  // }
 }

@@ -6,6 +6,8 @@ import { ListeningLevel, ListeningLevelSchema } from './listening-level.schema';
 import { ReadingLevel, ReadingLevelSchema } from './reading-level.schema';
 import { SpeakingLevel, SpeakingLevelSchema } from './speaking-level.schema';
 import { WritingLevel, WritingLevelSchema } from './writing-level.schema';
+import { LevelScore } from 'src/common/constants';
+import { Score, ScoreSchema } from './score.schema';
 
 export type UserLevelDocument = UserLevel & Document;
 
@@ -14,14 +16,14 @@ export class UserLevel {
   @Prop({ type: SchemaTypes.ObjectId, ref: User.name, required: true })
   user: string;
 
-  @Prop({ enum: CEFRLevel, default: CEFRLevel.A1 })
-  overall: CEFRLevel;
+  @Prop({ required: true, type: ScoreSchema })
+  overall: Score;
 
-  @Prop({ enum: CEFRLevel, default: CEFRLevel.A1 })
-  grammar: CEFRLevel;
+  @Prop({ type: ScoreSchema, default: null })
+  grammar: Score;
 
-  @Prop({ enum: CEFRLevel, default: CEFRLevel.A1 })
-  vocabulary: CEFRLevel;
+  @Prop({ type: ScoreSchema, default: null })
+  vocabulary: Score;
 
   @Prop({ type: ListeningLevelSchema, default: {} })
   listening: ListeningLevel;
@@ -34,6 +36,11 @@ export class UserLevel {
 
   @Prop({ type: SpeakingLevelSchema, default: {} })
   speaking: SpeakingLevel;
+
+  constructor(user: string, level: CEFRLevel) {
+    this.user = user;
+    this.overall = new Score(level);
+  }
 }
 
 export const UserLevelSchema = SchemaFactory.createForClass(UserLevel);

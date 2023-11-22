@@ -70,15 +70,15 @@ export class ExamSubmissionsService {
 
     if (!submissions.includes(result.id)) {
       submissions.push(result.id);
+      if (result.isCorrect) {
+        examSubmission.totalCorrect += 1;
+      }
+      examSubmission.totalDone += 1;
+      examSubmission.grade = +(
+        (examSubmission.totalCorrect / examSubmission.totalDone) *
+        10
+      ).toPrecision(2);
     }
-    if (result.isCorrect) {
-      examSubmission.totalCorrect += 1;
-    }
-    examSubmission.totalDone += 1;
-    examSubmission.grade = +(
-      (examSubmission.totalCorrect / examSubmission.totalDone) *
-      10
-    ).toPrecision(2);
 
     await this.examSubmissionModel.findByIdAndUpdate(examSubmission.id, {
       ...examSubmission,

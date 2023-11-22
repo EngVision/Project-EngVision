@@ -1,19 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { CEFRLevel } from 'src/common/enums';
+import { Score, ScoreSchema } from './score.schema';
 
 @Schema({ _id: false, versionKey: false })
 export class WritingLevel {
-  @Prop({ default: CEFRLevel.A1, enum: CEFRLevel })
-  organization: CEFRLevel;
+  @Prop({ type: ScoreSchema, default: null })
+  organization: Score;
 
-  @Prop({ default: CEFRLevel.A1, enum: CEFRLevel })
-  coherence: CEFRLevel;
+  @Prop({ type: ScoreSchema, default: null })
+  coherence: Score;
 
-  @Prop({ default: CEFRLevel.A1, enum: CEFRLevel })
-  conciseness: CEFRLevel;
+  @Prop({ type: ScoreSchema, default: null })
+  conciseness: Score;
 
-  @Prop({ default: CEFRLevel.A1, enum: CEFRLevel })
-  overall: CEFRLevel;
+  @Prop({ type: ScoreSchema, default: null })
+  overall: Score;
 }
 
 export const WritingLevelSchema = SchemaFactory.createForClass(WritingLevel);
