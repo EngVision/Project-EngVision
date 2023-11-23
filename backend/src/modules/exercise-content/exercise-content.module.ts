@@ -4,6 +4,7 @@ import { ExerciseContentServiceFactory } from './exercise-content-factory.servic
 import { FillBlankModule } from './fill-blank/fill-blank.module';
 import { MultipleChoiceModule } from './multiple-choice/multiple-choice.module';
 import { MakeSentenceModule } from './make-sentence/make-sentence.module';
+import { UnscrambleModule } from './unscramble/unscramble.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { MakeSentenceModule } from './make-sentence/make-sentence.module';
     FillBlankModule,
     ConstructedResponseModule,
     MakeSentenceModule,
+    UnscrambleModule,
   ],
   providers: [ExerciseContentServiceFactory],
   exports: [ExerciseContentServiceFactory],
