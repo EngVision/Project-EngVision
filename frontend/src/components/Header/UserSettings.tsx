@@ -4,6 +4,8 @@ import Logout from '../Logout'
 import { useNavigate } from 'react-router-dom'
 import { PRIVATE_ROUTES } from '../../utils/constants'
 import { LogoutIcon, SettingsIcon } from '../Icons'
+import { useAppDispatch } from '../../hooks/redux'
+import { setShowLogoutModal } from '../../redux/app/slice'
 
 type Props = {
   user: any
@@ -11,6 +13,7 @@ type Props = {
 
 function UserSettings({ user }: Props) {
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
 
   const items: MenuProps['items'] = [
     {
@@ -28,7 +31,10 @@ function UserSettings({ user }: Props) {
     {
       key: 'logout',
       label: (
-        <div className="flex gap-2 items-center">
+        <div
+          className="flex gap-2 items-center"
+          onClick={() => dispatch(setShowLogoutModal(true))}
+        >
           <LogoutIcon width={22} height={16} />
           <Logout />
         </div>

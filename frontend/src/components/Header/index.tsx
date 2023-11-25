@@ -1,8 +1,8 @@
 import { useAppSelector } from '../../hooks/redux'
-import { NotificationIcon } from '../Icons'
 import DarkModeButton from './DarkModeButton'
-// import Search from './Search'
+import HelpMenu from './HelpMenu'
 import LocalesButton from './LocalesButton'
+import Notification from './Notification'
 import UserSettings from './UserSettings'
 
 const Header = () => {
@@ -14,7 +14,8 @@ const Header = () => {
         {/* <Search /> */}
 
         <div className="flex items-center gap-4">
-          <NotificationIcon width={40} height={40} />
+          <Notification />
+          <HelpMenu />
           <LocalesButton />
           <DarkModeButton />
           <UserSettings user={user} />

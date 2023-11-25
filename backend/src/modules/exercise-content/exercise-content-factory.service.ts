@@ -1,4 +1,5 @@
 import { MakeSentenceService } from './make-sentence/make-sentence.service';
+import { UnscrambleService } from './unscramble/unscramble.service';
 import { FillBlankService } from './fill-blank/fill-blank.service';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { MultipleChoiceService } from './multiple-choice/multiple-choice.service';
@@ -13,6 +14,7 @@ export class ExerciseContentServiceFactory {
     private readonly fillBlankService: FillBlankService,
     private readonly constructedResponseService: ConstructedResponseService,
     private readonly MakeSentenceService: MakeSentenceService,
+    private readonly UnscrambleService: UnscrambleService,
   ) {}
 
   createService(type: ExerciseType): ExerciseContentService {
@@ -25,6 +27,8 @@ export class ExerciseContentServiceFactory {
         return this.constructedResponseService;
       case ExerciseType.MakeSentence:
         return this.MakeSentenceService;
+      case ExerciseType.Unscramble:
+        return this.UnscrambleService;
       default:
         throw new BadRequestException('Exercise type not found');
     }
