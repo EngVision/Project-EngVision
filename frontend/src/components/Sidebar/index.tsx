@@ -9,6 +9,7 @@ import ArrowRight from '../Icons/ArrowRight'
 import ArrowLeft from '../Icons/ArrowLeft'
 import { useAppSelector, useAppDispatch } from '../../hooks/redux'
 import { setSidebarCollapsed } from '../../redux/app/slice'
+
 const Sidebar = () => {
   const isCollapsed = useAppSelector((state) => state.app.isSidebarCollapsed)
   const dispatch = useAppDispatch()
@@ -32,7 +33,7 @@ const Sidebar = () => {
     <div
       onMouseEnter={handlerMouseEnter}
       onMouseLeave={handlerMouseLeave}
-      className="relative w-fit p-8 flex flex-col h-[100vh] gap-2 !bg-bgNeutral shadow-xl"
+      className="relative w-fit p-8 flex flex-col h-[100vh] gap-2 !bg-surface shadow-xl"
     >
       {isHovered && (
         <Button
