@@ -134,9 +134,9 @@ export class SubmissionsService {
 
     const submissions = await this.submissionModel
       .find(filterQuery, null, documentQuery)
-      .populate('exercise', 'title')
+      .populate('exercise', 'title tags')
       .populate('user', 'firstName lastName avatar')
-      .populate('course', 'title sections')
+      .populate('course', 'title sections thumbnail')
       .populate('teacher', 'firstName lastName');
     const total = await this.submissionModel.countDocuments(filterQuery);
 

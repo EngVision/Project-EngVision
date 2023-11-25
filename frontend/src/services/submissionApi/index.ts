@@ -1,14 +1,17 @@
 import axiosClient from '../axiosClient'
 import { ResponseData } from '../types'
 
-import type { GradePayload, SubmissionResponse } from './types'
+import type {
+  GetSubmissionProps,
+  GradePayload,
+  SubmissionResponse,
+} from './types'
 import { getQueryParamsUrl } from '../../utils/common'
-import { GetSubmissionProps } from '../coursesApi/types'
 const PREFIX = 'submissions'
 
 const submissionApi = {
   getSubmissionList: async (
-    query: GetSubmissionProps | null,
+    query?: GetSubmissionProps,
   ): Promise<ResponseData<SubmissionResponse[]>> => {
     const res = await axiosClient.get(`${PREFIX}${getQueryParamsUrl(query)}`)
     return res.data

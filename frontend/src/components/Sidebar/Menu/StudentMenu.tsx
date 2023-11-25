@@ -1,5 +1,5 @@
 import { PRIVATE_ROUTES, STUDENT_ROUTES } from '../../../utils/constants'
-import { DashboardIcon, GlobalSearchIcon, NoteIcon } from '../../Icons'
+import { BookIcon, DashboardIcon, GlobalSearchIcon } from '../../Icons'
 
 import { MenuItemType } from '../types'
 import MenuItem from './MenuItem'
@@ -10,15 +10,10 @@ const STUDENT_MENU_ITEMS: MenuItemType[] = [
     path: PRIVATE_ROUTES.home,
     title: 'Dashboard',
   },
-  // {
-  //   icon: <BookIcon />,
-  //   path: STUDENT_ROUTES.myHub,
-  //   title: 'My hub',
-  // },
   {
-    icon: <NoteIcon />,
-    path: STUDENT_ROUTES.exercisesAndExams,
-    title: 'Exercises & Exams',
+    icon: <BookIcon />,
+    path: STUDENT_ROUTES.myHub,
+    title: 'My Hub',
   },
   {
     icon: <GlobalSearchIcon />,

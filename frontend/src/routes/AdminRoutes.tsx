@@ -2,7 +2,6 @@ import { RouteObject } from 'react-router-dom'
 import DefaultLayout from '../layouts/DefaultLayout'
 import ManageExam from '../pages/Admin/ManageExam'
 import ExamDetail from '../pages/Admin/ManageExam/Component/ExamDetail'
-import Exercise from '../pages/Exercise'
 import ManageUsers from '../pages/ManageUsers'
 import Statistic from '../pages/Statistic'
 import TeacherCourseDetail from '../pages/Teacher/CourseDetail'
@@ -89,10 +88,6 @@ const adminRoutes: RouteObject[] = [
         path: PRIVATE_ROUTES.statistic,
       },
     ],
-  },
-  {
-    element: <Exercise />,
-    path: PRIVATE_ROUTES.exercise,
   },
 ]
 

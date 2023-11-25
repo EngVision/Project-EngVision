@@ -1,11 +1,20 @@
-import { Button, Dropdown, MenuProps, Space, Table, Tag, message } from 'antd'
+import {
+  Button,
+  Dropdown,
+  MenuProps,
+  Space,
+  Table,
+  Tag,
+  message,
+  Image,
+} from 'antd'
 import {
   ApproveIcon,
   LockIcon,
   MoreVerticalIcon,
   UnlockIcon,
 } from '../../components/Icons'
-import { LEVELS } from '../../utils/constants'
+import { LEVELS, UPLOAD_FILE_URL } from '../../utils/constants'
 import { useEffect, useState } from 'react'
 import { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import accountApi from '../../services/accountApi'
@@ -167,10 +176,28 @@ const ManageUsers = () => {
       key: 'role',
     },
     {
-      title: 'Certificate',
-      dataIndex: 'certificate',
-      key: 'certificate',
-      render: (certificate) => <a>{certificate ? certificate : 'PDF'}</a>,
+      title: 'Certificates',
+      dataIndex: 'certificates',
+      key: 'certificates',
+      render: (certificates) => (
+        <>
+          {certificates?.length !== 0 ? (
+            <Image.PreviewGroup>
+              <div className="flex gap-3">
+                {certificates.map((certificate: string, index: number) => (
+                  <Image
+                    key={index}
+                    width={40}
+                    src={`${UPLOAD_FILE_URL}${certificate}`}
+                  />
+                ))}
+              </div>
+            </Image.PreviewGroup>
+          ) : (
+            'None'
+          )}
+        </>
+      ),
     },
     {
       title: 'Level',

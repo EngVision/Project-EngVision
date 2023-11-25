@@ -1,31 +1,49 @@
 import { useQuery } from '@tanstack/react-query'
-import { Button, Space } from 'antd'
+import { Button } from 'antd'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import ArrowLeft from '../../components/Icons/ArrowLeft'
-import ArrowRight from '../../components/Icons/ArrowRight'
-import AppLoading from '../../components/common/AppLoading'
-import coursesApi from '../../services/coursesApi'
-import CourseCard from './CourseCard'
+import coursesApi from '../../../services/coursesApi'
+import AppLoading from '../../../components/common/AppLoading'
+import ArrowLeft from '../../../components/Icons/ArrowLeft'
+import ArrowRight from '../../../components/Icons/ArrowRight'
+import CourseCard from '../CourseCard'
+import submissionApi from '../../../services/submissionApi'
+import { ObjectId } from '../../../services/examSubmissionApi/type'
 
 enum Direction {
   left = 'left',
   right = 'right',
 }
 
-const ExercisesAndExams = () => {
+const AttendedCourses = () => {
   const { t } = useTranslation()
   const [disabledScrollLeft, setDisabledScrollLeft] = useState<boolean>(true)
   const [disabledScrollRight, setDisabledScrollRight] = useState<boolean>(true)
 
-  const { data: rawCourseExerciseDue, isLoading } = useQuery({
-    queryKey: ['coursesExercisesDue'],
-    queryFn: coursesApi.getCoursesExercisesDue,
+  const { data: rawCourseExercise, isLoading } = useQuery({
+    queryKey: ['coursesExercises'],
+    queryFn: () => coursesApi.getCoursesExercises(),
+  })
+
+  const fetchSubmissions = async (objectIdList: ObjectId[]) => {
+    const submissionsPromises = objectIdList.map((objectId) =>
+      submissionApi.getSubmissionList({ course: objectId.id, limit: 10000 }),
+    )
+    const submissionsRes = await Promise.all(submissionsPromises)
+    return submissionsRes
+  }
+
+  const { data: submissions, isLoading: isLoadingSubmissions } = useQuery({
+    queryKey: ['submissions'],
+    queryFn: () => {
+      return fetchSubmissions(rawCourseExercise?.data || [])
+    },
+    enabled: !!rawCourseExercise,
   })
 
   useEffect(() => {
     initDisabledScrollRight()
-  }, [rawCourseExerciseDue?.data])
+  }, [rawCourseExercise?.data])
 
   const initDisabledScrollRight = () => {
     const containerElement: HTMLElement | null =
@@ -67,14 +85,23 @@ const ExercisesAndExams = () => {
     } else setDisabledScrollRight(false)
   }
 
-  if (isLoading) return <AppLoading />
+  const findSubmissions = (courseId: string) => {
+    if (!Array.isArray(submissions)) return []
+    const data = submissions?.find(
+      (submission) => submission.data?.[0]?.course?.id === courseId,
+    )
+
+    return data?.data
+  }
+
+  if (isLoading && isLoadingSubmissions) return <AppLoading />
 
   return (
-    rawCourseExerciseDue && (
+    rawCourseExercise && (
       <div>
         <div className="my-6 flex justify-between align-middle">
           <p className="font-bold text-3xl text-primary">
-            {t('Exercises.exercises')}
+            {t('MyHub.myCourses')}
           </p>
           <div className="flex gap-2">
             <Button
@@ -102,9 +129,13 @@ const ExercisesAndExams = () => {
           className="flex gap-10 overflow-x-scroll scrollbar-hide scroll-smooth snap-mandatory snap-x"
           onScroll={handleChangeScroll}
         >
-          {rawCourseExerciseDue.data.length > 0 ? (
-            rawCourseExerciseDue.data.map((course) => (
-              <CourseCard key={course.id} course={course} />
+          {rawCourseExercise.data.length > 0 ? (
+            rawCourseExercise.data.map((course) => (
+              <CourseCard
+                key={course.id}
+                course={course}
+                submissionArray={findSubmissions(course.id) || []}
+              />
             ))
           ) : (
             <div className="col-span-4 text-center italic text-textSubtle">
@@ -117,4 +148,4 @@ const ExercisesAndExams = () => {
   )
 }
 
-export default ExercisesAndExams
+export default AttendedCourses

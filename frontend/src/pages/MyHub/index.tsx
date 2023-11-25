@@ -1,7 +1,13 @@
-import React from 'react'
+import AttendedCourses from './AttendedCourses'
+import InProgressAndDoneExercise from './InProgressAndDoneExercise'
 
 const MyHub = () => {
-  return <div>MyHub</div>
+  return (
+    <>
+      <AttendedCourses />
+      <InProgressAndDoneExercise />
+    </>
+  )
 }
 
 export default MyHub

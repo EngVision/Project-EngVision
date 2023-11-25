@@ -16,7 +16,6 @@ export interface SignUpParams {
   phoneNumber: string
   role: string
   certificates?: string
-  school?: string
   accepted: boolean
 }
 
