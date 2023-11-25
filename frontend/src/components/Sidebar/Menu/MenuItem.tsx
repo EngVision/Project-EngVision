@@ -16,7 +16,7 @@ const MenuItem = ({ item }: Props) => {
     <NavLink
       to={item.path}
       className={({ isActive }) =>
-        `flex gap-4 text-base font-semibold p-4 rounded-[12px] hover:bg-bgNeutral w-fit lg:w-full 
+        `flex gap-4 text-base font-semibold p-4 rounded-[12px] hover:bg-bgNeutral w-full 
         ${isActive ? '!bg-primary text-white' : ''}`
       }
     >
@@ -25,7 +25,7 @@ const MenuItem = ({ item }: Props) => {
     </NavLink>
   ) : (
     <span
-      className="flex gap-4 text-base font-semibold p-4 rounded-[12px] hover:bg-bgNeutral w-fit lg:w-full cursor-pointer"
+      className="flex gap-4 text-base font-semibold p-4 rounded-[12px] hover:bg-bgNeutral w-full cursor-pointer"
       onClick={() => dispatch(setShowLogoutModal(true))}
     >
       <div className="flex items-center w-[24px]">{item.icon}</div>

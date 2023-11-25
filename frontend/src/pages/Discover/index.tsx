@@ -11,6 +11,7 @@ import { COURSE_STATUS } from '../../utils/constants'
 import { CourseCardInLine } from './CourseCardInline'
 import FeaturedCourse from './FeaturedCourse'
 import SortDropDown from './SortDropDown'
+import { useAppSelector } from '../../hooks/redux'
 const { Search } = Input
 
 const Discover = () => {
