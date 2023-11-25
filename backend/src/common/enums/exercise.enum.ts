@@ -3,6 +3,7 @@ export enum ExerciseType {
   FillBlank = 'FillBlank',
   ConstructedResponse = 'ConstructedResponse',
   MakeSentence = 'MakeSentence',
+  Unscramble = 'Unscramble',
 }
 
 export enum ExerciseTag {
