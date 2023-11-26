@@ -1,6 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  ArrayMinSize,
+  IsArray,
   IsBoolean,
   IsEmpty,
   IsMongoId,
@@ -15,9 +17,11 @@ import { ExerciseQuestionDto } from '../../dto/exercise-content.dto';
 
 class QuestionDto {
   @IsNotEmpty()
-  @IsString()
-  @ApiProperty({ type: String, description: 'Question text' })
-  text: string;
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
+  @ApiProperty({ type: [String], description: 'Question text' })
+  items: string[];
 
   @IsNotEmpty()
   @IsBoolean()
@@ -25,7 +29,7 @@ class QuestionDto {
     type: Boolean,
     description: 'Unscramble by word or characters',
   })
-  isUnscrambleByWord: boolean;
+  isUnscrambleByText: boolean;
 
   @IsOptional()
   @IsMongoId()

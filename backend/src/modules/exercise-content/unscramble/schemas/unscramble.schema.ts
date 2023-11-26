@@ -4,10 +4,10 @@ import { CEFRLevel, ExerciseTag } from 'src/common/enums';
 @Schema({ _id: false, versionKey: false })
 class Question {
   @Prop({ required: true })
-  textArr: string[];
+  items: string[];
 
   @Prop({ required: true })
-  isUnscrambleByWord: boolean;
+  isUnscrambleByText: boolean;
 
   @Prop({ default: null })
   image?: string;
@@ -19,8 +19,8 @@ const QuestionSchema = SchemaFactory.createForClass(Question);
 
 @Schema({ _id: false, versionKey: false })
 class CorrectAnswer {
-  @Prop({ type: String, required: true })
-  detail: string;
+  @Prop({ type: [String], required: true })
+  detail: string[];
 
   @Prop({ type: String, default: null })
   explanation: string;
