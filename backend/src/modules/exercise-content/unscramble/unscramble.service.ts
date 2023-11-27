@@ -60,14 +60,14 @@ export class UnscrambleService extends ExerciseContentService {
     await this.UnscrambleModel.bulkWrite([this.deleteBulkOps(removedQuestion)]);
   }
 
-  async checkAnswer(id: string, answer: string): Promise<QuestionResult> {
+  async checkAnswer(id: string, answer: string[]): Promise<QuestionResult> {
     const {
       correctAnswer: { detail, explanation },
     } = await this.UnscrambleModel.findById(id);
 
     return {
       question: id,
-      isCorrect: detail === answer,
+      isCorrect: detail.join() === answer.join(),
       answer,
       correctAnswer: detail,
       explanation,
@@ -78,22 +78,17 @@ export class UnscrambleService extends ExerciseContentService {
     const res: Unscramble[] = [];
 
     questionList.forEach(q => {
-      const questionText = q.question.text.trim().replace(/\s+/g, ' ');
-
-      const questionTextArr = q.question.isUnscrambleByWord
-        ? questionText.split(' ')
-        : questionText.split('');
-      shuffleArray(questionTextArr);
+      const detail = [...q.question.items];
+      shuffleArray(q.question.items);
 
       res.push({
         ...q,
         correctAnswer: {
           ...q.correctAnswer,
-          detail: questionText,
+          detail: detail,
         },
         question: {
           ...q.question,
-          textArr: questionTextArr,
         },
       });
     });
@@ -104,7 +99,20 @@ export class UnscrambleService extends ExerciseContentService {
   setDefaultExplain(questionList: Unscramble[]) {
     questionList.forEach(q => {
       if (!q.correctAnswer.explanation) {
-        q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail}`;
+        if (q.question.isUnscrambleByText) {
+          q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail.join(
+            ' ',
+          )}`;
+        } else {
+          const correctOrder = [];
+          q.question.items.forEach(item => {
+            const index = q.correctAnswer.detail.findIndex(i => i === item);
+            correctOrder.push(index + 1);
+          });
+          q.correctAnswer.explanation = `Correct answer: ${correctOrder.join(
+            ', ',
+          )}`;
+        }
       }
     });
   }
