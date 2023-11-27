@@ -6,6 +6,7 @@ import { QuestionResult } from 'src/modules/submissions/schemas/submission.schem
 import { Unscramble } from './schemas/unscramble.schema';
 import { CreateUnscrambleDto } from './dto/create-unscramble.dto';
 import { shuffleArray } from 'src/common/utils';
+import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 
 export class UnscrambleService extends ExerciseContentService {
   constructor(
@@ -13,6 +14,12 @@ export class UnscrambleService extends ExerciseContentService {
     private UnscrambleModel: Model<Unscramble>,
   ) {
     super();
+  }
+
+  async getContent(id: string): Promise<ExerciseQuestionDto> {
+    const question = await this.UnscrambleModel.findById(id);
+
+    return question;
   }
 
   async createContent(
@@ -27,8 +34,9 @@ export class UnscrambleService extends ExerciseContentService {
 
     this.setDefaultExplain(transformedContent);
 
-    const questionList =
-      await this.UnscrambleModel.insertMany(transformedContent);
+    const questionList = await this.UnscrambleModel.insertMany(
+      transformedContent,
+    );
 
     return questionList.map(q => q.id);
   }

@@ -3,26 +3,26 @@ import { CEFRLevel } from './../enums/exercise.enum';
 export const LevelScore = {
   [CEFRLevel.A1]: {
     min: 0,
-    max: 2,
+    max: 120,
   },
   [CEFRLevel.A2]: {
-    min: 2,
-    max: 4,
+    min: 120,
+    max: 140,
   },
   [CEFRLevel.B1]: {
-    min: 4,
-    max: 5,
+    min: 140,
+    max: 160,
   },
   [CEFRLevel.B2]: {
-    min: 5,
-    max: 7,
+    min: 160,
+    max: 180,
   },
   [CEFRLevel.C1]: {
-    min: 7,
-    max: 8.5,
+    min: 180,
+    max: 200,
   },
   [CEFRLevel.C2]: {
-    min: 8.5,
-    max: 10,
+    min: 200,
+    max: 230,
   },
 };

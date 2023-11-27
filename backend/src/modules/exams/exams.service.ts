@@ -15,7 +15,9 @@ export class ExamsService {
     @InjectModel(Exam.name)
     private readonly examModel: Model<ExamDocument>,
     private readonly exercisesService: ExercisesService,
-  ) {}
+  ) {
+    this.createEntranceExam();
+  }
 
   async create(
     createExamDto: CreateExamDto,
@@ -26,6 +28,28 @@ export class ExamsService {
     newExam.creator = creator;
 
     return await newExam.save();
+  }
+
+  async createEntranceExam(): Promise<void> {
+    const levels = Object.values(CEFRLevel);
+
+    for (const level of levels) {
+      const exam = await this.examModel.findOne({
+        title: 'Entrance Exam - ' + level,
+        description: 'Entrance Exam - ' + level,
+        level,
+      });
+
+      if (!exam) {
+        const newExam = new this.examModel({
+          title: 'Entrance Exam - ' + level,
+          description: 'Entrance Exam - ' + level,
+          level,
+          parts: [],
+        });
+        await newExam.save();
+      }
+    }
   }
 
   async findAll(queryDto: QueryDto): Promise<[ExamDocument[], number]> {
@@ -54,7 +78,12 @@ export class ExamsService {
   ): Promise<ExamDocument> {
     const updatedExam = await this.examModel.findByIdAndUpdate(
       id,
-      { ...updateExamDto },
+      {
+        ...updateExamDto,
+        parts: updateExamDto.parts.filter(
+          (value, index, array) => array.indexOf(value) === index,
+        ),
+      },
       { new: true },
     );
 
@@ -70,27 +99,27 @@ export class ExamsService {
   }
 
   async getEntranceExam(level: CEFRLevel): Promise<ExamDocument> {
-    const exercises = await this.exercisesService.getEntranceExercises(level);
+    // const exercises = await this.exercisesService.getEntranceExercises(level);
 
-    shuffleArray(exercises);
+    // shuffleArray(exercises);
 
-    let exam = await this.examModel.findOne({
-      title: 'Entrance Exam',
+    const exam = await this.examModel.findOne({
+      title: 'Entrance Exam - ' + level,
       level,
     });
 
-    if (!exam) {
-      exam = new this.examModel({
-        title: 'Entrance Exam',
-        description: 'Entrance Exam',
-        level: level,
-        parts: exercises.slice(0, 4).map(exercise => exercise._id),
-      });
-      await exam.save();
-    } else {
-      exam.parts = exercises.slice(0, 4).map(exercise => exercise._id);
-      await exam.save();
-    }
+    // if (!exam) {
+    //   exam = new this.examModel({
+    //     title: 'Entrance Exam',
+    //     description: 'Entrance Exam',
+    //     level: level,
+    //     parts: exercises.slice(0, 4).map(exercise => exercise._id),
+    //   });
+    //   await exam.save();
+    // } else {
+    //   exam.parts = exercises.slice(0, 4).map(exercise => exercise._id);
+    //   await exam.save();
+    // }
 
     return exam;
   }
