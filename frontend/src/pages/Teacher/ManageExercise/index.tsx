@@ -23,6 +23,7 @@ import CustomUpload from '../../../components/CustomUpload'
 import AppLoading from '../../../components/common/AppLoading'
 import MakeSentenceForm from './components/MakeSentence'
 import { ArrowLeftIcon } from '../../../components/Icons'
+import UnscrambleForm from './components/Unscramble'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -152,6 +153,8 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
       return <ConstructedResponseForm form={form} />
     case ExerciseType.MakeSentence:
       return <MakeSentenceForm form={form} />
+    case ExerciseType.Unscramble:
+      return <UnscrambleForm form={form} />
     default:
       return <></>
   }

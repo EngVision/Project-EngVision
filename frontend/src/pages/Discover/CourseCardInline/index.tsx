@@ -11,7 +11,7 @@ interface CourseCardProps {
 export const CourseCardInLine = ({ course }: CourseCardProps) => {
   const navigate = useNavigate()
   return (
-    <div className="bg-bgNeutral flex items-center gap-20 rounded-xl overflow-hidden transition-shadow hover:shadow-lg ">
+    <div className="bg-surface flex items-center gap-20 rounded-xl overflow-hidden transition-shadow hover:shadow-lg ">
       <div className="relative h-[14rem]">
         <CustomImage
           onClick={() => navigate(`./${course.id}`)}

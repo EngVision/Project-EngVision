@@ -78,7 +78,7 @@ const CreateProfile = () => {
 
   return (
     <div className="min-h-[100vh] flex items-center justify-center bg-bgDefault py-10">
-      <div className="bg-bgNeutral px-16 py-10 rounded-[16px] shadow-2xl">
+      <div className="bg-surface px-16 py-10 rounded-[16px] shadow-2xl">
         <div className="flex flex-col justify-center items-center gap-3 mb-6">
           <Logo width={250} />
           <p className="text-textSubtle">

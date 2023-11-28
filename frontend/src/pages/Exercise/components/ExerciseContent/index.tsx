@@ -6,6 +6,7 @@ import DoneExercise from '../DoneExercise'
 import FillBlank from '../FillBlank'
 import MakeSentence from '../MakeSentence'
 import MultipleChoice from '../MultipleChoice'
+import Unscramble from '../Unscramble'
 
 interface ExerciseContentProps {
   exercise?: ExerciseSchema
@@ -60,6 +61,14 @@ function ExerciseContent({
       case ExerciseType.MakeSentence:
         return (
           <MakeSentence
+            {...content}
+            result={submission?.detail[questionIndex]}
+            setIsSubmittable={setIsSubmittable}
+          />
+        )
+      case ExerciseType.Unscramble:
+        return (
+          <Unscramble
             {...content}
             result={submission?.detail[questionIndex]}
             setIsSubmittable={setIsSubmittable}
