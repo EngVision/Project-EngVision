@@ -28,12 +28,14 @@ interface UnscrambleResponse extends SubmitAnswerResponse {
 
 function Unscramble(props: UnscrambleProps) {
   const { question, result, setIsSubmittable } = props
+  console.log('🚀 ~ file: index.tsx:31 ~ Unscramble ~ question:', question)
   const exerciseType = question.isUnscrambleByText
     ? ExerciseCardType.Text
     : ExerciseCardType.Image
 
   const form = Form.useFormInstance()
   const answer = Form.useWatch('answer') || []
+  console.log('🚀 ~ file: index.tsx:38 ~ Unscramble ~ answer:', answer)
 
   const onDragEnd = (r: any, move: (from: number, to: number) => void) => {
     if (!r.destination) return
@@ -82,26 +84,35 @@ function Unscramble(props: UnscrambleProps) {
                             ref={dragProvided.innerRef}
                             {...dragProvided.draggableProps}
                             {...dragProvided.dragHandleProps}
-                            className={`border border-primary border-solid p-2 rounded-lg w-40 flex justify-center items-center ${
-                              isSubmitAnswer
-                                ? isCorrectAnswer
-                                  ? 'bg-green-400 border-green-400'
-                                  : 'bg-red-400 border-red-400'
-                                : 'border-primary'
-                            }`}
+                            className="flex flex-col gap-2 items-center"
                           >
-                            <Form.Item name={[field.name]} noStyle>
-                              {exerciseType === ExerciseCardType.Text ? (
-                                <PreviewInput className="w-full text-center" />
-                              ) : (
-                                <CustomImage
-                                  className="hidden lg:block object-cover w-20 h-20 rounded-md"
-                                  src={`${UPLOAD_FILE_URL}${
-                                    answer[field.name]
-                                  }`}
-                                />
-                              )}
-                            </Form.Item>
+                            <div
+                              className={`border border-primary border-solid p-2 rounded-lg w-40 flex flex-col gap-2 justify-center items-center ${
+                                isSubmitAnswer
+                                  ? isCorrectAnswer
+                                    ? 'bg-green-400 !border-green-400'
+                                    : 'bg-red-400 !border-red-400'
+                                  : 'border-primary'
+                              }`}
+                            >
+                              <Form.Item name={[field.name]} noStyle>
+                                {exerciseType === ExerciseCardType.Text ? (
+                                  <PreviewInput className="w-full text-center" />
+                                ) : (
+                                  <CustomImage
+                                    className="hidden lg:block object-cover w-20 h-20 rounded-md"
+                                    src={`${UPLOAD_FILE_URL}${
+                                      answer[field.name]
+                                    }`}
+                                  />
+                                )}
+                              </Form.Item>
+                            </div>
+                            <span>
+                              {question.items.findIndex(
+                                (item) => item === answer[field.name],
+                              ) + 1}
+                            </span>
                           </div>
                         )}
                       </Draggable>

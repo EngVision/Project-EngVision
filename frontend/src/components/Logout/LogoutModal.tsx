@@ -1,5 +1,5 @@
 import { Button, Modal } from 'antd'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { WarningIcon } from '../Icons'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { setShowLogoutModal, setUser } from '../../redux/app/slice'
@@ -16,16 +16,13 @@ const LogoutModal = () => {
     mutationFn: authApi.logout,
     onSuccess: () => {
       dispatch(setUser(null))
+      dispatch(setShowLogoutModal(false))
     },
   })
 
   const handleLogout = async () => {
     logoutMutation.mutate()
   }
-
-  useEffect(() => {
-    dispatch(setShowLogoutModal(false))
-  }, [])
 
   return (
     <Modal

@@ -24,8 +24,8 @@ interface MakeSentenceResponse extends SubmitAnswerResponse {
 
 function MakeSentence(props: MakeSentenceProps) {
   const { question, result, setIsSubmittable } = props
-  const selectedAnswers = Form.useWatch('answer')
   const form = Form.useFormInstance()
+  const selectedAnswers = form.getFieldValue('answer')
 
   const questionArr = question.text.split('[]')
 
