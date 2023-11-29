@@ -34,7 +34,6 @@ import { UserQueryDto } from './dto/user-query.dto';
 import { UsersService } from './users.service';
 import { BlockUserDto } from './dto/block-user.dto';
 import { GetStartedDto } from './dto/show-get-started';
-import { ChecksumAlgorithm } from '@aws-sdk/client-s3';
 
 @ApiTags('Account')
 @Controller('account')
