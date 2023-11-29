@@ -66,6 +66,10 @@ export const studentRoutes: RouteObject[] = [
                 element: <CourseDetailsPage />,
               },
               {
+                path: '?tab=:tab',
+                element: <CourseDetailsPage />,
+              },
+              {
                 path: 'exercise',
                 children: [
                   {

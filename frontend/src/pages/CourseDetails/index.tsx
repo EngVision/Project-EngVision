@@ -1,6 +1,6 @@
 import { Button, Tabs } from 'antd'
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Star from '../../components/Icons/Star'
@@ -15,8 +15,10 @@ import CustomImage from '../../components/common/CustomImage'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const tab = searchParams.get('tab') || '1'
   const { courseId = '' } = useParams<{ courseId: string }>()
-  const [activeKey, setActiveKey] = useState<string>('1')
   const queryClient = useQueryClient()
 
   const { data: courseDetail, isLoading } = useQuery({
@@ -29,7 +31,8 @@ const CourseDetailsPage = () => {
   })
 
   const handleTabChange = (key: string) => {
-    setActiveKey(key)
+    setSearchParams({ tab: key })
+    navigate({ search: `?tab=${key}` })
   }
 
   const handleAttendCourse = async () => {
@@ -81,18 +84,14 @@ const CourseDetailsPage = () => {
             )}
           </div>
         </div>
-        <Tabs
-          className="w-full "
-          onChange={handleTabChange}
-          activeKey={activeKey}
-        >
+        <Tabs className="w-full " onChange={handleTabChange} activeKey={tab}>
           <TabPane
             tab={
               <Button
                 className={`flex font-light items-center text-lg px-10 py-5 rounded-xl ${
-                  activeKey === '1' ? '' : 'text-primary border-primary'
+                  tab === '1' ? '' : 'text-primary border-primary'
                 }`}
-                type={activeKey === '1' ? 'primary' : 'default'}
+                type={tab === '1' ? 'primary' : 'default'}
               >
                 Overview
               </Button>
@@ -105,9 +104,9 @@ const CourseDetailsPage = () => {
             tab={
               <Button
                 className={`flex font-light items-center text-lg px-10 py-5 rounded-xl ${
-                  activeKey === '2' ? '' : 'text-primary border-primary'
+                  tab === '2' ? '' : 'text-primary border-primary'
                 }`}
-                type={activeKey === '2' ? 'primary' : 'default'}
+                type={tab === '2' ? 'primary' : 'default'}
               >
                 Course
               </Button>
@@ -120,9 +119,9 @@ const CourseDetailsPage = () => {
             tab={
               <Button
                 className={`flex font-light items-center text-lg px-10 py-5 rounded-xl ${
-                  activeKey === '3' ? '' : 'text-primary border-primary'
+                  tab === '3' ? '' : 'text-primary border-primary'
                 }`}
-                type={activeKey === '3' ? 'primary' : 'default'}
+                type={tab === '3' ? 'primary' : 'default'}
               >
                 Reviews
               </Button>
