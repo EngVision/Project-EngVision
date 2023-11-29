@@ -272,4 +272,18 @@ export class UsersService {
     };
     await this.transporter.sendMail(mailOptions);
   }
+
+  async setShowGetStarted(id: string, isShow: boolean): Promise<UserDocument> {
+    const user = await this.userModel.findByIdAndUpdate(
+      id,
+      { showGetStarted: isShow },
+      { returnDocument: 'after' },
+    );
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
 }
