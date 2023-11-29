@@ -11,6 +11,7 @@ import { COURSE_STATUS } from '../../utils/constants'
 import { CourseCardInLine } from './CourseCardInline'
 import FeaturedCourse from './FeaturedCourse'
 import SortDropDown from './SortDropDown'
+import { useAppSelector } from '../../hooks/redux'
 const { Search } = Input
 
 const Discover = () => {
@@ -82,7 +83,7 @@ const Discover = () => {
       ) : (
         <>
           <div className="flex flex-col gap-12 mx-10">
-            {Array.isArray(rawSuggestedList?.data) &&
+            {/* {Array.isArray(rawSuggestedList?.data) &&
               rawSuggestedList?.data.length &&
               rawSuggestedList?.data.length > 0 && (
                 <div className="">
@@ -91,14 +92,13 @@ const Discover = () => {
                   </p>
 
                   <FeaturedCourse course={rawSuggestedList.data[0]} />
-                  {/* <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
-                {rawSuggestedList.data.map((course) => (
-                  <CourseCard course={course} key={course.id} />
-                ))}
-              </div> */}
+                  <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+                    {rawSuggestedList.data.map((course) => (
+                      <CourseCard course={course} key={course.id} />
+                    ))}
+                  </div>
                 </div>
-              )}
-
+              )} */}
             {rawSuggestedList && (
               <div className="m-6">
                 <p className="font-bold text-3xl text-primary mb-6">
