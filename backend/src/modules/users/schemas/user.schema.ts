@@ -47,6 +47,9 @@ export class User {
   @Prop({ default: AccountStatus.Active, enum: AccountStatus })
   status?: AccountStatus;
 
+  @Prop({ default: true })
+  showGetStarted?: boolean;
+
   validatePassword?: (password: string) => Promise<boolean>;
   validateRefreshToken?: (refreshToken: string) => Promise<boolean>;
   preSave?: () => Promise<void>;
