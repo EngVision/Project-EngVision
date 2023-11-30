@@ -1,4 +1,4 @@
-import { Button, Card, Popover, Tooltip } from 'antd'
+import { Card, Tooltip } from 'antd'
 import { StarIcon, VideoPlayIcon } from '../Icons'
 import { Link } from 'react-router-dom'
 import { LEVELS, STUDENT_ROUTES, UPLOAD_FILE_URL } from '../../utils/constants'
@@ -15,7 +15,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
     <Link to={STUDENT_ROUTES.discover + '/' + course.id}>
       <Card
         bodyStyle={{ padding: '1rem' }}
-        className="w-[16rem] bg-bgNeutral"
+        className="w-[16rem] bg-surface"
         hoverable
         cover={
           <CustomImage

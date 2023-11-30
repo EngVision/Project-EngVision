@@ -93,6 +93,7 @@ export enum ExerciseType {
   FillBlank = 'FillBlank',
   ConstructedResponse = 'ConstructedResponse',
   MakeSentence = 'MakeSentence',
+  Unscramble = 'Unscramble',
 }
 
 export enum ExerciseTag {
@@ -194,6 +195,11 @@ export enum AccountStatus {
 export enum SortByEnum {
   createdAt = 'createdAt',
   price = 'price',
+}
+
+export enum ExerciseCardType {
+  Text = 'text',
+  Image = 'image',
 }
 
 export const STUDENT_GET_STARTED_VIDEO_URL =
