@@ -14,34 +14,59 @@ export class ReadingLevel {
 
   @Prop({ type: ScoreSchema, default: null })
   overall: Score;
+
+  updateOverall: (grammar: Score, vocabulary: Score) => void;
 }
 
 export const ReadingLevelSchema = SchemaFactory.createForClass(ReadingLevel);
 
-ReadingLevelSchema.pre('save', function () {
-  const num = [this.skimming, this.scanning, this.comprehension].filter(
-    e => e !== null,
-  ).length;
+ReadingLevelSchema.methods.updateOverall = function (
+  grammar: Score,
+  vocabulary: Score,
+) {
+  if (!this.skimming && !this.scanning && !this.comprehension) {
+    return;
+  }
 
-  if (this.skimming || this.scanning || this.comprehension) {
+  const num = [
+    this.skimming,
+    this.scanning,
+    this.comprehension,
+    grammar,
+    vocabulary,
+  ].filter(e => e !== null).length;
+
+  if (
+    this.skimming ||
+    this.scanning ||
+    this.comprehension ||
+    grammar ||
+    vocabulary
+  ) {
     if (this.overall === null) {
       this.overall = new Score();
     }
 
     this.overall.LevelA =
-      (this.skimming?.LevelA +
-        this.scanning?.LevelA +
-        this.comprehension?.LevelA) /
+      ((this.skimming?.LevelA || 0) +
+        (this.scanning?.LevelA || 0) +
+        (this.comprehension?.LevelA || 0) +
+        (grammar?.LevelA || 0) +
+        (vocabulary?.LevelA || 0)) /
       num;
     this.overall.LevelB =
-      (this.skimming?.LevelB +
-        this.scanning?.LevelB +
-        this.comprehension?.LevelB) /
+      ((this.skimming?.LevelB || 0) +
+        (this.scanning?.LevelB || 0) +
+        (this.comprehension?.LevelB || 0) +
+        (grammar?.LevelB || 0) +
+        (vocabulary?.LevelB || 0)) /
       num;
     this.overall.LevelC =
-      (this.skimming?.LevelC +
-        this.scanning?.LevelC +
-        this.comprehension?.LevelC) /
+      ((this.skimming?.LevelC || 0) +
+        (this.scanning?.LevelC || 0) +
+        (this.comprehension?.LevelC || 0) +
+        (grammar?.LevelC || 0) +
+        (vocabulary?.LevelC || 0)) /
       num;
   }
-});
+};

@@ -11,23 +11,55 @@ export class SpeakingLevel {
 
   @Prop({ type: ScoreSchema, default: null })
   overall: Score;
+
+  updateOverall: (grammar: Score, vocabulary: Score) => void;
 }
 
 export const SpeakingLevelSchema = SchemaFactory.createForClass(SpeakingLevel);
 
-SpeakingLevelSchema.pre('save', function () {
-  const num = [this.pronunciation, this.fluency].filter(e => e !== null).length;
+SpeakingLevelSchema.methods.updateOverall = function (
+  grammar: Score,
+  vocabulary: Score,
+) {
+  if (!this.pronunciation && !this.fluency) {
+    return;
+  }
 
-  if (this.pronunciation || this.fluency) {
+  const num = [this.pronunciation, this.fluency, grammar, vocabulary].filter(
+    e => e !== null,
+  ).length;
+
+  if (this.pronunciation || this.fluency || grammar || vocabulary) {
     if (this.overall === null) {
       this.overall = new Score();
     }
 
     this.overall.LevelA =
-      (this.pronunciation?.LevelA + this.fluency?.LevelA) / num;
+      ((this.pronunciation?.LevelA || 0) +
+        (this.fluency?.LevelA || 0) +
+        (grammar?.LevelA || 0) +
+        (vocabulary?.LevelA || 0)) /
+      num;
     this.overall.LevelB =
-      (this.pronunciation?.LevelB + this.fluency?.LevelB) / num;
+      ((this.pronunciation?.LevelB || 0) +
+        (this.fluency?.LevelB || 0) +
+        (grammar?.LevelB || 0) +
+        (vocabulary?.LevelB || 0)) /
+      num;
     this.overall.LevelC =
-      (this.pronunciation?.LevelC + this.fluency?.LevelC) / num;
+      ((this.pronunciation?.LevelC || 0) +
+        (this.fluency?.LevelC || 0) +
+        (grammar?.LevelC || 0) +
+        (vocabulary?.LevelC || 0)) /
+      num;
   }
-});
+
+  console.log(
+    (this.pronunciation?.LevelA || 0) +
+      (this.fluency?.LevelA || 0) +
+      (grammar?.LevelA || 0) +
+      (vocabulary?.LevelA || 0),
+  );
+  console.log(this.pronunciation, this.fluency, grammar, vocabulary, num);
+  console.log(this.overall);
+};

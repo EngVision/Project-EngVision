@@ -1,6 +1,7 @@
 import { Navigate, Outlet, RouteObject } from 'react-router-dom'
 import { useAppSelector } from '../hooks/redux'
 import DefaultLayout from '../layouts/DefaultLayout'
+import BlockScreen from '../pages/BlockScreen'
 import Chat from '../pages/Chat'
 import CreateProfile from '../pages/CreateProfile'
 import HelpCenter from '../pages/HelpCenter'
@@ -15,7 +16,6 @@ import {
 import AdminRoutes from './AdminRoutes'
 import StudentRoutes from './StudentRoutes'
 import TeacherRoutes from './TeacherRoutes'
-import BlockScreen from '../pages/BlockScreen'
 
 const ProtectedLayout = () => {
   const user = useAppSelector((state) => state.app.user)

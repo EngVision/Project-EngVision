@@ -8,21 +8,44 @@ export class ListeningLevel {
 
   @Prop({ type: ScoreSchema, default: null })
   overall: Score;
+
+  updateOverall: (grammar: Score, vocabulary: Score) => void;
 }
 
 export const ListeningLevelSchema =
   SchemaFactory.createForClass(ListeningLevel);
 
-ListeningLevelSchema.pre('save', function () {
-  const num = [this.comprehension].filter(e => e !== null).length;
+ListeningLevelSchema.methods.updateOverall = function (
+  grammar: Score,
+  vocabulary: Score,
+) {
+  if (!this.comprehension) {
+    return;
+  }
 
-  if (this.comprehension) {
+  const num = [this.comprehension, grammar, vocabulary].filter(
+    e => e !== null,
+  ).length;
+
+  if (this.comprehension || grammar || vocabulary) {
     if (this.overall === null) {
       this.overall = new Score();
     }
 
-    this.overall.LevelA = this.comprehension.LevelA / num;
-    this.overall.LevelB = this.comprehension.LevelB / num;
-    this.overall.LevelC = this.comprehension.LevelC / num;
+    this.overall.LevelA =
+      ((this.comprehension?.LevelA || 0) +
+        (grammar?.LevelA || 0) +
+        (vocabulary?.LevelA || 0)) /
+      num;
+    this.overall.LevelB =
+      ((this.comprehension?.LevelB || 0) +
+        (grammar?.LevelB || 0) +
+        (vocabulary?.LevelB || 0)) /
+      num;
+    this.overall.LevelC =
+      ((this.comprehension?.LevelC || 0) +
+        (grammar?.LevelC || 0) +
+        (vocabulary?.LevelC || 0)) /
+      num;
   }
-});
+};

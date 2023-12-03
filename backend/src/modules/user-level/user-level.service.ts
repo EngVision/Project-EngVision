@@ -8,7 +8,7 @@ import { CEFRLevel, ExerciseTag } from 'src/common/enums';
 import { Score } from './schemas/score.schema';
 import { ExerciseQuestionDto } from '../exercise-content/dto/exercise-content.dto';
 
-const ScorePerQuestion = 5;
+const ScorePerQuestion = 2;
 
 @Injectable()
 export class UserLevelService {
@@ -32,6 +32,10 @@ export class UserLevelService {
 
   async findOneByUser(id: string) {
     const userLevel = await this.userLevelModel.findOne({ user: id });
+
+    if (!userLevel) {
+      return null;
+    }
 
     return this.transform(userLevel);
   }
@@ -125,6 +129,11 @@ export class UserLevelService {
         question,
       );
     }
+
+    userLevel.reading?.updateOverall(userLevel.grammar, userLevel.vocabulary);
+    userLevel.speaking?.updateOverall(userLevel.grammar, userLevel.vocabulary);
+    userLevel.listening?.updateOverall(userLevel.grammar, userLevel.vocabulary);
+    userLevel.writing?.updateOverall(userLevel.grammar, userLevel.vocabulary);
 
     await userLevel.save();
   }
