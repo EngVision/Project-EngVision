@@ -17,7 +17,7 @@ const QuestionSchema = SchemaFactory.createForClass(Question);
 @Schema({ _id: false, versionKey: false })
 class CorrectAnswer {
   @Prop({ type: String, default: null })
-  detail?: string;
+  detail: string;
 
   @Prop({ type: String, default: null })
   explanation: string;
@@ -29,10 +29,10 @@ export type ConstructedResponseDocument = ConstructedResponse & Document;
 @Schema({ versionKey: false, timestamps: true })
 export class ConstructedResponse {
   @Prop({ type: [String], enum: ExerciseTag, required: true })
-  tags: string[];
+  tags: ExerciseTag[];
 
   @Prop({ enum: CEFRLevel, required: true })
-  level: string;
+  level: CEFRLevel;
 
   @Prop({ type: QuestionSchema, required: true })
   question: Question;

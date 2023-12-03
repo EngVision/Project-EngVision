@@ -53,16 +53,6 @@ export class CreateUserDto {
   @ApiProperty({ type: String, description: 'Phone' })
   phone?: string;
 
-  @IsOptional()
-  @IsString()
-  @ApiProperty({ type: String, description: 'About' })
-  about?: string;
-
-  @IsOptional()
-  @IsString()
-  @ApiProperty({ type: String, description: 'Country' })
-  country?: string;
-
   @IsEnum(Role)
   @IsNotEmpty()
   @ApiProperty({ enum: Role, description: 'Role' })

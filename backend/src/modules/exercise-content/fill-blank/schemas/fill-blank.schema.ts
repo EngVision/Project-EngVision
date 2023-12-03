@@ -29,10 +29,10 @@ const CorrectAnswerSchema = SchemaFactory.createForClass(CorrectAnswer);
 @Schema({ versionKey: false, timestamps: true })
 export class FillBlank {
   @Prop({ type: [String], enum: ExerciseTag, required: true })
-  tags: string[];
+  tags: ExerciseTag[];
 
   @Prop({ enum: CEFRLevel, required: true })
-  level: string;
+  level: CEFRLevel;
 
   @Prop({ type: QuestionSchema, required: true })
   question: Question;

@@ -59,6 +59,8 @@ export abstract class ExerciseContentService {
     };
   }
 
+  abstract getContent(id: string): Promise<ExerciseQuestionDto>;
+
   abstract createContent(
     questionListDto: ExerciseQuestionDto[],
   ): Promise<string[]>;

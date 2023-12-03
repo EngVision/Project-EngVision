@@ -144,6 +144,7 @@ export class ExercisesService {
         $match: {
           level: level,
           'creator.role': Role.Admin,
+          needGrade: false,
         },
       },
     ]);

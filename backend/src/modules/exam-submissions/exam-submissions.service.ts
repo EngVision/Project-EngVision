@@ -48,11 +48,12 @@ export class ExamSubmissionsService {
     answer: any,
     examId: string,
   ) {
-    let examSubmission =
-      await this.examSubmissionModel.findOne<ExamSubmissionDocument>({
+    let examSubmission = await this.examSubmissionModel
+      .findOne<ExamSubmissionDocument>({
         user: userId,
         exam: examId,
-      });
+      })
+      .populate('exam');
 
     if (!examSubmission) {
       examSubmission = await this.createSubmission(userId, examId);
@@ -69,15 +70,15 @@ export class ExamSubmissionsService {
 
     if (!submissions.includes(result.id)) {
       submissions.push(result.id);
+      if (result.isCorrect) {
+        examSubmission.totalCorrect += 1;
+      }
+      examSubmission.totalDone += 1;
+      examSubmission.grade = +(
+        (examSubmission.totalCorrect / examSubmission.totalDone) *
+        10
+      ).toPrecision(2);
     }
-    if (result.isCorrect) {
-      examSubmission.totalCorrect += 1;
-    }
-    examSubmission.totalDone += 1;
-    examSubmission.grade = +(
-      (examSubmission.totalCorrect / examSubmission.totalDone) *
-      10
-    ).toPrecision(2);
 
     await this.examSubmissionModel.findByIdAndUpdate(examSubmission.id, {
       ...examSubmission,

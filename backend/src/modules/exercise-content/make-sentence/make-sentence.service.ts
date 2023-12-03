@@ -5,13 +5,20 @@ import { ExerciseContentService } from '../base-exercise-content.service';
 import { CreateMakeSentenceDto } from './dto/create-make-sentence.dto';
 import { MakeSentence } from './schemas/make-sentence.schema';
 import { QuestionResult } from 'src/modules/submissions/schemas/submission.schema';
+import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 
 export class MakeSentenceService extends ExerciseContentService {
   constructor(
     @InjectModel(MakeSentence.name)
-    private MakeSentenceModel: Model<MakeSentence>,
+    private makeSentenceModel: Model<MakeSentence>,
   ) {
     super();
+  }
+
+  async getContent(id: string): Promise<ExerciseQuestionDto> {
+    const question = await this.makeSentenceModel.findById(id);
+
+    return question;
   }
 
   async createContent(
@@ -25,7 +32,7 @@ export class MakeSentenceService extends ExerciseContentService {
 
     this.setDefaultExplain(transformedContent);
 
-    const questionList = await this.MakeSentenceModel.insertMany(
+    const questionList = await this.makeSentenceModel.insertMany(
       transformedContent,
     );
 
@@ -47,7 +54,7 @@ export class MakeSentenceService extends ExerciseContentService {
 
     const bulkOps = this.updateBulkOps(transformedContent, removedQuestions);
 
-    const res = await this.MakeSentenceModel.bulkWrite(bulkOps);
+    const res = await this.makeSentenceModel.bulkWrite(bulkOps);
 
     return [
       ...validatedContent.map(({ id }) => id).filter(id => !!id),
@@ -56,7 +63,7 @@ export class MakeSentenceService extends ExerciseContentService {
   }
 
   async deleteContent(removedQuestion: string[]): Promise<void> {
-    await this.MakeSentenceModel.bulkWrite([
+    await this.makeSentenceModel.bulkWrite([
       this.deleteBulkOps(removedQuestion),
     ]);
   }
@@ -69,7 +76,7 @@ export class MakeSentenceService extends ExerciseContentService {
     const {
       question,
       correctAnswer: { detail, explanation },
-    } = await this.MakeSentenceModel.findById(id);
+    } = await this.makeSentenceModel.findById(id);
 
     this.validateQuestion(question.text, this.answerToString(answer));
 

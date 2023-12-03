@@ -16,6 +16,12 @@ export class ConstructedResponseService extends ExerciseContentService {
     super();
   }
 
+  async getContent(id: string): Promise<ExerciseQuestionDto> {
+    const question = await this.constructedResponseModel.findById(id);
+
+    return question;
+  }
+
   async createContent(
     createQuestionListDto: CreateConstructedResponseDto[],
   ): Promise<string[]> {
