@@ -44,3 +44,52 @@ export class UserLevel {
 }
 
 export const UserLevelSchema = SchemaFactory.createForClass(UserLevel);
+
+UserLevelSchema.pre('save', function () {
+  if (this.overall === null) {
+    this.overall = new Score();
+  }
+
+  const num = [
+    this.grammar,
+    this.vocabulary,
+    this.listening.overall,
+    this.reading.overall,
+    this.writing.overall,
+    this.speaking.overall,
+  ].filter(e => e !== null).length;
+
+  if (
+    this.grammar ||
+    this.vocabulary ||
+    this.listening.overall ||
+    this.reading.overall ||
+    this.writing.overall ||
+    this.speaking.overall
+  ) {
+    this.overall.LevelA =
+      (this.grammar?.LevelA +
+        this.vocabulary?.LevelA +
+        this.listening?.overall?.LevelA +
+        this.reading?.overall?.LevelA +
+        this.writing?.overall?.LevelA +
+        this.speaking?.overall?.LevelA) /
+      num;
+    this.overall.LevelB =
+      (this.grammar?.LevelB +
+        this.vocabulary?.LevelB +
+        this.listening?.overall?.LevelB +
+        this.reading?.overall?.LevelB +
+        this.writing?.overall?.LevelB +
+        this.speaking?.overall?.LevelB) /
+      num;
+    this.overall.LevelC =
+      (this.grammar?.LevelC +
+        this.vocabulary?.LevelC +
+        this.listening?.overall?.LevelC +
+        this.reading?.overall?.LevelC +
+        this.writing?.overall?.LevelC +
+        this.speaking?.overall?.LevelC) /
+      num;
+  }
+});

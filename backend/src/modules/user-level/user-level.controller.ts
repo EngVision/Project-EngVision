@@ -1,24 +1,21 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Res,
   HttpStatus,
+  Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
-import { UserLevelService } from './user-level.service';
-import { CreateUserLevelDto } from './dto/create-user-level.dto';
-import { UpdateUserLevelDto } from './dto/update-user-level.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { GetResponse } from 'src/common/dto';
-import { AtGuard, RoleGuard } from 'src/common/guards';
 import { CurrentUser } from 'src/common/decorators';
+import { GetResponse } from 'src/common/dto';
 import { Role } from 'src/common/enums';
+import { AtGuard, RoleGuard } from 'src/common/guards';
+import { CreateUserLevelDto } from './dto/create-user-level.dto';
+import { UserLevelDto } from './dto/user-level.dto';
+import { UserLevelService } from './user-level.service';
 
 @Controller('user-level')
 @ApiTags('User Level')
@@ -49,7 +46,7 @@ export class UserLevelController {
 
     return res
       .status(HttpStatus.CREATED)
-      .send(GetResponse({ data: userLevel }));
+      .send(GetResponse({ data: userLevel, dataType: UserLevelDto }));
   }
 
   // @Patch(':id')

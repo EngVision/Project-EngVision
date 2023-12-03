@@ -11,11 +11,15 @@ import {
   Submission,
   SubmissionDocument,
 } from './schemas/submission.schema';
+import { ExerciseContentServiceFactory } from '../exercise-content/exercise-content-factory.service';
+import { UserLevelService } from '../user-level/user-level.service';
 
 @Injectable()
 export class SubmissionsService {
   constructor(
     @InjectModel(Submission.name) private submissionModel: Model<Submission>,
+    private readonly exerciseContentServiceFactory: ExerciseContentServiceFactory,
+    private readonly userLevelService: UserLevelService,
   ) {}
 
   async update(
@@ -62,7 +66,11 @@ export class SubmissionsService {
       },
     );
 
-    console.log(newSubmission);
+    const content = await this.exerciseContentServiceFactory
+      .createService(submissionDto.exerciseType)
+      .getContent(result.question);
+
+    this.userLevelService.update(userId, result, content);
 
     return {
       ...newSubmission,

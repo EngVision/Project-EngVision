@@ -12,5 +12,6 @@ import { UserLevel, UserLevelSchema } from './schemas/user-level.scheme';
   ],
   controllers: [UserLevelController],
   providers: [UserLevelService],
+  exports: [UserLevelService],
 })
 export class UserLevelModule {}

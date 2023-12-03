@@ -17,3 +17,31 @@ export class WritingLevel {
 }
 
 export const WritingLevelSchema = SchemaFactory.createForClass(WritingLevel);
+
+WritingLevelSchema.pre('save', function () {
+  const num = [this.organization, this.coherence, this.conciseness].filter(
+    e => e !== null,
+  ).length;
+
+  if (this.organization || this.coherence || this.conciseness) {
+    if (this.overall === null) {
+      this.overall = new Score();
+    }
+
+    this.overall.LevelA =
+      (this.organization?.LevelA +
+        this.coherence?.LevelA +
+        this.conciseness?.LevelA) /
+      num;
+    this.overall.LevelB =
+      (this.organization?.LevelB +
+        this.coherence?.LevelB +
+        this.conciseness?.LevelB) /
+      num;
+    this.overall.LevelC =
+      (this.organization?.LevelC +
+        this.coherence?.LevelC +
+        this.conciseness?.LevelC) /
+      num;
+  }
+});

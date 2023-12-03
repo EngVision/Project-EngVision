@@ -2,85 +2,96 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { LevelScore } from 'src/common/constants';
 import { CEFRLevel } from 'src/common/enums';
 
+const MaxLevelRangeScore = 50;
+
 @Schema({ _id: false, versionKey: false })
 export class Score {
   @Prop({
     type: Number,
-    max: LevelScore.A1.max - LevelScore.A1.min,
-    min: 0,
     default: 0,
   })
-  A1: number;
+  LevelA: number;
 
   @Prop({
     type: Number,
-    max: LevelScore.A2.max - LevelScore.A2.min,
-    min: 0,
     default: 0,
   })
-  A2: number;
+  LevelB: number;
 
   @Prop({
     type: Number,
-    max: LevelScore.B1.max - LevelScore.B1.min,
-    min: 0,
     default: 0,
   })
-  B1: number;
+  LevelC: number;
 
-  @Prop({
-    type: Number,
-    max: LevelScore.B2.max - LevelScore.B2.min,
-    min: 0,
-    default: 0,
-  })
-  B2: number;
-
-  @Prop({
-    type: Number,
-    max: LevelScore.C1.max - LevelScore.C1.min,
-    min: 0,
-    default: 0,
-  })
-  C1: number;
-
-  @Prop({
-    type: Number,
-    max: LevelScore.C2.max - LevelScore.C2.min,
-    min: 0,
-    default: 0,
-  })
-  C2: number;
-
-  @Prop({ type: Number, max: 10, min: 0, default: 0 })
+  @Prop({ type: Number, min: 0, default: 0 })
   sum: number;
 
-  constructor(level: CEFRLevel) {
+  constructor(level: CEFRLevel = CEFRLevel.A1) {
     const levelScore = LevelScore[level].min;
 
-    if (levelScore >= LevelScore.A1.min) {
-      this.A1 = LevelScore.A1.max - LevelScore.A1.min;
+    if (levelScore > LevelScore.A1.min) {
+      this.LevelA = MaxLevelRangeScore;
     }
-    if (levelScore >= LevelScore.A2.min) {
-      this.A2 = LevelScore.A2.max - LevelScore.A2.min;
+    if (levelScore > LevelScore.A2.min) {
+      this.LevelA += MaxLevelRangeScore;
     }
-    if (levelScore >= LevelScore.B1.min) {
-      this.B1 = LevelScore.B1.max - LevelScore.B1.min;
+    if (levelScore > LevelScore.B1.min) {
+      this.LevelB = MaxLevelRangeScore;
     }
-    if (levelScore >= LevelScore.B2.min) {
-      this.B2 = LevelScore.B2.max - LevelScore.B2.min;
+    if (levelScore > LevelScore.B2.min) {
+      this.LevelB += MaxLevelRangeScore;
     }
-    if (levelScore >= LevelScore.C1.min) {
-      this.C1 = LevelScore.C1.max - LevelScore.C1.min;
+    if (levelScore > LevelScore.C1.min) {
+      this.LevelC = MaxLevelRangeScore / 2;
     }
-    if (levelScore >= LevelScore.C2.min) {
-      this.C2 = LevelScore.C2.max - LevelScore.C2.min;
+  }
+
+  static getCEFRLevel(score: number): CEFRLevel {
+    if (score >= LevelScore.C2.min) {
+      return CEFRLevel.C2;
     }
+    if (score >= LevelScore.C1.min) {
+      return CEFRLevel.C1;
+    }
+    if (score >= LevelScore.B2.min) {
+      return CEFRLevel.B2;
+    }
+    if (score >= LevelScore.B1.min) {
+      return CEFRLevel.B1;
+    }
+    if (score >= LevelScore.A2.min) {
+      return CEFRLevel.A2;
+    }
+    if (score >= LevelScore.A1.min) {
+      return CEFRLevel.A1;
+    }
+
+    return CEFRLevel.A1;
   }
 }
 
 export const ScoreSchema = SchemaFactory.createForClass(Score);
 
 ScoreSchema.pre('save', function () {
-  this.sum = this.A1 + this.A2 + this.B1 + this.B2 + this.C1 + this.C2;
+  if (this.LevelA < 0) {
+    this.LevelA = 0;
+  }
+  if (this.LevelA > MaxLevelRangeScore * 2) {
+    this.LevelA = MaxLevelRangeScore * 2;
+  }
+  if (this.LevelB < 0) {
+    this.LevelB = 0;
+  }
+  if (this.LevelB > MaxLevelRangeScore * 2) {
+    this.LevelB = MaxLevelRangeScore * 2;
+  }
+  if (this.LevelC < 0) {
+    this.LevelC = 0;
+  }
+  if (this.LevelC > MaxLevelRangeScore) {
+    this.LevelC = MaxLevelRangeScore;
+  }
+
+  this.sum = this.LevelA + this.LevelB + this.LevelC;
 });
