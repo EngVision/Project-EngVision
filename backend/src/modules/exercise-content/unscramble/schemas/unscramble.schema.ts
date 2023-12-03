@@ -10,6 +10,9 @@ class Question {
   isUnscrambleByText: boolean;
 
   @Prop({ default: null })
+  text?: string;
+
+  @Prop({ default: null })
   image?: string;
 
   @Prop({ default: null })

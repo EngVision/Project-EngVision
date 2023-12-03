@@ -32,6 +32,14 @@ class QuestionDto {
   isUnscrambleByText: boolean;
 
   @IsOptional()
+  @IsString()
+  @ApiPropertyOptional({
+    type: String,
+    description: 'Text',
+  })
+  text?: string;
+
+  @IsOptional()
   @IsMongoId()
   @ApiPropertyOptional({
     type: String,
