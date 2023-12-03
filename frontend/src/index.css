@@ -169,6 +169,7 @@ input[type='number']::-webkit-outer-spin-button {
 :is(.css-dev-only-do-not-override-le3245).ant-input-password,
 :is(.css-dev-only-do-not-override-le3245).ant-checkbox .ant-checkbox-inner,
 :is(.css-dev-only-do-not-override-le3245).ant-table-wrapper .ant-table,
+:is(.css-dev-only-do-not-override-le3245).ant-picker,
 .ant-select-selector,
 .ant-dropdown-menu {
   background-color: var(--bg-surface) !important;

@@ -141,11 +141,11 @@ const InProgressAndDoneExercise = () => {
       key: 'lesson',
     },
     {
-      title: 'Skill',
+      title: 'Skills',
       dataIndex: ['exercise', 'tags'],
       key: 'skill',
       render: (tags) => (
-        <div>
+        <div className="flex flex-wrap gap-2">
           {tags.map((tag: string, index: number) => (
             <div key={index} className="flex justify-start align-middle">
               <div
