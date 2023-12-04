@@ -8,7 +8,6 @@ interface AppState {
   locales: string
   isSidebarCollapsed: boolean
   showingGetStarted: boolean
-  showGetStartedAgain: boolean
   currentLevel: CEFRLevel
   showingLogoutModal: boolean
 }
@@ -19,7 +18,6 @@ const initialState: AppState = {
   locales: 'en',
   isSidebarCollapsed: false,
   showingGetStarted: false,
-  showGetStartedAgain: true,
   currentLevel: CEFRLevel.A1,
   showingLogoutModal: false,
 }
@@ -46,9 +44,6 @@ const appSlice = createSlice({
     hideGetStarted: (state) => {
       state.showingGetStarted = false
     },
-    setShowGetStartedAgain: (state, action) => {
-      state.showGetStartedAgain = action.payload
-    },
     setCurrentLevel: (state, action) => {
       state.currentLevel = action.payload
     },
@@ -64,7 +59,6 @@ export const {
   setSidebarCollapsed,
   showGetStarted,
   hideGetStarted,
-  setShowGetStartedAgain,
   setCurrentLevel,
   setShowLogoutModal,
 } = appSlice.actions

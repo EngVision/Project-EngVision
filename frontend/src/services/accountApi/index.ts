@@ -76,6 +76,13 @@ const accountApi = {
     const res: ResponseData = await axiosClient.post(`${PREFIX}${id}/unblock`)
     return res.data
   },
+
+  updateGetStarted: async (isShow: boolean) => {
+    const res: ResponseData = await axiosClient.post(`${PREFIX}get-started`, {
+      isShow,
+    })
+    return res.data
+  },
 }
 
 export default accountApi
