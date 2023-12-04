@@ -38,7 +38,6 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
       </div>
 
       <NewQuestionForm index={index} />
-      <Form.Item name={[index, 'exerciseType']} noStyle></Form.Item>
 
       <Form.List name={[index, 'items']}>
         {(fields) =>
@@ -133,7 +132,9 @@ const transformSubmitData = (exercise: any) => {
       level: question.questionLevel,
       question: {
         items: question.items,
-        isUnscrambleByText: question.exerciseType === ExerciseCardType.Text,
+        isUnscrambleByText:
+          !question.exerciseType ||
+          question.exerciseType === ExerciseCardType.Text,
       },
       correctAnswer: null,
     }

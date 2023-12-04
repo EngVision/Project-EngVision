@@ -2,13 +2,20 @@ import {
   CloseCircleWhiteIcon,
   TickCircleWhiteIcon,
 } from '../../../../components/Icons'
+import CustomImage from '../../../../components/common/CustomImage'
+import { SubmissionResponse } from '../../../../services/submissionApi/types'
+import { ExerciseType, UPLOAD_FILE_URL } from '../../../../utils/constants'
 
 interface ExplainProps {
-  isCorrect: boolean
-  explanation: string
+  submission: SubmissionResponse
+  questionIndex: number
 }
 
-function Explain({ isCorrect, explanation }: ExplainProps) {
+function Explain({ submission, questionIndex }: ExplainProps) {
+  const isCorrect = submission?.detail[questionIndex]?.isCorrect
+  const explanation = submission?.detail[questionIndex]?.explanation
+  const correctAnswer = submission?.detail[questionIndex]?.correctAnswer
+
   return (
     <div
       className={`w-full p-5 rounded-md flex gap-4 mt-7 ${
@@ -22,7 +29,20 @@ function Explain({ isCorrect, explanation }: ExplainProps) {
             {isCorrect ? 'Correct!' : 'Wrong!'}
           </b>
         }
-        <p>{explanation}</p>
+
+        {submission.exerciseType === ExerciseType.Unscramble ? (
+          <div className="flex gap-4">
+            <span>Correct answer: </span>
+            {correctAnswer.map((answer: string) => (
+              <CustomImage
+                className="hidden lg:block object-cover w-20 h-20 rounded-md"
+                src={`${UPLOAD_FILE_URL}${answer}`}
+              />
+            ))}
+          </div>
+        ) : (
+          <p>{explanation}</p>
+        )}
       </div>
     </div>
   )

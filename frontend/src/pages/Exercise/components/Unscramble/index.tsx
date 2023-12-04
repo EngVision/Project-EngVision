@@ -28,14 +28,12 @@ interface UnscrambleResponse extends SubmitAnswerResponse {
 
 function Unscramble(props: UnscrambleProps) {
   const { question, result, setIsSubmittable } = props
-  console.log('🚀 ~ file: index.tsx:31 ~ Unscramble ~ question:', question)
   const exerciseType = question.isUnscrambleByText
     ? ExerciseCardType.Text
     : ExerciseCardType.Image
 
   const form = Form.useFormInstance()
   const answer = Form.useWatch('answer') || []
-  console.log('🚀 ~ file: index.tsx:38 ~ Unscramble ~ answer:', answer)
 
   const onDragEnd = (r: any, move: (from: number, to: number) => void) => {
     if (!r.destination) return
@@ -108,11 +106,6 @@ function Unscramble(props: UnscrambleProps) {
                                 )}
                               </Form.Item>
                             </div>
-                            <span>
-                              {question.items.findIndex(
-                                (item) => item === answer[field.name],
-                              ) + 1}
-                            </span>
                           </div>
                         )}
                       </Draggable>
