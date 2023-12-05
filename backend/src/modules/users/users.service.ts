@@ -320,4 +320,18 @@ export class UsersService {
 
     return user;
   }
+
+  async setHideGuideTour(id: string): Promise<UserDocument> {
+    const user = await this.userModel.findByIdAndUpdate(
+      id,
+      { showGuideTour: false },
+      { returnDocument: 'after' },
+    );
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
 }
