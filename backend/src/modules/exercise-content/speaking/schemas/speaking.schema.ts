@@ -11,6 +11,9 @@ class Question {
 
   @Prop({ default: null })
   audio?: string;
+
+  @Prop({ min: 15, max: 600, default: 15 })
+  countdown: number;
 }
 const QuestionSchema = SchemaFactory.createForClass(Question);
 

@@ -4,6 +4,7 @@ import {
   IsMongoId,
   IsNotEmpty,
   IsNotEmptyObject,
+  IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
@@ -31,6 +32,14 @@ class QuestionDto {
     description: 'Image file id',
   })
   image?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @ApiPropertyOptional({
+    type: Number,
+    description: 'Countdown',
+  })
+  countdown?: number;
 }
 
 class CorrectAnswerDto {
