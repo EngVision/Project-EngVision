@@ -118,8 +118,8 @@ export class SubmissionsService {
     const { limit, page, sortBy, order, ...filter } = query;
 
     const documentQuery = {
-      skip: page * limit,
-      limit: limit,
+      skip: limit === -1 ? 0 : page * limit,
+      limit: limit === -1 ? null : limit,
       sort: { [sortBy]: order === Order.asc ? 1 : -1 },
     };
 
@@ -136,6 +136,7 @@ export class SubmissionsService {
       filterQuery = {
         ...filter,
         user: userId,
+        $expr: { $ne: ['$course', null] },
       };
     }
 
@@ -192,7 +193,11 @@ export class SubmissionsService {
     const questionContent = await this.exerciseContentServiceFactory
       .createService(submission.exerciseType)
       .getContent(questionId);
-    this.userLevelService.update(userId, submission.detail[i], questionContent);
+    this.userLevelService.update(
+      submission.user,
+      submission.detail[i],
+      questionContent,
+    );
 
     await submission.save();
 
@@ -217,9 +222,7 @@ export class SubmissionsService {
       ...submission.toObject(),
       section: section ? { ...section.toObject() } : null,
       lesson: lesson ? { ...lesson.toObject() } : null,
-      progress: +(submission.totalDone / submission.totalQuestion).toPrecision(
-        2,
-      ),
+      progress: +(submission.totalDone / submission.totalQuestion).toFixed(2),
       status:
         submission.needGrade && submission.detail.every(res => res.grade)
           ? SubmissionStatus.Graded

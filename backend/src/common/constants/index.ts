@@ -18,11 +18,11 @@ export const LevelScore = {
     max: 160,
   },
   [CEFRLevel.C1]: {
-    min: 200,
-    max: 240,
+    min: 160,
+    max: 200,
   },
   [CEFRLevel.C2]: {
-    min: 240,
+    min: 200,
     max: 250,
   },
 };

@@ -129,8 +129,8 @@ export class UsersService {
     };
 
     const users = await this.userModel.find(documentQuery, null, {
-      skip: page * limit,
-      limit: limit,
+      skip: limit === -1 ? 0 : page * limit,
+      limit: limit === -1 ? null : limit,
       sort: { [sortBy]: order === Order.desc ? -1 : 1 },
     });
 

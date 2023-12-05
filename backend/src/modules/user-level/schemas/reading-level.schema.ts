@@ -24,10 +24,6 @@ ReadingLevelSchema.methods.updateOverall = function (
   grammar: Score,
   vocabulary: Score,
 ) {
-  if (!this.skimming && !this.scanning && !this.comprehension) {
-    return;
-  }
-
   const num = [
     this.skimming,
     this.scanning,

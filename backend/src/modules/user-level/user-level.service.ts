@@ -143,11 +143,15 @@ export class UserLevelService {
     result: QuestionResult,
     question: ExerciseQuestionDto,
   ): Score {
-    if (result.grade !== null && result.isCorrect !== null) {
+    if (result.grade !== null || result.isCorrect !== null) {
       let score = 0;
 
       if (result.grade !== null) {
-        score = ScorePerQuestion * (result.grade / 10);
+        if (result.grade < 5) {
+          score = -ScorePerQuestion * (1 - result.grade / 10);
+        } else {
+          score = ScorePerQuestion * (result.grade / 10);
+        }
       }
 
       if (result.isCorrect !== null) {

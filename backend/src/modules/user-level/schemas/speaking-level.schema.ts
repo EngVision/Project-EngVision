@@ -53,13 +53,4 @@ SpeakingLevelSchema.methods.updateOverall = function (
         (vocabulary?.LevelC || 0)) /
       num;
   }
-
-  console.log(
-    (this.pronunciation?.LevelA || 0) +
-      (this.fluency?.LevelA || 0) +
-      (grammar?.LevelA || 0) +
-      (vocabulary?.LevelA || 0),
-  );
-  console.log(this.pronunciation, this.fluency, grammar, vocabulary, num);
-  console.log(this.overall);
 };

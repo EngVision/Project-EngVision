@@ -80,7 +80,7 @@ export class ExamSubmissionsService {
     examSubmission.grade = +(
       (examSubmission.totalCorrect / examSubmission.totalDone) *
       10
-    ).toPrecision(3);
+    ).toFixed(3);
 
     await this.examSubmissionModel.findByIdAndUpdate(examSubmission.id, {
       ...examSubmission,
