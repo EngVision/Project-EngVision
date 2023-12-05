@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { CurrentUser } from 'src/common/decorators';
+import { CurrentUser, ApiResponseData } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
 import { Role } from 'src/common/enums';
 import { AtGuard, RoleGuard } from 'src/common/guards';
@@ -24,6 +24,7 @@ export class UserLevelController {
 
   @Post()
   @UseGuards(AtGuard, RoleGuard(Role.Student))
+  @ApiResponseData(UserLevelDto)
   async create(
     @Body() createUserLevelDto: CreateUserLevelDto,
     @CurrentUser() user,
@@ -36,29 +37,17 @@ export class UserLevelController {
 
     return res
       .status(HttpStatus.CREATED)
-      .send(GetResponse({ data: userLevel }));
+      .send(GetResponse({ data: userLevel, dataType: UserLevelDto }));
   }
 
   @Get()
   @UseGuards(AtGuard, RoleGuard(Role.Student))
+  @ApiResponseData(UserLevelDto)
   async get(@CurrentUser() user, @Res() res: Response) {
     const userLevel = await this.userLevelService.findOneByUser(user.sub);
 
     return res
-      .status(HttpStatus.CREATED)
+      .status(HttpStatus.OK)
       .send(GetResponse({ data: userLevel, dataType: UserLevelDto }));
   }
-
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateUserLevelDto: UpdateUserLevelDto,
-  // ) {
-  //   return this.userLevelService.update(+id, updateUserLevelDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.userLevelService.remove(+id);
-  // }
 }

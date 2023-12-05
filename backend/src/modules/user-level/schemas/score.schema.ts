@@ -28,22 +28,26 @@ export class Score {
   sum: number;
 
   constructor(level: CEFRLevel = CEFRLevel.A1) {
+    this.LevelA = 0;
+    this.LevelB = 0;
+    this.LevelC = 0;
+
     const levelScore = LevelScore[level].min;
 
     if (levelScore > LevelScore.A1.min) {
-      this.LevelA = MaxLevelRangeScore;
+      this.LevelA += MaxLevelRangeScore;
     }
     if (levelScore > LevelScore.A2.min) {
       this.LevelA += MaxLevelRangeScore;
     }
     if (levelScore > LevelScore.B1.min) {
-      this.LevelB = MaxLevelRangeScore;
-    }
-    if (levelScore > LevelScore.B2.min) {
       this.LevelB += MaxLevelRangeScore;
     }
+    if (levelScore > LevelScore.B2.min) {
+      this.LevelB += MaxLevelRangeScore / 2;
+    }
     if (levelScore > LevelScore.C1.min) {
-      this.LevelC = MaxLevelRangeScore / 2;
+      this.LevelC += MaxLevelRangeScore / 2;
     }
   }
 

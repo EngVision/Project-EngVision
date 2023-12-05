@@ -1,9 +1,10 @@
 import { Button, Checkbox, Form, Input, Select } from 'antd'
-import React, { useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useContext, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 import { useMutation } from '@tanstack/react-query'
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
+import Logo from '../../components/Icons/Logo'
 import { NotificationContext } from '../../contexts/notification'
 import { useAppDispatch } from '../../hooks/redux'
 import { setUser } from '../../redux/app/slice'
@@ -15,13 +16,10 @@ import {
   Gender,
   PUBLIC_ROUTES,
   ROLES,
-  STUDENT_ROUTES,
 } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
-import Logo from '../../components/Icons/Logo'
 
 const SignUp: React.FC = () => {
-  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const apiNotification = useContext(NotificationContext)
   const [form] = Form.useForm<SignUpParams>()
@@ -33,7 +31,6 @@ const SignUp: React.FC = () => {
       apiNotification.success({
         message: 'Sign up successfully!',
       })
-      navigate(STUDENT_ROUTES.getStarted)
     },
   })
 
@@ -45,51 +42,31 @@ const SignUp: React.FC = () => {
     mutate(newUser)
   }
 
-  const fetchAuthUser = async (timer: ReturnType<typeof setInterval>) => {
+  const fetchAuthUser = async () => {
     try {
       const data = await authApi.fetchAuthUser()
 
       dispatch(setUser(data))
-      navigate(PUBLIC_ROUTES.createProfile)
-      clearInterval(timer)
     } catch (error) {
       console.log('error: ', error)
     }
   }
 
+  useEffect(() => {
+    window.addEventListener('storage', fetchAuthUser)
+    return () => window.removeEventListener('storage', fetchAuthUser)
+  }, [])
+
   const signUpWithGoogle = async () => {
-    let timer: ReturnType<typeof setInterval>
-
-    const newWindow = window.open(
-      GOOGLE_LOGIN,
-      '_blank',
-      'width=500,height=600,left=400,top=200',
-    )
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser(timer)
-        }
-      }, 1000)
-    }
+    window.open(GOOGLE_LOGIN, '_blank', 'width=500,height=600,left=400,top=200')
   }
-  const signUpWithFacebook = async () => {
-    let timer: ReturnType<typeof setInterval>
 
-    const newWindow = window.open(
+  const signUpWithFacebook = async () => {
+    window.open(
       FACEBOOK_LOGIN,
       '_blank',
       'width=500,height=600,left=400,top=200',
     )
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser(timer)
-        }
-      }, 1000)
-    }
   }
 
   const SIGN_UP_VENDORS = [

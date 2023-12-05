@@ -29,15 +29,13 @@ function FillBlank(props: FillBlankProps) {
     if (result) {
       form.setFieldValue('answer', result.correctAnswer)
     }
+
+    firstInput.current?.focus()
   }, [question])
 
   useEffect(() => {
     setIsSubmittable(answer?.every((value) => value.length > 0) || false)
   }, [answer])
-
-  useEffect(() => {
-    firstInput.current?.focus()
-  }, [firstInput])
 
   return (
     <div>
