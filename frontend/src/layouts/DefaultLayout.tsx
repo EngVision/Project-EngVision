@@ -36,8 +36,6 @@ const DefaultLayout = () => {
     }
   }
 
-  console.log(user)
-
   return (
     <div className="flex flex-row bg-bgDefault h-screen text-textColor">
       <Sidebar />
