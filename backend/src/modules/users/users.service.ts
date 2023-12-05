@@ -117,12 +117,20 @@ export class UsersService {
     const { limit, page, sortBy, order, ...query } = userQuery;
 
     const documentQuery = {
-      $and: [{ role: { $ne: Role.Admin } }, { ...query }],
+      $and: [
+        {
+          $or: [
+            { role: { $ne: Role.Admin } },
+            { status: AccountStatus.Pending },
+          ],
+        },
+        { ...query },
+      ],
     };
 
     const users = await this.userModel.find(documentQuery, null, {
-      skip: page * limit,
-      limit: limit,
+      skip: limit === -1 ? 0 : page * limit,
+      limit: limit === -1 ? null : limit,
       sort: { [sortBy]: order === Order.desc ? -1 : 1 },
     });
 
@@ -303,6 +311,20 @@ export class UsersService {
     const user = await this.userModel.findByIdAndUpdate(
       id,
       { showGetStarted: isShow },
+      { returnDocument: 'after' },
+    );
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  async setHideGuideTour(id: string): Promise<UserDocument> {
+    const user = await this.userModel.findByIdAndUpdate(
+      id,
+      { showGuideTour: false },
       { returnDocument: 'after' },
     );
 

@@ -193,7 +193,7 @@ const InProgressAndDoneExercise = () => {
 
   const { data: submissions, isLoading } = useQuery({
     queryKey: ['mySubmissions'],
-    queryFn: () => submissionApi.getSubmissionList({ limit: 10000 }),
+    queryFn: () => submissionApi.getSubmissionList({ limit: -1 }),
   })
 
   if (isLoading) return <AppLoading />

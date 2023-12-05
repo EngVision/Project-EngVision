@@ -1,12 +1,10 @@
+import { useMutation } from '@tanstack/react-query'
 import { Alert, Button, Checkbox, Modal } from 'antd'
-import React, { useEffect, useMemo, useState } from 'react'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+import { useMemo, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
-import {
-  hideGetStarted,
-  setShowGetStartedAgain,
-  showGetStarted,
-} from '../../redux/app/slice'
+import { hideGetStarted } from '../../redux/app/slice'
+import accountApi from '../../services/accountApi'
 import {
   Role,
   STUDENT_GET_STARTED_VIDEO_URL,
@@ -16,6 +14,10 @@ import {
 function GetStartedModal() {
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.app.user)
+
+  const getStartedMutation = useMutation({
+    mutationFn: accountApi.updateGetStarted,
+  })
 
   const videoUrl = useMemo(() => {
     if (user?.role === Role.Student) {
@@ -29,27 +31,19 @@ function GetStartedModal() {
   const showingGetStarted = useAppSelector(
     (state) => state.app.showingGetStarted,
   )
-  const showGetStartedAgain = useAppSelector(
-    (state) => state.app.showGetStartedAgain,
-  )
+
   const [checked, setChecked] = useState(false)
 
   const handleCloseModal = () => {
     dispatch(hideGetStarted())
     if (checked) {
-      dispatch(setShowGetStartedAgain(false))
+      getStartedMutation.mutate(false)
     }
   }
 
   const handleChangeCheckbox = (e: CheckboxChangeEvent) => {
     setChecked(e.target.checked)
   }
-
-  useEffect(() => {
-    if (showGetStartedAgain) {
-      dispatch(showGetStarted())
-    }
-  }, [])
 
   return (
     <div>

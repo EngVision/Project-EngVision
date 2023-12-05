@@ -1,5 +1,5 @@
 import { Button, Checkbox, Form, Input, Select } from 'antd'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { useMutation } from '@tanstack/react-query'
@@ -45,52 +45,31 @@ const TeacherSignUp: React.FC = () => {
     mutate(newUser)
   }
 
-  const fetchAuthUser = async (timer: ReturnType<typeof setInterval>) => {
+  const fetchAuthUser = async () => {
     try {
       const data = await authApi.fetchAuthUser()
 
       dispatch(setUser(data))
-      navigate(PUBLIC_ROUTES.createProfile)
-      clearInterval(timer)
     } catch (error) {
       console.log('error: ', error)
     }
   }
 
+  useEffect(() => {
+    window.addEventListener('storage', fetchAuthUser)
+    return () => window.removeEventListener('storage', fetchAuthUser)
+  }, [])
+
   const signUpWithGoogle = async () => {
-    let timer: ReturnType<typeof setInterval>
-
-    const newWindow = window.open(
-      GOOGLE_LOGIN,
-      '_blank',
-      'width=500,height=600,left=400,top=200',
-    )
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser(timer)
-        }
-      }, 1000)
-    }
+    window.open(GOOGLE_LOGIN, '_blank', 'width=500,height=600,left=400,top=200')
   }
 
   const signUpWithFacebook = async () => {
-    let timer: ReturnType<typeof setInterval>
-
-    const newWindow = window.open(
+    window.open(
       FACEBOOK_LOGIN,
       '_blank',
       'width=500,height=600,left=400,top=200',
     )
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser(timer)
-        }
-      }, 1000)
-    }
   }
 
   const SIGN_UP_VENDORS = [
