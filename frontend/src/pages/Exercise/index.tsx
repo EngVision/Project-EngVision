@@ -53,6 +53,8 @@ function Exercise({
       !!submission?.detail[questionIndex] ||
         questionIndex >= (exercise?.content?.length || 0),
     )
+
+    setIsSubmittable(false)
   }, [submission, questionIndex])
 
   const Content = () => {

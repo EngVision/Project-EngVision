@@ -5,7 +5,7 @@ import { ExerciseSchema } from '../../../../services/exerciseApi/types'
 
 interface ProgressExamProps {
   parts?: ExerciseSchema[]
-  submissions?: SubmissionResponse[]
+  submissions?: (SubmissionResponse | undefined)[]
   partIndex: number
   questionIndex: number
   canGotoQuestion: (indexP: number, indexQ: number) => boolean
