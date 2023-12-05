@@ -16,6 +16,7 @@ const DarkModeButton = () => {
     return (
       <Tooltip title={isDarkMode ? 'Dark Mode' : 'Light Mode'}>
         <Button
+          id="dark-mode"
           type={isDarkMode ? 'primary' : 'text'}
           shape="circle"
           icon={isDarkMode ? <Moon /> : <Sun />}

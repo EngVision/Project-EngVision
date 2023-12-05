@@ -9,16 +9,19 @@ const STUDENT_MENU_ITEMS: MenuItemType[] = [
     icon: <DashboardIcon />,
     path: PRIVATE_ROUTES.home,
     title: 'Dashboard',
+    id: 'dashboard',
   },
   {
     icon: <BookIcon />,
     path: STUDENT_ROUTES.myHub,
     title: 'My Hub',
+    id: 'my-hub',
   },
   {
     icon: <GlobalSearchIcon />,
     path: STUDENT_ROUTES.discover,
     title: 'Discover',
+    id: 'discover',
   },
   // {
   //   icon: <ChartIcon />,

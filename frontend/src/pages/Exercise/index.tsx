@@ -9,6 +9,8 @@ import ExerciseContent from './components/ExerciseContent'
 import Explain from './components/Explain'
 import GradingExercise from './components/GradingExercise'
 import { ExerciseSchema } from '../../services/exerciseApi/types'
+import Joyride, { CallBackProps, STATUS } from 'react-joyride'
+import { DO_EXERCISE_STEPS } from '../../utils/guideTourSteps'
 
 interface ExerciseProps {
   exercise?: ExerciseSchema
@@ -42,6 +44,7 @@ function Exercise({
   const [form] = Form.useForm()
   const [hasResult, setHasResult] = useState<boolean>(false)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(false)
+  const [showGuide, setShowGuide] = useState<boolean>(false)
 
   const navigate = useNavigate()
 
@@ -109,6 +112,14 @@ function Exercise({
     else navigate(-1)
   }
 
+  const handleTourFinish = (data: CallBackProps) => {
+    const { status } = data
+    const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED]
+    if (finishedStatuses.includes(status)) {
+      setShowGuide(false)
+    }
+  }
+
   return (
     <Form
       form={form}
@@ -118,6 +129,7 @@ function Exercise({
       <div className="flex-1 min-h-[0px] py-[5px] flex flex-col w-full justify-between align-middle">
         <div className="flex justify-between">
           <Button
+            id="button-back"
             type="primary"
             ghost
             shape="circle"
@@ -125,13 +137,21 @@ function Exercise({
             icon={<ArrowLeft />}
             onClick={() => back()}
           />
-          <div className="flex flex-col items-center">
+          <div id="quiz-progress" className="flex flex-col items-center">
             <QuizProgressComponent />
           </div>
-          <Button type="primary" ghost shape="circle" size="large" icon={'?'} />
+          <Button
+            type="primary"
+            ghost
+            shape="circle"
+            size="large"
+            icon={'?'}
+            onClick={() => setShowGuide(true)}
+          />
         </div>
         <div className="flex-1 flex flex-col min-h-[0px]">
-          {exercise?.contentQuestion ? (
+          {exercise?.contentQuestion &&
+          questionIndex < (exercise?.content?.length || 0) ? (
             <TwoColumnLayout contentQuestion={exercise.contentQuestion}>
               {Content()}
             </TwoColumnLayout>
@@ -141,6 +161,7 @@ function Exercise({
         </div>
         <div className="flex justify-between">
           <Button
+            id="button-previous"
             type="primary"
             size="large"
             ghost
@@ -151,6 +172,7 @@ function Exercise({
             Previous
           </Button>
           <Button
+            id="button-confirm"
             type="primary"
             size="large"
             className="w-[150px]"
@@ -164,6 +186,32 @@ function Exercise({
           </Button>
         </div>
       </div>
+      <Joyride
+        steps={DO_EXERCISE_STEPS}
+        callback={handleTourFinish}
+        spotlightPadding={4}
+        run={showGuide}
+        continuous
+        hideCloseButton
+        showSkipButton
+        showProgress
+        styles={{
+          overlay: {
+            maxHeight: '100vh',
+          },
+          buttonNext: {
+            backgroundColor: 'var(--primary)',
+            padding: '6px 10px',
+          },
+          buttonBack: {
+            color: 'var(--primary)',
+          },
+          buttonSkip: {
+            color: 'var(--secondary)',
+            fontSize: '16px',
+          },
+        }}
+      />
     </Form>
   )
 }

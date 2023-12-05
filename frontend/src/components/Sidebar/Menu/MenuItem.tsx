@@ -14,6 +14,7 @@ const MenuItem = ({ item }: Props) => {
 
   return item.path ? (
     <NavLink
+      id={item.id}
       to={item.path}
       className={({ isActive }) =>
         `flex gap-4 text-base font-semibold p-4 rounded-[12px] hover:bg-bgNeutral w-full 
