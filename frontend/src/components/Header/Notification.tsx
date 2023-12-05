@@ -12,7 +12,7 @@ const Notification = () => {
 
   return (
     <Popover content={renderContent} placement="bottomRight">
-      <div className="flex">
+      <div id="notification" className="flex">
         <NotificationIcon width={40} height={40} className="cursor-pointer" />
       </div>
     </Popover>

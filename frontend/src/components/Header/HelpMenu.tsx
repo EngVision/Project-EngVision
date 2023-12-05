@@ -64,7 +64,7 @@ const HelpMenu = () => {
       className="text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
       placement="bottomRight"
     >
-      <div className="flex">
+      <div id="help-menu" className="flex">
         <HelpMenuIcon width={20} height={20} />
       </div>
     </Dropdown>

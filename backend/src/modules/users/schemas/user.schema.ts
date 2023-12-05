@@ -50,6 +50,9 @@ export class User {
   @Prop({ default: true })
   showGetStarted?: boolean;
 
+  @Prop({ default: true })
+  showGuideTour?: boolean;
+
   validatePassword?: (password: string) => Promise<boolean>;
   validateRefreshToken?: (refreshToken: string) => Promise<boolean>;
   preSave?: () => Promise<void>;
