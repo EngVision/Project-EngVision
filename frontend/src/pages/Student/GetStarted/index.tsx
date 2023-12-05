@@ -1,15 +1,11 @@
 import { Button, ConfigProvider, Select } from 'antd'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CEFRLevel, STUDENT_ROUTES } from '../../../utils/constants'
-import { examApi } from '../../../services/examApi'
-import React, { ReactNode } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
 import { setCurrentLevel } from '../../../redux/app/slice'
+import { examApi } from '../../../services/examApi'
 import userLevelApi from '../../../services/userLevelApi'
-interface ScaleUpProps {
-  children: ReactNode
-}
+import { CEFRLevel, STUDENT_ROUTES } from '../../../utils/constants'
 
 const GetStarted = () => {
   const level = useAppSelector((state) => state.app.currentLevel)

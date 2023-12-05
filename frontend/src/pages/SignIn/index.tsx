@@ -35,10 +35,12 @@ const SignIn: React.FC = () => {
   const fetchAuthUser = async () => {
     try {
       const data = await authApi.fetchAuthUser()
-      const level = await userLevelApi.getUserLevel()
-
-      dispatch(setCurrentLevel(level))
       dispatch(setUser(data))
+
+      if (data.role === 'Student') {
+        const level = await userLevelApi.getUserLevel()
+        dispatch(setCurrentLevel(level))
+      }
     } catch (error) {
       console.log('error: ', error)
     }
