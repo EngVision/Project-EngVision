@@ -143,25 +143,27 @@ export class UserLevelService {
     result: QuestionResult,
     question: ExerciseQuestionDto,
   ): Score {
-    let score = 0;
+    if (result.grade !== null && result.isCorrect !== null) {
+      let score = 0;
 
-    if (result.grade !== null) {
-      score = ScorePerQuestion * (result.grade / 10);
-    }
+      if (result.grade !== null) {
+        score = ScorePerQuestion * (result.grade / 10);
+      }
 
-    if (result.isCorrect !== null) {
-      score = result.isCorrect ? ScorePerQuestion : -ScorePerQuestion;
-    }
+      if (result.isCorrect !== null) {
+        score = result.isCorrect ? ScorePerQuestion : -ScorePerQuestion;
+      }
 
-    const questionLevel = question.level;
-    if (questionLevel === CEFRLevel.A1 || questionLevel === CEFRLevel.A2) {
-      currentScore.LevelA += score;
-    }
-    if (questionLevel === CEFRLevel.B1 || questionLevel === CEFRLevel.B2) {
-      currentScore.LevelB += score;
-    }
-    if (questionLevel === CEFRLevel.C1 || questionLevel === CEFRLevel.C2) {
-      currentScore.LevelC += score;
+      const questionLevel = question.level;
+      if (questionLevel === CEFRLevel.A1 || questionLevel === CEFRLevel.A2) {
+        currentScore.LevelA += score;
+      }
+      if (questionLevel === CEFRLevel.B1 || questionLevel === CEFRLevel.B2) {
+        currentScore.LevelB += score;
+      }
+      if (questionLevel === CEFRLevel.C1 || questionLevel === CEFRLevel.C2) {
+        currentScore.LevelC += score;
+      }
     }
 
     return currentScore;

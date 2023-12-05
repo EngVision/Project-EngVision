@@ -66,11 +66,10 @@ export class SubmissionsService {
       },
     );
 
-    const content = await this.exerciseContentServiceFactory
+    const questionContent = await this.exerciseContentServiceFactory
       .createService(submissionDto.exerciseType)
       .getContent(result.question);
-
-    this.userLevelService.update(userId, result, content);
+    this.userLevelService.update(userId, result, questionContent);
 
     return {
       ...newSubmission,
@@ -189,6 +188,11 @@ export class SubmissionsService {
     submission.grade =
       submission.detail.reduce((accumulator, q) => q.grade + accumulator, 0) /
       submission.detail.length;
+
+    const questionContent = await this.exerciseContentServiceFactory
+      .createService(submission.exerciseType)
+      .getContent(questionId);
+    this.userLevelService.update(userId, submission.detail[i], questionContent);
 
     await submission.save();
 

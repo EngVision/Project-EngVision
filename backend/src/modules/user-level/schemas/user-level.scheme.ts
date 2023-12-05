@@ -4,10 +4,9 @@ import { CEFRLevel } from 'src/common/enums';
 import { User } from 'src/modules/users/schemas/user.schema';
 import { ListeningLevel, ListeningLevelSchema } from './listening-level.schema';
 import { ReadingLevel, ReadingLevelSchema } from './reading-level.schema';
+import { Score, ScoreSchema } from './score.schema';
 import { SpeakingLevel, SpeakingLevelSchema } from './speaking-level.schema';
 import { WritingLevel, WritingLevelSchema } from './writing-level.schema';
-import { LevelScore } from 'src/common/constants';
-import { Score, ScoreSchema } from './score.schema';
 
 export type UserLevelDocument = UserLevel & Document;
 

@@ -117,7 +117,15 @@ export class UsersService {
     const { limit, page, sortBy, order, ...query } = userQuery;
 
     const documentQuery = {
-      $and: [{ role: { $ne: Role.Admin } }, { ...query }],
+      $and: [
+        {
+          $or: [
+            { role: { $ne: Role.Admin } },
+            { status: AccountStatus.Pending },
+          ],
+        },
+        { ...query },
+      ],
     };
 
     const users = await this.userModel.find(documentQuery, null, {

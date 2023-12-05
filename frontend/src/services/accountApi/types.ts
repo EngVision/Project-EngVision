@@ -27,6 +27,7 @@ export interface ProfileParams {
   oldPassword?: string
   password?: string
   retypePassword?: string
+  showGetStarted?: boolean
 }
 
 export interface ChangePassword {
