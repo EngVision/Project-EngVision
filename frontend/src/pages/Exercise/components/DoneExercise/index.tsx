@@ -26,15 +26,17 @@ function DoneExercise({ grade }: DoneExerciseProps) {
       <p className="text-2xl font-semibold">
         Your test result has completed with
       </p>
-      <p className="text-4xl font-bold">{grade?.toFixed(2) || 0} / 10.00</p>
+      <p className="text-4xl font-bold mb-3">
+        {grade?.toFixed(2) || 0} / 10.00
+      </p>
       <Progress
         type="circle"
         percent={((currentLevel?.overall || 0) / 250) * 100}
-        size={200}
+        size={175}
         format={() => (
-          <div className="flex flex-col gap-2">
-            <p className="text-2lg">{currentLevel?.overall}</p>
-            <p className="text-2lg">
+          <div>
+            <p className="text-2xl">{currentLevel?.overall}</p>
+            <p className="text-2xl">
               Level <span className="font-bold">{currentLevel?.CEFRLevel}</span>
             </p>
           </div>

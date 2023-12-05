@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
   IsEnum,
@@ -12,6 +12,15 @@ import {
 import { Gender, Role } from 'src/common/enums';
 
 export class CreateAccountDto {
+  @IsString()
+  @ApiProperty({ type: String, description: 'First name' })
+  firstName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ type: String, description: 'Last name' })
+  lastName?: string;
+
   @IsStrongPassword()
   @ApiProperty({ type: String, description: 'Password' })
   password: string;
