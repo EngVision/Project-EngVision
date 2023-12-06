@@ -48,13 +48,14 @@ const AudioRecorder = ({
             />
           </div>
           {limitTime && (
-            <div className="text-sm text-center">{`${Math.floor(
-              (limitTime - recordingTime) / 60,
-            )
-              .toString()
-              .padStart(2, '0')}:${((limitTime - recordingTime) % 60)
-              .toString()
-              .padStart(2, '0')}`}</div>
+            <div className="text-sm text-center">
+              {`You have 
+                ${Math.floor((limitTime - recordingTime) / 60)
+                  .toString()
+                  .padStart(2, '0')}:${((limitTime - recordingTime) % 60)
+                  .toString()
+                  .padStart(2, '0')}s left.`}
+            </div>
           )}
         </div>
       ) : (

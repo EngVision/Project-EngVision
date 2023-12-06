@@ -6,6 +6,7 @@ import DoneExercise from '../DoneExercise'
 import FillBlank from '../FillBlank'
 import MakeSentence from '../MakeSentence'
 import MultipleChoice from '../MultipleChoice'
+import Speaking from '../Speaking'
 import Unscramble from '../Unscramble'
 
 interface ExerciseContentProps {
@@ -69,6 +70,14 @@ function ExerciseContent({
       case ExerciseType.Unscramble:
         return (
           <Unscramble
+            {...content}
+            result={submission?.detail[questionIndex]}
+            setIsSubmittable={setIsSubmittable}
+          />
+        )
+      case ExerciseType.Speaking:
+        return (
+          <Speaking
             {...content}
             result={submission?.detail[questionIndex]}
             setIsSubmittable={setIsSubmittable}
