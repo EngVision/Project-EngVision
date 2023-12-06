@@ -11,7 +11,7 @@ const DefaultLayout = () => {
         <div className="px-8">
           <Header />
         </div>
-        <div className="px-8 pb-8 flex-1 overflow-y-auto">
+        <div className="px-5 pb-8 flex-1 overflow-y-auto">
           <Outlet />
         </div>
       </div>
