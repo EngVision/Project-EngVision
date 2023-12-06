@@ -7,6 +7,10 @@ import {
 } from '../../../../../services/exerciseApi/types'
 import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
 import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
+import ExerciseTagInput, {
+  getTagList,
+  transformToExerciseTagInputValue,
+} from '../ExerciseTagInput'
 
 interface AnswerFormProps {
   index: number
@@ -87,13 +91,7 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             name={[index, 'questionTags']}
             rules={[{ required: true }]}
           >
-            <Select
-              mode="multiple"
-              allowClear
-              placeholder="Tags"
-              maxTagCount="responsive"
-              options={enumToSelectOptions(ExerciseTag)}
-            />
+            <ExerciseTagInput />
           </Form.Item>
           <Form.Item
             label="Level"
@@ -173,7 +171,7 @@ const transformSubmitData = (exercise: any) => {
   exercise.content = content.map((question: QuestionFormSchema) => {
     const transformQuestion: MultipleChoicePayload = {
       id: question.id,
-      tags: question.questionTags,
+      tags: getTagList(question.questionTags as any),
       level: question.questionLevel,
       question: {
         text: question.questionText,
@@ -202,7 +200,7 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
     const questionForm: QuestionFormSchema = {
       id: q.id,
       questionText: q.question.text,
-      questionTags: q.tags,
+      questionTags: transformToExerciseTagInputValue(q.tags),
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
       answers: q.question.answers.map(
