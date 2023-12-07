@@ -9,16 +9,19 @@ const TEACHER_MENU_ITEMS: MenuItemType[] = [
     icon: <DashboardIcon />,
     path: PRIVATE_ROUTES.home,
     title: 'Dashboard',
+    id: 'dashboard',
   },
   {
     icon: <BookIcon />,
     path: TEACHER_ROUTES.courses,
     title: 'My courses',
+    id: 'my-courses',
   },
   {
     icon: <NoteIcon />,
     path: TEACHER_ROUTES.grading,
     title: 'Grading',
+    id: 'grading',
   },
   // {
   //   icon: <NoteIcon />,

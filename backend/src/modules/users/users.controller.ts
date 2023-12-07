@@ -207,4 +207,18 @@ export class UsersController {
       }),
     );
   }
+
+  @Post('/tour-guide-onboarding')
+  @UseGuards(AtGuard)
+  async hideTourGuide(@CurrentUser() user: JwtPayload, @Res() res: Response) {
+    const updatedUser = await this.usersService.setHideGuideTour(user.sub);
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        dataType: UserDto,
+        data: updatedUser,
+        message: 'Set seen tour guide successfully',
+      }),
+    );
+  }
 }

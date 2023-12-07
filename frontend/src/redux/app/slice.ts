@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { IUser } from '../../services/authApi/types'
-import { CEFRLevel } from '../../utils/constants'
+import { IUserLevel } from '../../services/userLevelApi/type'
 
 interface AppState {
   user: IUser | null
@@ -8,7 +8,8 @@ interface AppState {
   locales: string
   isSidebarCollapsed: boolean
   showingGetStarted: boolean
-  currentLevel: CEFRLevel
+  showGetStartedAgain: boolean
+  currentLevel: IUserLevel | null
   showingLogoutModal: boolean
 }
 
@@ -18,7 +19,8 @@ const initialState: AppState = {
   locales: 'en',
   isSidebarCollapsed: false,
   showingGetStarted: false,
-  currentLevel: CEFRLevel.A1,
+  showGetStartedAgain: true,
+  currentLevel: null,
   showingLogoutModal: false,
 }
 

@@ -4,6 +4,7 @@ export enum ExerciseType {
   ConstructedResponse = 'ConstructedResponse',
   MakeSentence = 'MakeSentence',
   Unscramble = 'Unscramble',
+  Speaking = 'Speaking',
 }
 
 export enum ExerciseTag {
