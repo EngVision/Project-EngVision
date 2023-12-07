@@ -14,7 +14,7 @@ import AppLoading from '../../components/common/AppLoading'
 import coursesApi from '../../services/coursesApi'
 import { ObjectId } from '../../services/examSubmissionApi/type'
 import submissionApi from '../../services/submissionApi'
-import { lessonApi } from '../../services/userLevelApi'
+import userLevelApi from '../../services/userLevelApi'
 
 dayjs.locale('en')
 
@@ -33,7 +33,7 @@ const Home = () => {
 
   const { data: userLevel } = useQuery({
     queryKey: ['courses'],
-    queryFn: () => lessonApi.getUserLevel(),
+    queryFn: () => userLevelApi.getUserLevel(),
   })
 
   console.log(userLevel, 'userLevel')
@@ -108,36 +108,34 @@ const Home = () => {
   const dataRadarChart = [
     {
       category: 'Listening',
-      comprehension: processScore(userLevel?.data.listening.comprehension),
+      comprehension: processScore(userLevel?.listening.comprehension),
       overall: 50,
-      grammar: processScore(userLevel?.data.listening.grammar),
-      vocabulary: processScore(userLevel?.data.listening.vocabulary),
+      grammar: processScore(userLevel?.listening.grammar),
+      vocabulary: processScore(userLevel?.listening.vocabulary),
     },
     {
       category: 'Reading',
-      skimming: processScore(userLevel?.data.reading.skimming),
-      scanning: processScore(userLevel?.data.reading.scanning),
-      comprehension: processScore(userLevel?.data.reading.comprehension),
+      skimming: processScore(userLevel?.reading.skimming),
+      scanning: processScore(userLevel?.reading.scanning),
+      comprehension: processScore(userLevel?.reading.comprehension),
       overall: 200,
-      grammar: processScore(userLevel?.data.reading.grammar),
-      vocabulary: processScore(userLevel?.data.reading.vocabulary),
+      grammar: processScore(userLevel?.reading.grammar),
+      vocabulary: processScore(userLevel?.reading.vocabulary),
     },
     {
       category: 'Writing',
-      organization: processScore(userLevel?.data.writing.organization),
-      coherence: processScore(userLevel?.data.writing.coherence),
-      conciseness: processScore(userLevel?.data.writing.conciseness),
+      organization: processScore(userLevel?.writing.organization),
       overall: 250,
-      grammar: processScore(userLevel?.data.writing.grammar),
-      vocabulary: processScore(userLevel?.data.writing.vocabulary),
+      grammar: processScore(userLevel?.writing.grammar),
+      vocabulary: processScore(userLevel?.writing.vocabulary),
     },
     {
       category: 'Speaking',
-      pronunciation: processScore(userLevel?.data.speaking.pronunciation),
-      fluency: processScore(userLevel?.data.speaking.fluency),
+      pronunciation: processScore(userLevel?.speaking.pronunciation),
+      fluency: processScore(userLevel?.speaking.fluency),
       overall: 175,
-      grammar: processScore(userLevel?.data.speaking.grammar),
-      vocabulary: processScore(userLevel?.data.speaking.vocabulary),
+      grammar: processScore(userLevel?.speaking.grammar),
+      vocabulary: processScore(userLevel?.speaking.vocabulary),
     },
   ]
   console.log(dataRadarChart, 'dataRadarChart')
@@ -248,7 +246,7 @@ const Home = () => {
   }, [rawSubmissionList?.data])
 
   const { data: rawSuggestedList } = useQuery({
-    queryKey: ['suggestedCourses', { levels: userLevel?.data.CEFRLevel }],
+    queryKey: ['suggestedCourses', { levels: userLevel?.CEFRLevel }],
     queryFn: () => coursesApi.getSuggestedCourses(),
   })
 
@@ -373,7 +371,7 @@ const Home = () => {
             {DashboardCard('Completed Exercises', exercise.totalDone)}
           </div>
           <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#C7DFF2] to-[#D2BBE6] text-dark">
-            {DashboardCard('Your Level', userLevel?.data.CEFRLevel)}
+            {DashboardCard('Your Level', userLevel?.CEFRLevel)}
           </div>
         </div>
 
