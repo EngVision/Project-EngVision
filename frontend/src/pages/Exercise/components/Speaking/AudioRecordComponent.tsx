@@ -1,36 +1,37 @@
 import { Button } from 'antd'
-import { useState } from 'react'
 import AudioRecorder from '../../../../components/Audio/AudioRecorder'
 
 type AudioRecorderComponentProps = {
   setIsSubmittable: (value: boolean) => void
   countdown: number
+  fileId: string
+  setFileId: (fileId: string) => void
 }
 
 const AudioRecorderComponent = ({
   setIsSubmittable,
   countdown = 10,
+  fileId,
+  setFileId,
 }: AudioRecorderComponentProps) => {
-  const [url, setUrl] = useState<string>('')
-
   return (
     <div className="flex flex-col justify-center items-center">
-      {!url && (
+      {!fileId && (
         <AudioRecorder
           limitTime={countdown}
-          onRecordingComplete={(url) => {
-            setUrl(url)
+          onRecordingComplete={(fileId) => {
+            setFileId(fileId)
             setIsSubmittable(true)
           }}
         />
       )}
-      {url && <audio src={url} controls />}
-      {url && (
+      {fileId && <audio src={fileId} controls />}
+      {fileId && (
         <div>
           <span className="text-sm">Not perfect?</span>
           <Button
             onClick={() => {
-              setUrl('')
+              setFileId('')
               setIsSubmittable(false)
             }}
             type="link"

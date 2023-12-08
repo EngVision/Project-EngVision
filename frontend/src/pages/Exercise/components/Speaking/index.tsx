@@ -1,5 +1,5 @@
 import { Form } from 'antd'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   QuestionPayload,
   SubmitAnswerResponse,
@@ -27,10 +27,12 @@ function Speaking(props: SpeakingProps) {
   const { question, result, setIsSubmittable } = props
   console.log('🚀 ~ file: index.tsx:28 ~ Speaking ~ result:', result)
   const form = Form.useFormInstance()
+  const [fileId, setFileId] = useState<string>('')
+  console.log('🚀 ~ file: index.tsx:31 ~ Speaking ~ fileId:', fileId)
 
   useEffect(() => {
-    form.setFieldValue('answer', null)
-  }, [question])
+    form.setFieldValue('answer', fileId)
+  }, [question, fileId])
 
   return (
     <div>
@@ -44,10 +46,14 @@ function Speaking(props: SpeakingProps) {
         dangerouslySetInnerHTML={{ __html: question.text }}
       ></div>
 
-      <AudioRecorderComponent
-        setIsSubmittable={setIsSubmittable}
-        countdown={question.countdown}
-      />
+      <Form.Item name="answer" initialValue="">
+        <AudioRecorderComponent
+          setIsSubmittable={setIsSubmittable}
+          countdown={question.countdown}
+          fileId={fileId}
+          setFileId={setFileId}
+        />
+      </Form.Item>
     </div>
   )
 }

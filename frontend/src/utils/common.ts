@@ -75,3 +75,27 @@ export const addAnswersToQuestionTextOfMakeSentenceExercise = (
 
   return questionTextWithAnswers
 }
+
+type PromiseResolve = (value: unknown) => void
+type PromiseReject = (value: unknown) => void
+export const validatePassword = (
+  resolve: PromiseResolve,
+  reject: PromiseReject,
+  password: string,
+) => {
+  if (!password) {
+    return reject('Please input your password!')
+  } else if (password.length < 8) {
+    return reject('The password must be at least 8 characters long')
+  } else if (!/[A-Z]/.test(password)) {
+    return reject('The password must be at least 1 uppercase letter')
+  } else if (!/[a-z]/.test(password)) {
+    return reject('The password must be at at least 1 lower letter')
+  } else if (!/^(?=.*[0-9])/.test(password)) {
+    return reject('The password must be at least 1 number')
+  } else if (!/[\W_]/.test(password)) {
+    return reject('The password must be at at least 1 special character')
+  } else {
+    return resolve('')
+  }
+}

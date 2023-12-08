@@ -4,13 +4,18 @@ import { LiveAudioVisualizer } from 'react-audio-visualize'
 import { useAudioRecorder } from 'react-audio-voice-recorder'
 import Micro from '../../Icons/Micro'
 import Stop from '../../Icons/Stop'
-const AudioRecorder = ({
-  limitTime,
-  onRecordingComplete,
-}: {
+import fileApi from '../../../services/fileApi'
+import { useMutation } from '@tanstack/react-query'
+
+type AudioRecorderProps = {
   limitTime?: number
   onRecordingComplete: (url: string) => void
-}) => {
+}
+
+const AudioRecorder = ({
+  limitTime = 0,
+  onRecordingComplete,
+}: AudioRecorderProps) => {
   const {
     startRecording,
     stopRecording,
@@ -21,13 +26,23 @@ const AudioRecorder = ({
     recordingTime,
     mediaRecorder,
   } = useAudioRecorder()
+
+  const { mutate } = useMutation({
+    mutationFn: fileApi.create,
+    onSuccess: (data) => {
+      onRecordingComplete(data.data.fileId)
+    },
+  })
+
   if (limitTime && recordingTime >= limitTime) {
     stopRecording()
   }
+
   useEffect(() => {
     if (!recordingBlob) return
-    onRecordingComplete(URL.createObjectURL(recordingBlob))
+    mutate(recordingBlob)
   }, [recordingBlob])
+
   return (
     <div className="flex flex-col justify-center items-center">
       {isRecording ? (
@@ -47,16 +62,6 @@ const AudioRecorder = ({
               className="cursor-pointer"
             />
           </div>
-          {limitTime && (
-            <div className="text-sm text-center">
-              {`You have 
-                ${Math.floor((limitTime - recordingTime) / 60)
-                  .toString()
-                  .padStart(2, '0')}:${((limitTime - recordingTime) % 60)
-                  .toString()
-                  .padStart(2, '0')}s left.`}
-            </div>
-          )}
         </div>
       ) : (
         <Button
@@ -66,6 +71,19 @@ const AudioRecorder = ({
           <Micro width={30} height={30}></Micro>
         </Button>
       )}
+
+      <div className="text-sm text-center mt-5">
+        You have
+        <strong className="text-primary">{` ${Math.floor(
+          (limitTime - recordingTime) / 60,
+        )
+          .toString()
+          .padStart(2, '0')}:${((limitTime - recordingTime) % 60)
+          .toString()
+          .padStart(2, '0')}s `}</strong>
+        left.
+      </div>
+
       {mediaRecorder && (
         <LiveAudioVisualizer
           mediaRecorder={mediaRecorder}

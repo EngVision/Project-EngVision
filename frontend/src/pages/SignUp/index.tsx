@@ -18,6 +18,7 @@ import {
   ROLES,
 } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
+import { validatePassword } from '../../utils/common'
 
 const SignUp: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -82,12 +83,6 @@ const SignUp: React.FC = () => {
     },
   ]
 
-  const validatePassword = (password: string) => {
-    if (!password) return true
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/
-    return password && password.length >= 8 && passwordRegex.test(password)
-  }
-
   const validateConfirmPassword = (confirmPassword: string) => {
     if (!confirmPassword) return true
     const password = form.getFieldValue('password')
@@ -116,7 +111,7 @@ const SignUp: React.FC = () => {
         initialValues={{ accepted: false }}
         onFinish={onFinish}
         autoComplete="off"
-        className="w-[560px] flex flex-col"
+        className="w-[36rem] flex flex-col"
         layout="vertical"
         form={form}
         onChange={reset}
@@ -192,19 +187,11 @@ const SignUp: React.FC = () => {
           name="password"
           label="Password"
           rules={[
-            { message: 'Please input your password!', required: true },
             {
               async validator(_, value) {
-                return new Promise((resolve, reject) => {
-                  if (validatePassword(value)) {
-                    resolve('')
-                  } else
-                    reject(
-                      new Error(
-                        'The password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number or special character',
-                      ),
-                    )
-                })
+                return new Promise((resolve, reject) =>
+                  validatePassword(resolve, reject, value),
+                )
               },
             },
           ]}
