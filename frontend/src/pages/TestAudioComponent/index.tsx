@@ -1,5 +1,6 @@
 import { Button } from 'antd'
 import { useState } from 'react'
+import AudioPlayer from '../../components/Audio/AudioPlayer'
 import AudioRecorder from '../../components/Audio/AudioRecorder'
 const TestAudioComponent = () => {
   const [url, setUrl] = useState<string>('')
@@ -12,7 +13,7 @@ const TestAudioComponent = () => {
           onRecordingComplete={(url) => setUrl(url)}
         />
       )}
-      {url && <audio src={url} controls />}
+      {url && <AudioPlayer url={url} />}
       {url && (
         <div>
           <span className="text-sm">Not perfect?</span>
@@ -21,6 +22,8 @@ const TestAudioComponent = () => {
           </Button>
         </div>
       )}
+
+      <AudioPlayer url="https://ia600707.us.archive.org/8/items/alice_in_wonderland_librivox/wonderland_ch_01.mp3" />
     </div>
   )
 }
