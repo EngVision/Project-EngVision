@@ -14,7 +14,7 @@ import AppLoading from '../../components/common/AppLoading'
 import coursesApi from '../../services/coursesApi'
 import { ObjectId } from '../../services/examSubmissionApi/type'
 import submissionApi from '../../services/submissionApi'
-import { lessonApi } from '../../services/userLevelApi'
+// import { lessonApi } from '../../services/userLevelApi'
 
 dayjs.locale('en')
 
@@ -33,7 +33,8 @@ const Home = () => {
 
   const { data: userLevel } = useQuery({
     queryKey: ['courses'],
-    queryFn: () => lessonApi.getUserLevel(),
+    // queryFn: () => lessonApi.getUserLevel(),
+    queryFn: () => 'fuck',
   })
 
   console.log(userLevel, 'userLevel')
@@ -308,7 +309,7 @@ const Home = () => {
   const monthCellRender = (value: any) => {
     return (
       <div
-        className={`calendar-cell 
+        className={`calendar-cell
         } rounded-3xl`}
       >
         {value.month() + 1}
@@ -380,7 +381,7 @@ const Home = () => {
         <div className="bg-surface rounded-2xl flex justify-center mb-8 p-5">
           <div style={{ width: '100%' }}>
             <div className="text-2xl font-bold">Your Skills</div>
-            <Radar {...configRadarChart} />
+            {/* <Radar {...configRadarChart} /> */}
           </div>
         </div>
 
@@ -467,7 +468,7 @@ const Home = () => {
           </div>
           <div className="flex justify-center">
             <div style={{ width: '100%' }}>
-              <Line {...configLineChart} />
+              {/* <Line {...configLineChart} /> */}
             </div>
           </div>
         </div>
