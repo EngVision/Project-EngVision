@@ -1,3 +1,4 @@
+import { SpeakingService } from './speaking/speaking.service';
 import { MakeSentenceService } from './make-sentence/make-sentence.service';
 import { UnscrambleService } from './unscramble/unscramble.service';
 import { FillBlankService } from './fill-blank/fill-blank.service';
@@ -15,6 +16,7 @@ export class ExerciseContentServiceFactory {
     private readonly constructedResponseService: ConstructedResponseService,
     private readonly MakeSentenceService: MakeSentenceService,
     private readonly UnscrambleService: UnscrambleService,
+    private readonly speakingService: SpeakingService,
   ) {}
 
   createService(type: ExerciseType): ExerciseContentService {
@@ -29,6 +31,8 @@ export class ExerciseContentServiceFactory {
         return this.MakeSentenceService;
       case ExerciseType.Unscramble:
         return this.UnscrambleService;
+      case ExerciseType.Speaking:
+        return this.speakingService;
       default:
         throw new BadRequestException('Exercise type not found');
     }

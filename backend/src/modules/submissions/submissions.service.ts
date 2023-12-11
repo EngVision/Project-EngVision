@@ -66,11 +66,10 @@ export class SubmissionsService {
       },
     );
 
-    const content = await this.exerciseContentServiceFactory
+    const questionContent = await this.exerciseContentServiceFactory
       .createService(submissionDto.exerciseType)
       .getContent(result.question);
-
-    this.userLevelService.update(userId, result, content);
+    this.userLevelService.update(userId, result, questionContent);
 
     return {
       ...newSubmission,
@@ -119,8 +118,8 @@ export class SubmissionsService {
     const { limit, page, sortBy, order, ...filter } = query;
 
     const documentQuery = {
-      skip: page * limit,
-      limit: limit,
+      skip: limit === -1 ? 0 : page * limit,
+      limit: limit === -1 ? null : limit,
       sort: { [sortBy]: order === Order.asc ? 1 : -1 },
     };
 
@@ -137,6 +136,7 @@ export class SubmissionsService {
       filterQuery = {
         ...filter,
         user: userId,
+        $expr: { $ne: ['$course', null] },
       };
     }
 
@@ -190,6 +190,15 @@ export class SubmissionsService {
       submission.detail.reduce((accumulator, q) => q.grade + accumulator, 0) /
       submission.detail.length;
 
+    const questionContent = await this.exerciseContentServiceFactory
+      .createService(submission.exerciseType)
+      .getContent(questionId);
+    this.userLevelService.update(
+      submission.user,
+      submission.detail[i],
+      questionContent,
+    );
+
     await submission.save();
 
     return submission;
@@ -213,9 +222,7 @@ export class SubmissionsService {
       ...submission.toObject(),
       section: section ? { ...section.toObject() } : null,
       lesson: lesson ? { ...lesson.toObject() } : null,
-      progress: +(submission.totalDone / submission.totalQuestion).toPrecision(
-        2,
-      ),
+      progress: +(submission.totalDone / submission.totalQuestion).toFixed(2),
       status:
         submission.needGrade && submission.detail.every(res => res.grade)
           ? SubmissionStatus.Graded

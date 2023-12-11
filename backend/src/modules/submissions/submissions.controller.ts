@@ -18,14 +18,13 @@ import {
 } from 'src/common/decorators';
 import { GetResponse } from 'src/common/dto';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
-import { QueryDto } from 'src/common/dto/query.dto';
 import { Role } from 'src/common/enums';
 import { AtGuard, RoleGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
 import { GradingDto } from './dto/grading.dto';
+import { SubmissionQueryDto } from './dto/submission-query.dto';
 import { SubmissionDto } from './dto/submission.dto';
 import { SubmissionsService } from './submissions.service';
-import { SubmissionQueryDto } from './dto/submission-query.dto';
 
 @ApiTags('Submissions')
 @Controller('submissions')

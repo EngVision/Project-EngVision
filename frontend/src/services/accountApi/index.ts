@@ -83,6 +83,13 @@ const accountApi = {
     })
     return res.data
   },
+
+  setHideGuideTour: async () => {
+    const res: ResponseData = await axiosClient.post(
+      `${PREFIX}tour-guide-onboarding`,
+    )
+    return res.data
+  },
 }
 
 export default accountApi

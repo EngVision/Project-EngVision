@@ -8,7 +8,7 @@ import { CEFRLevel, ExerciseTag } from 'src/common/enums';
 import { Score } from './schemas/score.schema';
 import { ExerciseQuestionDto } from '../exercise-content/dto/exercise-content.dto';
 
-const ScorePerQuestion = 5;
+const ScorePerQuestion = 2;
 
 @Injectable()
 export class UserLevelService {
@@ -32,6 +32,10 @@ export class UserLevelService {
 
   async findOneByUser(id: string) {
     const userLevel = await this.userLevelModel.findOne({ user: id });
+
+    if (!userLevel) {
+      return null;
+    }
 
     return this.transform(userLevel);
   }
@@ -126,6 +130,11 @@ export class UserLevelService {
       );
     }
 
+    userLevel.reading?.updateOverall(userLevel.grammar, userLevel.vocabulary);
+    userLevel.speaking?.updateOverall(userLevel.grammar, userLevel.vocabulary);
+    userLevel.listening?.updateOverall(userLevel.grammar, userLevel.vocabulary);
+    userLevel.writing?.updateOverall(userLevel.grammar, userLevel.vocabulary);
+
     await userLevel.save();
   }
 
@@ -134,25 +143,31 @@ export class UserLevelService {
     result: QuestionResult,
     question: ExerciseQuestionDto,
   ): Score {
-    let score = 0;
+    if (result.grade !== null || result.isCorrect !== null) {
+      let score = 0;
 
-    if (result.grade !== null) {
-      score = ScorePerQuestion * (result.grade / 10);
-    }
+      if (result.grade !== null) {
+        if (result.grade < 5) {
+          score = -ScorePerQuestion * (1 - result.grade / 10);
+        } else {
+          score = ScorePerQuestion * (result.grade / 10);
+        }
+      }
 
-    if (result.isCorrect !== null) {
-      score = result.isCorrect ? ScorePerQuestion : -ScorePerQuestion;
-    }
+      if (result.isCorrect !== null) {
+        score = result.isCorrect ? ScorePerQuestion : -ScorePerQuestion;
+      }
 
-    const questionLevel = question.level;
-    if (questionLevel === CEFRLevel.A1 || questionLevel === CEFRLevel.A2) {
-      currentScore.LevelA += score;
-    }
-    if (questionLevel === CEFRLevel.B1 || questionLevel === CEFRLevel.B2) {
-      currentScore.LevelB += score;
-    }
-    if (questionLevel === CEFRLevel.C1 || questionLevel === CEFRLevel.C2) {
-      currentScore.LevelC += score;
+      const questionLevel = question.level;
+      if (questionLevel === CEFRLevel.A1 || questionLevel === CEFRLevel.A2) {
+        currentScore.LevelA += score;
+      }
+      if (questionLevel === CEFRLevel.B1 || questionLevel === CEFRLevel.B2) {
+        currentScore.LevelB += score;
+      }
+      if (questionLevel === CEFRLevel.C1 || questionLevel === CEFRLevel.C2) {
+        currentScore.LevelC += score;
+      }
     }
 
     return currentScore;

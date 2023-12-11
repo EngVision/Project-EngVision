@@ -4,10 +4,9 @@ import { CEFRLevel } from 'src/common/enums';
 import { User } from 'src/modules/users/schemas/user.schema';
 import { ListeningLevel, ListeningLevelSchema } from './listening-level.schema';
 import { ReadingLevel, ReadingLevelSchema } from './reading-level.schema';
+import { Score, ScoreSchema } from './score.schema';
 import { SpeakingLevel, SpeakingLevelSchema } from './speaking-level.schema';
 import { WritingLevel, WritingLevelSchema } from './writing-level.schema';
-import { LevelScore } from 'src/common/constants';
-import { Score, ScoreSchema } from './score.schema';
 
 export type UserLevelDocument = UserLevel & Document;
 
@@ -51,8 +50,6 @@ UserLevelSchema.pre('save', function () {
   }
 
   const num = [
-    this.grammar,
-    this.vocabulary,
     this.listening.overall,
     this.reading.overall,
     this.writing.overall,
@@ -60,36 +57,28 @@ UserLevelSchema.pre('save', function () {
   ].filter(e => e !== null).length;
 
   if (
-    this.grammar ||
-    this.vocabulary ||
     this.listening.overall ||
     this.reading.overall ||
     this.writing.overall ||
     this.speaking.overall
   ) {
     this.overall.LevelA =
-      (this.grammar?.LevelA +
-        this.vocabulary?.LevelA +
-        this.listening?.overall?.LevelA +
-        this.reading?.overall?.LevelA +
-        this.writing?.overall?.LevelA +
-        this.speaking?.overall?.LevelA) /
+      ((this.listening?.overall?.LevelA || 0) +
+        (this.reading?.overall?.LevelA || 0) +
+        (this.writing?.overall?.LevelA || 0) +
+        (this.speaking?.overall?.LevelA || 0)) /
       num;
     this.overall.LevelB =
-      (this.grammar?.LevelB +
-        this.vocabulary?.LevelB +
-        this.listening?.overall?.LevelB +
-        this.reading?.overall?.LevelB +
-        this.writing?.overall?.LevelB +
-        this.speaking?.overall?.LevelB) /
+      ((this.listening?.overall?.LevelB || 0) +
+        (this.reading?.overall?.LevelB || 0) +
+        (this.writing?.overall?.LevelB || 0) +
+        (this.speaking?.overall?.LevelB || 0)) /
       num;
     this.overall.LevelC =
-      (this.grammar?.LevelC +
-        this.vocabulary?.LevelC +
-        this.listening?.overall?.LevelC +
-        this.reading?.overall?.LevelC +
-        this.writing?.overall?.LevelC +
-        this.speaking?.overall?.LevelC) /
+      ((this.listening?.overall?.LevelC || 0) +
+        (this.reading?.overall?.LevelC || 0) +
+        (this.writing?.overall?.LevelC || 0) +
+        (this.speaking?.overall?.LevelC || 0)) /
       num;
   }
 });
