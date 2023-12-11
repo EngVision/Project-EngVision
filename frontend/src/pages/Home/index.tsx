@@ -5,7 +5,7 @@ import type { Dayjs } from 'dayjs'
 import dayjs from 'dayjs'
 import 'dayjs/locale/en'
 import 'dayjs/locale/vi'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CourseCard } from '../../components/CourseCard'
 import BookSquare from '../../components/Icons/BookSquare'
@@ -15,6 +15,10 @@ import coursesApi from '../../services/coursesApi'
 import { ObjectId } from '../../services/examSubmissionApi/type'
 import submissionApi from '../../services/submissionApi'
 import { lessonApi } from '../../services/userLevelApi'
+import Grammar from '../../components/Icons/Grammar'
+import Skimming from '../../components/Icons/Skimming'
+import Conciseness from '../../components/Icons/Skimming'
+import Pronunciation from '../../components/Icons/Pronunciation'
 
 dayjs.locale('en')
 
@@ -68,9 +72,7 @@ const Home = () => {
 
     if (rawSubmissionList?.data) {
       const startOfThisWeek = dayjs().startOf('week')
-
       const endOfThisWeek = dayjs().endOf('week')
-
       const initialData: Record<string, number> = {}
       const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       daysOfWeek.forEach((day) => {
@@ -80,7 +82,6 @@ const Home = () => {
 
       rawSubmissionList.data.forEach((submission: any) => {
         const submissionDate = dayjs(submission.updatedAt)
-
         const isWithinThisWeek =
           submissionDate >= startOfThisWeek && submissionDate <= endOfThisWeek
 
@@ -104,12 +105,16 @@ const Home = () => {
     () => calculateExercisesByDay(),
     [rawCourseExercise?.data, submissions],
   )
+
+  console.log(userLevel?.data, 'userLevel?.data')
+
   const processScore = (value: any) => (value === null ? 0 : value)
+
   const dataRadarChart = [
     {
       category: 'Listening',
       comprehension: processScore(userLevel?.data.listening.comprehension),
-      overall: 50,
+      overall: 150,
       grammar: processScore(userLevel?.data.listening.grammar),
       vocabulary: processScore(userLevel?.data.listening.vocabulary),
     },
@@ -140,9 +145,106 @@ const Home = () => {
       vocabulary: processScore(userLevel?.data.speaking.vocabulary),
     },
   ]
-  console.log(dataRadarChart, 'dataRadarChart')
+
+  const dataListeningRadarChart = [
+    {
+      category: 'Comprehension',
+      overall: processScore(userLevel?.data.listening.comprehension),
+    },
+    {
+      category: 'Grammar',
+      overall: processScore(userLevel?.data.listening.grammar),
+    },
+    {
+      category: 'Vocabulary',
+      overall: processScore(userLevel?.data.listening.vocabulary),
+    },
+  ]
+
+  const dataReadingRadarChart = [
+    {
+      category: 'Skimming',
+      overall: processScore(userLevel?.data.reading.skimming),
+    },
+    {
+      category: 'Scanning',
+      overall: processScore(userLevel?.data.reading.scanning),
+    },
+    {
+      category: 'Comprehension',
+      overall: processScore(userLevel?.data.reading.comprehension),
+    },
+    {
+      category: 'Grammar',
+      overall: processScore(userLevel?.data.reading.grammar),
+    },
+    {
+      category: 'Vocabulary',
+      overall: processScore(userLevel?.data.reading.vocabulary),
+    },
+  ]
+
+  const dataWritingRadarChart = [
+    {
+      category: 'Organization',
+      overall: processScore(userLevel?.data.writing.organization),
+    },
+    {
+      category: 'Coherence',
+      overall: processScore(userLevel?.data.writing.coherence),
+    },
+    {
+      category: 'Conciseness',
+      overall: processScore(userLevel?.data.writing.conciseness),
+    },
+    {
+      category: 'Grammar',
+      overall: processScore(userLevel?.data.writing.grammar),
+    },
+    {
+      category: 'Vocabulary',
+      overall: processScore(userLevel?.data.writing.vocabulary),
+    },
+  ]
+
+  const dataSpeakingRadarChart = [
+    {
+      category: 'Pronunciation',
+      overall: processScore(userLevel?.data.speaking.pronunciation),
+    },
+    {
+      category: 'Fluency',
+      overall: processScore(userLevel?.data.speaking.fluency),
+    },
+    {
+      category: 'Grammar',
+      overall: processScore(userLevel?.data.speaking.grammar),
+    },
+    {
+      category: 'Vocabulary',
+      overall: processScore(userLevel?.data.speaking.vocabulary),
+    },
+  ]
+
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+
+  const handleClick = (category: string) => {
+    setSelectedCategory(category)
+  }
+
+  const dataMap = {
+    Speaking: dataSpeakingRadarChart,
+    Writing: dataWritingRadarChart,
+    Reading: dataReadingRadarChart,
+    Listening: dataListeningRadarChart,
+  }
+
+  const filteredDataRadarChart = selectedCategory
+    ? dataMap[selectedCategory]
+    : dataRadarChart
+
   const configRadarChart = {
-    data: dataRadarChart,
+    data: filteredDataRadarChart,
     xField: 'category',
     yField: 'overall',
     meta: {
@@ -151,6 +253,11 @@ const Home = () => {
     xAxis: {
       line: null,
       tickLine: null,
+      label: {
+        style: {
+          fontSize: 16,
+        },
+      },
     },
     yAxis: {
       min: 0,
@@ -362,6 +469,16 @@ const Home = () => {
 
   if (isLoadingSubmissions) return <AppLoading />
 
+  type GradientColors = {
+    [key: string]: { start: string; end: string }
+  }
+
+  const gradientColors: GradientColors = {
+    Listening: { start: '#5BB3D7', end: '#001171' },
+    Reading: { start: '#F76519', end: '#001171' },
+    Writing: { start: '#0088FE', end: '#001171' },
+    Speaking: { start: '#00C49F', end: '#001171' },
+  }
   return (
     <div className="flex flex-row gap-5 max-lg:flex-wrap ">
       <div className="basis-3/4">
@@ -378,9 +495,51 @@ const Home = () => {
         </div>
 
         <div className="bg-surface rounded-2xl flex justify-center mb-8 p-5">
-          <div style={{ width: '100%' }}>
-            <div className="text-2xl font-bold">Your Skills</div>
+          <div style={{ width: '70%' }}>
+            <p className="text-2xl font-bold ">Your Skills</p>
             <Radar {...configRadarChart} />
+            <div className="flex justify-center my-10 text-xl">
+              {selectedCategory ? selectedCategory : 'Overall'} Score
+            </div>
+          </div>
+          <div style={{ width: '30%', paddingLeft: '20px' }}>
+            <div>
+              <div
+                className="rounded-2xl mb-3 hover:cursor-pointer bg-gradient-to-r from-[#8B5CF6] to-[#001171] text-white transform transition-transform hover:scale-105"
+                onClick={() => handleClick('')}
+              >
+                <div className="w-[100%/2] h-40 p-2 my-4 flex flex-col items-center justify-center text-2xl">
+                  <div className="text-5xl font-bold">
+                    {userLevel?.data.overall}
+                  </div>
+                  <div className=" text-center">Overall</div>
+                </div>
+              </div>
+
+              {dataRadarChart.map((item) => {
+                const categoryStyle = {
+                  background: `linear-gradient(to right, ${
+                    gradientColors[item.category].start
+                  }, ${gradientColors[item.category].end})`,
+                }
+
+                return (
+                  <div
+                    style={categoryStyle}
+                    key={item.category}
+                    className={`text-white mb-1 basis-1/3 rounded-2xl my-3 hover:cursor-pointer transform transition-transform hover:scale-105`}
+                    onClick={() => handleClick(item.category)}
+                  >
+                    <div className="w-[100%/2] h-20 p-2 my-4 flex flex-col items-center justify-center text-xl">
+                      <div className="text-3xl font-bold">
+                        {processScore(item.overall)}
+                      </div>
+                      <div className="text-center">{item.category}</div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
 
