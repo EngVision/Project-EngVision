@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import AppLoading from '../../components/common/AppLoading'
 import { useParams } from 'react-router-dom'
 import exerciseApi from '../../services/exerciseApi'
@@ -31,6 +36,7 @@ const DoExam = () => {
     queryFn: () => {
       return examSubmissionApi.getExamSubmissionByExamId(examId)
     },
+    retry: false,
   })
 
   const fetchParts = async (parts: Part[]) => {
@@ -41,12 +47,8 @@ const DoExam = () => {
     return partsRes
   }
 
-  const fetchSubmissions = async (objectIdList: ObjectId[]) => {
-    const submissionsPromises = objectIdList.map((objectId) =>
-      submissionApi.getSubmissionById(objectId?.id ?? ''),
-    )
-    const submissionsRes = await Promise.all(submissionsPromises)
-    return submissionsRes
+  const fetchSubmissions = async (objectId: ObjectId) => {
+    return submissionApi.getSubmissionById(objectId?.id ?? '')
   }
 
   const { data: parts, isLoading: isLoadingParts } = useQuery({
@@ -55,13 +57,18 @@ const DoExam = () => {
     enabled: !!exam,
   })
 
-  const { data: submissions, isLoading: isLoadingSubmissions } = useQuery({
-    queryKey: ['submissions', examSubmissions?.submissions],
-    queryFn: () => {
-      return fetchSubmissions(examSubmissions?.submissions || [])
-    },
-    enabled: !!examSubmissions,
-  })
+  const submissions = useQueries({
+    queries: examSubmissions?.submissions
+      ? examSubmissions.submissions.map((submissionId) => {
+          return {
+            queryKey: ['submissions', submissionId],
+            queryFn: () => {
+              return fetchSubmissions(submissionId)
+            },
+          }
+        })
+      : [],
+  }).map((query) => query.data)
 
   const submitAnswerMutation = useMutation({
     mutationFn: ({
@@ -185,12 +192,13 @@ const DoExam = () => {
 
   useEffect(() => {
     queryClient.invalidateQueries({
-      queryKey: ['submissions', examSubmissions?.submissions],
+      queryKey: ['submissions', examSubmissions?.submissions.at(-1)],
     })
   }, [examSubmissions])
 
-  if (isLoadingExam || isLoadingParts || isLoadingSubmissions)
+  if (isLoadingExam || isLoadingParts) {
     return <AppLoading />
+  }
 
   return (
     <Exercise

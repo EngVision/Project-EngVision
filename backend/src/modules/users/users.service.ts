@@ -75,6 +75,10 @@ export class UsersService {
   }
 
   async createWithSSO(user: User): Promise<UserDocument> {
+    if (!user.gender) {
+      user.gender = Gender.Other;
+    }
+
     const newUser = new this.userModel(user);
 
     if (user.avatar) {
