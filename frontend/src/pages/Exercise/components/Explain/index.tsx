@@ -12,11 +12,13 @@ interface ExplainProps {
 }
 
 function Explain({ submission, questionIndex }: ExplainProps) {
-  const isCorrect = submission?.detail[questionIndex]?.isCorrect
-  const explanation = submission?.detail[questionIndex]?.explanation
-  const correctAnswer = submission?.detail[questionIndex]?.correctAnswer
+  const question = submission?.detail[questionIndex] || {}
+  const hasGrade = !question.hasOwnProperty('grade') || question.grade !== null
+  const isCorrect = question.isCorrect
+  const explanation = question.explanation
+  const correctAnswer = question.correctAnswer
 
-  return (
+  return hasGrade ? (
     <div
       className={`w-full p-5 rounded-md flex gap-4 mt-7 ${
         isCorrect ? 'bg-green-500' : 'bg-secondary'
@@ -43,6 +45,14 @@ function Explain({ submission, questionIndex }: ExplainProps) {
         ) : (
           <p>{explanation}</p>
         )}
+      </div>
+    </div>
+  ) : (
+    <div className={`w-full p-5 rounded-md flex gap-4 mt-7 bg-primary`}>
+      {isCorrect ? <TickCircleWhiteIcon /> : <CloseCircleWhiteIcon />}
+      <div className="flex-1 text-primary flex flex-col gap-2 text-white">
+        <b className="text-[18px] leading-6">Grading</b>
+        <p>Please wait for grading from teacher</p>
       </div>
     </div>
   )

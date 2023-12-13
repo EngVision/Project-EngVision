@@ -16,6 +16,7 @@ const AppRoutes = () => {
         authApi.fetchAuthUser(),
         userLevelApi.getUserLevel(),
       ])
+      console.log('🚀 ~ file: index.tsx:19 ~ fetchAuthUser ~ data:', data)
 
       dispatch(setUser(data))
       dispatch(setCurrentLevel(level))

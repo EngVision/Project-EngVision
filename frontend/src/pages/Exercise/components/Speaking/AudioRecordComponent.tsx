@@ -1,11 +1,13 @@
 import { Button } from 'antd'
 import AudioRecorder from '../../../../components/Audio/AudioRecorder'
+import { getFileUrl } from '../../../../utils/common'
 
 type AudioRecorderComponentProps = {
   setIsSubmittable: (value: boolean) => void
   countdown: number
   fileId: string
   setFileId: (fileId: string) => void
+  isDisabled: boolean
 }
 
 const AudioRecorderComponent = ({
@@ -13,9 +15,14 @@ const AudioRecorderComponent = ({
   countdown = 10,
   fileId,
   setFileId,
+  isDisabled,
 }: AudioRecorderComponentProps) => {
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div
+      className={`flex flex-col justify-center items-center ${
+        isDisabled && 'opacity-40 pointer-events-none'
+      }`}
+    >
       {!fileId && (
         <AudioRecorder
           limitTime={countdown}
@@ -25,7 +32,7 @@ const AudioRecorderComponent = ({
           }}
         />
       )}
-      {fileId && <audio src={fileId} controls />}
+      {fileId && <audio src={getFileUrl(fileId)} controls />}
       {fileId && (
         <div>
           <span className="text-sm">Not perfect?</span>

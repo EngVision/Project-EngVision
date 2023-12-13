@@ -12,7 +12,7 @@ import type { SignInParams } from '../../services/authApi/types'
 import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
 import Logo from '../../components/Icons/Logo'
 import userLevelApi from '../../services/userLevelApi'
-import { validatePassword } from '../../utils/common'
+import { getNewWindowPosition, validatePassword } from '../../utils/common'
 
 const SignIn: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -54,15 +54,11 @@ const SignIn: React.FC = () => {
   }, [])
 
   const signInWithGoogle = async () => {
-    window.open(GOOGLE_LOGIN, '_blank', 'width=500,height=600,left=400,top=200')
+    window.open(GOOGLE_LOGIN, '_blank', getNewWindowPosition(500, 600))
   }
 
   const signInWithFacebook = async () => {
-    window.open(
-      FACEBOOK_LOGIN,
-      '_blank',
-      'width=500,height=600,left=400,top=200',
-    )
+    window.open(FACEBOOK_LOGIN, '_blank', getNewWindowPosition(500, 600))
   }
 
   const SIGN_IN_VENDORS = [
@@ -119,6 +115,7 @@ const SignIn: React.FC = () => {
           name="password"
           label="Password"
           rules={[
+            { required: true, message: 'Please input your password!' },
             {
               async validator(_, value) {
                 return new Promise((resolve, reject) =>

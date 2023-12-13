@@ -126,7 +126,7 @@ const AttendedCourses = () => {
         </div>
         <div
           id="course-list"
-          className="flex gap-10 overflow-x-scroll scrollbar-hide scroll-smooth snap-mandatory snap-x"
+          className="flex gap-6 overflow-x-scroll scrollbar-hide scroll-smooth snap-mandatory snap-x"
           onScroll={handleChangeScroll}
         >
           {rawCourseExercise.data.length > 0 ? (

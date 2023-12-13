@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal } from 'antd'
+import { Button, Form, Modal } from 'antd'
 import { useState } from 'react'
 import SpeakingSettings from './SpeakingSettings'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
@@ -18,23 +18,11 @@ const NewQuestionForm = ({ index }: NewQuestionFormProps) => {
 
   return (
     <>
-      <div className="relative">
-        <Form.Item
-          className="flex-1"
-          label="Question"
-          name={[index, 'questionText']}
-          rules={[{ required: true }]}
-        >
-          <Input.TextArea
-            className="h-full"
-            autoSize={{ minRows: 2, maxRows: 4 }}
-            placeholder="Question"
-          />
-        </Form.Item>
-        <div
-          className="font-semibold text-primary hover:cursor-pointer absolute right-4 top-[36px] p-2"
-          onClick={() => setIsModalOpen(true)}
-        >
+      <div
+        className="flex justify-between bg-white px-3 py-2 border border-bgNeutralHover border-solid rounded-lg mb-4 hover:cursor-pointer"
+        onClick={() => setIsModalOpen(true)}
+      >
+        <div className="font-semibold text-primary hover:cursor-pointer">
           Edit
         </div>
       </div>
@@ -69,8 +57,8 @@ const NewQuestionForm = ({ index }: NewQuestionFormProps) => {
                     )
                   })
                 }}
-                onChange={(event, editor) => {
-                  const data = editor.getData()
+                onChange={(_event, editor) => {
+                  const data = (editor as any).getData()
                   form.setFieldValue(['content', index, 'text'], data)
                 }}
               />

@@ -28,15 +28,13 @@ function Speaking(props: SpeakingProps) {
   console.log('🚀 ~ file: index.tsx:28 ~ Speaking ~ result:', result)
   const form = Form.useFormInstance()
   const [fileId, setFileId] = useState<string>('')
-  console.log('🚀 ~ file: index.tsx:31 ~ Speaking ~ fileId:', fileId)
 
   useEffect(() => {
     form.setFieldValue('answer', fileId)
   }, [question, fileId])
 
   return (
-    <div>
-      {/* question text */}
+    <div className="m-16">
       <h3 className="text-2xl text-primary mb-4">
         This is a speaking exercise
       </h3>
@@ -52,6 +50,7 @@ function Speaking(props: SpeakingProps) {
           countdown={question.countdown}
           fileId={fileId}
           setFileId={setFileId}
+          isDisabled={!!result}
         />
       </Form.Item>
     </div>

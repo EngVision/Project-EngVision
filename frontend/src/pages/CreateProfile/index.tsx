@@ -125,6 +125,7 @@ const CreateProfile = () => {
             name="password"
             label="Password"
             rules={[
+              { required: true, message: 'Please input your password!' },
               {
                 async validator(_, value) {
                   return new Promise((resolve, reject) =>

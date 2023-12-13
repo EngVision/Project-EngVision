@@ -7,6 +7,7 @@ const Micro = ({ width = 240, height = 241, className = '' }: IconProps) => {
     <svg
       className={className}
       id="Layer_1"
+      enableBackground="new 0 0 512 512"
       height={height}
       viewBox="0 0 512 512"
       width={width}

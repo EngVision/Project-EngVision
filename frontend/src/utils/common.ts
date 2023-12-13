@@ -57,6 +57,13 @@ export const getQueryParamsUrl = (queries: any) => {
   return url ? `?${url.slice(0, -1)}` : ''
 }
 
+export const getNewWindowPosition = (width: number, height: number): string => {
+  return `width=${width},
+  height=${height},
+  left=${window.innerWidth / 2 - width / 2},
+  top=${window.innerHeight / 2 - height / 2 + 50}`
+}
+
 export const addAnswersToQuestionTextOfMakeSentenceExercise = (
   answers: string[],
   questionText: string,
@@ -84,7 +91,7 @@ export const validatePassword = (
   password: string,
 ) => {
   if (!password) {
-    return reject('Please input your password!')
+    return resolve('')
   } else if (password.length < 8) {
     return reject('The password must be at least 8 characters long')
   } else if (!/[A-Z]/.test(password)) {

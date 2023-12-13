@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Form, Tabs, Tooltip } from 'antd'
 import { useWatch } from 'antd/es/form/Form'
 import { useContext, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import AppLoading from '../../../components/common/AppLoading'
 import coursesApi from '../../../services/coursesApi'
 import { TEACHER_ROUTES } from '../../../utils/constants'
@@ -19,6 +19,9 @@ const { TabPane } = Tabs
 const TeacherCourseDetail = () => {
   const navigate = useNavigate()
   const { courseId = '' } = useParams()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const activeTab = searchParams.get('tab') || '1'
+
   const [form] = Form.useForm()
   const isPublished = useWatch('isPublished', form)
   const apiNotification = useContext(NotificationContext)
@@ -84,10 +87,8 @@ const TeacherCourseDetail = () => {
     deleteCourseMutation.mutate()
   }
 
-  const [activeKey, setActiveKey] = useState<string>('1')
-
   const handleTabChange = (key: string) => {
-    setActiveKey(key)
+    setSearchParams({ tab: key })
   }
 
   const handleChangeForm = () => {
@@ -126,14 +127,14 @@ const TeacherCourseDetail = () => {
         <Tabs
           className="w-full flex-1 overflow-auto"
           onChange={handleTabChange}
-          activeKey={activeKey}
+          activeKey={activeTab}
         >
           <TabPane
             tab={
               <Button
                 className={`flex font-light items-center text-lg px-10 py-5 rounded-xl 
-              ${activeKey === '1' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
-                type={activeKey === '1' ? 'primary' : 'default'}
+              ${activeTab === '1' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
+                type={activeTab === '1' ? 'primary' : 'default'}
               >
                 Overview
               </Button>
@@ -146,8 +147,8 @@ const TeacherCourseDetail = () => {
             tab={
               <Button
                 className={`flex font-light items-center text-lg px-10 py-5 rounded-xl 
-              ${activeKey === '2' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
-                type={activeKey === '2' ? 'primary' : 'default'}
+              ${activeTab === '2' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
+                type={activeTab === '2' ? 'primary' : 'default'}
               >
                 Course
               </Button>
@@ -160,8 +161,8 @@ const TeacherCourseDetail = () => {
             tab={
               <Button
                 className={`flex font-light items-center text-lg px-10 py-5 rounded-xl 
-                ${activeKey === '3' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
-                type={activeKey === '3' ? 'primary' : 'default'}
+                ${activeTab === '3' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
+                type={activeTab === '3' ? 'primary' : 'default'}
               >
                 Materials
               </Button>

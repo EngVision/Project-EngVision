@@ -18,7 +18,7 @@ import {
   ROLES,
 } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
-import { validatePassword } from '../../utils/common'
+import { getNewWindowPosition, validatePassword } from '../../utils/common'
 
 const SignUp: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -59,15 +59,11 @@ const SignUp: React.FC = () => {
   }, [])
 
   const signUpWithGoogle = async () => {
-    window.open(GOOGLE_LOGIN, '_blank', 'width=500,height=600,left=400,top=200')
+    window.open(GOOGLE_LOGIN, '_blank', getNewWindowPosition(500, 600))
   }
 
   const signUpWithFacebook = async () => {
-    window.open(
-      FACEBOOK_LOGIN,
-      '_blank',
-      'width=500,height=600,left=400,top=200',
-    )
+    window.open(FACEBOOK_LOGIN, '_blank', getNewWindowPosition(500, 600))
   }
 
   const SIGN_UP_VENDORS = [
@@ -187,6 +183,7 @@ const SignUp: React.FC = () => {
           name="password"
           label="Password"
           rules={[
+            { required: true, message: 'Please input your password!' },
             {
               async validator(_, value) {
                 return new Promise((resolve, reject) =>

@@ -76,6 +76,7 @@ const ResetForgotPassword: React.FC = () => {
             <Form.Item
               name="password"
               rules={[
+                { required: true, message: 'Please input your password!' },
                 {
                   async validator(_, value) {
                     return new Promise((resolve, reject) =>

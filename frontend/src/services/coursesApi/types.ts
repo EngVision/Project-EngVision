@@ -155,6 +155,7 @@ export interface GetCourseProps {
   page?: number
   limit?: number
   status: COURSE_STATUS
+  levels?: string
   keyword?: string
   priceMin?: number
   priceMax?: number
