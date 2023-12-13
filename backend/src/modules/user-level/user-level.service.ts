@@ -144,7 +144,10 @@ export class UserLevelService {
     result: QuestionResult,
     question: ExerciseQuestionDto,
   ): Score {
-    if (result.grade !== null || result.isCorrect !== null) {
+    if (
+      (result.grade !== undefined && result.grade !== null) ||
+      (result.isCorrect !== undefined && result.isCorrect !== null)
+    ) {
       let score = 0;
 
       if (result.grade !== null) {

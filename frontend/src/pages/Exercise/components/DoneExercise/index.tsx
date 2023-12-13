@@ -31,11 +31,11 @@ function DoneExercise({ grade }: DoneExerciseProps) {
       </p>
       <Progress
         type="circle"
-        percent={((currentLevel?.overall || 0) / 250) * 100}
+        percent={currentLevel?.overall}
         size={175}
         format={() => (
           <div>
-            <p className="text-2xl">{currentLevel?.overall}</p>
+            <p className="text-2xl">{currentLevel?.overall}%</p>
             <p className="text-2xl">
               Level <span className="font-bold">{currentLevel?.CEFRLevel}</span>
             </p>
