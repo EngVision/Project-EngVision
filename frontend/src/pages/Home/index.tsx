@@ -277,7 +277,7 @@ export const Home = () => {
   return (
     <div className="flex flex-row gap-5 max-lg:flex-wrap">
       {/* Part Left */}
-      <div className="basis-3/4 overflow-y-auto">
+      <div className="basis-3/4 max-lg:w-full">
         <div className="bg-surface flex rounded-2xl mt-0">
           <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#5BB3D7] to-[#001171] text-white">
             {DashboardCard('Completed Course', course.totalDone)}
@@ -351,7 +351,7 @@ export const Home = () => {
       </div>
 
       {/* Part Right */}
-      <div className="basis-1/4 rounded-2xl">
+      <div className="basis-1/4 rounded-2xl max-lg:w-full">
         <div className="relative h-56 bg-yellow-400 rounded-2xl">
           <div className="absolute bottom-0 right-0">
             <Fire />

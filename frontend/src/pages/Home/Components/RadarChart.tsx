@@ -174,7 +174,7 @@ const RadarChart = () => {
     <div className="bg-surface rounded-2xl flex justify-center mb-8 p-5">
       <div style={{ width: '70%' }}>
         <p className="text-2xl font-bold ">Your Skills</p>
-        <div style={{ width: '90%', height: '100%' }}>
+        <div className="w-[90%] h-[90%] ml-[20%] max-lg:ml-0">
           <Radar data={data} options={options} />
         </div>
       </div>
