@@ -141,7 +141,7 @@ const RadarChart = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'bottom',
+        display: false,
       },
     },
     scales: {
@@ -176,6 +176,9 @@ const RadarChart = () => {
         <p className="text-2xl font-bold ">Your Skills</p>
         <div className="w-[90%] h-[90%] ml-[20%] max-lg:ml-0">
           <Radar data={data} options={options} />
+        </div>
+        <div className="flex text-center justify-center">
+          {selectedCategory ? selectedCategory : 'Overall'}
         </div>
       </div>
       <div style={{ width: '30%', paddingLeft: '20px' }}>
