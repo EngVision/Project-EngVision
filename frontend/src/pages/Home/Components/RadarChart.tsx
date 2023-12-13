@@ -110,62 +110,61 @@ const RadarChart = () => {
     Speaking: dataRadarChart[3],
   }
 
-  const configRadarChart = {
-    data: {
-      labels: selectedCategory
-        ? Object.keys(dataMap[selectedCategory]).filter(
-            (key) => key !== 'overall',
-          )
-        : Object.keys(dataMap),
-      datasets: [
-        {
-          label: selectedCategory ? selectedCategory : 'Overall',
-          data: selectedCategory
-            ? Object.values(dataMap[selectedCategory]).filter(
-                (key) => key !== 'overall',
-              )
-            : Object.values(dataMap).map((item) => item.overall),
-          backgroundColor:
-            selectedCategory && gradientColors[selectedCategory]
-              ? gradientColors[selectedCategory].end + '80'
-              : '#00117150',
-          borderColor:
-            selectedCategory && gradientColors[selectedCategory]
-              ? gradientColors[selectedCategory].start
-              : '#8B5CF6',
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'bottom',
-        },
+  const data = {
+    labels: selectedCategory
+      ? Object.keys(dataMap[selectedCategory]).filter(
+          (key) => key !== 'overall',
+        )
+      : Object.keys(dataMap),
+    datasets: [
+      {
+        label: selectedCategory ? selectedCategory : 'Overall',
+        data: selectedCategory
+          ? Object.values(dataMap[selectedCategory]).filter(
+              (key) => key !== 'overall',
+            )
+          : Object.values(dataMap).map((item) => item.overall),
+        backgroundColor:
+          selectedCategory && gradientColors[selectedCategory]
+            ? gradientColors[selectedCategory].end + '80'
+            : '#00117150',
+        borderColor:
+          selectedCategory && gradientColors[selectedCategory]
+            ? gradientColors[selectedCategory].start
+            : '#8B5CF6',
+        borderWidth: 1,
       },
-      scales: {
-        r: {
-          beginAtZero: true,
-          min: 0,
-          max: 250,
-          pointLabels: {
-            fontSize: 20,
-            fontColor: isDarkMode ? '#FFFFFF' : '#000000',
-          },
-          grid: {
-            color: isDarkMode ? '#555555' : '#DDDDDD',
-          },
-          ticks: {
-            display: false,
-          },
-          angleLines: {
-            color: isDarkMode ? '#555555' : '#DDDDDD',
-          },
-        },
-      },
-    },
+    ],
   }
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+      },
+    },
+    scales: {
+      r: {
+        beginAtZero: true,
+        min: 0,
+        max: 250,
+        pointLabels: {
+          fontSize: 20,
+          fontColor: isDarkMode ? '#FFFFFF' : '#000000',
+        },
+        grid: {
+          color: isDarkMode ? '#555555' : '#DDDDDD',
+        },
+        ticks: {
+          display: false,
+        },
+        angleLines: {
+          color: isDarkMode ? '#555555' : '#DDDDDD',
+        },
+      },
+    },
+  } as any
 
   const handleClick = (category: string) => {
     setSelectedCategory(category)
@@ -176,7 +175,7 @@ const RadarChart = () => {
       <div style={{ width: '70%' }}>
         <p className="text-2xl font-bold ">Your Skills</p>
         <div style={{ width: '90%', height: '100%' }}>
-          <Radar {...configRadarChart} />
+          <Radar data={data} options={options} />
         </div>
       </div>
       <div style={{ width: '30%', paddingLeft: '20px' }}>

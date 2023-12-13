@@ -10,6 +10,8 @@ import submissionApi from '../../../services/submissionApi'
 const ProgressCard = (course: any) => {
   const navigate = useNavigate()
 
+  console.log(course.course.title, 'course')
+
   const { data: rawCourseExercise, isLoading: isLoadingRawCourseExercise } =
     useQuery({
       queryKey: ['coursesExercises'],
@@ -63,18 +65,22 @@ const ProgressCard = (course: any) => {
       <div className="ml-5 items-center col-span-2 flex">
         <BookSquare />
         <div className="ml-3">
-          <p className="text-base font-bold">{course.title}</p>
-          <p className="text-sm">{course.about}</p>
+          <p className="text-base font-bold">{course.course.title}</p>
+          <p className="text-sm">{course.course.about}</p>
         </div>
       </div>
 
       <div>
-        <Progress type="circle" size={50} percent={getProgress(course)} />
+        <Progress
+          type="circle"
+          size={50}
+          percent={getProgress(course.course)}
+        />
       </div>
       <div className="mx-auto">
         <Button
           className="bg-green-500 text-white rounded-xl"
-          onClick={() => navigate(`./my-hub/${course.id}`)}
+          onClick={() => navigate(`./my-hub/${course.course.id}`)}
         >
           Continue
         </Button>
