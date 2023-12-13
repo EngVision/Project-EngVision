@@ -148,7 +148,7 @@ const RadarChart = () => {
       r: {
         beginAtZero: true,
         min: 0,
-        max: 250,
+        max: 100,
         pointLabels: {
           fontSize: 20,
           fontColor: isDarkMode ? '#FFFFFF' : '#000000',
@@ -188,7 +188,7 @@ const RadarChart = () => {
             onClick={() => handleClick('')}
           >
             <div className="w-[100%/2] h-40 p-2 my-4 flex flex-col items-center justify-center text-2xl">
-              <div className="text-5xl font-bold">{userLevel?.overall}</div>
+              <div className="text-5xl font-bold">{userLevel?.overall}%</div>
               <div className=" text-center">Overall</div>
             </div>
           </div>
@@ -209,7 +209,7 @@ const RadarChart = () => {
               >
                 <div className="w-[100%/2] h-20 p-2 my-4 flex flex-col items-center justify-center text-xl">
                   <div className="text-3xl font-bold">
-                    {processScore(item.overall)}
+                    {processScore(item.overall)}%
                   </div>
                   <div className="text-center">{item.category}</div>
                 </div>
