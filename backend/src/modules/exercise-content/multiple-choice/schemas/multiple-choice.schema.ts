@@ -19,9 +19,6 @@ const AnswerSchema = SchemaFactory.createForClass(Answer);
 
 @Schema({ _id: false, versionKey: false })
 class Question {
-  @Prop({ default: null })
-  title: string;
-
   @Prop({ required: true })
   text: string;
 

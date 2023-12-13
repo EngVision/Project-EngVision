@@ -2,7 +2,11 @@ import { Button, Modal } from 'antd'
 import React from 'react'
 import { WarningIcon } from '../Icons'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
-import { setShowLogoutModal, setUser } from '../../redux/app/slice'
+import {
+  setCurrentLevel,
+  setShowLogoutModal,
+  setUser,
+} from '../../redux/app/slice'
 import { useMutation } from '@tanstack/react-query'
 import authApi from '../../services/authApi'
 
@@ -16,6 +20,7 @@ const LogoutModal = () => {
     mutationFn: authApi.logout,
     onSuccess: () => {
       dispatch(setUser(null))
+      dispatch(setCurrentLevel(null))
       dispatch(setShowLogoutModal(false))
     },
   })

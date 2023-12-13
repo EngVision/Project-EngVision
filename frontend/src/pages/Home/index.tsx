@@ -37,7 +37,8 @@ const Home = () => {
 
   const { data: userLevel } = useQuery({
     queryKey: ['courses'],
-    queryFn: () => lessonApi.getUserLevel(),
+    // queryFn: () => lessonApi.getUserLevel(),
+    queryFn: () => 'fuck',
   })
 
   console.log(userLevel, 'userLevel')
@@ -143,44 +144,6 @@ const Home = () => {
       overall: 175,
       grammar: processScore(userLevel?.data.speaking.grammar),
       vocabulary: processScore(userLevel?.data.speaking.vocabulary),
-    },
-  ]
-
-  const dataListeningRadarChart = [
-    {
-      category: 'Comprehension',
-      overall: processScore(userLevel?.data.listening.comprehension),
-    },
-    {
-      category: 'Grammar',
-      overall: processScore(userLevel?.data.listening.grammar),
-    },
-    {
-      category: 'Vocabulary',
-      overall: processScore(userLevel?.data.listening.vocabulary),
-    },
-  ]
-
-  const dataReadingRadarChart = [
-    {
-      category: 'Skimming',
-      overall: processScore(userLevel?.data.reading.skimming),
-    },
-    {
-      category: 'Scanning',
-      overall: processScore(userLevel?.data.reading.scanning),
-    },
-    {
-      category: 'Comprehension',
-      overall: processScore(userLevel?.data.reading.comprehension),
-    },
-    {
-      category: 'Grammar',
-      overall: processScore(userLevel?.data.reading.grammar),
-    },
-    {
-      category: 'Vocabulary',
-      overall: processScore(userLevel?.data.reading.vocabulary),
     },
   ]
 
@@ -355,7 +318,7 @@ const Home = () => {
   }, [rawSubmissionList?.data])
 
   const { data: rawSuggestedList } = useQuery({
-    queryKey: ['suggestedCourses', { levels: userLevel?.data.CEFRLevel }],
+    queryKey: ['suggestedCourses', { levels: userLevel?.CEFRLevel }],
     queryFn: () => coursesApi.getSuggestedCourses(),
   })
 
@@ -415,7 +378,7 @@ const Home = () => {
   const monthCellRender = (value: any) => {
     return (
       <div
-        className={`calendar-cell 
+        className={`calendar-cell
         } rounded-3xl`}
       >
         {value.month() + 1}
@@ -490,7 +453,7 @@ const Home = () => {
             {DashboardCard('Completed Exercises', exercise.totalDone)}
           </div>
           <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#C7DFF2] to-[#D2BBE6] text-dark">
-            {DashboardCard('Your Level', userLevel?.data.CEFRLevel)}
+            {DashboardCard('Your Level', userLevel?.CEFRLevel)}
           </div>
         </div>
 
@@ -626,7 +589,7 @@ const Home = () => {
           </div>
           <div className="flex justify-center">
             <div style={{ width: '100%' }}>
-              <Line {...configLineChart} />
+              {/* <Line {...configLineChart} /> */}
             </div>
           </div>
         </div>

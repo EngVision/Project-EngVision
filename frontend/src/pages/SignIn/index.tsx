@@ -6,11 +6,12 @@ import { useMutation } from '@tanstack/react-query'
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import { NotificationContext } from '../../contexts/notification'
 import { useAppDispatch } from '../../hooks/redux'
-import { setUser } from '../../redux/app/slice'
+import { setCurrentLevel, setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
 import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
 import Logo from '../../components/Icons/Logo'
+import userLevelApi from '../../services/userLevelApi'
 
 const SignIn: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -22,8 +23,8 @@ const SignIn: React.FC = () => {
 
   const onFinish = async (values: SignInParams) => {
     mutate(values, {
-      onSuccess: (data) => {
-        dispatch(setUser(data.data))
+      onSuccess: () => {
+        fetchAuthUser()
         apiNotification.success({
           message: 'Sign in successfully!',
         })
@@ -34,6 +35,11 @@ const SignIn: React.FC = () => {
   const fetchAuthUser = async () => {
     try {
       const data = await authApi.fetchAuthUser()
+
+      if (data.role === 'Student') {
+        const level = await userLevelApi.getUserLevel()
+        dispatch(setCurrentLevel(level))
+      }
 
       dispatch(setUser(data))
     } catch (error) {
