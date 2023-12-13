@@ -14,6 +14,7 @@ import AppLoading from '../../components/common/AppLoading'
 import coursesApi from '../../services/coursesApi'
 import { ObjectId } from '../../services/examSubmissionApi/type'
 import submissionApi from '../../services/submissionApi'
+import userLevelApi from '../../services/userLevelApi'
 // import { lessonApi } from '../../services/userLevelApi'
 
 dayjs.locale('en')
@@ -33,8 +34,7 @@ const Home = () => {
 
   const { data: userLevel } = useQuery({
     queryKey: ['courses'],
-    // queryFn: () => lessonApi.getUserLevel(),
-    queryFn: () => 'fuck',
+    queryFn: () => userLevelApi.getUserLevel(),
   })
 
   console.log(userLevel, 'userLevel')

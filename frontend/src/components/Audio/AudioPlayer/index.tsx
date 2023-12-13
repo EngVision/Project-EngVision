@@ -10,7 +10,7 @@ import Pause from '../../Icons/Pause'
 import Play from '../../Icons/Play'
 import Volume from '../../Icons/Volume'
 import AppLoading from '../../common/AppLoading'
-import Duration from './Duration'
+import Duration from '../../common/Duration'
 const AudioPlayer = ({ url }: { url: string }) => {
   const playerRef = useRef(null)
   const [blob, setBlob] = useState<Blob | null>(null)
