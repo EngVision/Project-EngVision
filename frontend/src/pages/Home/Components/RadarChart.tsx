@@ -1,6 +1,24 @@
 import { useState } from 'react'
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+} from 'chart.js'
 import { Radar } from 'react-chartjs-2'
 import { useAppSelector } from '../../../hooks/redux'
+
+ChartJS.register(
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+)
 
 type RadarChartData = {
   Listening?: any
