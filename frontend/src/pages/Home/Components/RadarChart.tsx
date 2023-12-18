@@ -49,9 +49,6 @@ type GradientColors = {
 const RadarChart = () => {
   const isDarkMode = useAppSelector((state) => state.app.darkMode)
   const userLevel = useAppSelector((state) => state.app.currentLevel)
-
-  console.log(userLevel)
-
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   const gradientColorsLight: GradientColors = {
