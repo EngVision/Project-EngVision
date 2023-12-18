@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import { ReviewDetailDto } from 'src/modules/reviews/dto/review-detail.dto';
 import { SectionDto } from './section.dto';
 import { CEFRLevel } from 'src/common/enums';
+import { MaterialsDto } from './materials.dto';
 
 export class CourseDetailDto {
   @Expose({ name: '_id' })
@@ -68,6 +69,13 @@ export class CourseDetailDto {
     description: 'True if user has reviewed this course',
   })
   isReviewed?: boolean;
+
+  @Type(() => MaterialsDto)
+  @ApiPropertyOptional({
+    type: MaterialsDto,
+    description: 'Materials',
+  })
+  materials?: MaterialsDto;
 
   @Exclude()
   posts?: mongoose.Types.ObjectId[];

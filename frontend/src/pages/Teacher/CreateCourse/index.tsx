@@ -120,12 +120,7 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
             />
           </Form.Item>
 
-          <Form.Item
-            name="thumbnail"
-            label="Thumbnail"
-            rules={[{ required: true, message: 'Please upload thumbnail!' }]}
-            getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
-          >
+          <Form.Item name="thumbnail" label="Thumbnail">
             <CustomUpload type="picture" />
           </Form.Item>
 
