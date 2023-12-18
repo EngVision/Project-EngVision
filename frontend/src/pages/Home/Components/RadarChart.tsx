@@ -22,10 +22,10 @@ ChartJS.register(
 
 type RadarChartData = {
   overall?: number
-  Listening?: number
-  Reading?: number
-  Writing?: number
-  Speaking?: number
+  listening?: number
+  reading?: number
+  writing?: number
+  speaking?: number
   comprehension?: number
   grammar?: number
   vocabulary?: number
@@ -152,7 +152,7 @@ const RadarChart = () => {
         min: 0,
         max: 100,
         pointLabels: {
-          fontSize: 20,
+          fontSize: 30,
           fontColor: isDarkMode ? '#FFFFFF' : '#000000',
         },
         grid: {
