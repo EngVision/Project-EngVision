@@ -10,7 +10,11 @@ type FieldType = {
   thumbnail: string
 }
 
-const Overview = () => {
+interface OverviewProps {
+  handleChangeThumbnail: () => void
+}
+
+const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
   return (
     <div className="flex flex-col">
       <h4 className="text-primary text-2xl font-semibold">General</h4>
@@ -77,14 +81,8 @@ const Overview = () => {
         </Form.Item>
       </div>
 
-      <Form.Item
-        name="thumbnail"
-        label="Thumbnail"
-        getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
-        rules={[{ required: true, message: 'Please input thumbnail!' }]}
-        valuePropName="fileList"
-      >
-        <CustomUpload type="picture" />
+      <Form.Item name="thumbnail" label="Thumbnail">
+        <CustomUpload type="picture" onRemove={handleChangeThumbnail} />
       </Form.Item>
     </div>
   )

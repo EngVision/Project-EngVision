@@ -131,7 +131,7 @@ const ContentQuestionForm = () => {
           label="Question audio"
           name={['contentQuestion', 'audio']}
         >
-          <CustomUpload accept="audio" type="picture-card" />
+          <CustomUpload accept="audio/*" type="picture-card" />
         </Form.Item>
       </div>
     </>

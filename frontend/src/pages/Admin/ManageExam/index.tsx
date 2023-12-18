@@ -89,7 +89,7 @@ const ManageExam = () => {
             menu={{ items, onClick: (e) => handleExamMenuClick(e, record) }}
             className=" text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
           >
-            <span onClick={(e) => e.preventDefault()} role="presentation">
+            <span role="presentation">
               <MoreVertical />
             </span>
           </Dropdown>
@@ -129,7 +129,7 @@ const ManageExam = () => {
             menu={{ items, onClick: (e) => handlePartMenuClick(e, record) }}
             className=" text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
           >
-            <span onClick={(e) => e.preventDefault()} role="presentation">
+            <span role="presentation">
               <MoreVertical />
             </span>
           </Dropdown>
