@@ -6,6 +6,7 @@ import { setCurrentLevel, setUser, showGetStarted } from '../redux/app/slice'
 import { useEffect } from 'react'
 import authApi from '../services/authApi'
 import userLevelApi from '../services/userLevelApi'
+import { Role } from '../utils/constants'
 
 const AppRoutes = () => {
   const dispatch = useAppDispatch()
@@ -13,14 +14,16 @@ const AppRoutes = () => {
   const fetchAuthUser = async () => {
     try {
       const data = await authApi.fetchAuthUser()
-      const level = await userLevelApi.getUserLevel()
+      dispatch(setUser(data))
 
       if (data?.showGetStarted) {
         dispatch(showGetStarted())
       }
 
-      dispatch(setUser(data))
-      dispatch(setCurrentLevel(level))
+      if (data?.role === Role.Student) {
+        const level = await userLevelApi.getUserLevel()
+        dispatch(setCurrentLevel(level))
+      }
     } catch (error) {
       console.error('error: ', error)
     }

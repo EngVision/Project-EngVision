@@ -5,12 +5,14 @@ import {
   ConstructedResponse,
   ConstructedResponseSchema,
 } from './schemas/constructed-response.schema';
+import { OpenAiModule } from 'src/modules/open-ai/open-ai.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: ConstructedResponse.name, schema: ConstructedResponseSchema },
     ]),
+    OpenAiModule,
   ],
   providers: [ConstructedResponseService],
   exports: [ConstructedResponseService],
