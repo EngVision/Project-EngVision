@@ -27,11 +27,7 @@ const LocalesButton = () => {
       className="text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
       placement="bottomRight"
     >
-      <span
-        id="locales"
-        onClick={(e) => e.preventDefault()}
-        role="presentation"
-      >
+      <span id="locales" role="presentation">
         <Space className="uppercase font-semibold">{defaultValue}</Space>
       </span>
     </Dropdown>

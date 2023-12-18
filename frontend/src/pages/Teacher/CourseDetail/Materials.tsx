@@ -271,7 +271,7 @@ const Materials = ({ materials, courseId }: MaterialsProps) => {
               }}
               className=" text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
             >
-              <span onClick={(e) => e.preventDefault()} role="presentation">
+              <span role="presentation">
                 <MoreVerticalIcon
                   width={20}
                   height={20}
