@@ -21,7 +21,7 @@ import {
 } from 'src/common/decorators/api-response-data.decorator';
 import { GetResponse } from 'src/common/dto';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
-import { Role, StatusCourseSearch } from 'src/common/enums';
+import { MaterialTypes, Role, StatusCourseSearch } from 'src/common/enums';
 import { AtGuard, RoleGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
 import { CreateReviewDto } from '../reviews/dto/create-review.dto';
@@ -43,6 +43,8 @@ import {
   UpdateSectionDto,
 } from './dto';
 import { courseIdDto } from './dto/course-id.dto';
+import { MaterialAddedDto } from './dto/add-material.dto';
+import { UpdateMaterialDto } from './dto/update-material.dto';
 
 @ApiTags('Courses')
 @Controller('courses')
@@ -491,6 +493,83 @@ export class CoursesController {
     return res.status(HttpStatus.OK).send(
       GetResponse({
         message: 'Publish course successful',
+      }),
+    );
+  }
+
+  @Post(':id/materials')
+  @ApiResponseData(Object)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async addMaterial(
+    @Param() params: courseIdDto,
+    @Body() materialAdded: MaterialAddedDto, //material: AddMaterialDto
+    @CurrentUser() user: JwtPayload,
+    @Res() res: Response,
+  ) {
+    const newCourse = await this.coursesService.addMaterial(
+      params.id,
+      user.sub,
+      materialAdded,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        data: newCourse,
+        dataType: CourseDetailDto,
+        message: 'Add material successfully',
+      }),
+    );
+  }
+
+  @Delete(':id/materials/:materialId')
+  @ApiResponseData(Object)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async deleteMaterial(
+    @Res() res: Response,
+
+    @Param('id') courseId: string,
+    @Param('materialId') materialId: string,
+    @CurrentUser() user: JwtPayload,
+    @Query('type') type: MaterialTypes,
+  ) {
+    const newCourse = await this.coursesService.removeMaterial(
+      courseId,
+      materialId,
+      user.sub,
+      type,
+    );
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        data: newCourse,
+        dataType: CourseDetailDto,
+        message: 'Remove material successfully',
+      }),
+    );
+  }
+
+  @Patch(':id/materials/:materialId')
+  @ApiResponseData(Object)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async updateMaterial(
+    @Res() res: Response,
+    @Param('id') courseId: string,
+    @Param('materialId') materialId: string,
+    @CurrentUser() user: JwtPayload,
+    @Body() updateMaterialDto: UpdateMaterialDto,
+  ) {
+    const newCourse = await this.coursesService.updateMaterial(
+      courseId,
+      materialId,
+      user.sub,
+      updateMaterialDto,
+    );
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        data: newCourse,
+        dataType: CourseDetailDto,
+        message: 'Update material successfully',
       }),
     );
   }

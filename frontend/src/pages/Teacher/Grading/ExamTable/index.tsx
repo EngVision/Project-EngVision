@@ -35,7 +35,7 @@ const ExamTable = ({ exams }: ExamProps) => {
       },
     },
     {
-      title: 'Create Date',
+      title: 'Create date',
       dataIndex: 'createdAt',
       key: 'createdAt',
       align: 'center',

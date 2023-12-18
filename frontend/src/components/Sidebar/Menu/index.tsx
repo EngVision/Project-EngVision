@@ -47,8 +47,8 @@ const Menu = () => {
       {renderMenu()}
 
       <div className="flex flex-col my-4 gap-2">
-        {SUB_MENU_ITEMS.map((item) => (
-          <MenuItem key={item.path} item={item} />
+        {SUB_MENU_ITEMS.map((item, index) => (
+          <MenuItem key={index} item={item} />
         ))}
       </div>
     </div>

@@ -32,3 +32,10 @@ export enum CEFRLevel {
   A2 = 'A2',
   A1 = 'A1',
 }
+
+export enum MaterialTypes {
+  Images = 'images',
+  PdfFiles = 'pdfFiles',
+  Audios = 'audios',
+  Videos = 'videos',
+}
