@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, SchemaTypes } from 'mongoose';
+import mongoose, { Document, SchemaTypes } from 'mongoose';
 import { ExerciseType } from 'src/common/enums';
 import { Course } from 'src/modules/courses/schemas/course.schema';
 import { Exercise } from 'src/modules/exercises/schemas/exercise.schema';
@@ -24,6 +24,9 @@ export class QuestionResult {
 
   @Prop({ default: null })
   grade?: number;
+
+  @Prop({ type: mongoose.Schema.Types.Mixed, default: null })
+  teacherCorrection?: any;
 }
 const QuestionResultSchema = SchemaFactory.createForClass(QuestionResult);
 

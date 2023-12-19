@@ -83,6 +83,7 @@ export class ConstructedResponseService extends ExerciseContentService {
     const submission = {
       question: id,
       answer,
+      teacherCorrection: answer,
       correctAnswer: detail,
       explanation,
     };

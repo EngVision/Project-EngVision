@@ -14,8 +14,8 @@ export function TwoColumnLayout({
         <Space className="flex justify-center mb-5">
           <button
             type="button"
-            className={`w-[20px] h-[20px] rounded-[10px] text-xs cursor-pointer ${
-              fontSize === 12 ? 'bg-slate-300' : 'bg-transparent'
+            className={`w-[20px] h-[20px] rounded-[10px] text-xs text-[color:var(--text-color)] cursor-pointer ${
+              fontSize === 12 ? 'bg-slate-300 !text-black' : 'bg-transparent'
             }`}
             onClick={() => setFontSize(12)}
           >
@@ -23,8 +23,8 @@ export function TwoColumnLayout({
           </button>
           <button
             type="button"
-            className={`w-[26px] h-[26px] rounded-[13px] text-base cursor-pointer ${
-              fontSize === 16 ? 'bg-slate-300' : 'bg-transparent'
+            className={`w-[26px] h-[26px] rounded-[13px] text-base text-[color:var(--text-color)] cursor-pointer ${
+              fontSize === 16 ? 'bg-slate-300 !text-black' : 'bg-transparent'
             }`}
             onClick={() => setFontSize(16)}
           >
@@ -32,8 +32,8 @@ export function TwoColumnLayout({
           </button>
           <button
             type="button"
-            className={`w-[32px] h-[32px] rounded-[16px] text-xl cursor-pointer ${
-              fontSize === 20 ? 'bg-slate-300' : 'bg-transparent'
+            className={`w-[32px] h-[32px] rounded-[16px] text-xl text-[color:var(--text-color)] cursor-pointer ${
+              fontSize === 20 ? 'bg-slate-300 !text-black' : 'bg-transparent'
             }`}
             onClick={() => setFontSize(20)}
           >

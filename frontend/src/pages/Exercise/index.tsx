@@ -67,6 +67,7 @@ function Exercise({
             questionIndex={questionIndex}
             setIsSubmittable={setIsSubmittable}
             grade={grade}
+            isGrading={isGrading}
           />
         </div>
         {isGrading ? (

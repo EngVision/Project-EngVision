@@ -185,6 +185,7 @@ export class SubmissionsService {
 
     submission.detail[i].grade = gradingDto.grade;
     submission.detail[i].explanation = gradingDto.explanation;
+    submission.detail[i].teacherCorrection = gradingDto.teacherCorrection;
 
     submission.grade =
       submission.detail.reduce((accumulator, q) => q.grade + accumulator, 0) /
@@ -224,7 +225,8 @@ export class SubmissionsService {
       lesson: lesson ? { ...lesson.toObject() } : null,
       progress: +(submission.totalDone / submission.totalQuestion).toFixed(2),
       status:
-        submission.needGrade && submission.detail.every(res => res.grade)
+        submission.needGrade &&
+        submission.detail.every(res => res.grade !== null)
           ? SubmissionStatus.Graded
           : SubmissionStatus.Pending,
     };

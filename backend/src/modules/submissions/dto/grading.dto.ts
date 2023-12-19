@@ -10,4 +10,8 @@ export class GradingDto {
   @IsOptional()
   @ApiProperty({ type: String, description: 'Explanation' })
   explanation: string;
+
+  @IsOptional()
+  @ApiProperty({ description: 'Teacher correction' })
+  teacherCorrection: any;
 }
