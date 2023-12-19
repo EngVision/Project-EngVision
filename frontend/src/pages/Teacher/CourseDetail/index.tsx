@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Form, Tabs, Tooltip } from 'antd'
 import { useWatch } from 'antd/es/form/Form'
 import { useContext, useState } from 'react'
@@ -12,27 +12,28 @@ import Section from './Section'
 import { CourseDetails } from '../../../services/coursesApi/types'
 import { NotificationContext } from '../../../contexts/notification'
 import ConfirmDeleteModal from '../../../components/Modal/ConfirmDeleteModal'
+import Materials from './Materials'
 
 const { TabPane } = Tabs
 
 const TeacherCourseDetail = () => {
-  const { courseId = '' } = useParams()
   const navigate = useNavigate()
+  const { courseId = '' } = useParams()
   const [form] = Form.useForm()
   const isPublished = useWatch('isPublished', form)
   const apiNotification = useContext(NotificationContext)
-
+  const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isFormChange, setIsFormChange] = useState(false)
 
   const fetchCourseDetail = async () => {
     const courseDetail = await coursesApi.getCourseDetails(courseId)
-    form.setFieldsValue(courseDetail)
-    return courseDetail
+    return { ...courseDetail, price: courseDetail.price.toString() }
   }
 
-  const { isLoading, isRefetching } = useQuery({
+  const { data: courseDetails, isLoading: isLoading } = useQuery({
     queryKey: ['course', courseId],
-    queryFn: fetchCourseDetail,
+    queryFn: () => fetchCourseDetail(),
   })
 
   const updateCourseMutation = useMutation({
@@ -52,17 +53,17 @@ const TeacherCourseDetail = () => {
     mutationFn: () => coursesApi.publish(courseId),
   })
 
-  const handleSave = () => {
-    const formValues = form.getFieldsValue()
+  const onFinish = (values: any) => {
     const newCourse = {
-      ...formValues,
-      price: parseFloat(formValues.price),
+      ...values,
+      price: parseFloat(values.price),
     }
 
     updateCourseMutation.mutate(newCourse, {
-      onSuccess: (data) => {
-        form.setFieldsValue(data.data)
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['course'] })
         apiNotification.success({ message: 'Update successfully.' })
+        setIsFormChange(false)
       },
       onError: () => {
         apiNotification.error({ message: 'Update fail.' })
@@ -89,7 +90,24 @@ const TeacherCourseDetail = () => {
     setActiveKey(key)
   }
 
-  if (isLoading || isRefetching) return <AppLoading />
+  const handleChangeForm = () => {
+    const currentFormValue = form.getFieldsValue()
+    const isChange = Object.keys(currentFormValue).some((key) => {
+      return (
+        key !== 'updatedAt' &&
+        JSON.stringify(currentFormValue[key]) !==
+          JSON.stringify(courseDetails?.[key as keyof CourseDetails])
+      )
+    })
+    setIsFormChange(isChange)
+  }
+
+  const handleChangeThumbnail = () => {
+    form.setFieldValue('thumbnail', courseDetails?.thumbnail)
+    handleChangeForm()
+  }
+
+  if (isLoading) return <AppLoading />
 
   return (
     <div className="flex flex-col bg-surface p-[1.5rem] rounded-md h-full">
@@ -97,7 +115,10 @@ const TeacherCourseDetail = () => {
         name="teacher_course_overview"
         autoComplete="off"
         layout="vertical"
+        onFinish={onFinish}
         form={form}
+        initialValues={courseDetails}
+        onFieldsChange={() => handleChangeForm()}
         className="h-full flex flex-col gap-2"
       >
         <Preview form={form} />
@@ -119,7 +140,7 @@ const TeacherCourseDetail = () => {
             }
             key="1"
           >
-            <Overview />
+            <Overview handleChangeThumbnail={handleChangeThumbnail} />
           </TabPane>
           <TabPane
             tab={
@@ -135,20 +156,23 @@ const TeacherCourseDetail = () => {
           >
             <Section form={form} />
           </TabPane>
-          {/* <TabPane
+          <TabPane
             tab={
               <Button
                 className={`flex font-light items-center text-lg px-10 py-5 rounded-xl 
                 ${activeKey === '3' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
                 type={activeKey === '3' ? 'primary' : 'default'}
               >
-                Statistic
+                Materials
               </Button>
             }
             key="3"
           >
-            <Statistic />
-          </TabPane> */}
+            <Materials
+              materials={courseDetails?.materials}
+              courseId={courseId}
+            />
+          </TabPane>
         </Tabs>
 
         <div className="flex justify-between mt-8">
@@ -188,11 +212,12 @@ const TeacherCourseDetail = () => {
           <div className="flex gap-4">
             <Button
               type="primary"
-              onClick={handleSave}
+              htmlType="submit"
               loading={updateCourseMutation.isPending}
               disabled={
                 publishCourseMutation.isPending ||
-                deleteCourseMutation.isPending
+                deleteCourseMutation.isPending ||
+                !isFormChange
               }
             >
               Save

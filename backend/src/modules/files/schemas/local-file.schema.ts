@@ -9,10 +9,16 @@ export class LocalFile {
   filename?: string;
 
   @Prop({ default: null })
+  originalName?: string;
+
+  @Prop({ default: null })
   url?: string;
 
   @Prop({ default: null })
   mimetype?: string;
+
+  @Prop({ default: null })
+  size?: string;
 
   @Prop({ required: false, default: null })
   userId?: string;

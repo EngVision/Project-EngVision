@@ -142,7 +142,7 @@ const ExamDetail = () => {
           }}
           className=" text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
         >
-          <span onClick={(e) => e.preventDefault()} role="presentation">
+          <span role="presentation">
             <More />
           </span>
         </Dropdown>
@@ -157,7 +157,7 @@ const ExamDetail = () => {
             }}
             className=" text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
           >
-            <span onClick={(e) => e.preventDefault()} role="presentation">
+            <span role="presentation">
               <MoreVertical />
             </span>
           </Dropdown>

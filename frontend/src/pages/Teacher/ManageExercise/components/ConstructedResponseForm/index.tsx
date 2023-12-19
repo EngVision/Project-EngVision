@@ -59,7 +59,7 @@ const QuestionForm = ({ needGrade, index, remove }: QuestionFormProps) => {
             name={[index, 'questionAudio']}
             valuePropName="fileList"
           >
-            <CustomUpload accept="audio" />
+            <CustomUpload accept="audio/*" />
           </Form.Item>
         </div>
       </div>

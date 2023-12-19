@@ -202,6 +202,14 @@ export enum ExerciseCardType {
   Image = 'image',
 }
 
+export enum MaterialTypes {
+  Images = 'images',
+  PdfFiles = 'pdfFiles',
+  Audios = 'audios',
+  Videos = 'videos',
+  None = 'none',
+}
+
 export const STUDENT_GET_STARTED_VIDEO_URL =
   'https://www.youtube.com/embed/ZIccuK7kSZw?si=i92mMWjOyEH1qjly'
 export const TEACHER_GET_STARTED_VIDEO_URL =
