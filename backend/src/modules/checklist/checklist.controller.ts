@@ -1,47 +1,18 @@
+import { Controller, Get, Patch, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { CurrentUser } from 'src/common/decorators';
+import { AtGuard } from 'src/common/guards';
+import { JwtPayload } from '../auth/types';
 import { ChecklistService } from './checklist.service';
-import { CreateChecklistDto } from './dto/create-checklist.dto';
-import { UpdateChecklistDto } from './dto/update-checklist.dto';
 
 @ApiTags('Checklist')
 @Controller('checklist')
 export class ChecklistController {
   constructor(private readonly checklistService: ChecklistService) {}
 
-  @Post()
-  create(@Body() createChecklistDto: CreateChecklistDto) {
-    return this.checklistService.create(createChecklistDto);
-  }
-
   @Get()
-  findAll() {
-    return this.checklistService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.checklistService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateChecklistDto: UpdateChecklistDto,
-  ) {
-    return this.checklistService.update(+id, updateChecklistDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.checklistService.remove(+id);
+  @UseGuards(AtGuard)
+  find(@CurrentUser() user: JwtPayload) {
+    return this.checklistService.find(user.sub);
   }
 }

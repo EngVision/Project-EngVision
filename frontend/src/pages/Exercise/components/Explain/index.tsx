@@ -7,16 +7,17 @@ import { SubmissionResponse } from '../../../../services/submissionApi/types'
 import { ExerciseType, UPLOAD_FILE_URL } from '../../../../utils/constants'
 
 interface ExplainProps {
-  submission: SubmissionResponse
+  submission: SubmissionResponse | undefined
   questionIndex: number
 }
 
 function Explain({ submission, questionIndex }: ExplainProps) {
-  const question = submission?.detail[questionIndex] || {}
-  const hasGrade = !question.hasOwnProperty('grade') || question.grade !== null
-  const isCorrect = question.isCorrect
-  const explanation = question.explanation
-  const correctAnswer = question.correctAnswer
+  const question = submission?.detail[questionIndex]
+  const hasGrade =
+    !question?.hasOwnProperty('grade') || question?.grade !== null
+  const isCorrect = question?.isCorrect
+  const explanation = question?.explanation
+  const correctAnswer = question?.correctAnswer
 
   return hasGrade ? (
     <div
@@ -32,7 +33,7 @@ function Explain({ submission, questionIndex }: ExplainProps) {
           </b>
         }
 
-        {submission.exerciseType === ExerciseType.Unscramble ? (
+        {submission?.exerciseType === ExerciseType.Unscramble ? (
           <div className="flex gap-4">
             <span>Correct answer: </span>
             {correctAnswer.map((answer: string) => (
@@ -51,6 +52,7 @@ function Explain({ submission, questionIndex }: ExplainProps) {
     <div className={`w-full p-5 rounded-md flex gap-4 mt-7 bg-primary`}>
       {isCorrect ? <TickCircleWhiteIcon /> : <CloseCircleWhiteIcon />}
       <div className="flex-1 text-primary flex flex-col gap-2 text-white">
+        {explanation && <p>{explanation}</p>}
         <b className="text-[18px] leading-6">Grading</b>
         <p>Please wait for grading from teacher</p>
       </div>

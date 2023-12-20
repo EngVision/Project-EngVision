@@ -60,7 +60,7 @@ function Exercise({
   const Content = () => {
     return (
       <>
-        <div className={isGrading ? 'mb-10' : 'mt-5'}>
+        <div className="mb-10 mt-5">
           <ExerciseContent
             exercise={exercise}
             submission={submission}
@@ -78,10 +78,7 @@ function Exercise({
             isButtonLoading={btnGradeLoading}
           />
         ) : (
-          !exercise?.needGrade &&
-          submission?.detail[questionIndex] && (
-            <Explain submission={submission} questionIndex={questionIndex} />
-          )
+          <Explain submission={submission} questionIndex={questionIndex} />
         )}
       </>
     )

@@ -113,7 +113,7 @@ export class SubmissionsService {
   async findByUser(
     query: SubmissionQueryDto,
     userId: string,
-    roles: Role[],
+    roles: Role[] = [],
   ): Promise<[SubmissionDto[], number]> {
     const { limit, page, sortBy, order, ...filter } = query;
 
@@ -125,7 +125,7 @@ export class SubmissionsService {
 
     let filterQuery;
 
-    if (roles.includes(Role.Teacher)) {
+    if (roles?.includes(Role.Teacher)) {
       filterQuery = {
         ...filter,
         teacher: userId,

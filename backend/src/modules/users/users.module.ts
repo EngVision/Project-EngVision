@@ -4,6 +4,7 @@ import { FilesModule } from '../files/files.module';
 import { User, UserSchema } from './schemas/user.schema';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { ChecklistModule } from '../checklist/checklist.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UsersService } from './users.service';
       },
     ]),
     FilesModule,
+    ChecklistModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

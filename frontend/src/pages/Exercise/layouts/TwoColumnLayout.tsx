@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { TwoColumnLayoutProps } from './types'
-import { Space } from 'antd'
+import { Button, Space } from 'antd'
 import { UPLOAD_FILE_URL } from '../../../utils/constants'
 
 export function TwoColumnLayout({
@@ -8,9 +8,15 @@ export function TwoColumnLayout({
   contentQuestion,
 }: TwoColumnLayoutProps) {
   const [fontSize, setFontSize] = useState<number>(16)
+  const [isExpand, setIsExpand] = useState<boolean>(false)
+
   return (
     <div className="flex flex-1 min-h-[0px] m-5 gap-5">
-      <div className="flex-1 pr-2 overflow-y-auto justify-self-end">
+      <div
+        className={`pr-2 overflow-y-auto justify-self-end transition-all ${
+          isExpand ? 'w-1/3' : 'w-0 !p-0'
+        }`}
+      >
         <Space className="flex justify-center mb-5">
           <button
             type="button"
@@ -56,7 +62,12 @@ export function TwoColumnLayout({
           {contentQuestion.text}
         </p>
       </div>
-      <div className="flex-1 overflow-y-auto overflow-x-hidden">{children}</div>
+      <div className="w-2/3 overflow-y-auto overflow-x-hidden flex-grow">
+        <Button onClick={() => setIsExpand((prev) => !prev)}>
+          {isExpand ? 'Hide' : 'Expand'} question
+        </Button>
+        <div>{children}</div>
+      </div>
     </div>
   )
 }
