@@ -1,5 +1,5 @@
 import { Navigate, Outlet, RouteObject } from 'react-router-dom'
-import { useAppSelector } from '../hooks/redux'
+import { useAppDispatch, useAppSelector } from '../hooks/redux'
 import DefaultLayout from '../layouts/DefaultLayout'
 import BlockScreen from '../pages/BlockScreen'
 import Chat from '../pages/Chat'
@@ -15,9 +15,18 @@ import {
 import AdminRoutes from './AdminRoutes'
 import StudentRoutes from './StudentRoutes'
 import TeacherRoutes from './TeacherRoutes'
+import { showGetStarted } from '../redux/app/slice'
+import { useEffect } from 'react'
 
 const ProtectedLayout = () => {
+  const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.app.user)
+
+  useEffect(() => {
+    if (user?.showGetStarted) {
+      dispatch(showGetStarted())
+    }
+  }, [])
 
   if (user) {
     if (user.status !== AccountStatus.Active)

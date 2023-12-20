@@ -15,7 +15,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
     <Link to={STUDENT_ROUTES.discover + '/' + course.id}>
       <Card
         bodyStyle={{ padding: '1rem' }}
-        className="w-[16rem] bg-surface"
+        className="bg-surface"
         hoverable
         cover={
           <CustomImage

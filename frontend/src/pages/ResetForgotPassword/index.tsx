@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import accountApi from '../../services/accountApi'
 import { PUBLIC_ROUTES } from '../../utils/constants'
+import { validatePassword } from '../../utils/common'
 
 const ResetForgotPassword: React.FC = () => {
   const { resetPasswordCode } = useParams()
@@ -25,12 +26,6 @@ const ResetForgotPassword: React.FC = () => {
       navigate(PUBLIC_ROUTES.sendMailResetPassword)
     }
     setValidatedUrl(res.success)
-  }
-
-  const validatePassword = (password: string) => {
-    const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
-    return password && password.length >= 8 && passwordRegex.test(password)
   }
 
   const onFinish = async (values: any) => {
@@ -81,18 +76,12 @@ const ResetForgotPassword: React.FC = () => {
             <Form.Item
               name="password"
               rules={[
+                { required: true, message: 'Please input your password!' },
                 {
                   async validator(_, value) {
-                    return new Promise((resolve, reject) => {
-                      if (validatePassword(value)) {
-                        resolve('')
-                      } else
-                        reject(
-                          new Error(
-                            'The password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number or special character',
-                          ),
-                        )
-                    })
+                    return new Promise((resolve, reject) =>
+                      validatePassword(resolve, reject, value),
+                    )
                   },
                 },
               ]}
