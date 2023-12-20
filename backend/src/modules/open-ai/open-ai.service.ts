@@ -20,8 +20,7 @@ export class OpenAiService {
         },
         {
           headers: {
-            Authorization:
-              'Bearer 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',
+            Authorization: `Bearer ${process.env.OPENAI_API_KEY}}`,
             'Content-Type': 'application/json',
           },
         },
