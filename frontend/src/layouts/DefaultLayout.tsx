@@ -20,8 +20,13 @@ const DefaultLayout = () => {
   const showGetStarted = useAppSelector((state) => state.app.showingGetStarted)
 
   useEffect(() => {
-    setTimeout(() => setShowTour(true), 500)
-  }, [])
+    const timerId = setTimeout(() => {
+      if (!showGetStarted) {
+        setShowTour(true)
+      }
+    }, 500)
+    return () => clearTimeout(timerId)
+  }, [showGetStarted])
 
   const hideGuideTourMutation = useMutation({
     mutationFn: accountApi.setHideGuideTour,

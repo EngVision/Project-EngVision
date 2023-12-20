@@ -13,6 +13,7 @@ import { NotificationContext } from '../../contexts/notification'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
 import { useMutation } from '@tanstack/react-query'
 import Logo from '../../components/Icons/Logo'
+import { validatePassword } from '../../utils/common'
 const CreateProfile = () => {
   const [form] = useForm<SignUpParams>()
   const dispatch = useAppDispatch()
@@ -54,12 +55,6 @@ const CreateProfile = () => {
     })
   }
 
-  const validatePassword = (password: string) => {
-    if (!password) return true
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/
-    return password && password.length >= 8 && passwordRegex.test(password)
-  }
-
   const validateConfirmPassword = (confirmPassword: string) => {
     if (!confirmPassword) return true
     const password = form.getFieldValue('password')
@@ -94,6 +89,7 @@ const CreateProfile = () => {
           autoComplete="off"
           onChange={() => setError('')}
           layout="vertical"
+          className="w-[36rem]"
         >
           <div className="flex items-center justify-between gap-20">
             <Form.Item<SignUpParams>
@@ -129,19 +125,12 @@ const CreateProfile = () => {
             name="password"
             label="Password"
             rules={[
-              { message: 'Please input your password!', required: true },
+              { required: true, message: 'Please input your password!' },
               {
                 async validator(_, value) {
-                  return new Promise((resolve, reject) => {
-                    if (validatePassword(value)) {
-                      resolve('')
-                    } else
-                      reject(
-                        new Error(
-                          'The password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number or special character',
-                        ),
-                      )
-                  })
+                  return new Promise((resolve, reject) =>
+                    validatePassword(resolve, reject, value),
+                  )
                 },
               },
             ]}

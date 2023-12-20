@@ -26,6 +26,7 @@ import ExerciseTagInput, {
 import FillBlankForm from './components/FillBlankForm'
 import MakeSentenceForm from './components/MakeSentence'
 import MultipleChoiceForm from './components/MultipleChoiceForm'
+import SpeakingForm from './components/Speaking'
 import UnscrambleForm from './components/Unscramble'
 
 interface GeneralInfo {
@@ -152,6 +153,8 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
       return <MakeSentenceForm form={form} />
     case ExerciseType.Unscramble:
       return <UnscrambleForm form={form} />
+    case ExerciseType.Speaking:
+      return <SpeakingForm form={form} />
     default:
       return <></>
   }

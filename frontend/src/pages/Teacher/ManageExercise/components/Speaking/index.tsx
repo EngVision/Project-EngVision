@@ -14,10 +14,6 @@ import {
 import NewQuestionForm from './NewQuestionForm'
 import PreviewInput from '../../../../../components/common/PreviewInput'
 import CustomImage from '../../../../../components/common/CustomImage'
-import ExerciseTagInput, {
-  getTagList,
-  transformToExerciseTagInputValue,
-} from '../ExerciseTagInput'
 
 interface QuestionFormProps {
   index: number
@@ -42,6 +38,7 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
       </div>
 
       <NewQuestionForm index={index} />
+      <Form.Item name={[index, 'exerciseType']} noStyle></Form.Item>
 
       <Form.List name={[index, 'items']}>
         {(fields) =>
@@ -82,7 +79,13 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             name={[index, 'questionTags']}
             rules={[{ required: true }]}
           >
-            <ExerciseTagInput />
+            <Select
+              mode="multiple"
+              allowClear
+              placeholder="Tags"
+              maxTagCount="responsive"
+              options={enumToSelectOptions(ExerciseTag)}
+            />
           </Form.Item>
           <Form.Item
             label="Level"
@@ -105,18 +108,20 @@ const Tutorial = () => {
 }
 
 interface QuestionFormSchema {
-  items: string[]
+  text: string
   questionTags: ExerciseTag[]
   questionLevel: CEFRLevel
   explanation: string
   id?: string
-  exerciseType?: ExerciseCardType
+  countdown: number
 }
 
-interface UnscramblePayload extends QuestionPayload {
+interface SpeakingPayload extends QuestionPayload {
   question: {
-    items: string[]
-    isUnscrambleByText: boolean
+    text: string
+    countdown: number
+    audio?: string
+    image?: string
   }
 }
 
@@ -124,15 +129,13 @@ const transformSubmitData = (exercise: any) => {
   const { content } = exercise
 
   exercise.content = content.map((question: QuestionFormSchema) => {
-    const transformQuestion: UnscramblePayload = {
+    const transformQuestion: SpeakingPayload = {
       id: question.id,
-      tags: getTagList(question.questionTags as any),
+      tags: question.questionTags,
       level: question.questionLevel,
       question: {
-        items: question.items,
-        isUnscrambleByText:
-          !question.exerciseType ||
-          question.exerciseType === ExerciseCardType.Text,
+        text: question.text,
+        countdown: question.countdown,
       },
       correctAnswer: null,
     }
@@ -144,20 +147,18 @@ const transformSubmitData = (exercise: any) => {
 function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
   const { content } = exercise
 
-  const transformedContent = content.map((q: UnscramblePayload) => {
+  const transformedContent = content.map((q: SpeakingPayload) => {
     const {
-      question: { items, isUnscrambleByText },
+      question: { text, countdown },
     } = q
 
     const questionForm: QuestionFormSchema = {
       id: q.id,
-      questionTags: transformToExerciseTagInputValue(q.tags),
+      questionTags: q.tags,
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
-      items: items,
-      exerciseType: isUnscrambleByText
-        ? ExerciseCardType.Text
-        : ExerciseCardType.Image,
+      text: text,
+      countdown: countdown,
     }
 
     return questionForm
@@ -166,7 +167,7 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
   this.setFieldValue('content', transformedContent)
 }
 
-function UnscrambleForm({ form }: { form: FormSubmit }) {
+function SpeakingForm({ form }: { form: FormSubmit }) {
   form.transform = transformSubmitData
   form.setInitialContent = setInitialContent
 
@@ -192,4 +193,4 @@ function UnscrambleForm({ form }: { form: FormSubmit }) {
   )
 }
 
-export default UnscrambleForm
+export default SpeakingForm

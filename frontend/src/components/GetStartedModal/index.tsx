@@ -3,7 +3,7 @@ import { Alert, Button, Checkbox, Modal } from 'antd'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { useMemo, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
-import { hideGetStarted } from '../../redux/app/slice'
+import { hideGetStarted, setUser } from '../../redux/app/slice'
 import accountApi from '../../services/accountApi'
 import {
   Role,
@@ -17,6 +17,9 @@ function GetStartedModal() {
 
   const getStartedMutation = useMutation({
     mutationFn: accountApi.updateGetStarted,
+    onSuccess: (data) => {
+      dispatch(setUser(data.data))
+    },
   })
 
   const videoUrl = useMemo(() => {

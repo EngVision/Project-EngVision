@@ -80,10 +80,7 @@ function Exercise({
         ) : (
           !exercise?.needGrade &&
           submission?.detail[questionIndex] && (
-            <Explain
-              isCorrect={submission?.detail[questionIndex]?.isCorrect}
-              explanation={submission?.detail[questionIndex]?.explanation}
-            />
+            <Explain submission={submission} questionIndex={questionIndex} />
           )
         )}
       </>

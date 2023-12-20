@@ -2,14 +2,12 @@ import { AppstoreOutlined, MenuOutlined } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
 import { Button, Input, Pagination, Tooltip } from 'antd'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { CourseCard } from '../../components/CourseCard'
 import AppLoading from '../../components/common/AppLoading'
 import coursesApi from '../../services/coursesApi'
 import { GetCourseProps } from '../../services/coursesApi/types'
 import { COURSE_STATUS } from '../../utils/constants'
 import { CourseCardInLine } from './CourseCardInline'
-import FeaturedCourse from './FeaturedCourse'
 import SortDropDown from './SortDropDown'
 import { useAppSelector } from '../../hooks/redux'
 const { Search } = Input
@@ -41,7 +39,6 @@ const Discover = () => {
         break
     }
   }
-  const { t } = useTranslation()
   const getNewCoursesParams: GetCourseProps = {
     status: COURSE_STATUS.all,
     sortBy: 'createdAt',
@@ -62,7 +59,8 @@ const Discover = () => {
   }
   const { data: rawSuggestedList } = useQuery({
     queryKey: ['suggestedCourses', { levels: currentLevel }],
-    queryFn: () => coursesApi.getCourses({ ...status, levels: currentLevel }),
+    queryFn: () =>
+      coursesApi.getCourses({ status, levels: currentLevel?.CEFRLevel }),
   })
   const { data: rawNewCourseList, isLoading } = useQuery({
     queryKey: ['courses', getNewCoursesParams],
