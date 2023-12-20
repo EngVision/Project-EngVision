@@ -12,6 +12,7 @@ import type { SignInParams } from '../../services/authApi/types'
 import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
 import Logo from '../../components/Icons/Logo'
 import userLevelApi from '../../services/userLevelApi'
+import { getNewWindowPosition, validatePassword } from '../../utils/common'
 
 const SignIn: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -53,15 +54,11 @@ const SignIn: React.FC = () => {
   }, [])
 
   const signInWithGoogle = async () => {
-    window.open(GOOGLE_LOGIN, '_blank', 'width=500,height=600,left=400,top=200')
+    window.open(GOOGLE_LOGIN, '_blank', getNewWindowPosition(500, 600))
   }
 
   const signInWithFacebook = async () => {
-    window.open(
-      FACEBOOK_LOGIN,
-      '_blank',
-      'width=500,height=600,left=400,top=200',
-    )
+    window.open(FACEBOOK_LOGIN, '_blank', getNewWindowPosition(500, 600))
   }
 
   const SIGN_IN_VENDORS = [
@@ -77,14 +74,8 @@ const SignIn: React.FC = () => {
     },
   ]
 
-  const validatePassword = (password: string) => {
-    if (!password) return true
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/
-    return password && password.length >= 8 && passwordRegex.test(password)
-  }
-
   return (
-    <div className="flex flex-col items-center bg-surface py-8 px-10 rounded-[16px] self-center shadow-2xl">
+    <div className="flex flex-col items-center bg-surface p-8 rounded-[16px] self-center shadow-2xl">
       <div className="mb-8 flex flex-col items-center gap-4">
         <Logo width={250} />
         <p className="text-dark font-light">Let's start learning right now!</p>
@@ -124,19 +115,12 @@ const SignIn: React.FC = () => {
           name="password"
           label="Password"
           rules={[
-            { message: 'Please input your password!', required: true },
+            { required: true, message: 'Please input your password!' },
             {
               async validator(_, value) {
-                return new Promise((resolve, reject) => {
-                  if (validatePassword(value)) {
-                    resolve('')
-                  } else
-                    reject(
-                      new Error(
-                        'The password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number or special character',
-                      ),
-                    )
-                })
+                return new Promise((resolve, reject) =>
+                  validatePassword(resolve, reject, value),
+                )
               },
             },
           ]}

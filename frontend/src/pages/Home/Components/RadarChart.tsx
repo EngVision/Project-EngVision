@@ -124,7 +124,7 @@ const RadarChart = () => {
         data: selectedCategory
           ? Object.entries(dataMap[selectedCategory])
               .filter(([key]) => key !== 'overall' && key !== 'category')
-              .map(([key, value]) => value)
+              .map(([, value]) => value)
           : Object.values(dataMap).map((item) => item.overall),
         backgroundColor:
           selectedCategory && gradientColors[selectedCategory]

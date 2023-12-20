@@ -9,7 +9,7 @@ interface Props {
 const FeaturedCourse = ({ course }: Props) => {
   const navigate = useNavigate()
   return (
-    <div className="flex flex-col md:flex-row md:h-[19rem] lg:gap-10 items-center bg-surface rounded-xl overflow-hidden ">
+    <div className="flex flex-col md:flex-row md:h-[19rem] lg:gap-6 items-center bg-surface rounded-xl overflow-hidden ">
       <CustomImage
         onClick={() => navigate(`./${course.id}`)}
         className="object-cover rounded-xl h-full w-1/2 cursor-pointer"

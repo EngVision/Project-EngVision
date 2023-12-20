@@ -48,8 +48,8 @@ const SortDropdown = () => {
                   )
                 }
               }}
-              className={`py-2 px-4 rounded-lg hover:bg-alternative cursor-pointer 
-      ${isActive ? '!bg-alternative font-bold' : ''}`}
+              className={`py-2 px-4 rounded-lg hover:bg-neutral cursor-pointer 
+                    ${isActive ? '!bg-neutral font-bold' : ''}`}
               role="presentation"
             >
               {option.label}
