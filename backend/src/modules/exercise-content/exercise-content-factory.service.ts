@@ -1,6 +1,7 @@
 import { SpeakingService } from './speaking/speaking.service';
 import { MakeSentenceService } from './make-sentence/make-sentence.service';
 import { UnscrambleService } from './unscramble/unscramble.service';
+import { MatchService } from './match/match.service';
 import { FillBlankService } from './fill-blank/fill-blank.service';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { MultipleChoiceService } from './multiple-choice/multiple-choice.service';
@@ -16,6 +17,7 @@ export class ExerciseContentServiceFactory {
     private readonly constructedResponseService: ConstructedResponseService,
     private readonly MakeSentenceService: MakeSentenceService,
     private readonly UnscrambleService: UnscrambleService,
+    private readonly MatchService: MatchService,
     private readonly speakingService: SpeakingService,
   ) {}
 
@@ -31,6 +33,8 @@ export class ExerciseContentServiceFactory {
         return this.MakeSentenceService;
       case ExerciseType.Unscramble:
         return this.UnscrambleService;
+      case ExerciseType.Match:
+        return this.MatchService;
       case ExerciseType.Speaking:
         return this.speakingService;
       default:
