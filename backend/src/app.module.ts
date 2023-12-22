@@ -6,14 +6,16 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { AuthModule } from './modules/auth/auth.module';
 import { CoursesModule } from './modules/courses/courses.module';
+import { ExamSubmissionsModule } from './modules/exam-submissions/exam-submissions.module';
+import { ExamsModule } from './modules/exams/exams.module';
 import { ExercisesModule } from './modules/exercises/exercises.module';
 import { FilesModule } from './modules/files/files.module';
+import { OpenAiModule } from './modules/open-ai/open-ai.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { SubmissionsModule } from './modules/submissions/submissions.module';
-import { UsersModule } from './modules/users/users.module';
-import { ExamsModule } from './modules/exams/exams.module';
-import { ExamSubmissionsModule } from './modules/exam-submissions/exam-submissions.module';
 import { UserLevelModule } from './modules/user-level/user-level.module';
+import { UsersModule } from './modules/users/users.module';
+import { ChecklistModule } from './modules/checklist/checklist.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { UserLevelModule } from './modules/user-level/user-level.module';
     ExamsModule,
     ExamSubmissionsModule,
     UserLevelModule,
+    OpenAiModule,
+    ChecklistModule,
   ],
   providers: [
     {

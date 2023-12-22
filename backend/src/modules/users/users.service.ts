@@ -15,6 +15,7 @@ import { emailContent } from './template/email.content';
 import { FilesService } from '../files/files.service';
 import { UserQueryDto } from './dto/user-query.dto';
 import { Order, AccountStatus, Role, Gender } from 'src/common/enums';
+import { ChecklistService } from '../checklist/checklist.service';
 
 @Injectable()
 export class UsersService {
@@ -23,6 +24,7 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly filesService: FilesService,
+    private readonly checklistService: ChecklistService,
   ) {
     this.transporter = nodemailer.createTransport({
       service: 'Gmail',
@@ -48,6 +50,8 @@ export class UsersService {
     }
 
     await newUser.save();
+
+    this.checklistService.create(newUser._id);
 
     return newUser;
   }
@@ -96,6 +100,8 @@ export class UsersService {
     }
 
     await newUser.save();
+
+    this.checklistService.create(newUser._id);
 
     return newUser;
   }

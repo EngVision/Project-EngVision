@@ -6,20 +6,24 @@ import { setCurrentLevel, setUser } from '../redux/app/slice'
 import { useEffect } from 'react'
 import authApi from '../services/authApi'
 import userLevelApi from '../services/userLevelApi'
+import { Role } from '../utils/constants'
 
 const AppRoutes = () => {
   const dispatch = useAppDispatch()
 
   const fetchAuthUser = async () => {
     try {
-      const [data, level] = await Promise.all([
-        authApi.fetchAuthUser(),
-        userLevelApi.getUserLevel(),
-      ])
-      console.log('🚀 ~ file: index.tsx:19 ~ fetchAuthUser ~ data:', data)
-
+      const data = await authApi.fetchAuthUser()
       dispatch(setUser(data))
-      dispatch(setCurrentLevel(level))
+
+      if (data?.showGetStarted) {
+        dispatch(showGetStarted())
+      }
+
+      if (data?.role === Role.Student) {
+        const level = await userLevelApi.getUserLevel()
+        dispatch(setCurrentLevel(level))
+      }
     } catch (error) {
       console.error('error: ', error)
     }

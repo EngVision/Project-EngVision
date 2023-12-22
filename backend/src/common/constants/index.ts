@@ -1,3 +1,4 @@
+import { Checklist } from 'src/modules/checklist/schemas/checklist.schema';
 import { CEFRLevel } from './../enums/exercise.enum';
 
 export const LevelScore = {
@@ -25,4 +26,30 @@ export const LevelScore = {
     min: 200,
     max: 250,
   },
+};
+
+export const ChecklistItems: Partial<Checklist> = {
+  items: [
+    {
+      title: 'Enroll in a course',
+      description: 'Enroll in any course',
+      link: '/discover',
+      isDone: false,
+      disabled: false,
+    },
+    {
+      title: 'Complete an exercise',
+      description: 'Complete an exercise in any course you have enrolled',
+      link: '123',
+      isDone: false,
+      disabled: true,
+    },
+    {
+      title: 'Review a course',
+      description: 'Review a course you have enrolled',
+      link: '123',
+      isDone: false,
+      disabled: true,
+    },
+  ],
 };

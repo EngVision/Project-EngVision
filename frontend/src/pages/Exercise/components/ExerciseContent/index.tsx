@@ -14,6 +14,7 @@ interface ExerciseContentProps {
   submission?: SubmissionResponse
   questionIndex: number
   grade?: number
+  isGrading?: boolean
   setIsSubmittable: (value: boolean) => void
 }
 
@@ -22,6 +23,7 @@ function ExerciseContent({
   submission,
   questionIndex,
   grade,
+  isGrading,
   setIsSubmittable,
 }: ExerciseContentProps) {
   const content = exercise?.content[questionIndex]
@@ -55,6 +57,7 @@ function ExerciseContent({
           <ConstructedResponse
             {...content}
             {...exercise}
+            isGrading={isGrading}
             result={submission?.detail[questionIndex]}
             setIsSubmittable={setIsSubmittable}
           />
