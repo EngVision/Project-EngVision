@@ -6,6 +6,7 @@ import { MultipleChoiceModule } from './multiple-choice/multiple-choice.module';
 import { MakeSentenceModule } from './make-sentence/make-sentence.module';
 import { UnscrambleModule } from './unscramble/unscramble.module';
 import { SpeakingModule } from './speaking/speaking.module';
+import { MatchModule } from './match/match.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SpeakingModule } from './speaking/speaking.module';
     ConstructedResponseModule,
     MakeSentenceModule,
     UnscrambleModule,
+    MatchModule,
     SpeakingModule,
   ],
   providers: [ExerciseContentServiceFactory],

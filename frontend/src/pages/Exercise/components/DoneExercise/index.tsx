@@ -23,25 +23,34 @@ function DoneExercise({ grade }: DoneExerciseProps) {
 
   return (
     <div className="h-full flex flex-col gap-4 justify-center text-center text-primary">
-      <p className="text-2xl font-semibold">
-        Your test result has completed with
-      </p>
-      <p className="text-4xl font-bold mb-3">
-        {grade?.toFixed(2) || 0} / 10.00
-      </p>
-      <Progress
-        type="circle"
-        percent={((currentLevel?.overall || 0) / 250) * 100}
-        size={175}
-        format={() => (
-          <div>
-            <p className="text-2xl">{currentLevel?.overall}</p>
-            <p className="text-2xl">
-              Level <span className="font-bold">{currentLevel?.CEFRLevel}</span>
-            </p>
-          </div>
-        )}
-      />
+      {!!grade ? (
+        <>
+          <p className="text-2xl font-semibold">
+            Your test result has completed with
+          </p>
+          <p className="text-4xl font-bold mb-3">
+            {grade?.toFixed(2) || 0} / 10.00
+          </p>
+          <Progress
+            type="circle"
+            percent={currentLevel?.overall}
+            size={175}
+            format={() => (
+              <div>
+                <p className="text-2xl">{currentLevel?.overall}%</p>
+                <p className="text-2xl">
+                  Level{' '}
+                  <span className="font-bold">{currentLevel?.CEFRLevel}</span>
+                </p>
+              </div>
+            )}
+          />
+        </>
+      ) : (
+        <p className="text-2xl font-semibold">
+          Your assignment is awaiting grading.
+        </p>
+      )}
     </div>
   )
 }

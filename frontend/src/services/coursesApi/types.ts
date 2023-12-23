@@ -1,4 +1,4 @@
-import { COURSE_STATUS } from '../../utils/constants'
+import { COURSE_STATUS, MaterialTypes } from '../../utils/constants'
 
 export interface CourseParams {
   id: string
@@ -57,6 +57,59 @@ export interface Section {
   totalLessonCompleted: number
 }
 
+export interface File {
+  id: string
+  filename: string
+  originalName: string
+  mimetype: string
+  url: string
+  size: string
+  userId: string
+}
+
+export interface MaterialFile {
+  id: string
+  file: File
+  note: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface MaterialLink {
+  id: string
+  url: string
+  note: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface Material {
+  id: string
+  url?: string
+  file?: File
+  note: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface Materials {
+  images: Material[]
+  pdfFiles: Material[]
+  audios: Material[]
+  videos: Material[]
+}
+
+export interface AddMaterial {
+  fileId?: string
+  url?: string
+  note: string
+  type: MaterialTypes
+}
+
+export interface UpdateMaterial extends Partial<AddMaterial> {
+  id: string
+}
+
 export interface CourseDetails {
   id: string
   title: string
@@ -87,6 +140,7 @@ export interface CourseDetails {
   submissionAmount: number
   pendingSubmissionAmount: number
   exercises?: Exercise[]
+  materials: Materials
   createdAt: string
   updatedAt: string
 }
@@ -102,6 +156,7 @@ export interface GetCourseProps {
   page?: number
   limit?: number
   status: COURSE_STATUS
+  levels?: string
   keyword?: string
   priceMin?: number
   priceMax?: number

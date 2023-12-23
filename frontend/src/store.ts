@@ -29,7 +29,9 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 export const store = configureStore({
   devTools: process.env.NODE_ENV === 'development' ? true : false,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([routerMiddleware]),
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat([routerMiddleware]),
   reducer: persistedReducer,
 })
 

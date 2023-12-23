@@ -94,6 +94,7 @@ export enum ExerciseType {
   ConstructedResponse = 'ConstructedResponse',
   MakeSentence = 'MakeSentence',
   Unscramble = 'Unscramble',
+  Speaking = 'Speaking',
 }
 
 export enum ExerciseTag {
@@ -200,6 +201,14 @@ export enum SortByEnum {
 export enum ExerciseCardType {
   Text = 'text',
   Image = 'image',
+}
+
+export enum MaterialTypes {
+  Images = 'images',
+  PdfFiles = 'pdfFiles',
+  Audios = 'audios',
+  Videos = 'videos',
+  None = 'none',
 }
 
 export const STUDENT_GET_STARTED_VIDEO_URL =

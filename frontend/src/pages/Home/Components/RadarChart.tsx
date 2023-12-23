@@ -1,13 +1,13 @@
-import { useState } from 'react'
 import {
   Chart as ChartJS,
-  RadialLinearScale,
-  PointElement,
-  LineElement,
   Filler,
-  Tooltip,
   Legend,
+  LineElement,
+  PointElement,
+  RadialLinearScale,
+  Tooltip,
 } from 'chart.js'
+import { useState } from 'react'
 import { Radar } from 'react-chartjs-2'
 import { useAppSelector } from '../../../hooks/redux'
 
@@ -21,20 +21,21 @@ ChartJS.register(
 )
 
 type RadarChartData = {
-  Listening?: any
-  Reading?: any
-  Writing?: any
-  Speaking?: any
-  category?: string
-  comprehension?: any
   overall?: number
-  grammar?: any
-  vocabulary?: any
-  skimming?: any
-  scanning?: any
-  organization?: any
-  pronunciation?: any
-  fluency?: any
+  listening?: number
+  reading?: number
+  writing?: number
+  speaking?: number
+  comprehension?: number
+  grammar?: number
+  vocabulary?: number
+  skimming?: number
+  scanning?: number
+  organization?: number
+  pronunciation?: number
+  fluency?: number
+  coherence?: number
+  conciseness?: number
 }
 
 type DataMap = {
@@ -48,7 +49,6 @@ type GradientColors = {
 const RadarChart = () => {
   const isDarkMode = useAppSelector((state) => state.app.darkMode)
   const userLevel = useAppSelector((state) => state.app.currentLevel)
-
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   const gradientColorsLight: GradientColors = {
@@ -72,32 +72,34 @@ const RadarChart = () => {
   const dataRadarChart = [
     {
       category: 'Listening',
-      comprehension: processScore(userLevel?.listening.comprehension),
       overall: processScore(userLevel?.listening.overall),
+      comprehension: processScore(userLevel?.listening.comprehension),
       grammar: processScore(userLevel?.listening.grammar),
       vocabulary: processScore(userLevel?.listening.vocabulary),
     },
     {
       category: 'Reading',
+      overall: processScore(userLevel?.reading.overall),
       skimming: processScore(userLevel?.reading.skimming),
       scanning: processScore(userLevel?.reading.scanning),
       comprehension: processScore(userLevel?.reading.comprehension),
-      overall: processScore(userLevel?.reading.overall),
       grammar: processScore(userLevel?.reading.grammar),
       vocabulary: processScore(userLevel?.reading.vocabulary),
     },
     {
       category: 'Writing',
-      organization: processScore(userLevel?.writing.organization),
       overall: processScore(userLevel?.writing.overall),
+      coherence: processScore(userLevel?.writing.coherence),
+      conciseness: processScore(userLevel?.writing.conciseness),
+      organization: processScore(userLevel?.writing.organization),
       grammar: processScore(userLevel?.writing.grammar),
       vocabulary: processScore(userLevel?.writing.vocabulary),
     },
     {
       category: 'Speaking',
+      overall: processScore(userLevel?.speaking.overall),
       pronunciation: processScore(userLevel?.speaking.pronunciation),
       fluency: processScore(userLevel?.speaking.fluency),
-      overall: processScore(userLevel?.speaking.overall),
       grammar: processScore(userLevel?.speaking.grammar),
       vocabulary: processScore(userLevel?.speaking.vocabulary),
     },
@@ -113,16 +115,16 @@ const RadarChart = () => {
   const data = {
     labels: selectedCategory
       ? Object.keys(dataMap[selectedCategory]).filter(
-          (key) => key !== 'overall',
+          (key) => key !== 'overall' && key !== 'category',
         )
       : Object.keys(dataMap),
     datasets: [
       {
         label: selectedCategory ? selectedCategory : 'Overall',
         data: selectedCategory
-          ? Object.values(dataMap[selectedCategory]).filter(
-              (key) => key !== 'overall',
-            )
+          ? Object.entries(dataMap[selectedCategory])
+              .filter(([key]) => key !== 'overall' && key !== 'category')
+              .map(([, value]) => value)
           : Object.values(dataMap).map((item) => item.overall),
         backgroundColor:
           selectedCategory && gradientColors[selectedCategory]
@@ -150,7 +152,7 @@ const RadarChart = () => {
         min: 0,
         max: 100,
         pointLabels: {
-          fontSize: 20,
+          fontSize: 30,
           fontColor: isDarkMode ? '#FFFFFF' : '#000000',
         },
         grid: {
@@ -167,6 +169,7 @@ const RadarChart = () => {
   } as any
 
   const handleClick = (category: string) => {
+    setSelectedCategory(null)
     setSelectedCategory(category)
   }
 

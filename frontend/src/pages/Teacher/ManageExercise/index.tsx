@@ -11,18 +11,22 @@ import {
 import dayjs, { Dayjs } from 'dayjs'
 import { useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import CustomUpload from '../../../components/CustomUpload'
+import { ArrowLeftIcon } from '../../../components/Icons'
+import AppLoading from '../../../components/common/AppLoading'
 import coursesApi from '../../../services/coursesApi'
 import exerciseApi from '../../../services/exerciseApi'
 import { ExerciseSchema } from '../../../services/exerciseApi/types'
 import { CEFRLevel, ExerciseTag, ExerciseType } from '../../../utils/constants'
 import enumToSelectOptions from '../../../utils/enumsToSelectOptions'
 import ConstructedResponseForm from './components/ConstructedResponseForm'
+import ExerciseTagInput, {
+  transformToExerciseTagInputValue,
+} from './components/ExerciseTagInput'
 import FillBlankForm from './components/FillBlankForm'
-import MultipleChoiceForm from './components/MultipleChoiceForm'
-import CustomUpload from '../../../components/CustomUpload'
-import AppLoading from '../../../components/common/AppLoading'
 import MakeSentenceForm from './components/MakeSentence'
-import { ArrowLeftIcon } from '../../../components/Icons'
+import MultipleChoiceForm from './components/MultipleChoiceForm'
+import SpeakingForm from './components/Speaking'
 import UnscrambleForm from './components/Unscramble'
 
 interface GeneralInfo {
@@ -75,13 +79,7 @@ const GeneralInfoForm = () => {
           name="tags"
           rules={[{ required: true }]}
         >
-          <Select
-            mode="multiple"
-            allowClear
-            placeholder="Exercise tags"
-            maxTagCount="responsive"
-            options={enumToSelectOptions(ExerciseTag)}
-          />
+          <ExerciseTagInput />
         </Form.Item>
         <Form.Item<GeneralInfo>
           label="Exercise level"
@@ -131,7 +129,7 @@ const ContentQuestionForm = () => {
           label="Question audio"
           name={['contentQuestion', 'audio']}
         >
-          <CustomUpload accept="audio" type="picture-card" />
+          <CustomUpload accept="audio/*" type="picture-card" />
         </Form.Item>
       </div>
     </>
@@ -155,6 +153,8 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
       return <MakeSentenceForm form={form} />
     case ExerciseType.Unscramble:
       return <UnscrambleForm form={form} />
+    case ExerciseType.Speaking:
+      return <SpeakingForm form={form} />
     default:
       return <></>
   }
@@ -209,6 +209,7 @@ function ManageExercise() {
     const valueForm = {
       ...value,
       deadline: value.deadline ? dayjs(value.deadline) : undefined,
+      tags: transformToExerciseTagInputValue(value.tags as any),
     }
     formSubmit.setFieldsValue(valueForm)
 
@@ -219,6 +220,8 @@ function ManageExercise() {
 
   const onSubmit = async (values: ExerciseSchema, formSubmit: FormSubmit) => {
     formSubmit.transform(values)
+
+    values.tags = values.tags?.map((tag: any) => tag.at(-1))
 
     message.open({
       key: 'submitMessage',

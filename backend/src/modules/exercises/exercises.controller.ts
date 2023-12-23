@@ -24,12 +24,18 @@ import { QuestionResult } from '../submissions/schemas/submission.schema';
 import { CreateExerciseDto, ExerciseDto, UpdateExerciseDto } from './dto';
 import { ExercisesService } from './exercises.service';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
+import { CreateSpeakingDto } from '../exercise-content/speaking/dto/create-speaking.dto';
+import { CreateMakeSentenceDto } from '../exercise-content/make-sentence/dto/create-make-sentence.dto';
+import { CreateUnscrambleDto } from '../exercise-content/unscramble/dto/create-unscramble.dto';
 
 @Controller('exercises')
 @ApiTags('Exercises')
 @ApiExtraModels(CreateMultipleChoiceDto)
 @ApiExtraModels(CreateFillBlankDto)
 @ApiExtraModels(CreateConstructedResponseDto)
+@ApiExtraModels(CreateMakeSentenceDto)
+@ApiExtraModels(CreateUnscrambleDto)
+@ApiExtraModels(CreateSpeakingDto)
 export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 

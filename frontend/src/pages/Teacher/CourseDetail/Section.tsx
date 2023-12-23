@@ -62,6 +62,7 @@ const Section = ({ form }: SectionProps) => {
                               />
                             )}
                             onChange={() => setAutoFocus(false)}
+                            defaultActiveKey={['0']}
                           >
                             <Panel
                               key={field.key}

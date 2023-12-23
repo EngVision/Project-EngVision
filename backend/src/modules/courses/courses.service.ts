@@ -23,9 +23,17 @@ import {
   CourseDetailDto,
   CourseExercisesDto,
 } from './dto';
-import { Order, Role, SortBy, StatusCourseSearch } from 'src/common/enums';
+import {
+  MaterialTypes,
+  Order,
+  Role,
+  SortBy,
+  StatusCourseSearch,
+} from 'src/common/enums';
 import { JwtPayload } from '../auth/types';
 import { ExercisesService } from '../exercises/exercises.service';
+import { MaterialAddedDto } from './dto/add-material.dto';
+import { UpdateMaterialDto } from './dto/update-material.dto';
 
 @Injectable()
 export class CoursesService {
@@ -239,6 +247,9 @@ export class CoursesService {
       course = await this.courseModel
         .findOne({ _id: id })
         .populate('teacher')
+        .populate('materials.pdfFiles.fileId')
+        .populate('materials.images.fileId')
+        .populate('materials.audios.fileId')
         .populate({
           path: 'reviews',
           options: { sort: { createdAt: -1 } },
@@ -263,6 +274,9 @@ export class CoursesService {
       course = await this.courseModel
         .findOne({ _id: id })
         .populate('teacher')
+        .populate('materials.pdfFiles.fileId')
+        .populate('materials.images.fileId')
+        .populate('materials.audios.fileId')
         .populate({
           path: 'reviews',
           options: { sort: { createdAt: -1 } },
@@ -275,7 +289,7 @@ export class CoursesService {
           ...plainToInstance(CourseDetailDto, course.toObject()),
           isAttended: true,
           isReviewed: !!course.reviews.find(
-            review => review.user.id === user.sub,
+            review => review.user?.id === user.sub,
           ),
         };
       } else courseMap = plainToInstance(CourseDetailDto, course.toObject());
@@ -712,5 +726,92 @@ export class CoursesService {
     });
 
     return coursesExercises;
+  }
+
+  async addMaterial(
+    courseId: string,
+    userId: string,
+    materialAdded: MaterialAddedDto,
+  ) {
+    const { type, ...material } = materialAdded;
+    const course = await this.courseModel.findOneAndUpdate(
+      {
+        _id: courseId,
+        teacher: userId,
+      },
+      { $push: { [`materials.${type}`]: material } },
+      { new: true },
+    );
+
+    if (!course)
+      throw new BadRequestException(
+        'Course ID or section ID is either missing or access denied',
+      );
+
+    return course;
+  }
+
+  async removeMaterial(
+    courseId: string,
+    materialId: string,
+    userId: string,
+    type: MaterialTypes,
+  ) {
+    const course = await this.courseModel.findOneAndUpdate(
+      {
+        _id: courseId,
+        teacher: userId,
+        [`materials.${type}._id`]: materialId,
+      },
+      {
+        $pull: {
+          [`materials.${type}`]: {
+            _id: materialId,
+          },
+        },
+      },
+      { new: true },
+    );
+
+    if (!course)
+      throw new BadRequestException(
+        'Course ID or section ID is either missing or access denied',
+      );
+
+    return course;
+  }
+
+  async updateMaterial(
+    courseId: string,
+    materialId: string,
+    userId: string,
+    updateMaterial: UpdateMaterialDto,
+  ) {
+    const { type, ...material } = updateMaterial;
+    const course = await this.courseModel.findOneAndUpdate(
+      {
+        _id: courseId,
+        teacher: userId,
+        [`materials.${type}._id`]: materialId,
+      },
+      {
+        $set: {
+          [`materials.${type}.$[index].note`]: material.note,
+          [`materials.${type}.$[index].fileId`]: material.fileId,
+          [`materials.${type}.$[index].url`]: material.url,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'index._id': materialId }],
+      },
+    );
+
+    if (!course)
+      throw new BadRequestException(
+        'Course ID or section ID is either missing or access denied',
+      );
+
+    return course;
   }
 }

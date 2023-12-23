@@ -28,6 +28,10 @@ function GradingExercise({
       'explanation',
       submission?.detail[questionIndex]?.explanation,
     )
+    form.setFieldValue(
+      'teacherCorrection',
+      submission?.detail[questionIndex]?.teacherCorrection,
+    )
 
     setGrade(
       submission?.detail[questionIndex]?.grade
@@ -89,13 +93,16 @@ function GradingExercise({
           >
             <TextArea
               placeholder="Explanation (Optional)"
-              autoSize={{ minRows: 2, maxRows: 4 }}
+              autoSize={{ minRows: 4, maxRows: 15 }}
             />
           </Form.Item>
           <div className="w-full text-center">
             <Button
               type="primary"
-              onClick={() => form.submit()}
+              onClick={() => {
+                console.log(form.getFieldsValue())
+                form.submit()
+              }}
               loading={isButtonLoading}
             >
               Grade

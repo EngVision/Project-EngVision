@@ -19,6 +19,8 @@ export interface IUserLevel {
     overall: number
   }
   writing: {
+    coherence: number
+    conciseness: number
     grammar: number
     vocabulary: number
     organization: number

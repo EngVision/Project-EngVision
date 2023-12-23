@@ -216,7 +216,7 @@ const ManageUsers = () => {
       },
     },
     {
-      title: 'Create Date',
+      title: 'Create date',
       dataIndex: 'createdAt',
       key: 'createDate',
       render: (date) => {

@@ -1,12 +1,8 @@
 import React from 'react'
-import { DownOutlined, UserOutlined } from '@ant-design/icons'
+import { DownOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Button, Dropdown } from 'antd'
 import { MenuItemType } from 'antd/es/menu/hooks/useItems'
-// const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-//   message.info('Click on left button.')
-//   console.log('click left button', e)
-// }
 
 const SortDropDown = ({ onSort }: any) => {
   const [selected, setSelected] = React.useState(1)

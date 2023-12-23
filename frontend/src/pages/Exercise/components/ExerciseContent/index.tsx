@@ -6,6 +6,7 @@ import DoneExercise from '../DoneExercise'
 import FillBlank from '../FillBlank'
 import MakeSentence from '../MakeSentence'
 import MultipleChoice from '../MultipleChoice'
+import Speaking from '../Speaking'
 import Unscramble from '../Unscramble'
 
 interface ExerciseContentProps {
@@ -13,6 +14,7 @@ interface ExerciseContentProps {
   submission?: SubmissionResponse
   questionIndex: number
   grade?: number
+  isGrading?: boolean
   setIsSubmittable: (value: boolean) => void
 }
 
@@ -21,6 +23,7 @@ function ExerciseContent({
   submission,
   questionIndex,
   grade,
+  isGrading,
   setIsSubmittable,
 }: ExerciseContentProps) {
   const content = exercise?.content[questionIndex]
@@ -54,6 +57,7 @@ function ExerciseContent({
           <ConstructedResponse
             {...content}
             {...exercise}
+            isGrading={isGrading}
             result={submission?.detail[questionIndex]}
             setIsSubmittable={setIsSubmittable}
           />
@@ -69,6 +73,14 @@ function ExerciseContent({
       case ExerciseType.Unscramble:
         return (
           <Unscramble
+            {...content}
+            result={submission?.detail[questionIndex]}
+            setIsSubmittable={setIsSubmittable}
+          />
+        )
+      case ExerciseType.Speaking:
+        return (
+          <Speaking
             {...content}
             result={submission?.detail[questionIndex]}
             setIsSubmittable={setIsSubmittable}

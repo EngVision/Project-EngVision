@@ -67,7 +67,7 @@ const AssignmentTable = () => {
       key: 'grade',
       align: 'center',
       render: (_, record) =>
-        record.grade && record.status === 'graded' ? (
+        record.grade !== null && record.status === 'graded' ? (
           <Tag className="bg-alternative text-white text-base px-4">
             {record.grade}/10
           </Tag>

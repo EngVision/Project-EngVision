@@ -138,13 +138,10 @@ export const UpdateProfile = () => {
                     options={gender}
                   />
                 </Form.Item>
-                <Form.Item<ProfileParams>
-                  name="email"
-                  label="Email"
-                  className="flex-1"
-                >
+                <Form.Item<ProfileParams> label="Email" className="flex-1">
                   <Input
                     defaultValue={user.email}
+                    disabled
                     size="large"
                     className="text-sm w-[100%] shadow-sm hover:border-slate-40 rounded-md"
                   />

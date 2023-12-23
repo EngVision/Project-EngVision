@@ -31,6 +31,8 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
     })
   }
 
+  console.log(course.isReviewed)
+
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }

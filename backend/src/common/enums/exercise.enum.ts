@@ -4,6 +4,7 @@ export enum ExerciseType {
   ConstructedResponse = 'ConstructedResponse',
   MakeSentence = 'MakeSentence',
   Unscramble = 'Unscramble',
+  Match = 'Match',
   Speaking = 'Speaking',
 }
 
@@ -31,4 +32,11 @@ export enum CEFRLevel {
   B1 = 'B1',
   A2 = 'A2',
   A1 = 'A1',
+}
+
+export enum MaterialTypes {
+  Images = 'images',
+  PdfFiles = 'pdfFiles',
+  Audios = 'audios',
+  Videos = 'videos',
 }

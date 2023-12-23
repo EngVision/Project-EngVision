@@ -1,6 +1,5 @@
 import React from 'react'
 import { Table, Tag } from 'antd'
-import { useNavigate } from 'react-router-dom'
 import type { ColumnsType } from 'antd/es/table'
 import { LEVELS } from '../../../../utils/constants'
 import { ExamParams } from '../../../../services/examApi/type'
@@ -9,8 +8,6 @@ interface ExamProps {
   exams: ExamParams[]
 }
 const ExamTable = ({ exams }: ExamProps) => {
-  const navigate = useNavigate()
-
   const columns: ColumnsType<ExamParams> = [
     {
       title: 'Exam',
@@ -35,7 +32,7 @@ const ExamTable = ({ exams }: ExamProps) => {
       },
     },
     {
-      title: 'Create Date',
+      title: 'Create date',
       dataIndex: 'createdAt',
       key: 'createdAt',
       align: 'center',
@@ -84,15 +81,9 @@ const ExamTable = ({ exams }: ExamProps) => {
       dataIndex: 'id',
       key: 'action',
       align: 'center',
-      render: (id) => {
+      render: () => {
         return (
-          <Tag
-            className="cursor-pointer bg-alternative font-bold text-white px-4 py-1 hover:bg-alternativeHover"
-            // onClick={(e) => {
-            //   e.preventDefault()
-            //   navigate(`./exam/${id}`)
-            // }}
-          >
+          <Tag className="cursor-pointer bg-alternative font-bold text-white px-4 py-1 hover:bg-alternativeHover">
             Grade Now
           </Tag>
         )

@@ -5,6 +5,7 @@ import { LocalFile } from 'src/modules/files/schemas/local-file.schema';
 import { SectionDocument, SectionSchema } from './section.schema';
 import { CEFRLevel } from 'src/common/enums';
 import { Review } from 'src/modules/reviews/schemas/review.schema';
+import { Materials } from './material.schema';
 
 export type CourseDocument = Course & Document;
 
@@ -50,6 +51,9 @@ export class Course {
 
   @Prop({ default: null, type: [mongoose.Types.ObjectId], ref: Review.name })
   reviews: mongoose.Types.ObjectId[];
+
+  @Prop({ default: {}, type: Materials })
+  materials: Materials;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

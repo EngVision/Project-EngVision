@@ -45,7 +45,9 @@ export class FilesService {
   ): Promise<LocalFileDocument> {
     const newFile = new this.fileModel({
       filename: `${uuid()}${extname(file.originalname)}`,
+      originalName: file.originalname,
       mimetype: file.mimetype,
+      size: this.getFileSize(file.size),
       userId,
     });
     await newFile.save();
@@ -88,7 +90,9 @@ export class FilesService {
     if (!updatedFile) {
       updatedFile = new this.fileModel({
         filename: `${uuid()}${extname(file.originalname)}`,
+        originalname: file.originalname,
         mimetype: file.mimetype,
+        size: this.getFileSize(file.size),
         userId,
       });
     }
@@ -104,6 +108,8 @@ export class FilesService {
     }
 
     updatedFile.url = null;
+    updatedFile.originalName = file.originalname;
+    updatedFile.size = this.getFileSize(file.size);
     updatedFile.filename = file.filename;
     updatedFile.mimetype = file.mimetype;
     updatedFile.save();
@@ -180,5 +186,12 @@ export class FilesService {
     const newFile = await this.createWithUrl(avatarUrl, userId);
 
     return newFile;
+  }
+
+  getFileSize(size: number): string {
+    if (!size) return '0';
+    return size > 1048576
+      ? `${(size / 1048576).toFixed(2)} MB`
+      : `${(size / 1024).toFixed(2)} KB`;
   }
 }

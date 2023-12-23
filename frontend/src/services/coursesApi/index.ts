@@ -1,7 +1,14 @@
 import { getQueryParamsUrl } from '../../utils/common'
+import { MaterialTypes } from '../../utils/constants'
 import axiosClient from '../axiosClient'
 import type { ResponseData } from '../types'
-import { CourseDetails, type GetCourseProps, type ReviewParams } from './types'
+import {
+  CourseDetails,
+  type GetCourseProps,
+  type ReviewParams,
+  AddMaterial,
+  UpdateMaterial,
+} from './types'
 
 const PREFIX = 'courses/'
 
@@ -83,6 +90,40 @@ const coursesApi = {
   ): Promise<ResponseData<unknown>> => {
     const res = await axiosClient.delete(
       `${PREFIX}lessons/${lessonId}/exercises/${exerciseId}`,
+    )
+    return res.data
+  },
+
+  addMaterial: async (
+    courseId: string,
+    material: AddMaterial,
+  ): Promise<ResponseData<CourseDetails>> => {
+    const res = await axiosClient.post(
+      `${PREFIX}${courseId}/materials`,
+      material,
+    )
+    return res.data
+  },
+
+  updateMaterial: async (
+    courseId: string,
+    updateMaterial: UpdateMaterial,
+  ): Promise<ResponseData<CourseDetails>> => {
+    const { id, ...material } = updateMaterial
+    const res = await axiosClient.patch(
+      `${PREFIX}${courseId}/materials/${id}`,
+      material,
+    )
+    return res.data
+  },
+
+  removeMaterial: async (
+    courseId: string,
+    materialId: string,
+    type: MaterialTypes,
+  ): Promise<ResponseData<CourseDetails>> => {
+    const res = await axiosClient.delete(
+      `${PREFIX}${courseId}/materials/${materialId}?type=${type}`,
     )
     return res.data
   },
