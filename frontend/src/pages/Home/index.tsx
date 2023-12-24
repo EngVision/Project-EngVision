@@ -22,13 +22,14 @@ import { CourseCard } from '../../components/CourseCard'
 import Fire from '../../components/Icons/Fire'
 import AppLoading from '../../components/common/AppLoading'
 import { useAppSelector } from '../../hooks/redux'
+import checkListApi from '../../services/checkListApi'
 import coursesApi from '../../services/coursesApi'
 import { ObjectId } from '../../services/examSubmissionApi/type'
 import submissionApi from '../../services/submissionApi'
 import { cellRender } from './Components/CalendarRender'
 import ProgressCard from './Components/ProgressCard'
 import RadarChart from './Components/RadarChart'
-
+import QuickStart from '../../components/QuickStart'
 dayjs.locale('en')
 
 ChartJS.register(
@@ -75,7 +76,10 @@ export const Home = () => {
       queryKey: ['suggestedCourses', { levels: userLevel?.CEFRLevel }],
       queryFn: () => coursesApi.getSuggestedCourses(),
     })
-
+  const { data: rawCheckListItems } = useQuery({
+    queryKey: ['checkListItems'],
+    queryFn: () => checkListApi.getCheckListItems(),
+  })
   const fetchSubmissions = async (objectIdList: ObjectId[]) => {
     const submissionsPromises = objectIdList.map((objectId) =>
       submissionApi.getSubmissionList({ course: objectId.id, limit: 10000 }),
@@ -380,6 +384,9 @@ export const Home = () => {
           </div>
         </div>
       </div>
+      {!rawCheckListItems?.isDone && rawCheckListItems && (
+        <QuickStart checkListItems={rawCheckListItems.items} />
+      )}
     </div>
   )
 }
