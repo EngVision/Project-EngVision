@@ -14,6 +14,10 @@ import {
 import NewQuestionForm from './NewQuestionForm'
 import PreviewInput from '../../../../../components/common/PreviewInput'
 import CustomImage from '../../../../../components/common/CustomImage'
+import ExerciseTagInput, {
+  getTagList,
+  transformToExerciseTagInputValue,
+} from '../ExerciseTagInput'
 
 interface QuestionFormProps {
   index: number
@@ -78,13 +82,7 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             name={[index, 'questionTags']}
             rules={[{ required: true }]}
           >
-            <Select
-              mode="multiple"
-              allowClear
-              placeholder="Tags"
-              maxTagCount="responsive"
-              options={enumToSelectOptions(ExerciseTag)}
-            />
+            <ExerciseTagInput />
           </Form.Item>
           <Form.Item
             label="Level"
@@ -128,7 +126,7 @@ const transformSubmitData = (exercise: any) => {
   exercise.content = content.map((question: QuestionFormSchema) => {
     const transformQuestion: UnscramblePayload = {
       id: question.id,
-      tags: question.questionTags,
+      tags: getTagList(question.questionTags as any),
       level: question.questionLevel,
       question: {
         items: question.items,
@@ -153,7 +151,7 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
 
     const questionForm: QuestionFormSchema = {
       id: q.id,
-      questionTags: q.tags,
+      questionTags: transformToExerciseTagInputValue(q.tags),
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
       items: items,

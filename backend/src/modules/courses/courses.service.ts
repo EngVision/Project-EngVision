@@ -289,7 +289,7 @@ export class CoursesService {
           ...plainToInstance(CourseDetailDto, course.toObject()),
           isAttended: true,
           isReviewed: !!course.reviews.find(
-            review => review.user.id === user.sub,
+            review => review.user?.id === user.sub,
           ),
         };
       } else courseMap = plainToInstance(CourseDetailDto, course.toObject());

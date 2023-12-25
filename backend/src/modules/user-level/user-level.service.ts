@@ -7,6 +7,7 @@ import { QuestionResult } from '../submissions/schemas/submission.schema';
 import { CEFRLevel, ExerciseTag } from 'src/common/enums';
 import { Score } from './schemas/score.schema';
 import { ExerciseQuestionDto } from '../exercise-content/dto/exercise-content.dto';
+import { LevelScore } from 'src/common/constants';
 
 const ScorePerQuestion = 2;
 
@@ -143,7 +144,10 @@ export class UserLevelService {
     result: QuestionResult,
     question: ExerciseQuestionDto,
   ): Score {
-    if (result.grade !== null || result.isCorrect !== null) {
+    if (
+      (result.grade !== undefined && result.grade !== null) ||
+      (result.isCorrect !== undefined && result.isCorrect !== null)
+    ) {
       let score = 0;
 
       if (result.grade !== null) {
@@ -176,27 +180,100 @@ export class UserLevelService {
   transform(userLevel: UserLevelDocument) {
     const data = userLevel.toJSON();
 
+    const getPercentage = (score: number | null, overall: number) => {
+      if (!score) return null;
+      const level = Score.getCEFRLevel(overall);
+
+      return Math.round(
+        ((score - LevelScore[level].min) /
+          (LevelScore[level].max - LevelScore[level].min)) *
+          100,
+      );
+    };
+
     return {
       ...data,
+      CEFRLevel: Score.getCEFRLevel(userLevel.overall.sum),
+      overall: getPercentage(userLevel.overall.sum, userLevel.overall.sum),
       listening: {
-        ...data.listening,
-        grammar: data.grammar,
-        vocabulary: data.vocabulary,
+        overall: getPercentage(
+          userLevel.listening.overall?.sum,
+          userLevel.overall.sum,
+        ),
+        comprehension: getPercentage(
+          userLevel.listening.comprehension?.sum,
+          userLevel.overall.sum,
+        ),
+        grammar: getPercentage(userLevel.grammar?.sum, userLevel.overall.sum),
+        vocabulary: getPercentage(
+          userLevel.vocabulary?.sum,
+          userLevel.overall.sum,
+        ),
       },
       reading: {
-        ...data.reading,
-        grammar: data.grammar,
-        vocabulary: data.vocabulary,
+        overall: getPercentage(
+          userLevel.reading.overall?.sum,
+          userLevel.overall.sum,
+        ),
+        comprehension: getPercentage(
+          userLevel.reading.comprehension?.sum,
+          userLevel.overall.sum,
+        ),
+        scanning: getPercentage(
+          userLevel.reading.scanning?.sum,
+          userLevel.overall.sum,
+        ),
+        skimming: getPercentage(
+          userLevel.reading.skimming?.sum,
+          userLevel.overall.sum,
+        ),
+        grammar: getPercentage(userLevel.grammar?.sum, userLevel.overall.sum),
+        vocabulary: getPercentage(
+          userLevel.vocabulary?.sum,
+          userLevel.overall.sum,
+        ),
       },
       speaking: {
-        ...data.speaking,
-        grammar: data.grammar,
-        vocabulary: data.vocabulary,
+        overall: getPercentage(
+          userLevel.speaking.overall?.sum,
+          userLevel.overall.sum,
+        ),
+        fluency: getPercentage(
+          userLevel.speaking.fluency?.sum,
+          userLevel.overall.sum,
+        ),
+        pronunciation: getPercentage(
+          userLevel.speaking.pronunciation?.sum,
+          userLevel.overall.sum,
+        ),
+        grammar: getPercentage(userLevel.grammar?.sum, userLevel.overall.sum),
+        vocabulary: getPercentage(
+          userLevel.vocabulary?.sum,
+          userLevel.overall.sum,
+        ),
       },
       writing: {
-        ...data.writing,
-        grammar: data.grammar,
-        vocabulary: data.vocabulary,
+        overall: getPercentage(
+          userLevel.writing.overall?.sum,
+          userLevel.overall.sum,
+        ),
+        coherence: getPercentage(
+          userLevel.writing.coherence?.sum,
+          userLevel.overall.sum,
+        ),
+        conciseness: getPercentage(
+          userLevel.writing.conciseness?.sum,
+          userLevel.overall.sum,
+        ),
+        organization: getPercentage(
+          userLevel.writing.organization?.sum,
+          userLevel.overall.sum,
+        ),
+        grammar: getPercentage(userLevel.grammar?.sum, userLevel.overall.sum),
+        vocabulary: getPercentage(
+          userLevel.vocabulary?.sum,
+          userLevel.overall.sum,
+        ),
       },
     };
   }

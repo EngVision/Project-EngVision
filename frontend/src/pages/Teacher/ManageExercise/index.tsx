@@ -20,6 +20,9 @@ import { ExerciseSchema } from '../../../services/exerciseApi/types'
 import { CEFRLevel, ExerciseTag, ExerciseType } from '../../../utils/constants'
 import enumToSelectOptions from '../../../utils/enumsToSelectOptions'
 import ConstructedResponseForm from './components/ConstructedResponseForm'
+import ExerciseTagInput, {
+  transformToExerciseTagInputValue,
+} from './components/ExerciseTagInput'
 import FillBlankForm from './components/FillBlankForm'
 import MakeSentenceForm from './components/MakeSentence'
 import MultipleChoiceForm from './components/MultipleChoiceForm'
@@ -76,13 +79,7 @@ const GeneralInfoForm = () => {
           name="tags"
           rules={[{ required: true }]}
         >
-          <Select
-            mode="multiple"
-            allowClear
-            placeholder="Exercise tags"
-            maxTagCount="responsive"
-            options={enumToSelectOptions(ExerciseTag)}
-          />
+          <ExerciseTagInput />
         </Form.Item>
         <Form.Item<GeneralInfo>
           label="Exercise level"
@@ -212,6 +209,7 @@ function ManageExercise() {
     const valueForm = {
       ...value,
       deadline: value.deadline ? dayjs(value.deadline) : undefined,
+      tags: transformToExerciseTagInputValue(value.tags as any),
     }
     formSubmit.setFieldsValue(valueForm)
 
@@ -222,6 +220,8 @@ function ManageExercise() {
 
   const onSubmit = async (values: ExerciseSchema, formSubmit: FormSubmit) => {
     formSubmit.transform(values)
+
+    values.tags = values.tags?.map((tag: any) => tag.at(-1))
 
     message.open({
       key: 'submitMessage',

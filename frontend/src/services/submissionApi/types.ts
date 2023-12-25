@@ -43,6 +43,7 @@ export interface SubmissionResponse {
 export interface GradePayload {
   grade?: number
   explanation?: string
+  teacherCorrection?: string
 }
 
 export interface GetSubmissionProps extends BasePaginate {
