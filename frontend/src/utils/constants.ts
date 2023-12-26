@@ -212,6 +212,11 @@ export enum MaterialTypes {
   None = 'none',
 }
 
+export enum ExerciseMatchType {
+  Text = 'Text',
+  Image = 'Image',
+}
+
 export const STUDENT_GET_STARTED_VIDEO_URL =
   'https://www.youtube.com/embed/ZIccuK7kSZw?si=i92mMWjOyEH1qjly'
 export const TEACHER_GET_STARTED_VIDEO_URL =
