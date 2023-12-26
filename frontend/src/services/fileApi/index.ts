@@ -63,6 +63,15 @@ const fileApi = {
       throw error
     }
   },
+  createWithUrl: async (url: string): Promise<ResponseData> => {
+    try {
+      const res: ResponseData = await axiosClient.post(`${PREFIX}url`, { url })
+      return res.data
+    } catch (error) {
+      console.error('Error post file details:', error)
+      throw error
+    }
+  },
 }
 
 export default fileApi

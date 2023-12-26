@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -126,5 +127,22 @@ export class FilesController {
     return res
       .status(HttpStatus.OK)
       .send(GetResponse({ message: 'Remove file successful' }));
+  }
+
+  @Post('/url')
+  @UseGuards(AtGuard)
+  @ApiResponseData(Object)
+  async createWithUrl(
+    @CurrentUser() user: JwtPayload,
+    @Body('url') url: string,
+    @Res() res: Response,
+  ) {
+    const newFile = await this.filesService.createWithUrl(url, user.sub);
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        data: { fileId: newFile.id },
+        message: 'Create file successful',
+      }),
+    );
   }
 }
