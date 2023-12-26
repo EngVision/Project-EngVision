@@ -384,7 +384,7 @@ export const Home = () => {
           </div>
         </div>
       </div>
-      {!rawCheckListItems?.isDone && rawCheckListItems && (
+      {rawCheckListItems && !rawCheckListItems?.isDone && (
         <QuickStart checkListItems={rawCheckListItems.items} />
       )}
     </div>
