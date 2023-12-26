@@ -78,7 +78,10 @@ function Exercise({
             isButtonLoading={btnGradeLoading}
           />
         ) : (
-          <Explain submission={submission} questionIndex={questionIndex} />
+          !exercise?.needGrade &&
+          submission?.detail[questionIndex] && (
+            <Explain submission={submission} questionIndex={questionIndex} />
+          )
         )}
       </>
     )
