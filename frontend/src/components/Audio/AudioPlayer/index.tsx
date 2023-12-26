@@ -24,7 +24,7 @@ const AudioPlayer = ({ url }: { url: string }) => {
     muted: false,
     played: 0,
     loaded: 0,
-    duration: 0,
+    loadedSeconds: 0,
     playbackRate: 1.0,
     loop: false,
     seeking: false,
@@ -46,19 +46,19 @@ const AudioPlayer = ({ url }: { url: string }) => {
   const handleVolumeChange = (value: number) => {
     setState({ ...state, volume: value })
   }
-  const handleDuration = (duration: any) => {
-    setState({ ...state, duration })
+  const handleDuration = (loadedSeconds: number) => {
+    setState({ ...state, loadedSeconds })
   }
   const skipBackward = () => {
-    const value = state.duration * state.played - 10
+    const value = state.loadedSeconds * state.played - 10
     playerRef.current?.seekTo(value)
   }
   const skipForward = () => {
-    const value = state.duration * state.played + 10
+    const value = state.loadedSeconds * state.played + 10
     playerRef.current?.seekTo(value)
   }
   const formatter = (value: number) => (
-    <Duration seconds={value * state.duration} />
+    <Duration seconds={value * state.loadedSeconds} />
   )
   const handleMute = () => {
     setState({ ...state, muted: !state.muted })
@@ -72,6 +72,8 @@ const AudioPlayer = ({ url }: { url: string }) => {
       setBlob(data)
     }
   }, [data])
+
+  console.log('🚀 ~ file: index.tsx:162 ~ AudioPlayer ~ blob', state)
   if (isLoading || !url) return <AppLoading />
   return (
     <div className="bg-surface rounded-lg p-4 w-1/2 h-full">
@@ -98,7 +100,7 @@ const AudioPlayer = ({ url }: { url: string }) => {
       <div className="flex justify-center items-center gap-4">
         <Duration
           className="text-sm w-10"
-          seconds={state.played * state.duration}
+          seconds={state.played * state.loadedSeconds}
         />
 
         <div className="w-full relative py-4">
@@ -109,7 +111,7 @@ const AudioPlayer = ({ url }: { url: string }) => {
               height={100}
               barWidth={3}
               gap={2}
-              currentTime={state.played * state.duration}
+              currentTime={state.played * state.loadedSeconds}
               style={{
                 width: '100%',
                 position: 'absolute',
@@ -130,9 +132,9 @@ const AudioPlayer = ({ url }: { url: string }) => {
             step={0.00001}
           />
         </div>
-        <Duration className="text-sm w-10" seconds={state.duration} />
+        <Duration className="text-sm w-10" seconds={state.loadedSeconds} />
       </div>
-      <div className="flex relative justify-center">
+      <div className="flex relative justify-center max-lg:flex-col">
         <div className="flex gap-4 self-center">
           <button
             onClick={skipBackward}
@@ -158,7 +160,7 @@ const AudioPlayer = ({ url }: { url: string }) => {
             <Forward className="text-primary" />
           </button>
         </div>
-        <div className="absolute right-0 flex gap-1 items-center">
+        <div className="xl:absolute max-lg:self-center right-0 items-center flex gap-1">
           <button
             className="cursor-pointer bg-transparent"
             onClick={handleMute}

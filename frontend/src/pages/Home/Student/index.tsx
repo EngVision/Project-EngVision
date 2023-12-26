@@ -232,18 +232,38 @@ export const Student = () => {
   }
 
   const calculateDayStreaks = () => {
+    let uniqueSubmissions = []
     if (rawSubmissionList?.data) {
-      const sortedSubmissions = rawSubmissionList.data.sort((a: any, b: any) =>
-        dayjs(b.updatedAt).diff(dayjs(a.updatedAt)),
+      const submissionSet = new Set()
+      const sortedSubmissions =
+        rawSubmissionList?.data?.sort((a, b) =>
+          dayjs(b.updatedAt).diff(dayjs(a.updatedAt)),
+        ) || []
+
+      uniqueSubmissions = sortedSubmissions.reduce(
+        (result: any[], submission: any) => {
+          const submissionDate = dayjs(submission.updatedAt).startOf('day')
+          const formattedDate = submissionDate.format('YYYY-MM-DD')
+
+          if (!submissionSet.has(formattedDate)) {
+            result.push(submission)
+            submissionSet.add(formattedDate)
+          }
+
+          return result
+        },
+        [],
       )
 
       let currentStreak = 0
       let currentDate = dayjs()
 
-      for (const submission of sortedSubmissions) {
+      for (const submission of uniqueSubmissions) {
         const submissionDate = dayjs(submission.updatedAt)
         const isConsecutiveDay =
-          currentDate.diff(submissionDate, 'day') === 1 ||
+          currentDate
+            .startOf('day')
+            .diff(submissionDate.startOf('day'), 'day') === 1 ||
           currentDate.isSame(submissionDate, 'day')
 
         if (isConsecutiveDay) {
