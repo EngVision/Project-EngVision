@@ -12,6 +12,8 @@ import ExerciseTagInput, {
   getTagList,
   transformToExerciseTagInputValue,
 } from '../ExerciseTagInput'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 
 interface QuestionFormProps {
   needGrade: boolean
@@ -36,10 +38,7 @@ const QuestionForm = ({ needGrade, index, remove }: QuestionFormProps) => {
         name={[index, 'questionText']}
         rules={[{ required: true }]}
       >
-        <Input.TextArea
-          autoSize={{ minRows: 2, maxRows: 4 }}
-          placeholder="Question"
-        />
+        <ReactQuill className="bg-surface" placeholder="Question" />
       </Form.Item>
       <div className="flex gap-4 w-full">
         <div className="flex-1">

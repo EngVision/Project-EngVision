@@ -1,6 +1,7 @@
 import { Button } from 'antd'
 import AudioRecorder from '../../../../components/Audio/AudioRecorder'
 import { getFileUrl } from '../../../../utils/common'
+import AudioPlayer from '../../../../components/Audio/AudioPlayer'
 
 type AudioRecorderComponentProps = {
   setIsSubmittable: (value: boolean) => void
@@ -32,7 +33,7 @@ const AudioRecorderComponent = ({
           }}
         />
       )}
-      {fileId && <audio src={getFileUrl(fileId)} controls />}
+      {fileId && <AudioPlayer url={getFileUrl(fileId)} />}
       {fileId && (
         <div>
           <span className="text-sm">Not perfect?</span>

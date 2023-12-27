@@ -170,7 +170,8 @@ input[type='number']::-webkit-outer-spin-button {
 :is(.css-dev-only-do-not-override-le3245).ant-checkbox .ant-checkbox-inner,
 :is(.css-dev-only-do-not-override-le3245).ant-table-wrapper .ant-table,
 :is(.css-dev-only-do-not-override-le3245).ant-picker,
-:is(.css-dev-only-do-not-override-le3245).ant-input-group .ant-input-affix-wrapper,
+:is(.css-dev-only-do-not-override-le3245).ant-input-group
+  .ant-input-affix-wrapper,
 .ant-select-selector,
 .ant-dropdown-menu {
   background-color: var(--bg-surface) !important;
