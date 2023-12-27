@@ -17,9 +17,8 @@ const QuickStart = ({
     setIsHidden(!isHidden)
   }
   const navigation = useNavigate()
-  const items: CollapseProps['items'] = []
-  checkListItems?.map((item, index) => {
-    items.push({
+  const items: CollapseProps['items'] = checkListItems?.map((item, index) => {
+    return {
       key: index.toString(),
       label: (
         <div className="flex items-center">
@@ -41,7 +40,7 @@ const QuickStart = ({
           </Button>
         </div>
       ),
-    })
+    }
   })
   return (
     <div className="fixed bottom-14 right-14 w-[20rem] transition-all">
