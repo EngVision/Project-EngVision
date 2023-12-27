@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { TwoColumnLayoutProps } from './types'
-import { Button, Space } from 'antd'
+import { Button, Divider, Space, Tooltip } from 'antd'
 import { UPLOAD_FILE_URL } from '../../../utils/constants'
+import ArrowRight from '../../../components/Icons/ArrowRight'
+import ArrowLeft from '../../../components/Icons/ArrowLeft'
 
 export function TwoColumnLayout({
   children,
   contentQuestion,
 }: TwoColumnLayoutProps) {
   const [fontSize, setFontSize] = useState<number>(16)
-  const [isExpand, setIsExpand] = useState<boolean>(false)
+  const [isExpand, setIsExpand] = useState<boolean>(true)
 
   return (
     <div className="flex flex-1 min-h-[0px] m-5 gap-5">
@@ -62,10 +64,24 @@ export function TwoColumnLayout({
           {contentQuestion.text}
         </p>
       </div>
+      <div className="relative">
+        <Divider type="vertical" className="h-full" />
+        <Tooltip title={isExpand ? 'Hide Question' : 'Expand Question'}>
+          <Button
+            className="absolute top-1/2 -left-1/2 border-solid border-1 border-primary flex justify-center items-center scale-75 hover:scale-100"
+            onClick={() => setIsExpand((prev) => !prev)}
+            shape="circle"
+            icon={
+              isExpand ? (
+                <ArrowLeft width={18} className="text-primary" />
+              ) : (
+                <ArrowRight width={18} className="text-primary" />
+              )
+            }
+          ></Button>
+        </Tooltip>
+      </div>
       <div className="w-2/3 overflow-y-auto overflow-x-hidden flex-grow">
-        <Button onClick={() => setIsExpand((prev) => !prev)}>
-          {isExpand ? 'Hide' : 'Expand'} question
-        </Button>
         <div>{children}</div>
       </div>
     </div>
