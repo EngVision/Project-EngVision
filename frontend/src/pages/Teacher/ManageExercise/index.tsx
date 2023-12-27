@@ -11,23 +11,25 @@ import {
 import dayjs, { Dayjs } from 'dayjs'
 import { useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import CustomUpload from '../../../components/CustomUpload'
-import { ArrowLeftIcon } from '../../../components/Icons'
-import AppLoading from '../../../components/common/AppLoading'
 import coursesApi from '../../../services/coursesApi'
 import exerciseApi from '../../../services/exerciseApi'
 import { ExerciseSchema } from '../../../services/exerciseApi/types'
 import { CEFRLevel, ExerciseTag, ExerciseType } from '../../../utils/constants'
 import enumToSelectOptions from '../../../utils/enumsToSelectOptions'
+import CustomUpload from '../../../components/CustomUpload'
+import AppLoading from '../../../components/common/AppLoading'
+import { ArrowLeftIcon } from '../../../components/Icons'
+
 import ConstructedResponseForm from './components/ConstructedResponseForm'
 import ExerciseTagInput, {
   transformToExerciseTagInputValue,
 } from './components/ExerciseTagInput'
 import FillBlankForm from './components/FillBlankForm'
-import MakeSentenceForm from './components/MakeSentence'
+import MakeSentenceForm from './components/MakeSentenceForm'
 import MultipleChoiceForm from './components/MultipleChoiceForm'
+import UnscrambleForm from './components/UnscrambleForm'
 import SpeakingForm from './components/Speaking'
-import UnscrambleForm from './components/Unscramble'
+import MatchForm from './components/MatchForm'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -155,6 +157,8 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
       return <UnscrambleForm form={form} />
     case ExerciseType.Speaking:
       return <SpeakingForm form={form} />
+    case ExerciseType.Match:
+      return <MatchForm form={form} />
     default:
       return <></>
   }

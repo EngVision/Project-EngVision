@@ -95,6 +95,7 @@ export enum ExerciseType {
   MakeSentence = 'MakeSentence',
   Unscramble = 'Unscramble',
   Speaking = 'Speaking',
+  Match = 'Match',
 }
 
 export enum ExerciseTag {
@@ -209,6 +210,11 @@ export enum MaterialTypes {
   Audios = 'audios',
   Videos = 'videos',
   None = 'none',
+}
+
+export enum ExerciseMatchType {
+  Text = 'Text',
+  Image = 'Image',
 }
 
 export const STUDENT_GET_STARTED_VIDEO_URL =
