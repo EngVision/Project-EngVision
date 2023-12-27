@@ -96,6 +96,7 @@ export enum ExerciseType {
   Unscramble = 'Unscramble',
   Speaking = 'Speaking',
   Match = 'Match',
+  DragAndDrop = 'DragAndDrop',
 }
 
 export enum ExerciseTag {
