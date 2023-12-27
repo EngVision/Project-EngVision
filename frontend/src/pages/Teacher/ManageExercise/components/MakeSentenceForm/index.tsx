@@ -11,6 +11,8 @@ import ExerciseTagInput, {
   getTagList,
   transformToExerciseTagInputValue,
 } from '../ExerciseTagInput'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 
 interface QuestionFormProps {
   index: number
@@ -33,11 +35,7 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
         name={[index, 'questionText']}
         rules={[{ required: true }]}
       >
-        <Input.TextArea
-          className="h-full"
-          autoSize={{ minRows: 2, maxRows: 4 }}
-          placeholder="Question"
-        />
+        <ReactQuill className="bg-surface" placeholder="Question" />
       </Form.Item>
       <Form.Item label="Explanation" name={[index, 'explanation']}>
         <Input.TextArea
