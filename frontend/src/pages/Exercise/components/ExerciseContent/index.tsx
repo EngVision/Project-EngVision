@@ -5,6 +5,7 @@ import ConstructedResponse from '../ConstructedResponse'
 import DoneExercise from '../DoneExercise'
 import FillBlank from '../FillBlank'
 import MakeSentence from '../MakeSentence'
+import Match from '../Match'
 import MultipleChoice from '../MultipleChoice'
 import Speaking from '../Speaking'
 import Unscramble from '../Unscramble'
@@ -81,6 +82,14 @@ function ExerciseContent({
       case ExerciseType.Speaking:
         return (
           <Speaking
+            {...content}
+            result={submission?.detail[questionIndex]}
+            setIsSubmittable={setIsSubmittable}
+          />
+        )
+      case ExerciseType.Match:
+        return (
+          <Match
             {...content}
             result={submission?.detail[questionIndex]}
             setIsSubmittable={setIsSubmittable}

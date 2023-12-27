@@ -5,6 +5,7 @@ import {
 import CustomImage from '../../../../components/common/CustomImage'
 import { SubmissionResponse } from '../../../../services/submissionApi/types'
 import { ExerciseType, UPLOAD_FILE_URL } from '../../../../utils/constants'
+import { ArrowRightOutlined } from '@ant-design/icons'
 
 interface ExplainProps {
   submission: SubmissionResponse | undefined
@@ -14,10 +15,45 @@ interface ExplainProps {
 function Explain({ submission, questionIndex }: ExplainProps) {
   const question = submission?.detail[questionIndex]
   const hasGrade =
-    !question?.hasOwnProperty('grade') || question?.grade !== null
+    question && (!question.hasOwnProperty('grade') || question?.grade !== null)
+
   const isCorrect = question?.isCorrect
   const explanation = question?.explanation
   const correctAnswer = question?.correctAnswer
+
+  const renderExplainWhenHasGrade = () => {
+    if (submission?.exerciseType === ExerciseType.Unscramble) {
+      return (
+        <div className="flex gap-4">
+          <span>Correct answer: </span>
+          {correctAnswer.map((answer: string) => (
+            <CustomImage
+              className="hidden lg:block object-cover w-20 h-20 rounded-md"
+              src={`${UPLOAD_FILE_URL}${answer}`}
+            />
+          ))}
+        </div>
+      )
+    } else if (submission?.exerciseType === ExerciseType.Match) {
+      return (
+        <div className="flex gap-4">
+          <span>Correct answer match: </span>
+
+          <div className="flex flex-col gap-4">
+            {correctAnswer?.map((answer: string) => (
+              <div className="flex gap-4">
+                <span>{answer[0]}</span>
+                <ArrowRightOutlined />
+                <span>{answer[1]}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    } else {
+      return <p>{explanation}</p>
+    }
+  }
 
   return hasGrade ? (
     <div
@@ -33,19 +69,7 @@ function Explain({ submission, questionIndex }: ExplainProps) {
           </b>
         }
 
-        {submission?.exerciseType === ExerciseType.Unscramble ? (
-          <div className="flex gap-4">
-            <span>Correct answer: </span>
-            {correctAnswer.map((answer: string) => (
-              <CustomImage
-                className="hidden lg:block object-cover w-20 h-20 rounded-md"
-                src={`${UPLOAD_FILE_URL}${answer}`}
-              />
-            ))}
-          </div>
-        ) : (
-          <p>{explanation}</p>
-        )}
+        {renderExplainWhenHasGrade()}
       </div>
     </div>
   ) : (

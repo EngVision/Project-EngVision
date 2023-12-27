@@ -1,5 +1,6 @@
 import type {
   CEFRLevel,
+  ExerciseMatchType,
   ExerciseTag,
   ExerciseType,
 } from '../../utils/constants'
@@ -10,7 +11,7 @@ export interface QuestionPayload {
   tags: ExerciseTag[]
   level: CEFRLevel
   question: any
-  correctAnswer: any
+  correctAnswer?: any
 }
 
 export interface ExerciseSchema {
@@ -38,4 +39,9 @@ export interface SubmitAnswerResponse {
   explanation: string
   grade: number
   teacherCorrection?: string
+}
+
+export interface MatchPairSchema {
+  type: ExerciseMatchType
+  content: string
 }
