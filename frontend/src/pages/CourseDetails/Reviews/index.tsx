@@ -30,8 +30,6 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
     })
   }
 
-  console.log(course.isReviewed)
-
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }
@@ -91,7 +89,10 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
                 />
                 <div className="w-full">
                   <div className="font-bold text-base mb-4">
-                    {review.user.firstName + ' ' + review.user.lastName}
+                    {review.user
+                      ? review.user.firstName ??
+                        '' + ' ' + review.user?.lastName
+                      : 'User not found'}
                   </div>
                   <div className="flex items-center mb-4">
                     <Rate

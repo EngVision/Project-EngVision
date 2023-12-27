@@ -255,6 +255,9 @@ export class CoursesService {
           lesson.exercises = lesson.exercises.map(
             exercise => exercise.id,
           ) as any;
+          lesson.materials = lesson.materials.map(
+            material => material.id,
+          ) as any;
         });
       });
     }
@@ -298,7 +301,6 @@ export class CoursesService {
     if (String(oldCourse.teacher) !== user.sub) {
       throw new ForbiddenException('Access denied');
     }
-
     await this.courseModel.findOneAndUpdate({ _id: id }, updateCourse);
 
     return this.getCourse(id, user);
@@ -680,6 +682,11 @@ export class CoursesService {
               in: { $add: ['$$value', { $size: '$$this.lessons' }] },
             },
           },
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
         },
       },
       {
