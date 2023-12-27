@@ -22,7 +22,7 @@ const ContentForm = ({ index, remove }: ContentFormProps) => {
           <div className="flex-1 flex gap-4 w-full">
             <Form.Item
               className="m-0"
-              name={[index, 'questionImage']}
+              name={[index, 'image']}
               valuePropName="fileList"
               rules={[{ required: true }]}
             >
@@ -33,7 +33,7 @@ const ContentForm = ({ index, remove }: ContentFormProps) => {
           <div className="flex-1 flex gap-4 w-full">
             <Form.Item
               className="flex-1 m-0"
-              name={[index, 'answerText']}
+              name={[index, 'text']}
               rules={[{ required: true }]}
             >
               <Input placeholder="Answer" />
@@ -165,8 +165,8 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
 }
 
 interface AnswerFormSchema {
-  questionImage?: string
-  answerText?: string
+  image?: string
+  text?: string
 }
 
 interface QuestionFormSchema {
@@ -181,7 +181,7 @@ interface QuestionFormSchema {
 interface DragAndDropPayLoad extends QuestionPayload {
   question: {
     text: string
-    pairs: AnswerFormSchema[]
+    answers: AnswerFormSchema[]
   }
 }
 
@@ -195,10 +195,10 @@ const transformSubmitData = (exercise: any) => {
       level: question.questionLevel,
       question: {
         text: question.questionText,
-        pairs: question.answers.map((ans) => {
+        answers: question.answers.map((ans) => {
           return {
-            questionImage: ans.questionImage,
-            answerText: ans.answerText,
+            image: ans.image,
+            text: ans.text,
           }
         }),
       },
@@ -217,12 +217,12 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
       questionTags: q.tags,
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
-      answers: q.question.pairs.map((ans): AnswerFormSchema => {
+      answers: q.question.answers.map((ans): AnswerFormSchema => {
         const result: AnswerFormSchema = {}
 
-        result.questionImage = ans.questionImage
+        result.image = ans.image
 
-        result.answerText = ans.answerText
+        result.text = ans.text
 
         return result
       }),
