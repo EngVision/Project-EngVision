@@ -43,8 +43,7 @@ import {
   UpdateSectionDto,
 } from './dto';
 import { courseIdDto } from './dto/course-id.dto';
-import { MaterialAddedDto } from './dto/add-material.dto';
-import { UpdateMaterialDto } from './dto/update-material.dto';
+import { LessonMaterialIdDto } from './dto/lesson-material-id.dto';
 
 @ApiTags('Courses')
 @Controller('courses')
@@ -497,79 +496,48 @@ export class CoursesController {
     );
   }
 
-  @Post(':id/materials')
-  @ApiResponseData(Object)
+  @Post('/lessons/:lessonId/materials')
+  @ApiResponseData(CourseDetailDto)
   @UseGuards(AtGuard, RoleGuard(Role.Teacher))
-  async addMaterial(
-    @Param() params: courseIdDto,
-    @Body() materialAdded: MaterialAddedDto, //material: AddMaterialDto
+  async createMaterial(
     @CurrentUser() user: JwtPayload,
+    @Param('lessonId') lessonId: string,
+    @Body('materialId') materialId: string,
     @Res() res: Response,
   ) {
-    const newCourse = await this.coursesService.addMaterial(
-      params.id,
+    const course = await this.coursesService.createMaterial(
+      materialId,
+      lessonId,
       user.sub,
-      materialAdded,
     );
 
     return res.status(HttpStatus.CREATED).send(
       GetResponse({
-        data: newCourse,
+        data: course,
         dataType: CourseDetailDto,
-        message: 'Add material successfully',
       }),
     );
   }
 
-  @Delete(':id/materials/:materialId')
-  @ApiResponseData(Object)
+  @Delete('/lessons/:lessonId/materials/:materialId')
+  @ApiResponseData(LessonDto)
   @UseGuards(AtGuard, RoleGuard(Role.Teacher))
-  async deleteMaterial(
+  async removeMaterial(
     @Res() res: Response,
-
-    @Param('id') courseId: string,
-    @Param('materialId') materialId: string,
+    @Param() params: LessonMaterialIdDto,
     @CurrentUser() user: JwtPayload,
-    @Query('type') type: MaterialTypes,
   ) {
-    const newCourse = await this.coursesService.removeMaterial(
-      courseId,
-      materialId,
+    const newLesson = await this.coursesService.removeMaterial(
+      params.materialId,
+      params.lessonId,
       user.sub,
-      type,
     );
 
-    return res.status(HttpStatus.OK).send(
+    return res.status(HttpStatus.CREATED).send(
       GetResponse({
-        data: newCourse,
-        dataType: CourseDetailDto,
-        message: 'Remove material successfully',
-      }),
-    );
-  }
-
-  @Patch(':id/materials/:materialId')
-  @ApiResponseData(Object)
-  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
-  async updateMaterial(
-    @Res() res: Response,
-    @Param('id') courseId: string,
-    @Param('materialId') materialId: string,
-    @CurrentUser() user: JwtPayload,
-    @Body() updateMaterialDto: UpdateMaterialDto,
-  ) {
-    const newCourse = await this.coursesService.updateMaterial(
-      courseId,
-      materialId,
-      user.sub,
-      updateMaterialDto,
-    );
-
-    return res.status(HttpStatus.OK).send(
-      GetResponse({
-        data: newCourse,
-        dataType: CourseDetailDto,
-        message: 'Update material successfully',
+        data: newLesson,
+        dataType: LessonDto,
+        message: 'Delete material successful',
       }),
     );
   }

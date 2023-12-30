@@ -45,6 +45,7 @@ export interface Lesson {
   id: string
   title: string
   exercises: Exercise[]
+  materials: File[]
   completed: boolean
   totalExerciseCompleted: number
 }

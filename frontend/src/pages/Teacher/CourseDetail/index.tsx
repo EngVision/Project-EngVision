@@ -12,7 +12,6 @@ import Section from './Section'
 import { CourseDetails } from '../../../services/coursesApi/types'
 import { NotificationContext } from '../../../contexts/notification'
 import ConfirmDeleteModal from '../../../components/Modal/ConfirmDeleteModal'
-import Materials from './Materials'
 
 const { TabPane } = Tabs
 
@@ -156,23 +155,6 @@ const TeacherCourseDetail = () => {
             key="2"
           >
             <Section form={form} />
-          </TabPane>
-          <TabPane
-            tab={
-              <Button
-                className={`flex font-light items-center text-lg px-10 py-5 rounded-xl 
-                ${activeTab === '3' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
-                type={activeTab === '3' ? 'primary' : 'default'}
-              >
-                Materials
-              </Button>
-            }
-            key="3"
-          >
-            <Materials
-              materials={courseDetails?.materials}
-              courseId={courseId}
-            />
           </TabPane>
         </Tabs>
 
