@@ -97,9 +97,12 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
                       : 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80'
                   }
                 />
-                <div className="flex flex-col gap-2 w-full">
-                  <div className="font-bold text-base">
-                    {review.user?.firstName + ' ' + review.user?.lastName}
+                <div className="w-full">
+                  <div className="font-bold text-base mb-4">
+                    {review.user
+                      ? review.user.firstName ??
+                        '' + ' ' + review.user?.lastName
+                      : 'User not found'}
                   </div>
                   <div className="flex items-center">
                     <Rate
