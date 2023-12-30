@@ -3,8 +3,14 @@ import {
   TickCircleWhiteIcon,
 } from '../../../../components/Icons'
 import CustomImage from '../../../../components/common/CustomImage'
+import { MatchPairSchema } from '../../../../services/exerciseApi/types'
 import { SubmissionResponse } from '../../../../services/submissionApi/types'
-import { ExerciseType, UPLOAD_FILE_URL } from '../../../../utils/constants'
+import { getFileUrl } from '../../../../utils/common'
+import {
+  ExerciseMatchType,
+  ExerciseType,
+  UPLOAD_FILE_URL,
+} from '../../../../utils/constants'
 import { ArrowRightOutlined } from '@ant-design/icons'
 
 interface ExplainProps {
@@ -15,7 +21,7 @@ interface ExplainProps {
 function Explain({ submission, questionIndex }: ExplainProps) {
   const question = submission?.detail[questionIndex]
   const hasGrade =
-    question && (!question.hasOwnProperty('grade') || question?.grade !== null)
+    !question?.hasOwnProperty('grade') || question?.grade !== null
 
   const isCorrect = question?.isCorrect
   const explanation = question?.explanation
@@ -28,6 +34,7 @@ function Explain({ submission, questionIndex }: ExplainProps) {
           <span>Correct answer: </span>
           {correctAnswer.map((answer: string) => (
             <CustomImage
+              key={answer}
               className="hidden lg:block object-cover w-20 h-20 rounded-md"
               src={`${UPLOAD_FILE_URL}${answer}`}
             />
@@ -37,14 +44,30 @@ function Explain({ submission, questionIndex }: ExplainProps) {
     } else if (submission?.exerciseType === ExerciseType.Match) {
       return (
         <div className="flex gap-4">
-          <span>Correct answer match: </span>
+          <span>Correct answer is: </span>
 
           <div className="flex flex-col gap-4">
-            {correctAnswer?.map((answer: string) => (
-              <div className="flex gap-4">
-                <span>{answer[0]}</span>
+            {correctAnswer?.map((answer: MatchPairSchema[], index: number) => (
+              <div className="flex items-center gap-4" key={index}>
+                {answer[0].type === ExerciseMatchType.Text ? (
+                  <span>{answer[0].content}</span>
+                ) : (
+                  <CustomImage
+                    src={getFileUrl(answer[0].content)}
+                    className="w-20 h-20 object-cover"
+                  />
+                )}
+
                 <ArrowRightOutlined />
-                <span>{answer[1]}</span>
+
+                {answer[1].type === ExerciseMatchType.Text ? (
+                  <span>{answer[1].content}</span>
+                ) : (
+                  <CustomImage
+                    src={getFileUrl(answer[1].content)}
+                    className="w-20 h-20 object-cover"
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -55,7 +78,7 @@ function Explain({ submission, questionIndex }: ExplainProps) {
     }
   }
 
-  return hasGrade ? (
+  return hasGrade || isCorrect !== null ? (
     <div
       className={`w-full p-5 rounded-md flex gap-4 mt-7 ${
         isCorrect ? 'bg-green-500' : 'bg-secondary'

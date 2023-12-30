@@ -73,7 +73,6 @@ const AudioPlayer = ({ url }: { url: string }) => {
     }
   }, [data])
 
-  console.log('🚀 ~ file: index.tsx:162 ~ AudioPlayer ~ blob', state)
   if (isLoading || !url) return <AppLoading />
   return (
     <div className="bg-surface rounded-lg p-4 w-1/2 h-full">

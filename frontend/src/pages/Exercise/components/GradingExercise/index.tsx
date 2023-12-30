@@ -100,7 +100,6 @@ function GradingExercise({
             <Button
               type="primary"
               onClick={() => {
-                console.log(form.getFieldsValue())
                 form.submit()
               }}
               loading={isButtonLoading}
