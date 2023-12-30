@@ -96,7 +96,11 @@ const CourseContent = (course: CourseDetails) => {
                   {section.completed &&
                   section.lessons?.length &&
                   course?.isAttended ? (
-                    <TickCircle className="mr-2" width={24} height={24} />
+                    <TickCircle
+                      className="mr-2 text-primary"
+                      width={24}
+                      height={24}
+                    />
                   ) : (
                     <Circle className="mr-2" width={24} height={24} />
                   )}
@@ -130,7 +134,11 @@ const CourseContent = (course: CourseDetails) => {
                     header={
                       <div className="flex items-center text-lg">
                         {lesson?.completed && lesson.exercises?.length ? (
-                          <TickCircle className="mr-2" width={24} height={24} />
+                          <TickCircle
+                            className="mr-2 text-primary"
+                            width={24}
+                            height={24}
+                          />
                         ) : (
                           <Circle className="mr-2" width={24} height={24} />
                         )}
@@ -163,7 +171,7 @@ const CourseContent = (course: CourseDetails) => {
                             <div className="flex items-center cursor-pointer">
                               {completedExerciseIds.includes(exercise.id) ? (
                                 <TickCircle
-                                  className="mr-2"
+                                  className="mr-2 text-primary"
                                   width={24}
                                   height={24}
                                 />
