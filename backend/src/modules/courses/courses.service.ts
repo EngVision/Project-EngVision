@@ -7,22 +7,6 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import mongoose, { Model, Types } from 'mongoose';
-import { FilesService } from '../files/files.service';
-import { ReviewDto } from '../reviews/dto/review.dto';
-import { ReviewsService } from '../reviews/reviews.service';
-import { UserBriefDto } from '../users/dto/user-brief.dto';
-import { Course, CourseDocument } from './schemas/course.schema';
-import {
-  UpdateLessonDto,
-  CourseDto,
-  CreateCourseDto,
-  CreateLessonDto,
-  CreateSectionDto,
-  SearchCourseDto,
-  UpdateCourseDto,
-  CourseDetailDto,
-  CourseExercisesDto,
-} from './dto';
 import {
   MaterialTypes,
   Order,
@@ -32,9 +16,25 @@ import {
 } from 'src/common/enums';
 import { JwtPayload } from '../auth/types';
 import { ExercisesService } from '../exercises/exercises.service';
+import { FilesService } from '../files/files.service';
+import { ReviewDto } from '../reviews/dto/review.dto';
+import { ReviewsService } from '../reviews/reviews.service';
+import { SubmissionsService } from '../submissions/submissions.service';
+import { UserBriefDto } from '../users/dto/user-brief.dto';
+import {
+  CourseDetailDto,
+  CourseDto,
+  CourseExercisesDto,
+  CreateCourseDto,
+  CreateLessonDto,
+  CreateSectionDto,
+  SearchCourseDto,
+  UpdateCourseDto,
+  UpdateLessonDto,
+} from './dto';
 import { MaterialAddedDto } from './dto/add-material.dto';
 import { UpdateMaterialDto } from './dto/update-material.dto';
-
+import { Course, CourseDocument } from './schemas/course.schema';
 @Injectable()
 export class CoursesService {
   constructor(
@@ -43,6 +43,7 @@ export class CoursesService {
     private readonly reviewsService: ReviewsService,
     private readonly filesService: FilesService,
     private readonly exercisesService: ExercisesService,
+    private readonly submissionsService: SubmissionsService,
   ) {}
 
   async createCourse(course: CreateCourseDto, user: JwtPayload) {
@@ -701,6 +702,22 @@ export class CoursesService {
         },
       },
     ]);
+
+    for (const course of courses) {
+      const courseSubmission = (
+        await this.submissionsService.findByUser(
+          { course: course._id.toString() },
+          user.sub,
+        )
+      )[0];
+
+      const progress =
+        courseSubmission.filter(submission => {
+          return submission.progress === 1;
+        }).length / courseSubmission.length;
+
+      course.progress = progress ? progress : 0;
+    }
 
     return plainToInstance(CourseExercisesDto, courses);
   }

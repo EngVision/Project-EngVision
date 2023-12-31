@@ -6,6 +6,7 @@ import { Course, CourseSchema } from './schemas/course.schema';
 import { ReviewsModule } from '../reviews/reviews.module';
 import { FilesModule } from '../files/files.module';
 import { ExercisesModule } from '../exercises/exercises.module';
+import { SubmissionsModule } from '../submissions/submissions.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ExercisesModule } from '../exercises/exercises.module';
     forwardRef(() => ReviewsModule),
     FilesModule,
     ExercisesModule,
+    SubmissionsModule,
   ],
   controllers: [CoursesController],
   providers: [CoursesService],
