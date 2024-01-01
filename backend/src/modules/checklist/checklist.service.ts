@@ -48,33 +48,23 @@ export class ChecklistService {
 
     if (courses.length > 0) {
       checklist.items[0].isDone = true;
-
       checklist.items[1].disabled = false;
       checklist.items[1].link = `/discover/${courses[0].id}?tab=2`;
-
       checklist.items[2].link = `/discover/${courses[0].id}?tab=3`;
 
-      const [submissions] = await this.submissionsService.findByUser(
-        { course: courses[0].id },
-        userId,
-      );
-      if (submissions.length > 0) {
+      if (courses[0].progress > 0) {
         checklist.items[1].isDone = true;
         checklist.items[2].disabled = false;
-
         const course = await this.coursesService.getCourse(courses[0].id, {
           sub: userId,
           roles: [Role.Student],
         } as JwtPayload);
-
         if (course.isReviewed) {
           checklist.items[2].isDone = true;
-
           checklist.isDone = true;
         }
       }
     }
-
     await checklist.save();
   }
 }

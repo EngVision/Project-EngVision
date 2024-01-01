@@ -707,18 +707,20 @@ export class CoursesService {
       },
     ]);
 
+    const [submissions] = await this.submissionsService.findByUser(
+      {},
+      user.sub,
+    );
+
     for (const course of courses) {
-      const courseSubmission = (
-        await this.submissionsService.findByUser(
-          { course: course._id.toString() },
-          user.sub,
-        )
-      )[0];
+      const courseSubmissions = submissions.filter(
+        submission => submission.course === course._id.toString(),
+      );
 
       const progress =
-        courseSubmission.filter(submission => {
+        courseSubmissions.filter(submission => {
           return submission.progress === 1;
-        }).length / courseSubmission.length;
+        }).length / courseSubmissions.length;
 
       course.progress = progress ? progress : 0;
     }
