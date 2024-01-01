@@ -1,15 +1,17 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Tabs } from 'antd'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Star from '../../components/Icons/Star'
 import AppLoading from '../../components/common/AppLoading'
+import CustomImage from '../../components/common/CustomImage'
 import coursesApi from '../../services/coursesApi'
 import { UPLOAD_FILE_URL } from '../../utils/constants'
+import { formatDate } from '../../utils/formatDate'
 import CourseContent from './CourseContent'
+import Materials from './Materials'
 import Overview from './Overview'
 import Reviews from './Reviews'
 import CustomImage from '../../components/common/CustomImage'
-import Materials from './Materials'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {
@@ -58,7 +60,7 @@ const CourseDetailsPage = () => {
               <div>
                 Last Update:{' '}
                 <span className="font-bold">
-                  {courseDetail.updatedAt.substring(0, 10)}
+                  {formatDate(courseDetail.updatedAt)}
                 </span>
               </div>
             </div>
@@ -127,27 +129,6 @@ const CourseDetailsPage = () => {
             key="3"
           >
             <Reviews course={courseDetail} />
-          </TabPane>
-          <TabPane
-            tab={
-              <Button
-                className={`flex font-light items-center text-lg px-10 py-5 rounded-xl ${
-                  tab === '4' ? '' : 'text-primary border-primary'
-                }`}
-                type={tab === '4' ? 'primary' : 'default'}
-              >
-                Materials
-              </Button>
-            }
-            key="4"
-          >
-            {courseDetail.isAttended ? (
-              <Materials materials={courseDetail.materials} />
-            ) : (
-              <p className="text-center text-primary text-xl p-10">
-                You have to attend course to view materials
-              </p>
-            )}
           </TabPane>
         </Tabs>
       </div>

@@ -3,7 +3,6 @@ import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import mongoose from 'mongoose';
 import { CEFRLevel } from 'src/common/enums';
 import { UserBriefDto } from 'src/modules/users/dto/user-brief.dto';
-import { MaterialsDto } from './materials.dto';
 
 export class CourseDto {
   @Expose({ name: '_id' })
@@ -50,9 +49,6 @@ export class CourseDto {
 
   @ApiPropertyOptional({ type: Number, description: 'Total lessons' })
   totalLessons?: number;
-
-  @Exclude()
-  materials: MaterialsDto;
 
   @Exclude()
   sections?: mongoose.Types.ObjectId[];

@@ -7,6 +7,8 @@ import {
   ReviewParams,
 } from '../../../services/coursesApi/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { UPLOAD_FILE_URL } from '../../../utils/constants'
+import { formatDate } from '../../../utils/formatDate'
 
 const { TextArea } = Input
 
@@ -30,8 +32,6 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
     })
   }
 
-  console.log(course.isReviewed)
-
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }
@@ -42,7 +42,7 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
         <h3 className="text-2xl text-primary mb-6">Reviews</h3>
       </div>
       {course.isAttended && !course.isReviewed && (
-        <div className="mb-8 ">
+        <div className="mb-8">
           <Form
             name="validateOnly"
             layout="vertical"
@@ -51,17 +51,21 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
             onFinishFailed={onFinishFailed}
           >
             <div className="font-bold text-sm mb-2">Review this course</div>
-            <Form.Item<ReviewParams> name="comment" label="Reviews">
-              <TextArea
-                className="mb-6"
-                rows={3}
-                showCount
-                maxLength={500}
-                placeholder="Write your review here"
-              />
-            </Form.Item>
-            <div className="flex items-center w-full justify-between">
-              <Form.Item<ReviewParams> name="star" label="Reviews">
+            <div className="flex flex-col">
+              <Form.Item<ReviewParams> name="comment" label="Reviews">
+                <TextArea
+                  rows={3}
+                  showCount
+                  maxLength={500}
+                  placeholder="Write your review here"
+                />
+              </Form.Item>
+              <Form.Item<ReviewParams>
+                className="mb-0"
+                name="star"
+                label="Rate this course"
+                rules={[{ required: true }]}
+              >
                 <Rate
                   className="text-secondary mr-5"
                   character={<Star width={24} height={24}></Star>}
@@ -71,7 +75,7 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
               <Button
                 type="primary"
                 htmlType="submit"
-                className="rounded-xl h-[2.5rem] w-[8rem]"
+                className="rounded-xl h-[2.5rem] w-[8rem] self-end"
               >
                 Submit
               </Button>
@@ -87,13 +91,20 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
                 <Avatar
                   className="mr-3"
                   size={64}
-                  src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+                  src={
+                    review.user && review.user.avatar
+                      ? `${UPLOAD_FILE_URL}${review.user.avatar}`
+                      : 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80'
+                  }
                 />
                 <div className="w-full">
                   <div className="font-bold text-base mb-4">
-                    {review.user.firstName + ' ' + review.user.lastName}
+                    {review.user
+                      ? review.user.firstName ??
+                        '' + ' ' + review.user?.lastName
+                      : 'User not found'}
                   </div>
-                  <div className="flex items-center mb-4">
+                  <div className="flex items-center">
                     <Rate
                       disabled
                       className="text-secondary mr-5"
@@ -101,7 +112,7 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
                       value={review.star}
                     ></Rate>
                     <span className="text-xs font-bold">
-                      {review.updatedAt.substring(0, 10)}
+                      {formatDate(review.updatedAt)}
                     </span>
                   </div>
                   <p className="text-sm">{review.comment}</p>

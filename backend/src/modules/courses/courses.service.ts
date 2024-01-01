@@ -7,34 +7,27 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import mongoose, { Model, Types } from 'mongoose';
-import {
-  MaterialTypes,
-  Order,
-  Role,
-  SortBy,
-  StatusCourseSearch,
-} from 'src/common/enums';
-import { JwtPayload } from '../auth/types';
-import { ExercisesService } from '../exercises/exercises.service';
 import { FilesService } from '../files/files.service';
 import { ReviewDto } from '../reviews/dto/review.dto';
 import { ReviewsService } from '../reviews/reviews.service';
-import { SubmissionsService } from '../submissions/submissions.service';
 import { UserBriefDto } from '../users/dto/user-brief.dto';
+import { Course, CourseDocument } from './schemas/course.schema';
 import {
-  CourseDetailDto,
+  UpdateLessonDto,
   CourseDto,
-  CourseExercisesDto,
   CreateCourseDto,
   CreateLessonDto,
   CreateSectionDto,
   SearchCourseDto,
   UpdateCourseDto,
-  UpdateLessonDto,
+  CourseDetailDto,
+  CourseExercisesDto,
 } from './dto';
-import { MaterialAddedDto } from './dto/add-material.dto';
-import { UpdateMaterialDto } from './dto/update-material.dto';
-import { Course, CourseDocument } from './schemas/course.schema';
+import { Order, Role, SortBy, StatusCourseSearch } from 'src/common/enums';
+import { JwtPayload } from '../auth/types';
+import { ExercisesService } from '../exercises/exercises.service';
+import { SubmissionsService } from '../submissions/submissions.service';
+
 @Injectable()
 export class CoursesService {
   constructor(
@@ -248,9 +241,6 @@ export class CoursesService {
       course = await this.courseModel
         .findOne({ _id: id })
         .populate('teacher')
-        .populate('materials.pdfFiles.fileId')
-        .populate('materials.images.fileId')
-        .populate('materials.audios.fileId')
         .populate({
           path: 'reviews',
           options: { sort: { createdAt: -1 } },
@@ -267,6 +257,9 @@ export class CoursesService {
           lesson.exercises = lesson.exercises.map(
             exercise => exercise.id,
           ) as any;
+          lesson.materials = lesson.materials.map(
+            material => material.id,
+          ) as any;
         });
       });
     }
@@ -275,15 +268,13 @@ export class CoursesService {
       course = await this.courseModel
         .findOne({ _id: id })
         .populate('teacher')
-        .populate('materials.pdfFiles.fileId')
-        .populate('materials.images.fileId')
-        .populate('materials.audios.fileId')
         .populate({
           path: 'reviews',
           options: { sort: { createdAt: -1 } },
           populate: { path: 'user' },
         })
-        .populate('sections.lessons.exercises', 'id title');
+        .populate('sections.lessons.exercises', 'id title')
+        .populate('sections.lessons.materials');
 
       if (user.roles.includes(Role.Student)) {
         courseMap = {
@@ -298,6 +289,7 @@ export class CoursesService {
 
     courseMap.avgStar = this.reviewsService.averageStar(course.reviews);
 
+    console.log(courseMap.sections[0].lessons[0].materials);
     return courseMap;
   }
 
@@ -311,7 +303,6 @@ export class CoursesService {
     if (String(oldCourse.teacher) !== user.sub) {
       throw new ForbiddenException('Access denied');
     }
-
     await this.courseModel.findOneAndUpdate({ _id: id }, updateCourse);
 
     return this.getCourse(id, user);
@@ -585,6 +576,14 @@ export class CoursesService {
           as: 'exercises',
         },
       },
+      {
+        $lookup: {
+          from: 'localfiles',
+          localField: 'materials',
+          foreignField: '_id',
+          as: 'materials',
+        },
+      },
     ]);
 
     if (!lesson) {
@@ -688,6 +687,11 @@ export class CoursesService {
         },
       },
       {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
         $project: {
           _id: 1,
           title: 1,
@@ -745,90 +749,51 @@ export class CoursesService {
     return coursesExercises;
   }
 
-  async addMaterial(
-    courseId: string,
-    userId: string,
-    materialAdded: MaterialAddedDto,
+  async createMaterial(
+    materialId: string,
+    lessonId: string,
+    teacherId: string,
   ) {
-    const { type, ...material } = materialAdded;
     const course = await this.courseModel.findOneAndUpdate(
       {
-        _id: courseId,
-        teacher: userId,
+        teacher: teacherId,
+        'sections.lessons._id': lessonId,
       },
-      { $push: { [`materials.${type}`]: material } },
-      { new: true },
+      { $push: { 'sections.$.lessons.$[index].materials': materialId } },
+      { arrayFilters: [{ 'index._id': lessonId }], new: true },
     );
 
-    if (!course)
-      throw new BadRequestException(
-        'Course ID or section ID is either missing or access denied',
-      );
+    if (!course) {
+      throw new BadRequestException('Lesson ID is missing or access denied');
+    }
 
     return course;
   }
 
   async removeMaterial(
-    courseId: string,
     materialId: string,
-    userId: string,
-    type: MaterialTypes,
+    lessonId: string,
+    teacherId: string,
   ) {
     const course = await this.courseModel.findOneAndUpdate(
       {
-        _id: courseId,
-        teacher: userId,
-        [`materials.${type}._id`]: materialId,
-      },
-      {
-        $pull: {
-          [`materials.${type}`]: {
-            _id: materialId,
-          },
+        teacher: teacherId,
+        'sections.lessons._id': lessonId,
+        'sections.lessons.materials': {
+          $elemMatch: { $eq: materialId },
         },
       },
-      { new: true },
+      { $pull: { 'sections.$.lessons.$[index].materials': materialId } },
+      { arrayFilters: [{ 'index._id': lessonId }], new: true },
     );
 
     if (!course)
       throw new BadRequestException(
-        'Course ID or section ID is either missing or access denied',
+        'Lesson ID or material ID is either missing or access denied',
       );
 
-    return course;
-  }
+    const newLesson = await this.getLesson(lessonId, teacherId);
 
-  async updateMaterial(
-    courseId: string,
-    materialId: string,
-    userId: string,
-    updateMaterial: UpdateMaterialDto,
-  ) {
-    const { type, ...material } = updateMaterial;
-    const course = await this.courseModel.findOneAndUpdate(
-      {
-        _id: courseId,
-        teacher: userId,
-        [`materials.${type}._id`]: materialId,
-      },
-      {
-        $set: {
-          [`materials.${type}.$[index].note`]: material.note,
-          [`materials.${type}.$[index].fileId`]: material.fileId,
-          [`materials.${type}.$[index].url`]: material.url,
-        },
-      },
-      {
-        new: true,
-        arrayFilters: [{ 'index._id': materialId }],
-      },
-    );
-
-    if (!course)
-      throw new BadRequestException(
-        'Course ID or section ID is either missing or access denied',
-      );
-
-    return course;
+    return newLesson;
   }
 }

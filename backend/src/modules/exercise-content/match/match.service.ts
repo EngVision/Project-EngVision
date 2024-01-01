@@ -85,7 +85,12 @@ export class MatchService extends ExerciseContentService {
     return {
       question: id,
       isCorrect: detail.every(
-        pair => answer.findIndex(d => d.join() === pair.join()) !== -1,
+        pair =>
+          answer.findIndex(
+            pairAnswer =>
+              pairAnswer[0] + pairAnswer[1] ===
+              pair[0].content + pair[1].content,
+          ) !== -1,
       ),
       answer,
       correctAnswer: detail,
@@ -105,9 +110,7 @@ export class MatchService extends ExerciseContentService {
     const res: Match[] = [];
 
     questionList.forEach(q => {
-      const detail = q.question.pairs.map(pair =>
-        pair.map(item => item.content),
-      );
+      const detail = q.question.pairs;
       const pairsShuffled = this.shuffleQuestion(q.question.pairs);
 
       res.push({
@@ -130,15 +133,18 @@ export class MatchService extends ExerciseContentService {
     questionList.forEach(q => {
       if (!q.correctAnswer.explanation) {
         const correctMatch = [];
+
         q.question.pairs.map((pair, indexLeft) => {
-          const correctContent = q.correctAnswer.detail.find(
-            pairCorrect => pair[0].content === pairCorrect[0],
+          const correctPair = q.correctAnswer.detail.find(
+            pairCorrect =>
+              JSON.stringify(pair[0]) === JSON.stringify(pairCorrect[0]),
           )[1];
           const indexRight = q.question.pairs.findIndex(
-            p => p[1].content === correctContent,
+            p => JSON.stringify(p[1]) === JSON.stringify(correctPair),
           );
           correctMatch.push([indexLeft + 1, indexRight + 1]);
         });
+
         q.correctAnswer.explanation = correctMatch
           .map(c => c.join('->'))
           .join(', ');
