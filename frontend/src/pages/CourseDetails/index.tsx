@@ -8,10 +8,8 @@ import coursesApi from '../../services/coursesApi'
 import { UPLOAD_FILE_URL } from '../../utils/constants'
 import { formatDate } from '../../utils/formatDate'
 import CourseContent from './CourseContent'
-import Materials from './Materials'
 import Overview from './Overview'
 import Reviews from './Reviews'
-import CustomImage from '../../components/common/CustomImage'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {
