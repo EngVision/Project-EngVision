@@ -8,6 +8,7 @@ import { MultipleChoiceService } from './multiple-choice/multiple-choice.service
 import { ExerciseContentService } from './base-exercise-content.service';
 import { ExerciseType } from 'src/common/enums';
 import { ConstructedResponseService } from './constructed-response/constructed-response.service';
+import { DragAndDropService } from './drag-and-drop/drag-and-drop.service';
 
 @Injectable()
 export class ExerciseContentServiceFactory {
@@ -19,6 +20,7 @@ export class ExerciseContentServiceFactory {
     private readonly UnscrambleService: UnscrambleService,
     private readonly MatchService: MatchService,
     private readonly speakingService: SpeakingService,
+    private readonly dragAndDropService: DragAndDropService,
   ) {}
 
   createService(type: ExerciseType): ExerciseContentService {
@@ -37,6 +39,8 @@ export class ExerciseContentServiceFactory {
         return this.MatchService;
       case ExerciseType.Speaking:
         return this.speakingService;
+      case ExerciseType.DragAndDrop:
+        return this.dragAndDropService;
       default:
         throw new BadRequestException('Exercise type not found');
     }

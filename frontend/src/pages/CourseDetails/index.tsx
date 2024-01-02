@@ -3,15 +3,12 @@ import { Button, Tabs } from 'antd'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import Star from '../../components/Icons/Star'
 import AppLoading from '../../components/common/AppLoading'
-import CustomImage from '../../components/common/CustomImage'
 import coursesApi from '../../services/coursesApi'
 import { UPLOAD_FILE_URL } from '../../utils/constants'
 import { formatDate } from '../../utils/formatDate'
 import CourseContent from './CourseContent'
-import Materials from './Materials'
 import Overview from './Overview'
 import Reviews from './Reviews'
-import CustomImage from '../../components/common/CustomImage'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {
