@@ -7,6 +7,7 @@ import { MakeSentenceModule } from './make-sentence/make-sentence.module';
 import { UnscrambleModule } from './unscramble/unscramble.module';
 import { SpeakingModule } from './speaking/speaking.module';
 import { MatchModule } from './match/match.module';
+import { DragAndDropModule } from './drag-and-drop/drag-and-drop.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { MatchModule } from './match/match.module';
     UnscrambleModule,
     MatchModule,
     SpeakingModule,
+    DragAndDropModule,
   ],
   providers: [ExerciseContentServiceFactory],
   exports: [ExerciseContentServiceFactory],

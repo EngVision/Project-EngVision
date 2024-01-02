@@ -45,6 +45,8 @@ module.exports = {
           200: '#D83A52',
           300: '#B63546',
         },
+        correct: '#41ab3f',
+        false: '#fd6267',
       },
       fontFamily: {
         sans: ['Poppins', ...defaultTheme.fontFamily.sans],

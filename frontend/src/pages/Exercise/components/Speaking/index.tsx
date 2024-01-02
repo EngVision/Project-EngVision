@@ -25,7 +25,6 @@ interface SpeakingResponse extends SubmitAnswerResponse {
 
 function Speaking(props: SpeakingProps) {
   const { question, result, setIsSubmittable } = props
-  console.log('🚀 ~ file: index.tsx:28 ~ Speaking ~ result:', result)
   const form = Form.useFormInstance()
   const [fileId, setFileId] = useState<string>('')
 

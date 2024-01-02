@@ -224,3 +224,16 @@ export const TEACHER_GET_STARTED_VIDEO_URL =
   'https://www.youtube.com/embed/BrmLUSJsKQU?si=m4YgMTgyMLGWdm7V'
 export const FACEBOOK_SOCIAL_URL = 'https://www.facebook.com/engvision.dev'
 export const YOUTUBE_SOCIAL_URL = 'https://www.youtube.com/@engvisionofficial'
+
+export const LINE_COLOR = [
+  '#f87171',
+  '#a3e635',
+  '#22d3ee',
+  '#818cf8',
+  '#e879f9',
+  '#34d399',
+  '#c084fc',
+  '#db2777',
+  '#ca8a04',
+  '#78716c',
+]
