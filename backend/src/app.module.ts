@@ -16,6 +16,7 @@ import { SubmissionsModule } from './modules/submissions/submissions.module';
 import { UserLevelModule } from './modules/user-level/user-level.module';
 import { UsersModule } from './modules/users/users.module';
 import { ChecklistModule } from './modules/checklist/checklist.module';
+import { UserViewsModule } from './modules/user-views/user-views.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ChecklistModule } from './modules/checklist/checklist.module';
     UserLevelModule,
     OpenAiModule,
     ChecklistModule,
+    UserViewsModule,
   ],
   providers: [
     {

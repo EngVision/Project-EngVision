@@ -22,7 +22,7 @@ export class FileDto {
   @ApiPropertyOptional({ type: Number, description: 'Size' })
   size?: number;
 
-  @Transform(value => value.obj?.userId?.toString())
+  @Transform(value => value.obj?._id?.toString())
   @ApiProperty({ type: String, description: 'userId' })
   @ApiPropertyOptional({ type: String })
   userId?: string;

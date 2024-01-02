@@ -30,6 +30,7 @@ import MultipleChoiceForm from './components/MultipleChoiceForm'
 import UnscrambleForm from './components/UnscrambleForm'
 import SpeakingForm from './components/Speaking'
 import MatchForm from './components/MatchForm'
+import DragAndDropForm from './components/DragAndDropForm'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -159,6 +160,8 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
       return <SpeakingForm form={form} />
     case ExerciseType.Match:
       return <MatchForm form={form} />
+    case ExerciseType.DragAndDrop:
+      return <DragAndDropForm form={form} />
     default:
       return <></>
   }

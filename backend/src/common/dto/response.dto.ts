@@ -13,6 +13,16 @@ interface ResponseDataParams extends ResponseParams {
   data?: Document | any;
 }
 
+const transformData = (data: any): any => {
+  if (data instanceof Array) {
+    return data.map(d => transformData(d));
+  } else if (data instanceof Document || typeof data !== 'object') {
+    return data.toObject();
+  } else {
+    return data;
+  }
+};
+
 export const GetResponse = ({
   dataType,
   data = null,
@@ -20,22 +30,14 @@ export const GetResponse = ({
   success = true,
   dtoOptions = {},
 }: ResponseDataParams) => {
-  let transformData = data;
-
-  if (data instanceof Array) {
-    transformData = data.map(d => (typeof d === 'object' ? d : d.toObject()));
-  }
-
-  if (data instanceof Document) {
-    transformData = data.toObject();
-  }
+  const transformedData = transformData(data);
 
   const response = new ResponseDto<any>(dataType, {
     success,
     message,
     data: dataType
-      ? plainToInstance(dataType, transformData, dtoOptions)
-      : transformData,
+      ? plainToInstance(dataType, transformedData, dtoOptions)
+      : transformedData,
   });
 
   return response;

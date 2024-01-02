@@ -9,7 +9,6 @@ import GetStarted from '../pages/Student/GetStarted'
 import NoLayout from '../layouts/NoLayout'
 import DoExercise from '../pages/DoExercise'
 import DoExam from '../pages/DoExam'
-import TestAudioComponent from '../pages/TestAudioComponent'
 export const studentRoutes: RouteObject[] = [
   {
     element: <DefaultLayout />,
@@ -79,15 +78,6 @@ export const studentRoutes: RouteObject[] = [
                 ],
               },
             ],
-          },
-        ],
-      },
-      {
-        path: 'test',
-        children: [
-          {
-            element: <TestAudioComponent />,
-            path: '',
           },
         ],
       },
