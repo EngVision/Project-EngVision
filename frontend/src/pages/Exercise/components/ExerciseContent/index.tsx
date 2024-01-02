@@ -9,6 +9,7 @@ import Match from '../Match'
 import MultipleChoice from '../MultipleChoice'
 import Speaking from '../Speaking'
 import Unscramble from '../Unscramble'
+import DragDrop from '../DragDrop'
 
 interface ExerciseContentProps {
   exercise?: ExerciseSchema
@@ -90,6 +91,14 @@ function ExerciseContent({
       case ExerciseType.Match:
         return (
           <Match
+            {...content}
+            result={submission?.detail[questionIndex]}
+            setIsSubmittable={setIsSubmittable}
+          />
+        )
+      case ExerciseType.DragAndDrop:
+        return (
+          <DragDrop
             {...content}
             result={submission?.detail[questionIndex]}
             setIsSubmittable={setIsSubmittable}

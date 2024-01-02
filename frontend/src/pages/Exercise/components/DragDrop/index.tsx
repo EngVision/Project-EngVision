@@ -1,6 +1,35 @@
 import React, { useState } from 'react'
+import {
+  MatchPairSchema,
+  QuestionPayload,
+  SubmitAnswerResponse,
+} from '../../../../services/exerciseApi/types'
 
-const DragDrop = () => {
+interface MatchProps extends QuestionPayload {
+  question: {
+    text: string
+    image?: string
+    pairs: MatchPairSchema[][]
+    audio?: string
+  }
+  exerciseId?: string
+  result?: MatchResponse
+  setIsSubmittable: (value: boolean) => void
+}
+
+interface MatchResponse extends SubmitAnswerResponse {
+  answer: string[]
+  correctAnswer: string[]
+}
+
+type MatchAnswer = {
+  first: string
+  second: string
+} | null
+
+const DragDrop = (props: MatchProps) => {
+  const { question, result, setIsSubmittable } = props
+  console.log(question, result, setIsSubmittable)
   const [list1, setList1] = useState(['Item A', 'Item B', 'Item C'])
   const [list2, setList2] = useState([
     {
