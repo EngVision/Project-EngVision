@@ -57,6 +57,11 @@ const Discover = () => {
     priceMin: 0,
     priceMax: 1,
   }
+
+  const { data: personalizedCourse } = useQuery({
+    queryKey: ['personalizedCourse'],
+    queryFn: () => coursesApi.getPersonalizedCourse(),
+  })
   const { data: rawSuggestedList } = useQuery({
     queryKey: ['suggestedCourses', { levels: currentLevel }],
     queryFn: () =>
@@ -74,6 +79,9 @@ const Discover = () => {
     queryKey: ['courses', getFreeCoursesParams],
     queryFn: () => coursesApi.getCourses(getFreeCoursesParams),
   })
+
+  console.log(personalizedCourse)
+
   return (
     <>
       {isLoading ? (
@@ -97,8 +105,22 @@ const Discover = () => {
                   </div>
                 </div>
               )} */}
+            {personalizedCourse && (
+              <div className="">
+                <p className="font-bold text-3xl text-primary mb-6">
+                  Personalized Course
+                </p>
+                <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+                  <CourseCard
+                    course={personalizedCourse}
+                    key={personalizedCourse.id}
+                  />
+                </div>
+              </div>
+            )}
+
             {rawSuggestedList && (
-              <div className="m-6">
+              <div className="">
                 <p className="font-bold text-3xl text-primary mb-6">
                   Recommended
                 </p>

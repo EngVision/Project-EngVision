@@ -7,26 +7,27 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import mongoose, { Model, Types } from 'mongoose';
+import { Order, Role, SortBy, StatusCourseSearch } from 'src/common/enums';
+import { JwtPayload } from '../auth/types';
+import { ExercisesService } from '../exercises/exercises.service';
 import { FilesService } from '../files/files.service';
 import { ReviewDto } from '../reviews/dto/review.dto';
 import { ReviewsService } from '../reviews/reviews.service';
+import { SubmissionsService } from '../submissions/submissions.service';
 import { UserBriefDto } from '../users/dto/user-brief.dto';
-import { Course, CourseDocument } from './schemas/course.schema';
 import {
-  UpdateLessonDto,
+  CourseDetailDto,
   CourseDto,
+  CourseExercisesDto,
   CreateCourseDto,
   CreateLessonDto,
   CreateSectionDto,
   SearchCourseDto,
   UpdateCourseDto,
-  CourseDetailDto,
-  CourseExercisesDto,
+  UpdateLessonDto,
 } from './dto';
-import { Order, Role, SortBy, StatusCourseSearch } from 'src/common/enums';
-import { JwtPayload } from '../auth/types';
-import { ExercisesService } from '../exercises/exercises.service';
-import { SubmissionsService } from '../submissions/submissions.service';
+import { Course, CourseDocument } from './schemas/course.schema';
+import { UserLevelService } from '../user-level/user-level.service';
 
 @Injectable()
 export class CoursesService {
@@ -37,6 +38,7 @@ export class CoursesService {
     private readonly filesService: FilesService,
     private readonly exercisesService: ExercisesService,
     private readonly submissionsService: SubmissionsService,
+    private readonly userLevelService: UserLevelService,
   ) {}
 
   async createCourse(course: CreateCourseDto, user: JwtPayload) {
@@ -117,7 +119,13 @@ export class CoursesService {
             {
               $addFields: {
                 fullName: {
-                  $concat: ['$firstName', ' ', '$lastName'],
+                  $concat: [
+                    '$firstName',
+                    {
+                      $cond: [{ $ne: ['$lastName', null] }, ' ', ''],
+                    },
+                    { $ifNull: ['$lastName', ''] },
+                  ],
                 },
               },
             },
@@ -289,7 +297,16 @@ export class CoursesService {
 
     courseMap.avgStar = this.reviewsService.averageStar(course.reviews);
 
-    console.log(courseMap.sections[0].lessons[0].materials);
+    if (courseMap.isPersonalized) {
+      const userLevel = await this.userLevelService.findOneByUser(user.sub);
+
+      if (userLevel) {
+        courseMap.sections = courseMap.sections.filter(
+          section => section.title === `Level ${userLevel.CEFRLevel}`,
+        );
+      }
+    }
+
     return courseMap;
   }
 
@@ -666,7 +683,13 @@ export class CoursesService {
             {
               $addFields: {
                 fullName: {
-                  $concat: ['$firstName', ' ', '$lastName'],
+                  $concat: [
+                    '$firstName',
+                    {
+                      $cond: [{ $ne: ['$lastName', null] }, ' ', ''],
+                    },
+                    { $ifNull: ['$lastName', ''] },
+                  ],
                 },
               },
             },

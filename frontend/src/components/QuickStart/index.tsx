@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Collapse } from 'antd'
 import type { CollapseProps } from 'antd'
 import { CloseCircleWhiteIcon } from '../Icons'
@@ -6,6 +6,7 @@ import TickCircle from '../Icons/TickCircle'
 import Bulb from '../Icons/Bulb'
 import { useNavigate } from 'react-router-dom'
 import { ICheckListItem } from '../../services/checkListApi/types'
+import checkListApi from '../../services/checkListApi'
 
 const QuickStart = ({
   checkListItems,
@@ -13,13 +14,27 @@ const QuickStart = ({
   checkListItems: ICheckListItem[]
 }) => {
   const [isHidden, setIsHidden] = useState(false)
+  const [activeIndex, setActiveIndex] = useState<number>(0)
   const toggleQuickStart = () => {
     setIsHidden(!isHidden)
   }
+
+  useEffect(() => {
+    let index = 0
+
+    checkListItems.forEach((item, i) => {
+      if (item.isDone) {
+        index = i + 1
+      }
+    })
+
+    setActiveIndex(index)
+  }, [checkListItems])
+
   const navigation = useNavigate()
   const items: CollapseProps['items'] = checkListItems?.map((item, index) => {
     return {
-      key: index.toString(),
+      key: index,
       label: (
         <div className="flex items-center">
           <TickCircle
@@ -42,6 +57,9 @@ const QuickStart = ({
       ),
     }
   })
+  const dismissQuickStart = async () => {
+    checkListItems = (await checkListApi.dismiss())?.items ?? []
+  }
   return (
     <div className="fixed bottom-14 right-14 w-[20rem] transition-all">
       <div
@@ -66,10 +84,12 @@ const QuickStart = ({
           className=""
           expandIconPosition="end"
           items={items}
-          defaultActiveKey={['1']}
+          activeKey={activeIndex}
         />
         <div className="flex justify-center">
-          <Button type="text">Dismiss QuickStart</Button>
+          <Button type="text" onClick={dismissQuickStart}>
+            Dismiss QuickStart
+          </Button>
         </div>
       </div>
 
