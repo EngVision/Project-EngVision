@@ -10,8 +10,6 @@ import submissionApi from '../../../services/submissionApi'
 const ProgressCard = (course: any) => {
   const navigate = useNavigate()
 
-  console.log(course.course.title, 'course')
-
   const { data: rawCourseExercise, isLoading: isLoadingRawCourseExercise } =
     useQuery({
       queryKey: ['coursesExercises'],
