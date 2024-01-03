@@ -9,6 +9,7 @@ import { formatDate } from '../../utils/formatDate'
 import CourseContent from './CourseContent'
 import Overview from './Overview'
 import Reviews from './Reviews'
+import CustomImage from '../../components/common/CustomImage'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {

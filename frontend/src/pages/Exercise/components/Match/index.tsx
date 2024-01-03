@@ -111,6 +111,7 @@ function Match(props: MatchProps) {
     if (answerPairs.length === question.pairs.length) {
       setIsSubmittable(true)
     }
+    console.log('answerPairs', answerPairs)
     form.setFieldValue(
       'answer',
       answerPairs.map((pair) => [pair?.first, pair?.second]),
