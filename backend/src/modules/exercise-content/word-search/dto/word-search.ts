@@ -18,7 +18,7 @@ class QuestionDto {
   @IsNotEmpty()
   @IsString({ each: true })
   @ArrayMinSize(1)
-  @Length(1, 15, { each: true })
+  @Length(3, 15, { each: true })
   @ApiProperty({ type: [String], description: 'Words' })
   words: string[];
 

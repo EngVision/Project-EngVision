@@ -7,6 +7,16 @@ import { CreateWordSearchDto } from './dto/word-search';
 import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 import { BadRequestException } from '@nestjs/common';
 
+interface Answer {
+  words: {
+    text: string;
+    start: number[];
+    end: number[];
+  }[];
+  numberQuestionCorrect: number;
+  numberQuestion: number;
+}
+
 function generateWordSearch(
   rows: number,
   cols: number,
@@ -163,8 +173,14 @@ export class WordSearchService extends ExerciseContentService {
     await this.WordSearchModel.bulkWrite([this.deleteBulkOps(removedQuestion)]);
   }
 
-  async checkAnswer(): Promise<QuestionResult> {
-    return null;
+  async checkAnswer(id: string, answer: Answer): Promise<QuestionResult> {
+    return {
+      question: id,
+      answer,
+      correctAnswer: null,
+      explanation: null,
+      grade: (answer.numberQuestionCorrect / answer.numberQuestion) * 10,
+    };
   }
 
   transformContent(questionList: CreateWordSearchDto[]): WordSearch[] {
