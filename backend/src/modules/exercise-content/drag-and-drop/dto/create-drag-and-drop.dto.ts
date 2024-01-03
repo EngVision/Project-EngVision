@@ -28,7 +28,7 @@ class QuestionDto {
   @IsNotEmpty()
   @IsArray()
   @Type(() => Item)
-  @ApiProperty({ type: [[Item, Item]], description: 'Pairs' })
+  @ApiProperty({ type: [Item], description: 'Pairs' })
   answers: Item[];
 
   @IsOptional()
