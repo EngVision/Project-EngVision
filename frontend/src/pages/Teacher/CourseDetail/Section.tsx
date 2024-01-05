@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Button, Collapse, Form, Tooltip } from 'antd'
-import { FormInstance } from 'antd/lib/form/Form'
+import { FormInstance, useWatch } from 'antd/lib/form/Form'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { Link } from 'react-router-dom'
 import {
@@ -20,10 +20,13 @@ interface SectionProps {
 }
 
 const Section = ({ form }: SectionProps) => {
+  const isPersonalized = useWatch('isPersonalized', form)
+  console.log(isPersonalized)
   const [ref, { height }] = useMeasure()
   const [autoFocus, setAutoFocus] = useState(false)
 
   const onDragEnd = (result: any, move: (from: number, to: number) => void) => {
+    if (isPersonalized) return
     if (!result.destination) return
 
     move(result.source.index, result.destination.index)
@@ -74,6 +77,7 @@ const Section = ({ form }: SectionProps) => {
                                   <CustomInput
                                     placeholder="New section"
                                     className="pr-16"
+                                    disabled={isPersonalized}
                                   />
                                 </Form.Item>
                               }
@@ -175,18 +179,20 @@ const Section = ({ form }: SectionProps) => {
                                             />
                                           </div>
                                         </Tooltip>
-                                        <Tooltip title="Delete section">
-                                          <div className="flex">
-                                            <TrashIcon
-                                              onClick={() => {
-                                                remove(field.name)
-                                              }}
-                                              className="hover:cursor-pointer"
-                                              width={20}
-                                              height={20}
-                                            />
-                                          </div>
-                                        </Tooltip>
+                                        {!isPersonalized && (
+                                          <Tooltip title="Delete section">
+                                            <div className="flex">
+                                              <TrashIcon
+                                                onClick={() => {
+                                                  remove(field.name)
+                                                }}
+                                                className="hover:cursor-pointer"
+                                                width={20}
+                                                height={20}
+                                              />
+                                            </div>
+                                          </Tooltip>
+                                        )}
                                       </div>
                                     </div>
                                   )}
@@ -218,6 +224,7 @@ const Section = ({ form }: SectionProps) => {
               }
               type="primary"
               className="w-full h-10"
+              disabled={isPersonalized}
             >
               Add section
             </Button>

@@ -5,6 +5,8 @@ import { CourseDetails, type GetCourseProps, type ReviewParams } from './types'
 
 const PREFIX = 'courses/'
 
+const PERSONALIZED_COURSE_PREFIX = 'personalized-course/'
+
 const coursesApi = {
   getCourseDetails: async (coursesId: string): Promise<CourseDetails> => {
     const res = await axiosClient.get(`${PREFIX}${coursesId}`)
@@ -106,6 +108,11 @@ const coursesApi = {
       `${PREFIX}lessons/${lessonId}/materials/${materialId}`,
     )
     return res.data
+  },
+
+  getPersonalizedCourse: async (): Promise<CourseDetails> => {
+    const res = await axiosClient.get(PERSONALIZED_COURSE_PREFIX)
+    return res.data.data
   },
 }
 

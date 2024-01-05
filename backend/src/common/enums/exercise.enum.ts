@@ -34,6 +34,7 @@ export enum CEFRLevel {
   B1 = 'B1',
   A2 = 'A2',
   A1 = 'A1',
+  Any = 'Any',
 }
 
 export enum MaterialTypes {

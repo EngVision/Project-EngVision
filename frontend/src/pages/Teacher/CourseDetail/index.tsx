@@ -3,15 +3,15 @@ import { Button, Form, Tabs, Tooltip } from 'antd'
 import { useWatch } from 'antd/es/form/Form'
 import { useContext, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import ConfirmDeleteModal from '../../../components/Modal/ConfirmDeleteModal'
 import AppLoading from '../../../components/common/AppLoading'
+import { NotificationContext } from '../../../contexts/notification'
 import coursesApi from '../../../services/coursesApi'
+import { CourseDetails } from '../../../services/coursesApi/types'
 import { TEACHER_ROUTES } from '../../../utils/constants'
 import Overview from './Overview'
 import Preview from './Preview'
 import Section from './Section'
-import { CourseDetails } from '../../../services/coursesApi/types'
-import { NotificationContext } from '../../../contexts/notification'
-import ConfirmDeleteModal from '../../../components/Modal/ConfirmDeleteModal'
 
 const { TabPane } = Tabs
 
@@ -222,6 +222,7 @@ const TeacherCourseDetail = () => {
                 </Button>
               </Tooltip>
             </Form.Item>
+            <Form.Item name="isPersonalized" />
           </div>
         </div>
       </Form>

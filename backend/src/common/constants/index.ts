@@ -40,14 +40,14 @@ export const ChecklistItems: Partial<Checklist> = {
     {
       title: 'Complete an exercise',
       description: 'Complete an exercise in any course you have enrolled',
-      link: '123',
+      link: 'd',
       isDone: false,
       disabled: true,
     },
     {
       title: 'Review a course',
       description: 'Review a course you have enrolled',
-      link: '123',
+      link: '',
       isDone: false,
       disabled: true,
     },
