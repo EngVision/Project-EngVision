@@ -13,7 +13,7 @@ const ItemSchema = SchemaFactory.createForClass(Item);
 
 @Schema({ _id: false, versionKey: false })
 class Question {
-  @Prop({ required: true, type: [[ItemSchema, ItemSchema]] })
+  @Prop({ required: true, type: [ItemSchema] })
   answers: Item[];
 
   @Prop({ default: null })
