@@ -7,6 +7,7 @@ export enum ExerciseType {
   Match = 'Match',
   Speaking = 'Speaking',
   DragAndDrop = 'DragAndDrop',
+  WordSearch = 'WordSearch',
 }
 
 export enum ExerciseTag {
