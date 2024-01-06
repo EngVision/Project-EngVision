@@ -36,6 +36,12 @@ export class CourseExercisesDto {
   })
   attendance?: number;
 
+  @ApiProperty({
+    type: Number,
+    description: 'Course progress',
+  })
+  progress?: number;
+
   @Type(() => ExerciseDto)
   @ApiProperty({
     type: Number,

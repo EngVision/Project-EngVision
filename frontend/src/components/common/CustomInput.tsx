@@ -5,6 +5,7 @@ interface CustomInputProps {
   className?: string
   onClick?: (e: MouseEvent) => MouseEventHandler<HTMLInputElement> | undefined
   placeholder?: string
+  disabled?: boolean
 }
 
 const CustomInput = ({

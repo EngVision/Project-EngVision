@@ -24,6 +24,8 @@ const CourseDetailsPage = () => {
     queryFn: async () => coursesApi.getCourseDetails(courseId),
   })
 
+  console.log(courseDetail)
+
   const attendCourseMutation = useMutation({
     mutationFn: (courseId: string) => coursesApi.postAttend(courseId),
   })

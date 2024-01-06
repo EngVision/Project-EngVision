@@ -37,7 +37,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
               <p>{course.totalLessons} Lessons</p>
             </div>
             <div className="flex items-center">
-              <p>{course.teacher.firstName + ' ' + course.teacher.lastName}</p>
+              <p>{course.teacher.fullName}</p>
             </div>
           </div>
           <Meta

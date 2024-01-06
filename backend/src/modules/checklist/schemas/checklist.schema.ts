@@ -10,7 +10,7 @@ export class ChecklistItem {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   link: string;
 
   @Prop({ default: false })

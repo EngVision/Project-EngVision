@@ -17,8 +17,14 @@ import { UserQueryDto } from './dto/user-query.dto';
 import { Order, AccountStatus, Role, Gender } from 'src/common/enums';
 import { ChecklistService } from '../checklist/checklist.service';
 
+interface Account {
+  email: string;
+  password: string;
+}
+
 @Injectable()
 export class UsersService {
+  private adminAccount: Account;
   private transporter;
 
   constructor(
@@ -26,10 +32,14 @@ export class UsersService {
     private readonly filesService: FilesService,
     private readonly checklistService: ChecklistService,
   ) {
+    this.adminAccount = {
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    };
     this.transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-        user: 'engvision.dev@gmail.com',
+        user: this.adminAccount.email,
         pass: process.env.MAIL_PASSWORD,
       },
     });
@@ -58,14 +68,14 @@ export class UsersService {
 
   async createAdmin() {
     const admin = await this.userModel.findOne({
-      email: 'engvision.dev@gmail.com',
+      email: this.adminAccount.email,
     });
 
     if (admin) return;
 
     const newUser = new this.userModel({
-      email: 'engvision.dev@gmail.com',
-      password: 'EngVision2023@',
+      email: this.adminAccount.email,
+      password: this.adminAccount.password,
       firstName: 'Admin',
       role: Role.Admin,
       gender: Gender.Other,
@@ -222,7 +232,7 @@ export class UsersService {
     await this.updateResetPasswordCode(user.id, resetPasswordCode);
 
     const mailOptions = {
-      from: 'engvision.dev@gmail.com',
+      from: this.adminAccount.email,
       to: email,
       subject: 'The reset password link for Engvision',
       text: 'This is text property',
@@ -273,7 +283,7 @@ export class UsersService {
     }
 
     const mailOptions = {
-      from: 'engvision.dev@gmail.com',
+      from: this.adminAccount.email,
       to: user.email,
       subject: 'Your account has been approved',
       html: 'Welcome to EngVision, your account has been approved',
@@ -291,7 +301,7 @@ export class UsersService {
     }
 
     const mailOptions = {
-      from: 'engvision.dev@gmail.com',
+      from: this.adminAccount.email,
       to: user.email,
       subject: 'Your account has been blocked',
       html: 'Your account has been blocked. Reason: ' + reason,
@@ -309,7 +319,7 @@ export class UsersService {
     }
 
     const mailOptions = {
-      from: 'engvision.dev@gmail.com',
+      from: this.adminAccount.email,
       to: user.email,
       subject: 'Your account has been unblocked',
       html: 'Your account has been unblocked. Welcome back!',

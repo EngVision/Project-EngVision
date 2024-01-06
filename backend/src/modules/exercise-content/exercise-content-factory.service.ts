@@ -1,3 +1,4 @@
+import { WordSearchService } from './word-search/word-search.service';
 import { SpeakingService } from './speaking/speaking.service';
 import { MakeSentenceService } from './make-sentence/make-sentence.service';
 import { UnscrambleService } from './unscramble/unscramble.service';
@@ -21,6 +22,7 @@ export class ExerciseContentServiceFactory {
     private readonly MatchService: MatchService,
     private readonly speakingService: SpeakingService,
     private readonly dragAndDropService: DragAndDropService,
+    private readonly wordSearchService: WordSearchService,
   ) {}
 
   createService(type: ExerciseType): ExerciseContentService {
@@ -41,6 +43,8 @@ export class ExerciseContentServiceFactory {
         return this.speakingService;
       case ExerciseType.DragAndDrop:
         return this.dragAndDropService;
+      case ExerciseType.WordSearch:
+        return this.wordSearchService;
       default:
         throw new BadRequestException('Exercise type not found');
     }

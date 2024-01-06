@@ -50,6 +50,9 @@ export class Course {
 
   @Prop({ default: null, type: [mongoose.Types.ObjectId], ref: Review.name })
   reviews: mongoose.Types.ObjectId[];
+
+  @Prop({ default: false })
+  isPersonalized: boolean;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

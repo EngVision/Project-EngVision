@@ -8,6 +8,7 @@ import { UnscrambleModule } from './unscramble/unscramble.module';
 import { SpeakingModule } from './speaking/speaking.module';
 import { MatchModule } from './match/match.module';
 import { DragAndDropModule } from './drag-and-drop/drag-and-drop.module';
+import { WordSearchModule } from './word-search/word-search.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { DragAndDropModule } from './drag-and-drop/drag-and-drop.module';
     MatchModule,
     SpeakingModule,
     DragAndDropModule,
+    WordSearchModule,
   ],
   providers: [ExerciseContentServiceFactory],
   exports: [ExerciseContentServiceFactory],

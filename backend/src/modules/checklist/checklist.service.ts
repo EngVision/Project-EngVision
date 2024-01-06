@@ -1,12 +1,12 @@
-import { JwtPayload } from './../auth/types/jwt-payload.type';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { ChecklistItems } from 'src/common/constants';
-import { Checklist, ChecklistDocument } from './schemas/checklist.schema';
+import { Role } from 'src/common/enums';
 import { CoursesService } from '../courses/courses.service';
 import { SubmissionsService } from '../submissions/submissions.service';
-import { Role } from 'src/common/enums';
+import { JwtPayload } from './../auth/types/jwt-payload.type';
+import { Checklist, ChecklistDocument } from './schemas/checklist.schema';
 
 @Injectable()
 export class ChecklistService {
@@ -48,14 +48,12 @@ export class ChecklistService {
 
     if (courses.length > 0) {
       checklist.items[0].isDone = true;
-
       checklist.items[1].disabled = false;
       checklist.items[1].link = `/discover/${courses[0].id}?tab=2`;
-
       checklist.items[2].link = `/discover/${courses[0].id}?tab=3`;
 
       const [submissions] = await this.submissionsService.findByUser(
-        { course: courses[0].id },
+        {},
         userId,
       );
       if (submissions.length > 0) {
@@ -66,15 +64,29 @@ export class ChecklistService {
           sub: userId,
           roles: [Role.Student],
         } as JwtPayload);
-
         if (course.isReviewed) {
           checklist.items[2].isDone = true;
-
           checklist.isDone = true;
         }
       }
     }
+    await checklist.save();
+  }
+
+  async dismiss(userId: string) {
+    const checklist = await this.checklistModel.findOne({ user: userId });
+
+    for (const item of checklist.items) {
+      item.isDone = true;
+      item.disabled = false;
+    }
+
+    checklist.isDone = true;
 
     await checklist.save();
+
+    if (!checklist) return await this.create(userId);
+
+    return checklist;
   }
 }

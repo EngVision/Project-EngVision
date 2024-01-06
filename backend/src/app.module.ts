@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { AuthModule } from './modules/auth/auth.module';
+import { ChecklistModule } from './modules/checklist/checklist.module';
 import { CoursesModule } from './modules/courses/courses.module';
 import { ExamSubmissionsModule } from './modules/exam-submissions/exam-submissions.module';
 import { ExamsModule } from './modules/exams/exams.module';
@@ -14,9 +15,9 @@ import { OpenAiModule } from './modules/open-ai/open-ai.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { SubmissionsModule } from './modules/submissions/submissions.module';
 import { UserLevelModule } from './modules/user-level/user-level.module';
-import { UsersModule } from './modules/users/users.module';
-import { ChecklistModule } from './modules/checklist/checklist.module';
 import { UserViewsModule } from './modules/user-views/user-views.module';
+import { UsersModule } from './modules/users/users.module';
+import { PersonalizedCourseModule } from './modules/personalized-course/personalized-course.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { UserViewsModule } from './modules/user-views/user-views.module';
     OpenAiModule,
     ChecklistModule,
     UserViewsModule,
+    PersonalizedCourseModule,
   ],
   providers: [
     {
