@@ -39,7 +39,7 @@ export const STUDENT_ROUTES = {
   myHub: '/my-hub',
   exercisesAndExams: '/exercises-exams',
   discover: '/discover',
-
+  achievement: '/achievement',
   appearance: '/appearance',
 
   courses: '/discover',

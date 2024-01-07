@@ -26,7 +26,7 @@ const ProgressCard = (course: any) => {
 
   const fetchSubmissions = async (objectIdList: ObjectId[]) => {
     const submissionsPromises = objectIdList.map((objectId) =>
-      submissionApi.getSubmissionList({ course: objectId.id, limit: 10000 }),
+      submissionApi.getSubmissionList({ course: objectId.id, limit: -1 }),
     )
     const submissionsRes = await Promise.all(submissionsPromises)
     return submissionsRes

@@ -17,6 +17,7 @@ const AnswerLines = ({
 }: AnswerLinesProps) => {
   const { width, height } = useWindowSize()
   const forceRerender = useForceRerender()
+  console.log('result', result)
 
   useEffect(() => {
     forceRerender()
