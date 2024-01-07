@@ -68,14 +68,7 @@ export class DragAndDropService extends ExerciseContentService {
   }
 
   async checkAnswer(id: string, answer: Item[]): Promise<QuestionResult> {
-    if (
-      !Array.isArray(answer) ||
-      !answer.every(
-        innerArray =>
-          Array.isArray(innerArray) &&
-          innerArray.every(item => typeof item === 'string'),
-      )
-    ) {
+    if (!Array.isArray(answer)) {
       throw new BadRequestException('Answer must be a string array in array');
     }
 
@@ -86,7 +79,7 @@ export class DragAndDropService extends ExerciseContentService {
     return {
       question: id,
       isCorrect: detail.every(
-        d => d.image === answer.find(ans => ans.text === d.text).image,
+        d => d.image === answer.find(ans => ans.text === d.text)?.image,
       ),
       answer,
       correctAnswer: detail,
