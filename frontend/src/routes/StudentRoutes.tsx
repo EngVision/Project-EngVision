@@ -9,11 +9,13 @@ import GetStarted from '../pages/Student/GetStarted'
 import NoLayout from '../layouts/NoLayout'
 import DoExercise from '../pages/DoExercise'
 import DoExam from '../pages/DoExam'
+import Archive from '../pages/Student/Archive'
 export const studentRoutes: RouteObject[] = [
   {
     element: <DefaultLayout />,
     children: [
       { element: <MyHub />, path: STUDENT_ROUTES.myHub },
+      { element: <Archive />, path: STUDENT_ROUTES.archive },
       {
         path: STUDENT_ROUTES.myHub,
         children: [

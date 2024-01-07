@@ -1,35 +1,24 @@
-import React, { useEffect, useState, useMemo } from 'react'
-import {
-  MatchPairSchema,
-  QuestionPayload,
-  SubmitAnswerResponse,
-} from '../../../../services/exerciseApi/types'
-import CustomImage from '../../../../components/common/CustomImage'
-import { getFileUrl } from '../../../../utils/common'
 import { Form } from 'antd'
+import React, { useEffect, useMemo, useState } from 'react'
+import CustomImage from '../../../../components/common/CustomImage'
+import { QuestionPayload } from '../../../../services/exerciseApi/types'
+import { getFileUrl } from '../../../../utils/common'
 
-interface MatchProps extends QuestionPayload {
+interface DragDropProps extends QuestionPayload {
   question: {
     text: string
     image?: string
-    pairs: MatchPairSchema[][]
     audio?: string
     answers: {
       text: string
       image?: string
-    }[][]
+    }[]
   }
   exerciseId?: string
-  result?: MatchResponse
   setIsSubmittable: (value: boolean) => void
 }
 
-export interface MatchResponse extends SubmitAnswerResponse {
-  answer: string[]
-  correctAnswer: MatchPairSchema[][]
-}
-
-const DragDrop = (props: MatchProps) => {
+const DragDrop = (props: DragDropProps) => {
   const questionTitle = props.question.text
   const [list1, setList1] = useState<string[]>([])
   const [list2, setList2] = useState([
@@ -44,11 +33,11 @@ const DragDrop = (props: MatchProps) => {
 
   useEffect(() => {
     if (props.question && props.question.answers) {
-      const newList1 = props.question.answers.map((item) => item[0]?.text || '')
+      const newList1 = props.question.answers.map((item) => item?.text || '')
       setList1(newList1)
       setList2(
         props.question.answers.map((item) => ({
-          question: item[0].image || '',
+          question: item.image || '',
           answer: '',
         })),
       )
@@ -61,15 +50,7 @@ const DragDrop = (props: MatchProps) => {
     if (hasEnoughAnswers) {
       setIsSubmittable(hasEnoughAnswers)
     }
-    console.log(
-      'list2',
-      list2,
-      list2.map((item) => ({
-        image: item?.question,
-        text: item?.answer,
-      })),
-    )
-    console.log('Form Value:', form.getFieldsValue())
+
     form.setFieldValue(
       'answer',
       list2.map((item) => ({
@@ -79,18 +60,29 @@ const DragDrop = (props: MatchProps) => {
     )
   }, [list2, setIsSubmittable])
 
-  const onDragStart = (event, sourceList, sourceIndex) => {
+  const onDragStart = (
+    event: React.DragEvent<HTMLDivElement>,
+    sourceList: string,
+    sourceIndex: number,
+  ) => {
     event.dataTransfer.setData(
       'text/plain',
       JSON.stringify({ sourceList, sourceIndex }),
     )
   }
 
-  const onDragOver = (event) => {
+  const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault()
   }
 
-  const onDrop = (event, targetList, targetIndex) => {
+  const onDrop = (
+    event: React.DragEvent<HTMLDivElement>,
+    targetList: string,
+    targetIndex: number | null,
+  ) => {
+    if (targetIndex === null) {
+      return
+    }
     const data = JSON.parse(event.dataTransfer.getData('text/plain'))
     const { sourceList, sourceIndex } = data
 
@@ -137,14 +129,14 @@ const DragDrop = (props: MatchProps) => {
 
   return (
     <div className="rounded-xl p-4">
-      <h1>{questionTitle}</h1>
+      <h2>{questionTitle}</h2>
       <Form.Item name="answer" noStyle>
         <div
-          className="flex h-fit mx-auto rounded-xl justify-center items-center content-center mb-3"
+          className="flex h-fit mx-auto rounded-xl justify-center items-center content-center mb-3 flex-wrap"
           onDragOver={(event) => onDragOver(event)}
           onDrop={(event) => onDrop(event, 'list1', null)}
         >
-          {shuffledList1.map((item, index) => (
+          {shuffledList1.map((item: any, index: any) => (
             <div
               key={index}
               className="bg-white text-black w-fit m-4 p-2 justify-center items-center rounded-lg border-solid border-2 border-sky-400"
@@ -158,7 +150,7 @@ const DragDrop = (props: MatchProps) => {
 
         <div className="flex flex-col items-center">
           <div
-            className="w-fit h-fit flex rounded-xl items-center content-center justify-center"
+            className="w-fit h-fit flex rounded-xl items-center content-center justify-center flex-wrap"
             onDragOver={onDragOver}
           >
             {list2.map((item, index) => (
@@ -171,7 +163,7 @@ const DragDrop = (props: MatchProps) => {
               >
                 <CustomImage
                   src={getFileUrl(item.question)}
-                  className="w-32 h-32"
+                  className="w-52 h-52"
                 />
                 <div>
                   <div

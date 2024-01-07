@@ -1,16 +1,16 @@
 import { Form } from 'antd'
+import _ from 'lodash'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import AnswerButton from '../../../../components/AnswerButton'
+import CustomImage from '../../../../components/common/CustomImage'
 import {
   MatchPairSchema,
   QuestionPayload,
   SubmitAnswerResponse,
 } from '../../../../services/exerciseApi/types'
-import CustomImage from '../../../../components/common/CustomImage'
-import { ExerciseMatchType, LINE_COLOR } from '../../../../utils/constants'
 import { getFileUrl } from '../../../../utils/common'
+import { ExerciseMatchType, LINE_COLOR } from '../../../../utils/constants'
 import AnswerLines from './AnswerLines'
-import AnswerButton from '../../../../components/AnswerButton'
-import _ from 'lodash'
 
 interface MatchProps extends QuestionPayload {
   question: {
@@ -111,7 +111,6 @@ function Match(props: MatchProps) {
     if (answerPairs.length === question.pairs.length) {
       setIsSubmittable(true)
     }
-    console.log('answerPairs', answerPairs)
     form.setFieldValue(
       'answer',
       answerPairs.map((pair) => [pair?.first, pair?.second]),
