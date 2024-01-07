@@ -737,13 +737,14 @@ export class CoursesService {
 
     for (const course of courses) {
       const courseSubmissions = submissions.filter(
-        submission => submission.course === course._id.toString(),
+        submission =>
+          submission.course?.['_id'].toString() === course._id.toString(),
       );
 
       const progress =
         courseSubmissions.filter(submission => {
           return submission.progress === 1;
-        }).length / courseSubmissions.length;
+        }).length / course.exercises.length;
 
       course.progress = progress ? progress : 0;
     }
