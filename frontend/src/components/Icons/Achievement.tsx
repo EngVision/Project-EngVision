@@ -2,7 +2,7 @@ import React from 'react'
 
 import type { IconProps } from './types'
 
-const Archievement = ({
+const Achievement = ({
   width = 120,
   height = 140,
   className = '',
@@ -205,4 +205,4 @@ const Archievement = ({
   )
 }
 
-export default Archievement
+export default Achievement
