@@ -1,6 +1,9 @@
-import React from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Progress } from 'antd'
-import Achievement from '../../../components/Icons/Achievement'
+import { achievementApi } from '../../../services/achievementApi'
+import { AchievementItem } from '../../../services/achievementApi/types'
+import { getFileUrl } from '../../../utils/common'
+import AppLoading from '../../../components/common/AppLoading'
 
 interface Achievements {
   name: string
@@ -9,48 +12,27 @@ interface Achievements {
 }
 
 const Achievements = () => {
-  const AchievementsData: Achievements[] = [
-    {
-      name: 'Achievements 1',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam facilisis scelerisque nisl sit amet convallis.',
-      progress: 60,
-    },
-    {
-      name: 'Achievements 2',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam facilisis scelerisque nisl sit amet convallis.',
-      progress: 80,
-    },
-    {
-      name: 'Achievements 3',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam facilisis scelerisque nisl sit amet convallis.',
-      progress: 40,
-    },
-  ]
+  const { data: achievement, isLoading } = useQuery({
+    queryKey: ['achievement'],
+    queryFn: () => achievementApi.get(),
+  })
 
-  const icons: React.ReactNode[] = [
-    <Achievement key="icon1" />,
-    <Achievement key="icon2" />,
-    <Achievement key="icon3" />,
-  ]
-
-  const achievementsCard = (
-    achievements: Achievements,
-    icon: React.ReactNode,
-  ) => {
+  const achievementsCard = (achievements: AchievementItem) => {
     return (
       <div
-        className="flex flex-row w-[80%] mx-auto my-5 p-2 justify-center content-center rounded-xl border-solid border-2 border-grey-400"
-        key={achievements.name}
+        className="flex flex-row w-[80%] mx-auto my-5 p-2 justify-start rounded-xl border-solid border-2 border-grey-400"
+        key={achievements.title}
       >
-        <div>{icon}</div>
-        <div className="flex flex-col ml-5">
-          <div className="text-xl font-bold flex-grow">{achievements.name}</div>
+        <div>
+          <img src={getFileUrl(achievements.image)} alt="" />
+        </div>
+        <div className="flex flex-col flex-1 ml-5">
+          <div className="text-xl font-bold flex-grow">
+            {achievements.title}
+          </div>
           <div className="flex-grow">{achievements.description}</div>
           <div className="flex-grow">
-            <Progress percent={achievements.progress} />
+            <Progress percent={achievements.progress * 100} />
           </div>
         </div>
       </div>
@@ -60,8 +42,10 @@ const Achievements = () => {
   return (
     <div className="bg-surface rounded-xl p-5">
       <h1 className="text-blue-700">Achievements</h1>
-      {AchievementsData.map((achievements, index) =>
-        achievementsCard(achievements, icons[index]),
+      {isLoading ? (
+        <AppLoading />
+      ) : (
+        achievement?.items.map((item) => achievementsCard(item))
       )}
     </div>
   )

@@ -7,7 +7,9 @@ import { JwtPayload } from 'src/modules/auth/types';
 import { CourseDetailDto } from 'src/modules/courses/dto';
 import { Response } from 'express';
 import { GetResponse } from 'src/common/dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Personalized Course')
 @Controller('personalized-course')
 export class PersonalizedCourseController {
   constructor(

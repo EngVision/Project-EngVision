@@ -1,3 +1,4 @@
+import { AchievementItem } from 'src/modules/achievements/schemas/achievement.schema';
 import { Checklist } from 'src/modules/checklist/schemas/checklist.schema';
 import { CEFRLevel } from './../enums/exercise.enum';
 
@@ -40,7 +41,7 @@ export const ChecklistItems: Partial<Checklist> = {
     {
       title: 'Complete an exercise',
       description: 'Complete an exercise in any course you have enrolled',
-      link: 'd',
+      link: '',
       isDone: false,
       disabled: true,
     },
@@ -53,3 +54,24 @@ export const ChecklistItems: Partial<Checklist> = {
     },
   ],
 };
+
+export const AchievementList: Partial<AchievementItem>[] = [
+  {
+    title: 'Beginner',
+    description: 'Complete 5 exercises',
+    image: '/achievement/beginner.jpg',
+    progress: 0,
+  },
+  {
+    title: 'Master',
+    description: 'Complete 20 exercises',
+    image: '/achievement/master.jpg',
+    progress: 0,
+  },
+  {
+    title: 'Champion',
+    description: 'Complete 100 exercises',
+    image: '/achievement/champion.jpg',
+    progress: 0,
+  },
+];
