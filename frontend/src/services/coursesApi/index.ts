@@ -63,11 +63,6 @@ const coursesApi = {
     return res.data
   },
 
-  postAttend: async (courseId: string): Promise<ResponseData<unknown>> => {
-    const res = await axiosClient.post(`${PREFIX}${courseId}/attend`)
-    return res.data
-  },
-
   addExercise: async (
     lessonId: string,
     exerciseId: string,

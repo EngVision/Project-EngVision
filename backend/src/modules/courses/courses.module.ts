@@ -7,7 +7,6 @@ import { SubmissionsModule } from '../submissions/submissions.module';
 import { CoursesController } from './courses.controller';
 import { CoursesService } from './courses.service';
 import { Course, CourseSchema } from './schemas/course.schema';
-import { UserLevelService } from '../user-level/user-level.service';
 import { UserLevelModule } from '../user-level/user-level.module';
 
 @Module({
