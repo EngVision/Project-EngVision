@@ -80,8 +80,6 @@ const Discover = () => {
     queryFn: () => coursesApi.getCourses(getFreeCoursesParams),
   })
 
-  console.log(personalizedCourse)
-
   return (
     <>
       {isLoading ? (

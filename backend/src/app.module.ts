@@ -18,6 +18,8 @@ import { UserLevelModule } from './modules/user-level/user-level.module';
 import { UserViewsModule } from './modules/user-views/user-views.module';
 import { UsersModule } from './modules/users/users.module';
 import { PersonalizedCourseModule } from './modules/personalized-course/personalized-course.module';
+import { PaymentModule } from './modules/payment/payments.module';
+import { EnrollCourseModule } from './modules/enroll-course/enroll-course.module';
 
 @Module({
   imports: [
@@ -46,6 +48,8 @@ import { PersonalizedCourseModule } from './modules/personalized-course/personal
     ChecklistModule,
     UserViewsModule,
     PersonalizedCourseModule,
+    PaymentModule,
+    EnrollCourseModule,
   ],
   providers: [
     {
