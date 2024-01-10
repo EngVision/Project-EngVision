@@ -30,7 +30,12 @@ const TeacherCourseDetail = () => {
 
   const fetchCourseDetail = async () => {
     const courseDetail = await coursesApi.getCourseDetails(courseId)
-    return { ...courseDetail, price: courseDetail.price.toString() }
+    const formattedCourseContent = {
+      ...courseDetail,
+      price: courseDetail.price.toString(),
+    }
+    form.setFieldsValue(formattedCourseContent)
+    return formattedCourseContent
   }
 
   const { data: courseDetails, isLoading: isLoading } = useQuery({

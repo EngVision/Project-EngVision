@@ -29,6 +29,7 @@ function Explain({ submission, questionIndex }: ExplainProps) {
   const isCorrect = question?.isCorrect
   const explanation = question?.explanation
   const correctAnswer = question?.correctAnswer
+  const answer = question?.answer
 
   const renderExplainWhenHasGrade = () => {
     if (submission?.exerciseType === ExerciseType.Unscramble) {
@@ -100,6 +101,40 @@ function Explain({ submission, questionIndex }: ExplainProps) {
     } else {
       return <p>{explanation}</p>
     }
+  }
+
+  if (submission?.exerciseType === ExerciseType.WordSearch) {
+    const { numberQuestionCorrect, numberQuestion } = answer
+    return (
+      <div
+        className={`w-full p-5 rounded-md flex gap-4 mt-7 ${
+          numberQuestionCorrect === numberQuestion
+            ? 'bg-green-500'
+            : 'bg-secondary'
+        }`}
+      >
+        {numberQuestionCorrect === numberQuestion ? (
+          <TickCircleWhiteIcon />
+        ) : (
+          <CloseCircleWhiteIcon />
+        )}
+        <div className="flex-1 text-primary flex flex-col gap-2 text-white">
+          {
+            <b className="text-[18px] leading-6">
+              {numberQuestionCorrect === numberQuestion ? 'Correct!' : 'Wrong!'}
+            </b>
+          }
+
+          {numberQuestionCorrect === numberQuestion ? (
+            <span>You found all words</span>
+          ) : (
+            <span>
+              Your score: {numberQuestionCorrect}/{numberQuestion}
+            </span>
+          )}
+        </div>
+      </div>
+    )
   }
 
   return hasGrade || isCorrect !== null ? (

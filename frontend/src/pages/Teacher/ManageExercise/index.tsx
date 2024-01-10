@@ -31,6 +31,7 @@ import UnscrambleForm from './components/UnscrambleForm'
 import SpeakingForm from './components/Speaking'
 import MatchForm from './components/MatchForm'
 import DragAndDropForm from './components/DragAndDropForm'
+import WordSearchForm from './components/WordSearchForm'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -162,6 +163,8 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
       return <MatchForm form={form} />
     case ExerciseType.DragAndDrop:
       return <DragAndDropForm form={form} />
+    case ExerciseType.WordSearch:
+      return <WordSearchForm form={form} />
     default:
       return <></>
   }
