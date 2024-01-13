@@ -18,6 +18,9 @@ import { UserLevelModule } from './modules/user-level/user-level.module';
 import { UserViewsModule } from './modules/user-views/user-views.module';
 import { UsersModule } from './modules/users/users.module';
 import { PersonalizedCourseModule } from './modules/personalized-course/personalized-course.module';
+import { AchievementsModule } from './modules/achievements/achievements.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -30,6 +33,11 @@ import { PersonalizedCourseModule } from './modules/personalized-course/personal
         limit: 100, // limit each IP to 100 requests per minute
       },
     ]),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '/src/assets'),
+      exclude: ['/api/(.*)'],
+      serveRoot: '/files',
+    }),
 
     //App modules
     AuthModule,
@@ -46,6 +54,7 @@ import { PersonalizedCourseModule } from './modules/personalized-course/personal
     ChecklistModule,
     UserViewsModule,
     PersonalizedCourseModule,
+    AchievementsModule,
   ],
   providers: [
     {
