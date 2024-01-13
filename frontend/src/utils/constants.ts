@@ -123,6 +123,7 @@ export enum CEFRLevel {
   B1 = 'B1',
   A2 = 'A2',
   A1 = 'A1',
+  Any = 'Any',
 }
 
 export const LEVELS = [
@@ -132,6 +133,7 @@ export const LEVELS = [
   { level: CEFRLevel.B2, color: 'bg-primary' },
   { level: CEFRLevel.C1, color: 'bg-secondary' },
   { level: CEFRLevel.C2, color: 'bg-secondary' },
+  { level: CEFRLevel.Any, color: 'bg-blue-400' },
 ]
 
 export const GENDERS = [
