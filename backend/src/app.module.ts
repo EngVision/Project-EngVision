@@ -18,6 +18,8 @@ import { UserLevelModule } from './modules/user-level/user-level.module';
 import { UserViewsModule } from './modules/user-views/user-views.module';
 import { UsersModule } from './modules/users/users.module';
 import { PersonalizedCourseModule } from './modules/personalized-course/personalized-course.module';
+import { PaymentModule } from './modules/payment/payments.module';
+import { EnrollCourseModule } from './modules/enroll-course/enroll-course.module';
 import { AchievementsModule } from './modules/achievements/achievements.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -54,6 +56,8 @@ import { join } from 'path';
     ChecklistModule,
     UserViewsModule,
     PersonalizedCourseModule,
+    PaymentModule,
+    EnrollCourseModule,
     AchievementsModule,
   ],
   providers: [
