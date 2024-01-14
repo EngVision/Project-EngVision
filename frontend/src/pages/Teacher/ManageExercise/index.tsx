@@ -31,7 +31,7 @@ import UnscrambleForm from './components/UnscrambleForm'
 import SpeakingForm from './components/Speaking'
 import MatchForm from './components/MatchForm'
 import DragAndDropForm from './components/DragAndDropForm'
-
+import { useTranslation } from 'react-i18next'
 interface GeneralInfo {
   type: ExerciseType
   title: string
@@ -42,10 +42,11 @@ interface GeneralInfo {
 }
 
 const GeneralInfoForm = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   return (
     <>
       <Form.Item<GeneralInfo>
-        label="Title"
+        label={t('Title')}
         name="title"
         rules={[{ required: true }]}
       >

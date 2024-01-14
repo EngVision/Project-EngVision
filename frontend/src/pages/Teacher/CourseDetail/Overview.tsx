@@ -1,7 +1,7 @@
 import { Form, Input, Select } from 'antd'
 import CustomUpload from '../../../components/CustomUpload'
 import { CEFRLevel } from '../../../utils/constants'
-
+import { useTranslation } from 'react-i18next'
 type FieldType = {
   title: string
   about: string
@@ -15,14 +15,15 @@ interface OverviewProps {
 }
 
 const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   return (
     <div className="flex flex-col">
       <h4 className="text-primary text-2xl font-semibold">General</h4>
 
       <Form.Item<FieldType>
         name="title"
-        label="Title"
-        rules={[{ required: true, message: 'Please input title!' }]}
+        label={t('Title')}
+        rules={[{ required: true, message: t('Please input title!') }]}
       >
         <Input
           placeholder="Public Speaking and Presentation Skills in English"
@@ -33,8 +34,8 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
 
       <Form.Item<FieldType>
         name="about"
-        label="About"
-        rules={[{ required: true, message: 'Please input about!' }]}
+        label={t('About')}
+        rules={[{ required: true, message: t('Please input about!') }]}
       >
         <Input
           placeholder="Boost your English public speaking and presentation skills with confidence."
@@ -46,12 +47,12 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
       <div className="flex flex-col gap-4 lg:flex-row">
         <Form.Item<FieldType>
           name="price"
-          label="Price"
+          label={t('Price')}
           rules={[
-            { required: true, message: 'Please input price!' },
+            { required: true, message: t('Please input price!') },
             {
               pattern: /^[0-9.]+$/,
-              message: 'Price can only numbers.',
+              message: t('Price can only numbers.'),
             },
           ]}
           className="flex-1"
@@ -65,12 +66,12 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
 
         <Form.Item<FieldType>
           name="level"
-          label="Level"
-          rules={[{ required: true, message: 'Please input level!' }]}
+          label={t('Level')}
+          rules={[{ required: true, message: t('Please input level!') }]}
           className="flex-1"
         >
           <Select
-            placeholder="Select level"
+            placeholder={t('Select level')}
             options={Object.values(CEFRLevel).map((level) => ({
               value: level,
               label: level,
@@ -81,7 +82,7 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
         </Form.Item>
       </div>
 
-      <Form.Item name="thumbnail" label="Thumbnail">
+      <Form.Item name="thumbnail" label={t('Thumbnail')}>
         <CustomUpload type="picture" onRemove={handleChangeThumbnail} />
       </Form.Item>
     </div>

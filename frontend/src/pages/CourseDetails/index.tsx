@@ -10,9 +10,11 @@ import CourseContent from './CourseContent'
 import Overview from './Overview'
 import Reviews from './Reviews'
 import CustomImage from '../../components/common/CustomImage'
+import { useTranslation } from 'react-i18next'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {
+  const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
   const tab = searchParams.get('tab') || '1'
@@ -58,7 +60,7 @@ const CourseDetailsPage = () => {
           <div className="flex flex-col h-full justify-between">
             <div className="flex text-sm">
               <div>
-                Last Update:{' '}
+                {t('Course Details.Last Updated')}:{' '}
                 <span className="font-bold">
                   {formatDate(courseDetail.updatedAt)}
                 </span>
@@ -69,7 +71,9 @@ const CourseDetailsPage = () => {
             <div className="flex items-center leading-6">
               <Star className="text-secondary mr-1.5" />
               <span className="mr-1.5 font-bold">{courseDetail.avgStar}</span>
-              <div className="mr-1.5 text-wolfGrey">{`(${courseDetail.reviews.length} Rating)`}</div>
+              <div className="mr-1.5 text-wolfGrey">{`(${
+                courseDetail.reviews.length
+              } ${t('Course Details.rating')})`}</div>
             </div>
             {!courseDetail.isAttended && (
               <div>
@@ -78,7 +82,7 @@ const CourseDetailsPage = () => {
                   type="primary"
                   onClick={handleAttendCourse}
                 >
-                  Enroll with ${courseDetail.price}
+                  {t('Course Details.Enroll with')} ${courseDetail.price}
                 </Button>
               </div>
             )}
@@ -93,7 +97,7 @@ const CourseDetailsPage = () => {
                 }`}
                 type={tab === '1' ? 'primary' : 'default'}
               >
-                Overview
+                {t('Course Details.Overview')}
               </Button>
             }
             key="1"
@@ -108,7 +112,7 @@ const CourseDetailsPage = () => {
                 }`}
                 type={tab === '2' ? 'primary' : 'default'}
               >
-                Course
+                {t('common.Course')}
               </Button>
             }
             key="2"
@@ -123,7 +127,7 @@ const CourseDetailsPage = () => {
                 }`}
                 type={tab === '3' ? 'primary' : 'default'}
               >
-                Reviews
+                {t('common.Reviews')}
               </Button>
             }
             key="3"

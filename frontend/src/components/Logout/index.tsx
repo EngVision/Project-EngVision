@@ -1,11 +1,12 @@
 import { useAppDispatch } from '../../hooks/redux'
 import { setShowLogoutModal } from '../../redux/app/slice'
-
+import { useTranslation } from 'react-i18next'
 type LogoutProps = {
   className?: string
 }
 
 const Logout = ({ className }: LogoutProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Header' })
   const dispatch = useAppDispatch()
 
   return (
@@ -13,7 +14,7 @@ const Logout = ({ className }: LogoutProps) => {
       onClick={() => dispatch(setShowLogoutModal(true))}
       className={`w-full text-left border-none cursor-pointer ${className}`}
     >
-      Logout
+      {t('Logout')}
     </div>
   )
 }

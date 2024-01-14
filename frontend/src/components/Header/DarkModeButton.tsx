@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { toggleDarkMode } from '../../redux/app/slice'
 import Moon from '../Icons/Moon'
 import Sun from '../Icons/Sun'
-
 const DarkModeButton = () => {
   const dispatch = useAppDispatch()
   const isDarkMode = useAppSelector((state) => state.app.darkMode)
