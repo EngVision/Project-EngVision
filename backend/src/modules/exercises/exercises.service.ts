@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Document, Model } from 'mongoose';
 import { CEFRLevel, Role } from 'src/common/enums';
 import { ExerciseContentServiceFactory } from '../exercise-content/exercise-content-factory.service';
 import { QuestionResult } from '../submissions/schemas/submission.schema';
@@ -178,5 +178,46 @@ export class ExercisesService {
     });
 
     return { ...result, id };
+  }
+
+  async clone(id: string, destCourse: string): Promise<ExerciseDocument> {
+    const exercise = await this.exerciseModel.findById(id);
+
+    if (!exercise) {
+      throw new NotFoundException('Exercise not found');
+    }
+
+    const newExercise = new this.exerciseModel({
+      title: exercise.title,
+      description: exercise.description,
+      tags: exercise.tags,
+      level: exercise.level,
+      type: exercise.type,
+      creator: exercise.creator,
+      needGrade: exercise.needGrade,
+      contentQuestion: exercise.contentQuestion,
+      course: destCourse,
+    });
+
+    const content = [];
+
+    const service = await this.exerciseContentServiceFactory.createService(
+      exercise.type,
+    );
+    for (const questionId of exercise.content) {
+      const oldContent: any = await service.getContent(questionId.toString());
+      if (oldContent) {
+        oldContent._id = new mongoose.Types.ObjectId();
+        oldContent.isNew = true;
+        await oldContent.save();
+
+        content.push(oldContent._id);
+      }
+    }
+
+    newExercise.content = content;
+    await newExercise.save();
+
+    return newExercise;
   }
 }

@@ -1,6 +1,16 @@
 /* eslint-disable prettier/prettier */
-import { Button, Collapse, Form, Tooltip } from 'antd'
+import { useMeasure } from '@uidotdev/usehooks'
+import {
+  Button,
+  Collapse,
+  Dropdown,
+  Form,
+  FormListOperation,
+  Tooltip,
+} from 'antd'
+import { MenuProps } from 'antd/lib'
 import { FormInstance, useWatch } from 'antd/lib/form/Form'
+import { useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { Link } from 'react-router-dom'
 import {
@@ -10,8 +20,7 @@ import {
   TrashIcon,
 } from '../../../components/Icons'
 import CustomInput from '../../../components/common/CustomInput'
-import { useMeasure } from '@uidotdev/usehooks'
-import { useState } from 'react'
+import AddLessonModel from './AddLessonModel'
 
 const { Panel } = Collapse
 
@@ -20,13 +29,51 @@ interface SectionProps {
 }
 
 const Section = ({ form }: SectionProps) => {
-  const isPersonalized = useWatch('isPersonalized', form)
-  console.log(isPersonalized)
+  const isCurriculum = useWatch('isCurriculum', form)
   const [ref, { height }] = useMeasure()
   const [autoFocus, setAutoFocus] = useState(false)
+  const [isModelOpen, setIsModelOpen] = useState(false)
+  const [currentSectionId, setCurrentSectionId] = useState<string>('')
+
+  const getAddLessonMenu = (
+    subOpt: FormListOperation,
+    sectionId: string,
+  ): MenuProps['items'] => {
+    return [
+      {
+        key: 'add-new',
+        label: (
+          <div
+            onClick={() => {
+              setAutoFocus(true)
+              subOpt.add({
+                title: 'New lesson',
+                exercises: [],
+              })
+            }}
+          >
+            Add new
+          </div>
+        ),
+      },
+      {
+        key: 'add-existing',
+        label: (
+          <div
+            onClick={() => {
+              setIsModelOpen(true)
+              setCurrentSectionId(sectionId)
+            }}
+          >
+            Add existing
+          </div>
+        ),
+      },
+    ]
+  }
 
   const onDragEnd = (result: any, move: (from: number, to: number) => void) => {
-    if (isPersonalized) return
+    if (isCurriculum) return
     if (!result.destination) return
 
     move(result.source.index, result.destination.index)
@@ -77,7 +124,7 @@ const Section = ({ form }: SectionProps) => {
                                   <CustomInput
                                     placeholder="New section"
                                     className="pr-16"
-                                    disabled={isPersonalized}
+                                    disabled={isCurriculum}
                                   />
                                 </Form.Item>
                               }
@@ -164,22 +211,34 @@ const Section = ({ form }: SectionProps) => {
                                       })}
                                       <div className="flex gap-4 absolute right-0 top-[-48px]">
                                         <Tooltip title="Add lesson">
-                                          <div className="flex">
-                                            <PlusIcon
-                                              onClick={() => {
-                                                setAutoFocus(true)
-                                                subOpt.add({
-                                                  title: 'New lesson',
-                                                  exercises: [],
-                                                })
-                                              }}
-                                              className="hover:cursor-pointer"
-                                              width={20}
-                                              height={20}
-                                            />
-                                          </div>
+                                          <Dropdown
+                                            menu={{
+                                              items: getAddLessonMenu(
+                                                subOpt,
+                                                form.getFieldValue('sections')[
+                                                  field.name
+                                                ].id,
+                                              ),
+                                            }}
+                                            trigger={['click']}
+                                          >
+                                            <div className="flex">
+                                              <PlusIcon
+                                                className="hover:cursor-pointer"
+                                                width={20}
+                                                height={20}
+                                              />
+                                            </div>
+                                          </Dropdown>
                                         </Tooltip>
-                                        {!isPersonalized && (
+                                        {isModelOpen && (
+                                          <AddLessonModel
+                                            isOpen={isModelOpen}
+                                            setIsOpen={setIsModelOpen}
+                                            sectionId={currentSectionId}
+                                          />
+                                        )}
+                                        {!isCurriculum && (
                                           <Tooltip title="Delete section">
                                             <div className="flex">
                                               <TrashIcon
@@ -224,7 +283,7 @@ const Section = ({ form }: SectionProps) => {
               }
               type="primary"
               className="w-full h-10"
-              disabled={isPersonalized}
+              disabled={isCurriculum}
             >
               Add section
             </Button>

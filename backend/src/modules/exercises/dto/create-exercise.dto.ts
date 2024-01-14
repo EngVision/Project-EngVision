@@ -59,14 +59,14 @@ export class CreateExerciseDto {
     isArray: true,
     description: 'Exercise tags',
   })
-  tags: ExerciseTag[];
+  tags: string[];
 
   @IsEnum(CEFRLevel)
   @ApiProperty({
     enum: CEFRLevel,
     description: 'Exercise level',
   })
-  level: CEFRLevel;
+  level: string;
 
   @IsEnum(ExerciseType)
   @ApiProperty({ enum: ExerciseType, description: 'Exercise type' })
