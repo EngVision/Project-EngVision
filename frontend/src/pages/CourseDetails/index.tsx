@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Button, Tabs } from 'antd'
+import { Button, Tabs, message } from 'antd'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import Star from '../../components/Icons/Star'
 import AppLoading from '../../components/common/AppLoading'
@@ -10,6 +10,9 @@ import CourseContent from './CourseContent'
 import Overview from './Overview'
 import Reviews from './Reviews'
 import CustomImage from '../../components/common/CustomImage'
+import paymentsApi from '../../services/payment'
+import { useEffect, useState } from 'react'
+import enrollCourseApi from '../../services/enrollCourse'
 import { useTranslation } from 'react-i18next'
 const { TabPane } = Tabs
 
@@ -18,31 +21,68 @@ const CourseDetailsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
   const tab = searchParams.get('tab') || '1'
+  const orderCode = searchParams.get('orderCode')
+  const paymentStatus = searchParams.get('status')
   const { courseId = '' } = useParams<{ courseId: string }>()
   const queryClient = useQueryClient()
+  const [enrollLoading, setEnrollLoading] = useState(false)
 
   const { data: courseDetail, isLoading } = useQuery({
     queryKey: ['courseDetail', courseId],
     queryFn: async () => coursesApi.getCourseDetails(courseId),
   })
 
-  console.log(courseDetail)
-
   const attendCourseMutation = useMutation({
-    mutationFn: (courseId: string) => coursesApi.postAttend(courseId),
+    mutationFn: (courseId: string) => enrollCourseApi.enroll(courseId),
   })
+
+  useEffect(() => {
+    if (orderCode) {
+      if (paymentStatus === 'PAID') enroll()
+      navigate('./')
+    }
+  }, [])
 
   const handleTabChange = (key: string) => {
     setSearchParams({ tab: key })
     navigate({ search: `?tab=${key}` })
   }
 
-  const handleAttendCourse = async () => {
+  const enroll = async () => {
     attendCourseMutation.mutate(courseId, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['courseDetail'] })
+        message.open({
+          key: 'submitMessage',
+          content: 'Enroll successfully',
+          type: 'success',
+        })
+      },
+      onError: () => {
+        message.open({
+          key: 'submitMessage',
+          content: 'Enroll fail',
+          type: 'error',
+        })
       },
     })
+  }
+
+  const handleClickEnroll = async () => {
+    if (courseDetail?.price === 0) {
+      enroll()
+      return
+    }
+    setEnrollLoading(true)
+
+    const { isPaid } = await paymentsApi.checkPaid(courseDetail?.id || '')
+    if (isPaid) {
+      enroll()
+      return
+    }
+    const payment = await paymentsApi.create(courseDetail?.id || '')
+
+    window.location.href = payment.checkoutUrl
   }
 
   if (isLoading) return <AppLoading />
@@ -80,7 +120,8 @@ const CourseDetailsPage = () => {
                 <Button
                   className="flex items-center text-lg px-10 py-5"
                   type="primary"
-                  onClick={handleAttendCourse}
+                  onClick={handleClickEnroll}
+                  loading={enrollLoading || attendCourseMutation.isPending}
                 >
                   {t('Course Details.Enroll with')} ${courseDetail.price}
                 </Button>

@@ -1,9 +1,13 @@
+import { ArrowRightOutlined } from '@ant-design/icons'
 import {
   CloseCircleWhiteIcon,
   TickCircleWhiteIcon,
 } from '../../../../components/Icons'
 import CustomImage from '../../../../components/common/CustomImage'
-import { MatchPairSchema } from '../../../../services/exerciseApi/types'
+import {
+  DragAndDropAnswer,
+  MatchPairSchema,
+} from '../../../../services/exerciseApi/types'
 import { SubmissionResponse } from '../../../../services/submissionApi/types'
 import { getFileUrl } from '../../../../utils/common'
 import {
@@ -11,7 +15,6 @@ import {
   ExerciseType,
   UPLOAD_FILE_URL,
 } from '../../../../utils/constants'
-import { ArrowRightOutlined } from '@ant-design/icons'
 
 interface ExplainProps {
   submission: SubmissionResponse | undefined
@@ -68,6 +71,27 @@ function Explain({ submission, questionIndex }: ExplainProps) {
                     className="w-20 h-20 object-cover"
                   />
                 )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    } else if (submission?.exerciseType === ExerciseType.DragAndDrop) {
+      return (
+        <div className="flex gap-4">
+          <span>Correct answer is: </span>
+
+          <div className="flex flex-col gap-4">
+            {correctAnswer?.map((answer: DragAndDropAnswer, index: number) => (
+              <div className="flex items-center gap-4" key={index}>
+                <CustomImage
+                  src={getFileUrl(answer.image)}
+                  className="w-20 h-20 object-cover"
+                />
+
+                <ArrowRightOutlined />
+
+                <span>{answer.text}</span>
               </div>
             ))}
           </div>

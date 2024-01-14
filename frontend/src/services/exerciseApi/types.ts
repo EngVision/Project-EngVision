@@ -45,3 +45,8 @@ export interface MatchPairSchema {
   type: ExerciseMatchType
   content: string
 }
+
+export interface DragAndDropAnswer {
+  image: string
+  text: string
+}

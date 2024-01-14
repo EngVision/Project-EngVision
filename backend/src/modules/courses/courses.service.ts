@@ -618,10 +618,6 @@ export class CoursesService {
       isPublished: true,
     });
 
-    if (!course) throw new BadRequestException('Course not found');
-    if (course.attendanceList.includes(studentId))
-      throw new ConflictException('You have already attended this course');
-
     course.attendanceList.push(studentId);
     await course.save();
 
@@ -737,13 +733,14 @@ export class CoursesService {
 
     for (const course of courses) {
       const courseSubmissions = submissions.filter(
-        submission => submission.course === course._id.toString(),
+        submission =>
+          submission.course?.['_id'].toString() === course._id.toString(),
       );
 
       const progress =
         courseSubmissions.filter(submission => {
           return submission.progress === 1;
-        }).length / courseSubmissions.length;
+        }).length / course.exercises.length;
 
       course.progress = progress ? progress : 0;
     }
@@ -820,5 +817,17 @@ export class CoursesService {
     const newLesson = await this.getLesson(lessonId, teacherId);
 
     return newLesson;
+  }
+
+  async getCourseRaw(id: string) {
+    const course = await this.courseModel.findOne(
+      {
+        _id: id,
+        isPublished: true,
+      },
+      { _id: 1, title: 1, attendanceList: 1, price: 1 },
+    );
+
+    return course;
   }
 }

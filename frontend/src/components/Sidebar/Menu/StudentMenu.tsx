@@ -1,5 +1,6 @@
 import { PRIVATE_ROUTES, STUDENT_ROUTES } from '../../../utils/constants'
 import { BookIcon, DashboardIcon, GlobalSearchIcon } from '../../Icons'
+import Cup from '../../Icons/Cup'
 
 import { MenuItemType } from '../types'
 import MenuItem from './MenuItem'
@@ -23,11 +24,12 @@ const STUDENT_MENU_ITEMS: MenuItemType[] = [
     title: 'Discover',
     id: 'discover',
   },
-  // {
-  //   icon: <ChartIcon />,
-  //   path: PRIVATE_ROUTES.statistic,
-  //   title: 'Statistic',
-  // },
+  {
+    icon: <Cup />,
+    path: STUDENT_ROUTES.achievement,
+    title: 'Archive',
+    id: 'archive',
+  },
   // {
   //   icon: <MessageIcon />,
   //   path: PRIVATE_ROUTES.chat,
