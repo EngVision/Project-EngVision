@@ -10,6 +10,7 @@ import MultipleChoice from '../MultipleChoice'
 import Speaking from '../Speaking'
 import Unscramble from '../Unscramble'
 import DragDrop from '../DragDrop'
+import WordSearch from '../WordSearch'
 
 interface ExerciseContentProps {
   exercise?: ExerciseSchema
@@ -91,6 +92,14 @@ function ExerciseContent({
       case ExerciseType.Match:
         return (
           <Match
+            {...content}
+            result={submission?.detail[questionIndex]}
+            setIsSubmittable={setIsSubmittable}
+          />
+        )
+      case ExerciseType.WordSearch:
+        return (
+          <WordSearch
             {...content}
             result={submission?.detail[questionIndex]}
             setIsSubmittable={setIsSubmittable}

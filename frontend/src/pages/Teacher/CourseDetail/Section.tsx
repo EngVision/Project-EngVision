@@ -140,6 +140,17 @@ const Section = ({ form }: SectionProps) => {
                                             field.name
                                           ].lessons[subField.name].id
 
+                                        console.log(
+                                          'LOGS: ',
+                                          form.getFieldValue('sections'),
+                                          field,
+                                          subField,
+                                        )
+                                        // console.log(
+                                        //   '🚀 ~ {subFields.map ~ lessonId:',
+                                        //   lessonId,
+                                        // )
+
                                         return (
                                           <div
                                             key={subField.key}

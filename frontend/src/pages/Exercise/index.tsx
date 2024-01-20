@@ -57,10 +57,13 @@ function Exercise({
     setIsSubmittable(false)
   }, [submission, questionIndex])
 
+  const viewMode =
+    isGrading || (!exercise?.needGrade && submission?.detail[questionIndex])
+
   const Content = () => {
     return (
       <>
-        <div className="mb-10 mt-5">
+        <div className={`mb-10 mt-5 ${viewMode ? 'pointer-events-none' : ''}`}>
           <ExerciseContent
             exercise={exercise}
             submission={submission}
@@ -126,8 +129,8 @@ function Exercise({
       onFinish={onFinish}
       className="h-full w-full flex flex-col md:flex-row md:justify-center relative"
     >
-      <div className="flex-1 min-h-[0px] py-[5px] flex flex-col w-full justify-between align-middle">
-        <div className="flex justify-between">
+      <div className="flex-1 min-h-[0px] flex flex-col w-full justify-between align-middle">
+        <div className="flex justify-between relative z-[1] bg-bgDefault pb-10">
           <Button
             id="button-back"
             type="primary"
