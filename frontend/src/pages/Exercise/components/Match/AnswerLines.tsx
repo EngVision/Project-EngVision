@@ -17,11 +17,22 @@ const AnswerLines = ({
 }: AnswerLinesProps) => {
   const { width, height } = useWindowSize()
   const forceRerender = useForceRerender()
-  console.log('result', result)
 
   useEffect(() => {
     forceRerender()
   }, [width, height])
+
+  useEffect(() => {
+    const oneColumnLayout = document.getElementById('one-column-layout')
+
+    oneColumnLayout?.addEventListener('scroll', () => {
+      forceRerender()
+    })
+    return () =>
+      oneColumnLayout?.addEventListener('scroll', () => {
+        forceRerender()
+      })
+  }, [])
 
   return (
     <div>
@@ -47,6 +58,7 @@ const AnswerLines = ({
             borderWidth={2}
             borderStyle="solid"
             className="line-match"
+            zIndex={0}
           />
         )
       })}
