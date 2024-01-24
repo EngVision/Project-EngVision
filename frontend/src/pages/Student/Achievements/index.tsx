@@ -1,15 +1,10 @@
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Progress } from 'antd'
+import { Progress, Card } from 'antd'
 import { achievementApi } from '../../../services/achievementApi'
 import { AchievementItem } from '../../../services/achievementApi/types'
 import { getFileUrl } from '../../../utils/common'
 import AppLoading from '../../../components/common/AppLoading'
-
-interface Achievements {
-  name: string
-  description: string
-  progress: number
-}
 
 const Achievements = () => {
   const { data: achievement, isLoading } = useQuery({
@@ -17,36 +12,78 @@ const Achievements = () => {
     queryFn: () => achievementApi.get(),
   })
 
-  const achievementsCard = (achievements: AchievementItem) => {
+  const [expandedAchievement, setExpandedAchievement] = useState<string | null>(
+    null,
+  )
+
+  const handleCardClick = (title: string) => {
+    setExpandedAchievement((prev) => (prev === title ? null : title))
+  }
+
+  const achievementsCard = (achievement: AchievementItem) => {
+    const isExpanded = expandedAchievement === achievement.title
+
     return (
-      <div
-        className="flex flex-row w-[80%] mx-auto my-5 p-2 justify-start rounded-xl border-solid border-2 border-grey-400"
-        key={achievements.title}
+      <Card
+        hoverable
+        style={{
+          width: '15rem',
+          transition: 'transform 0.5s ease-in-out',
+          transform: isExpanded ? 'rotateY(180deg)' : 'none',
+          overflow: 'hidden',
+        }}
+        className={`${achievement.progress === 1 ? 'text-yellow-500' : ''}`}
+        key={achievement.title}
+        onClick={() => handleCardClick(achievement.title)}
       >
-        <div>
-          <img src={getFileUrl(achievements.image)} alt="" />
-        </div>
-        <div className="flex flex-col flex-1 ml-5">
-          <div className="text-xl font-bold flex-grow">
-            {achievements.title}
+        {isExpanded ? (
+          <Card.Meta
+            description={
+              <div
+                style={{ transform: 'rotateY(180deg)' }}
+                className="my-[50%] text-center"
+              >
+                {achievement.description}
+              </div>
+            }
+          />
+        ) : (
+          <div className="card-content flex justify-center flex-col">
+            <div
+              className={`image ${
+                isExpanded ? 'hidden' : ''
+              } flex justify-center`}
+            >
+              <img
+                alt="achievement"
+                className="w-96 rounded-md"
+                src={getFileUrl(achievement.image)}
+              />
+            </div>
+            <div className={`title ${isExpanded ? 'hidden' : ''}`}>
+              <div className="text-xl font-bold flex justify-center">
+                {achievement.title}
+              </div>
+            </div>
+            <div className={`progress ${isExpanded ? 'hidden' : ''} `}>
+              <Progress percent={achievement.progress * 100} />
+            </div>
           </div>
-          <div className="flex-grow">{achievements.description}</div>
-          <div className="flex-grow">
-            <Progress percent={achievements.progress * 100} />
-          </div>
-        </div>
-      </div>
+        )}
+      </Card>
     )
   }
 
   return (
-    <div className="bg-surface rounded-xl p-5">
+    <div className="rounded-xl p-5">
       <h1 className="text-blue-700">Achievements</h1>
-      {isLoading ? (
-        <AppLoading />
-      ) : (
-        achievement?.items.map((item) => achievementsCard(item))
-      )}
+      <div className="flex flex-wrap mt-5 space-x-4">
+        {isLoading ? (
+          <AppLoading />
+        ) : (
+          achievement?.items.map((item) => achievementsCard(item))
+        )}
+      </div>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { PRIVATE_ROUTES, TEACHER_ROUTES } from '../../../utils/constants'
-import { BookIcon, DashboardIcon, NoteIcon } from '../../Icons'
+import { BookIcon, DashboardIcon, MessageIcon, NoteIcon } from '../../Icons'
 
 import { MenuItemType } from '../types'
 import MenuItem from './MenuItem'
@@ -33,11 +33,11 @@ const TEACHER_MENU_ITEMS: MenuItemType[] = [
   //   path: PRIVATE_ROUTES.statistic,
   //   title: 'Statistic',
   // },
-  // {
-  //   icon: <MessageIcon />,
-  //   path: PRIVATE_ROUTES.chat,
-  //   title: 'Chats',
-  // },
+  {
+    icon: <MessageIcon />,
+    path: PRIVATE_ROUTES.chat,
+    title: 'Chats',
+  },
 ]
 
 const TeacherMenu = () => {
