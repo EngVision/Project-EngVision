@@ -1,132 +1,86 @@
-// import {
-//   RegisterChatParams,
-//   LoginChatParams,
-//   GetRoomData,
-//   GetDirectMessageData,
-// } from './types'
+import axiosClient from '../axiosChatClient'
+import sha256 from 'crypto-js/sha256'
 
-// const PREFIX = 'http://localhost:5001/api/v1/'
+import type { ResponseData } from '../types'
 
-// const chatApi = {
-//   fetchWithJsonBody: async (url: string, method: string, body: object) => {
-//     try {
-//       console.log('url', url)
-//       const response = await fetch(url, {
-//         method,
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(body),
-//       })
-//       console.log('response', response.json())
-//       return response.json()
-//     } catch (error) {
-//       console.error('Error during HTTP request:', error)
-//       throw error
-//     }
-//   },
+const PREFIX = 'api/v1/'
 
-//   registerUser: async (data: RegisterChatParams) => {
-//     try {
-//       const res = await chatApi.fetchWithJsonBody(
-//         `${PREFIX}users.register`,
-//         'POST',
-//         data,
-//       )
-//       console.log('res', res)
-//       return res.data
-//     } catch (error) {
-//       console.error('Error during user registration:', error)
-//       throw error
-//     }
-//   },
+const chatApi = {
+  register: async (
+    username: string,
+    name: string,
+    pass: string,
+    email: string,
+  ): Promise<ResponseData> => {
+    try {
+      const res: ResponseData = await axiosClient.post(
+        `${PREFIX}users.register`,
+        {
+          username,
+          name,
+          pass,
+          email,
+        },
+      )
+      return res.data
+    } catch (error) {
+      console.error('Error post file details:', error)
+      throw error
+    }
+  },
 
-//   loginUser: async (data: LoginChatParams) => {
-//     try {
-//       console.log('data', data)
-//       const res = await chatApi.fetchWithJsonBody(
-//         `${PREFIX}login`,
-//         'POST',
-//         data,
-//       )
-//       console.log('res', res)
-//       console.log('Request Headers:', res.headers)
-//       return res.data
-//     } catch (error) {
-//       console.error('Error during user login:', error)
-//       throw error
-//     }
-//   },
+  login: async (username: string, password: string): Promise<ResponseData> => {
+    try {
+      const res: ResponseData = await axiosClient.post(`${PREFIX}login`, {
+        username,
+        password: {
+          digest: sha256(password).toString(),
+          algorithm: 'sha-256',
+        },
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error post file details:', error)
+      throw error
+    }
+  },
 
-//   getRoom: async (data: GetRoomData) => {
-//     try {
-//       const res = await chatApi.fetchWithJsonBody(`${PREFIX}rooms.get`, 'GET', {
-//         headers: {
-//           'X-User-Id': data.headers['X-User-Id'],
-//           'X-Auth-Token': data.headers['X-Auth-Token'],
-//         },
-//       })
+  getRoom: async (userId: string, authToken: string): Promise<ResponseData> => {
+    try {
+      const res: ResponseData = await axiosClient.get(`${PREFIX}rooms.get`, {
+        headers: {
+          'X-User-Id': userId,
+          'X-Auth-Token': authToken,
+        },
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error post file details:', error)
+      throw error
+    }
+  },
 
-//       if (!res.ok) {
-//         throw new Error(`Request failed with status ${res.status}`)
-//       }
-
-//       return res.json()
-//     } catch (error) {
-//       console.error('Error getting room data:', error)
-//       throw error
-//     }
-//   },
-
-//   getDirectMessage: async (data: GetDirectMessageData) => {
-//     try {
-//       const res = await chatApi.fetchWithJsonBody(
-//         `${PREFIX}im.messages?username=${data.params.username}`,
-//         'GET',
-//         {
-//           headers: {
-//             'X-User-Id': data.headers['X-User-Id'],
-//             'X-Auth-Token': data.headers['X-Auth-Token'],
-//           },
-//         },
-//       )
-
-//       if (!res.ok) {
-//         throw new Error(`Request failed with status ${res.status}`)
-//       }
-
-//       return res.json()
-//     } catch (error) {
-//       console.error('Error getting direct message data:', error)
-//       throw error
-//     }
-//   },
-
-//   checkEmailExists: async (data: RegisterChatParams) => {
-//     try {
-//       const res = await chatApi.fetchWithJsonBody(
-//         `${PREFIX}users.register`,
-//         'POST',
-//         data,
-//       )
-//       return res.success === false && res.error === 'Email is already in use'
-//     } catch (error) {
-//       console.error('Error checking if email exists:', error)
-//       return false
-//     }
-//   },
-// }
-
-// export default chatApi
-
-import axiosChatClient from '../axiosChatClient'
-import { ResponseData } from '../types'
-
-const PREFIX = 'login'
-
-export const chatApi = {
-  login: async (data: any): Promise<ResponseData> => {
-    const res = await axiosChatClient.post(PREFIX, data)
-    return res.data
+  getDirectMessage: async (
+    userId: string,
+    authToken: string,
+    username: string,
+  ): Promise<ResponseData> => {
+    try {
+      const res: ResponseData = await axiosClient.get(
+        `${PREFIX}im.messages?username=${username}`,
+        {
+          headers: {
+            'X-User-Id': userId,
+            'X-Auth-Token': authToken,
+          },
+        },
+      )
+      return res.data
+    } catch (error) {
+      console.error('Error post file details:', error)
+      throw error
+    }
   },
 }
+
+export default chatApi

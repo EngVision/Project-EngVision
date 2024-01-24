@@ -14,12 +14,17 @@ interface DragDropProps extends QuestionPayload {
       image?: string
     }[]
   }
+  result: any
   exerciseId?: string
   setIsSubmittable: (value: boolean) => void
 }
 
 const DragDrop = (props: DragDropProps) => {
   const questionTitle = props.question.text
+  const result = props.result
+
+  console.log(result)
+
   const [list1, setList1] = useState<string[]>([])
   const [list2, setList2] = useState([
     {
@@ -136,16 +141,18 @@ const DragDrop = (props: DragDropProps) => {
           onDragOver={(event) => onDragOver(event)}
           onDrop={(event) => onDrop(event, 'list1', null)}
         >
-          {shuffledList1.map((item: any, index: any) => (
-            <div
-              key={index}
-              className="bg-white text-black w-fit m-4 p-2 justify-center items-center rounded-lg border-solid border-2 border-sky-400"
-              draggable
-              onDragStart={(event) => onDragStart(event, 'list1', index)}
-            >
-              {item}
-            </div>
-          ))}
+          {result
+            ? ''
+            : shuffledList1.map((item: any, index: any) => (
+                <div
+                  key={index}
+                  className="bg-white text-black w-fit m-4 p-2 justify-center items-center rounded-lg border-solid border-2 border-sky-400"
+                  draggable
+                  onDragStart={(event) => onDragStart(event, 'list1', index)}
+                >
+                  {item}
+                </div>
+              ))}
         </div>
 
         <div className="flex flex-col items-center">
@@ -167,10 +174,24 @@ const DragDrop = (props: DragDropProps) => {
                 />
                 <div>
                   <div
-                    className="bg-white text-black h-8 w-36 mt-4 p-2 flex justify-center items-center rounded-lg border-solid border-2 border-sky-500"
+                    className={`bg-white text-black h-8 w-36 mt-4 p-2 flex justify-center items-center rounded-lg border-solid border-2 ${
+                      result &&
+                      result.correctAnswer.some(
+                        (correct: { image: any }) =>
+                          correct.image === result.answer[index].image,
+                      )
+                        ? result.answer[index].text !==
+                          result.correctAnswer.find(
+                            (correct: { image: any }) =>
+                              correct.image === result.answer[index].image,
+                          )?.text
+                          ? 'border-red-500' // Apply red border for incorrect answers
+                          : 'border-green-500' // Apply default border for correct answers or during the initial state
+                        : ''
+                    }`}
                     draggable
                   >
-                    {item.answer}
+                    {result ? result.answer[index].text : item.answer}
                   </div>
                 </div>
               </div>

@@ -76,25 +76,18 @@ export const Student = () => {
       queryKey: ['suggestedCourses', { levels: userLevel?.CEFRLevel }],
       queryFn: () => coursesApi.getSuggestedCourses(),
     })
+
   const { data: rawCheckListItems } = useQuery({
     queryKey: ['checkListItems'],
     queryFn: () => checkListApi.getCheckListItems(),
   })
+
   const fetchSubmissions = async (objectIdList: ObjectId[]) => {
     const submissionsPromises = objectIdList.map((objectId) =>
       submissionApi.getSubmissionList({ course: objectId.id, limit: -1 }),
     )
     const submissionsRes = await Promise.all(submissionsPromises)
     return submissionsRes
-  }
-
-  const findSubmissions = (courseId: string) => {
-    if (!Array.isArray(submissions)) return []
-    const data = submissions?.find(
-      (submission) => submission.data?.[0]?.course?.id === courseId,
-    )
-
-    return data?.data
   }
 
   const calculateExercisesByDay = () => {
@@ -195,21 +188,6 @@ export const Student = () => {
     return exercise
   }, [rawSubmissionList?.data])
 
-  const getProgress = (course: any) => {
-    if (course.exercises?.length === 0) return 100
-    const submissionArray = findSubmissions(course.id)
-    const countExerciseDone = submissionArray?.filter(
-      (submission) => submission.progress === 1,
-    ).length
-    if (!countExerciseDone) return 0
-
-    return Number(
-      ((countExerciseDone / (course.exercises?.length || 1)) * 100).toPrecision(
-        2,
-      ),
-    )
-  }
-
   const course = useMemo(() => {
     const course = {
       totalDone: 0,
@@ -217,7 +195,7 @@ export const Student = () => {
 
     if (rawCourseExercise?.data) {
       rawCourseExercise.data.forEach((assignment) => {
-        if (getProgress(assignment) === 100) {
+        if (assignment.progress === 1) {
           course.totalDone += 1
         }
       })
@@ -331,8 +309,7 @@ export const Student = () => {
             (rawCourseExercise.data.length > 0 ? (
               rawCourseExercise.data
                 .filter(
-                  (course: any) =>
-                    getProgress(course) > 0 && getProgress(course) < 100,
+                  (course: any) => course.progress > 0 && course.progress < 1,
                 )
                 .slice(0, 3)
                 .map((course: any) => (
