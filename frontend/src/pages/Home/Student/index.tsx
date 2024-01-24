@@ -30,6 +30,9 @@ import submissionApi from '../../../services/submissionApi'
 import { cellRender } from '../Components/CalendarRender'
 import ProgressCard from '../Components/ProgressCard'
 import RadarChart from '../Components/RadarChart'
+
+import chatApi from '../../../services/chatApi'
+
 dayjs.locale('en')
 
 ChartJS.register(
@@ -299,114 +302,121 @@ export const Student = () => {
     return <AppLoading />
 
   return (
-    <div className="flex flex-row gap-5 max-lg:flex-wrap">
-      {/* Part Left */}
-      <div className="basis-full lg:basis-3/4">
-        <div className="bg-surface flex rounded-2xl mt-0">
-          <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#5BB3D7] to-[#001171] text-white">
-            {DashboardCard('Completed Course', course.totalDone)}
-          </div>
-          <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#C6ECFE] to-[#77AFFE] text-dark">
-            {DashboardCard('Completed Exercises', exercise.totalDone)}
-          </div>
-          <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#C7DFF2] to-[#D2BBE6] text-dark">
-            {DashboardCard('Your Level', userLevel?.CEFRLevel)}
-          </div>
-        </div>
+    // <div className="flex flex-row gap-5 max-lg:flex-wrap">
+    //   {/* Part Left */}
+    //   <div className="basis-full lg:basis-3/4">
+    //     <div className="bg-surface flex rounded-2xl mt-0">
+    //       <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#5BB3D7] to-[#001171] text-white">
+    //         {DashboardCard('Completed Course', course.totalDone)}
+    //       </div>
+    //       <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#C6ECFE] to-[#77AFFE] text-dark">
+    //         {DashboardCard('Completed Exercises', exercise.totalDone)}
+    //       </div>
+    //       <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#C7DFF2] to-[#D2BBE6] text-dark">
+    //         {DashboardCard('Your Level', userLevel?.CEFRLevel)}
+    //       </div>
+    //     </div>
 
-        <RadarChart />
+    //     <RadarChart />
 
-        <div className="bg-surface rounded-2xl my-8 p-5">
-          <div className="flex justify-between w-full mb-2">
-            <p className="text-2xl font-bold ">Your Progress</p>
-            <Button
-              type="text"
-              className="text-base bg-white"
-              onClick={() => navigate(`./my-hub`)}
-            >
-              Show all &gt;
-            </Button>
-          </div>
-          {rawCourseExercise &&
-            (rawCourseExercise.data.length > 0 ? (
-              rawCourseExercise.data
-                .filter(
-                  (course: any) =>
-                    getProgress(course) > 0 && getProgress(course) < 100,
-                )
-                .slice(0, 3)
-                .map((course: any) => (
-                  <div className="my-4" key={course.id}>
-                    <ProgressCard course={course} />
-                  </div>
-                ))
-            ) : (
-              <div className="text-center">No course</div>
-            ))}
-        </div>
+    //     <div className="bg-surface rounded-2xl my-8 p-5">
+    //       <div className="flex justify-between w-full mb-2">
+    //         <p className="text-2xl font-bold ">Your Progress</p>
+    //         <Button
+    //           type="text"
+    //           className="text-base bg-white"
+    //           onClick={() => navigate(`./my-hub`)}
+    //         >
+    //           Show all &gt;
+    //         </Button>
+    //       </div>
+    //       {rawCourseExercise &&
+    //         (rawCourseExercise.data.length > 0 ? (
+    //           rawCourseExercise.data
+    //             .filter(
+    //               (course: any) =>
+    //                 getProgress(course) > 0 && getProgress(course) < 100,
+    //             )
+    //             .slice(0, 3)
+    //             .map((course: any) => (
+    //               <div className="my-4" key={course.id}>
+    //                 <ProgressCard course={course} />
+    //               </div>
+    //             ))
+    //         ) : (
+    //           <div className="text-center">No course</div>
+    //         ))}
+    //     </div>
 
-        <div className="bg-surface rounded-2xl p-5">
-          <div className="flex justify-between w-full mb-2">
-            <p className="text-2xl font-bold mb-3">Topics for you</p>
-            <Button
-              type="text"
-              className="text-base bg-white"
-              onClick={() => navigate(`./discover`)}
-            >
-              Show all &gt;
-            </Button>
-          </div>
-          {rawSuggestedList && (
-            <div className="flex flex-wrap gap-4">
-              {rawSuggestedList?.data.length ? (
-                rawSuggestedList?.data
-                  .slice(0, 3)
-                  .map((course) => (
-                    <CourseCard course={course} key={course.id} />
-                  ))
-              ) : (
-                <div className="col-span-4 text-center italic text-textSubtle">
-                  <p className="text-lg">No courses found</p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+    //     <div className="bg-surface rounded-2xl p-5">
+    //       <div className="flex justify-between w-full mb-2">
+    //         <p className="text-2xl font-bold mb-3">Topics for you</p>
+    //         <Button
+    //           type="text"
+    //           className="text-base bg-white"
+    //           onClick={() => navigate(`./discover`)}
+    //         >
+    //           Show all &gt;
+    //         </Button>
+    //       </div>
+    //       {rawSuggestedList && (
+    //         <div className="flex flex-wrap gap-4">
+    //           {rawSuggestedList?.data.length ? (
+    //             rawSuggestedList?.data
+    //               .slice(0, 3)
+    //               .map((course) => (
+    //                 <CourseCard course={course} key={course.id} />
+    //               ))
+    //           ) : (
+    //             <div className="col-span-4 text-center italic text-textSubtle">
+    //               <p className="text-lg">No courses found</p>
+    //             </div>
+    //           )}
+    //         </div>
+    //       )}
+    //     </div>
+    //   </div>
 
-      {/* Part Right */}
-      <div className="basis-1/4 rounded-2xl max-lg:w-full">
-        <div className="relative h-56 bg-yellow-400 rounded-2xl">
-          <div className="absolute bottom-0 right-0">
-            <Fire />
-          </div>
-          <div className=" bg-slate-200 text-[#F76519] font-semibold text-xl w-fit h-fit py-1 px-3 rounded-2xl top-5 left-5 absolute">
-            <p>STREAK SOCIETY</p>
-          </div>
-          <div className="bottom-9 left-7 absolute flex flex-col items-center justify-center text-2xl text-blue-600">
-            <div className="text-6xl font-bold">{dayStreaks}</div>
-            <div className="text-center">DAY STREAKS</div>
-          </div>
-        </div>
+    //   {/* Part Right */}
+    //   <div className="basis-1/4 rounded-2xl max-lg:w-full">
+    //     <div className="relative h-56 bg-yellow-400 rounded-2xl">
+    //       <div className="absolute bottom-0 right-0">
+    //         <Fire />
+    //       </div>
+    //       <div className=" bg-slate-200 text-[#F76519] font-semibold text-xl w-fit h-fit py-1 px-3 rounded-2xl top-5 left-5 absolute">
+    //         <p>STREAK SOCIETY</p>
+    //       </div>
+    //       <div className="bottom-9 left-7 absolute flex flex-col items-center justify-center text-2xl text-blue-600">
+    //         <div className="text-6xl font-bold">{dayStreaks}</div>
+    //         <div className="text-center">DAY STREAKS</div>
+    //       </div>
+    //     </div>
 
-        <div>
-          <Calendar fullscreen={false} fullCellRender={cellRender} />
-        </div>
-        <div className="bg-surface rounded-2xl p-5 mt-8">
-          <div className=" w-full mb-2">
-            <p className="text-xl font-bold ">Exercise Learned</p>
-            <p className="text-base mb-5">Data update every time</p>
-          </div>
-          <div className="flex justify-center">
-            <div style={{ width: '100%' }}>
-              <Line options={options} data={data} />
-            </div>
-          </div>
-        </div>
-      </div>
-      {rawCheckListItems && !rawCheckListItems?.isDone && (
-        <QuickStart checkListItems={rawCheckListItems.items} />
-      )}
+    //     <div>
+    //       <Calendar fullscreen={false} fullCellRender={cellRender} />
+    //     </div>
+    //     <div className="bg-surface rounded-2xl p-5 mt-8">
+    //       <div className=" w-full mb-2">
+    //         <p className="text-xl font-bold ">Exercise Learned</p>
+    //         <p className="text-base mb-5">Data update every time</p>
+    //       </div>
+    //       <div className="flex justify-center">
+    //         <div style={{ width: '100%' }}>
+    //           <Line options={options} data={data} />
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    //   {rawCheckListItems && !rawCheckListItems?.isDone && (
+    //     <QuickStart checkListItems={rawCheckListItems.items} />
+    //   )}
+    // </div>
+    <div>
+      <button
+        onClick={() => chatApi.login('engvision_admin', 'EngVision2023@')}
+      >
+        Go to my hub
+      </button>
     </div>
   )
 }
