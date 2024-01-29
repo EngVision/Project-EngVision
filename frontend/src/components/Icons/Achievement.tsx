@@ -49,7 +49,7 @@ const Achievement = ({
             height="151.5"
             rx="15.75"
             stroke="black"
-            stroke-width="0.5"
+            strokeWidth="0.5"
           />
           <g filter="url(#filter0_d_0_1)">
             <rect

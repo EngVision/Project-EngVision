@@ -22,7 +22,6 @@ interface SectionProps {
 const Section = ({ form }: SectionProps) => {
   const { t } = useTranslation('translation', { keyPrefix: 'common' })
   const isPersonalized = useWatch('isPersonalized', form)
-  console.log(isPersonalized)
   const [ref, { height }] = useMeasure()
   const [autoFocus, setAutoFocus] = useState(false)
 
@@ -93,6 +92,17 @@ const Section = ({ form }: SectionProps) => {
                                           form.getFieldValue('sections')[
                                             field.name
                                           ].lessons[subField.name].id
+
+                                        console.log(
+                                          'LOGS: ',
+                                          form.getFieldValue('sections'),
+                                          field,
+                                          subField,
+                                        )
+                                        // console.log(
+                                        //   '🚀 ~ {subFields.map ~ lessonId:',
+                                        //   lessonId,
+                                        // )
 
                                         return (
                                           <div
