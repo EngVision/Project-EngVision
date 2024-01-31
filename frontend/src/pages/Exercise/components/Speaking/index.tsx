@@ -33,7 +33,7 @@ function Speaking(props: SpeakingProps) {
   }, [question, fileId])
 
   return (
-    <div className="m-16">
+    <div>
       <h3 className="text-2xl text-primary mb-4">
         This is a speaking exercise
       </h3>

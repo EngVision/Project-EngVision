@@ -100,7 +100,7 @@ export const UpdateProfile = () => {
               >
                 <CustomUpload type="picture-circle" onRemove={removeAvatar} />
               </Form.Item>
-              <div className="flex max-xl:flex-col gap-8">
+              <div className="flex max-xl:flex-col max-xl:gap-0 gap-8">
                 <Form.Item<ProfileParams>
                   name="firstName"
                   label="First Name"
@@ -125,7 +125,7 @@ export const UpdateProfile = () => {
                 </Form.Item>
               </div>
 
-              <div className="flex max-xl:flex-col gap-8">
+              <div className="flex max-xl:flex-col max-xl:gap-0 gap-8">
                 <Form.Item<ProfileParams>
                   name="gender"
                   label="Gender"
@@ -233,7 +233,7 @@ export const UpdateProfile = () => {
           items={items}
           onChange={(e) => setKeyCollapse(e)}
         />
-        <div className="mt-6">
+        <div className="py-6">
           <Space className="flex justify-end">
             <Link to={PRIVATE_ROUTES.home}>
               <Button className="h-10 w-20">Cancel</Button>

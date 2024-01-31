@@ -75,7 +75,7 @@ const AudioPlayer = ({ url }: { url: string }) => {
 
   if (isLoading || !url) return <AppLoading />
   return (
-    <div className="bg-surface rounded-lg p-4 w-1/2 h-full">
+    <div className="bg-surface rounded-lg p-4 lg:w-1/2 md:w-2/3 w-4/5 h-full">
       <div className="hidden">
         <ReactPlayer
           ref={playerRef}
