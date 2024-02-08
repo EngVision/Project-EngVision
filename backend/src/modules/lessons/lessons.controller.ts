@@ -3,31 +3,31 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
   Res,
+  StreamableFile,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { CurrentUser } from 'src/common/decorators';
+import { GetResponse } from 'src/common/dto';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
 import { Role } from 'src/common/enums';
 import { AtGuard, RoleGuard } from 'src/common/guards';
+import { Readable } from 'stream';
 import { JwtPayload } from '../auth/types';
-import { CourseLessonDto } from './dto/course-lesson.dto';
-import { LessonsService } from './lessons.service';
-import { GetResponse } from 'src/common/dto';
 import { AddLessonDto } from './dto/add-lesson.dto';
+import { CourseLessonDto } from './dto/course-lesson.dto';
+import { ExportLessonDto } from './dto/export-lesson.dto';
+import { LessonsService } from './lessons.service';
+import { ImportLessonDto } from './dto/import-lesson.dto';
 
 @ApiTags('Lessons')
 @Controller('lessons')
 export class LessonsController {
   constructor(private readonly lessonsService: LessonsService) {}
-
-  // @Post()
-  // create(@Body() createLessonDto: CreateLessonDto) {
-  //   return this.lessonsService.create(createLessonDto);
-  // }
 
   @Get()
   @UseGuards(AtGuard, RoleGuard(Role.Teacher))
@@ -38,17 +38,16 @@ export class LessonsController {
       GetResponseList({
         data: courseLessons,
         dataType: CourseLessonDto,
-        total: 0,
-        limit: 0,
+        total: courseLessons.length,
+        limit: -1,
         offset: 0,
       }),
     );
   }
 
   @Post()
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
   async addLessons(@Body() addLessonDto: AddLessonDto, @Res() res: Response) {
-    console.log(addLessonDto);
-
     const course = await this.lessonsService.addLessons(addLessonDto);
 
     return res.status(HttpStatus.OK).json(
@@ -59,18 +58,51 @@ export class LessonsController {
     );
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.lessonsService.findOne(+id);
-  // }
+  @Post('import/:courseId/:sectionId')
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async importLesson(
+    @Param('courseId') courseId: string,
+    @Param('sectionId') sectionId: string,
+    @CurrentUser() user: JwtPayload,
+    @Body() importLessonDto: ImportLessonDto,
+    @Res() res: Response,
+  ) {
+    const course = await this.lessonsService.importLesson(
+      user.sub,
+      courseId,
+      sectionId,
+      importLessonDto,
+    );
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateLessonDto: UpdateLessonDto) {
-  //   return this.lessonsService.update(+id, updateLessonDto);
-  // }
+    return res.status(HttpStatus.OK).json(
+      GetResponse({
+        data: course,
+        dataType: CourseLessonDto,
+      }),
+    );
+  }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.lessonsService.remove(+id);
-  // }
+  @Get(':id/export')
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async exportLesson(
+    @Param('id') id: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const lesson = await this.lessonsService.exportLesson(id);
+
+    res.set({
+      'Content-Disposition': `attachment; filename="${lesson.title}.json"`,
+      'Content-Type': 'application/json',
+    });
+    return new StreamableFile(
+      Buffer.from(
+        JSON.stringify(
+          GetResponse({
+            data: lesson,
+            dataType: ExportLessonDto,
+          }).data,
+        ),
+      ),
+    );
+  }
 }

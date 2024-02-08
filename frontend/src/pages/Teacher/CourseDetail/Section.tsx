@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
+import { ExportOutlined, ImportOutlined } from '@ant-design/icons'
+import { useQueryClient } from '@tanstack/react-query'
 import { useMeasure } from '@uidotdev/usehooks'
 import {
   Button,
@@ -7,12 +9,15 @@ import {
   Form,
   FormListOperation,
   Tooltip,
+  Upload,
+  message,
 } from 'antd'
-import { MenuProps } from 'antd/lib'
+import { UploadChangeParam } from 'antd/es/upload'
+import { MenuProps, UploadFile } from 'antd/lib'
 import { FormInstance, useWatch } from 'antd/lib/form/Form'
 import { useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import {
   MenuIcon,
   PencilLineIcon,
@@ -20,6 +25,7 @@ import {
   TrashIcon,
 } from '../../../components/Icons'
 import CustomInput from '../../../components/common/CustomInput'
+import { lessonApi } from '../../../services/lessonApi'
 import AddLessonModel from './AddLessonModel'
 
 const { Panel } = Collapse
@@ -29,11 +35,13 @@ interface SectionProps {
 }
 
 const Section = ({ form }: SectionProps) => {
+  const { courseId = '' } = useParams()
   const isCurriculum = useWatch('isCurriculum', form)
   const [ref, { height }] = useMeasure()
   const [autoFocus, setAutoFocus] = useState(false)
   const [isModelOpen, setIsModelOpen] = useState(false)
   const [currentSectionId, setCurrentSectionId] = useState<string>('')
+  const queryClient = useQueryClient()
 
   const getAddLessonMenu = (
     subOpt: FormListOperation,
@@ -77,6 +85,26 @@ const Section = ({ form }: SectionProps) => {
     if (!result.destination) return
 
     move(result.source.index, result.destination.index)
+  }
+
+  const importLesson = async (
+    info: UploadChangeParam<UploadFile<any>>,
+    sectionId: string,
+  ) => {
+    const reader = new FileReader()
+    reader.readAsText(info.file.originFileObj!)
+    reader.onload = async () => {
+      const data = JSON.parse(reader.result as string)
+
+      try {
+        await lessonApi.importLesson(courseId, sectionId, data)
+        message.success('Import lesson successfully')
+      } catch (error) {
+        message.error('Import lesson failed')
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['course'] })
+    }
   }
 
   return (
@@ -140,17 +168,6 @@ const Section = ({ form }: SectionProps) => {
                                             field.name
                                           ].lessons[subField.name].id
 
-                                        console.log(
-                                          'LOGS: ',
-                                          form.getFieldValue('sections'),
-                                          field,
-                                          subField,
-                                        )
-                                        // console.log(
-                                        //   '🚀 ~ {subFields.map ~ lessonId:',
-                                        //   lessonId,
-                                        // )
-
                                         return (
                                           <div
                                             key={subField.key}
@@ -208,6 +225,27 @@ const Section = ({ form }: SectionProps) => {
                                                   />
                                                 </div>
                                               </Tooltip>
+
+                                              <Tooltip title="Export lesson">
+                                                <div className="flex">
+                                                  <Link
+                                                    to={`${
+                                                      import.meta.env
+                                                        .VITE_BASE_URL
+                                                    }lessons/${lessonId}/export`}
+                                                  >
+                                                    <ExportOutlined
+                                                      className={
+                                                        lessonId
+                                                          ? 'hover:cursor-pointer'
+                                                          : 'opacity-40 hover:cursor-not-allowed'
+                                                      }
+                                                      width={20}
+                                                      height={20}
+                                                    />
+                                                  </Link>
+                                                </div>
+                                              </Tooltip>
                                             </div>
 
                                             <Form.Item
@@ -263,6 +301,35 @@ const Section = ({ form }: SectionProps) => {
                                             </div>
                                           </Tooltip>
                                         )}
+                                        <Upload
+                                          customRequest={({ onSuccess }) =>
+                                            onSuccess?.('ok')
+                                          }
+                                          accept=".json"
+                                          showUploadList={false}
+                                          onChange={(info) => {
+                                            if (info.file.status === 'done') {
+                                              importLesson(
+                                                info,
+                                                form.getFieldValue('sections')[
+                                                  field.name
+                                                ].id,
+                                              )
+                                            }
+                                          }}
+                                        >
+                                          <Tooltip title="Import lesson">
+                                            <div className="flex">
+                                              <ImportOutlined
+                                                className={
+                                                  'hover:cursor-pointer'
+                                                }
+                                                width={20}
+                                                height={20}
+                                              />
+                                            </div>
+                                          </Tooltip>
+                                        </Upload>
                                       </div>
                                     </div>
                                   )}

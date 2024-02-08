@@ -20,4 +20,17 @@ export const lessonApi = {
     const res = await axiosClient.post(`${COURSE_LESSON_PREFIX}`, data)
     return res.data.data
   },
+
+  importLesson: async (
+    courseId: string,
+    sectionId: string,
+    lesson: any,
+  ): Promise<any> => {
+    const res = await axiosClient.post(
+      `${COURSE_LESSON_PREFIX}import/${courseId}/${sectionId}`,
+      lesson,
+    )
+
+    return res.data.data
+  },
 }

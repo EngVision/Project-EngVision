@@ -201,7 +201,7 @@ export class ExercisesService {
 
     const content = [];
 
-    const service = await this.exerciseContentServiceFactory.createService(
+    const service = this.exerciseContentServiceFactory.createService(
       exercise.type,
     );
     for (const questionId of exercise.content) {
