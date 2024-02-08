@@ -1,6 +1,7 @@
 import { Form, Input, Select } from 'antd'
 import CustomUpload from '../../../components/CustomUpload'
 import { CEFRLevel } from '../../../utils/constants'
+import { useWatch } from 'antd/es/form/Form'
 
 type FieldType = {
   title: string
@@ -15,6 +16,10 @@ interface OverviewProps {
 }
 
 const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
+  const form = Form.useFormInstance()
+  const isAdminCurriculum = useWatch('isAdminCurriculum', form)
+  console.log(isAdminCurriculum)
+
   return (
     <div className="flex flex-col">
       <h4 className="text-primary text-2xl font-semibold">General</h4>
@@ -28,6 +33,7 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
           placeholder="Public Speaking and Presentation Skills in English"
           size="middle"
           className="rounded-[8px] h-[40px]"
+          disabled={isAdminCurriculum}
         />
       </Form.Item>
 
@@ -40,6 +46,7 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
           placeholder="Boost your English public speaking and presentation skills with confidence."
           size="middle"
           className="rounded-[8px] h-[40px]"
+          disabled={isAdminCurriculum}
         />
       </Form.Item>
 
@@ -60,6 +67,7 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
             placeholder="$29.00"
             size="middle"
             className="rounded-[8px] h-[40px]"
+            disabled={isAdminCurriculum}
           />
         </Form.Item>
 
@@ -77,6 +85,7 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
             }))}
             className="rounded-[8px] !h-[40px]"
             size="large"
+            disabled={isAdminCurriculum}
           />
         </Form.Item>
       </div>
