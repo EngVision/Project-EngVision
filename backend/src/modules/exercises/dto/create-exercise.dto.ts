@@ -17,6 +17,7 @@ import { CEFRLevel, ExerciseTag, ExerciseType } from 'src/common/enums';
 import { ExerciseQuestionDto } from 'src/modules/exercise-content/dto/exercise-content.dto';
 
 class ContentQuestionDto {
+  @IsOptional()
   @IsString()
   @ApiProperty({ type: String, description: 'Question text' })
   text: string;
@@ -59,14 +60,14 @@ export class CreateExerciseDto {
     isArray: true,
     description: 'Exercise tags',
   })
-  tags: ExerciseTag[];
+  tags: string[];
 
   @IsEnum(CEFRLevel)
   @ApiProperty({
     enum: CEFRLevel,
     description: 'Exercise level',
   })
-  level: CEFRLevel;
+  level: string;
 
   @IsEnum(ExerciseType)
   @ApiProperty({ enum: ExerciseType, description: 'Exercise type' })

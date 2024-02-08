@@ -13,6 +13,7 @@ import {
 } from './schemas/submission.schema';
 import { ExerciseContentServiceFactory } from '../exercise-content/exercise-content-factory.service';
 import { UserLevelService } from '../user-level/user-level.service';
+import { ExerciseQuestionDto } from '../exercise-content/dto/exercise-content.dto';
 
 @Injectable()
 export class SubmissionsService {
@@ -66,9 +67,9 @@ export class SubmissionsService {
       },
     );
 
-    const questionContent = await this.exerciseContentServiceFactory
+    const questionContent = (await this.exerciseContentServiceFactory
       .createService(submissionDto.exerciseType)
-      .getContent(result.question);
+      .getContent(result.question)) as ExerciseQuestionDto;
     this.userLevelService.update(userId, result, questionContent);
 
     return {
@@ -191,9 +192,9 @@ export class SubmissionsService {
       submission.detail.reduce((accumulator, q) => q.grade + accumulator, 0) /
       submission.detail.length;
 
-    const questionContent = await this.exerciseContentServiceFactory
+    const questionContent = (await this.exerciseContentServiceFactory
       .createService(submission.exerciseType)
-      .getContent(questionId);
+      .getContent(questionId)) as ExerciseQuestionDto;
     this.userLevelService.update(
       submission.user,
       submission.detail[i],

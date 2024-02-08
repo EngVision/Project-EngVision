@@ -26,7 +26,6 @@ export class CreateCourseDto {
   introVideo?: number;
 
   @IsOptional()
-  @IsMongoId()
   @ApiPropertyOptional({ type: String, description: 'Thumbnail url' })
   thumbnail?: string;
 
@@ -39,9 +38,4 @@ export class CreateCourseDto {
   @IsEnum(CEFRLevel)
   @ApiPropertyOptional({ enum: CEFRLevel, description: 'Level (A1/A2 ...)' })
   level?: CEFRLevel;
-
-  // @IsOptional()
-  // @IsEnum(Level)
-  // @ApiPropertyOptional({ enum: Level, description: 'Level (A1/A2 ...)' })
-  // tag?: Level; []
 }

@@ -32,9 +32,8 @@ export class MultipleChoiceService extends ExerciseContentService {
     this.setDefaultExplain(validatedContent);
     this.setIsMultipleCorrectAnswer(validatedContent);
 
-    const questionList = await this.multipleChoiceModel.insertMany(
-      validatedContent,
-    );
+    const questionList =
+      await this.multipleChoiceModel.insertMany(validatedContent);
 
     return questionList.map(q => q.id);
   }

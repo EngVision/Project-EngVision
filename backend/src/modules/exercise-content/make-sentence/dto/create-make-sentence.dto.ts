@@ -36,8 +36,8 @@ class QuestionDto {
 }
 
 class CorrectAnswerDto {
-  @IsEmpty()
-  detail: null;
+  @IsOptional()
+  detail: any;
 
   @IsOptional()
   @IsNotEmpty()

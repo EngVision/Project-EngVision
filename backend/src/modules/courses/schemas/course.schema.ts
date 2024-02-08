@@ -24,7 +24,7 @@ export class Course {
   @Prop({ default: null })
   introVideo: string;
 
-  @Prop({ default: null, type: SchemaTypes.ObjectId, ref: LocalFile.name })
+  @Prop({ default: null, type: SchemaTypes.Mixed, ref: LocalFile.name })
   thumbnail: string;
 
   @Prop({ default: null })
@@ -52,7 +52,10 @@ export class Course {
   reviews: mongoose.Types.ObjectId[];
 
   @Prop({ default: false })
-  isPersonalized: boolean;
+  isCurriculum: boolean;
+
+  @Prop({ default: false })
+  isAdminCurriculum: boolean;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

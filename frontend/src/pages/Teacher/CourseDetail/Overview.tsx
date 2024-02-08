@@ -1,7 +1,8 @@
 import { Form, Input, Select } from 'antd'
 import CustomUpload from '../../../components/CustomUpload'
 import { CEFRLevel } from '../../../utils/constants'
-import { useTranslation } from 'react-i18next'
+import { useWatch } from 'antd/es/form/Form'
+
 type FieldType = {
   title: string
   about: string
@@ -10,49 +11,49 @@ type FieldType = {
   thumbnail: string
 }
 
-interface OverviewProps {
-  handleChangeThumbnail: () => void
-}
+const Overview = () => {
+  const form = Form.useFormInstance()
+  const isAdminCurriculum = useWatch('isAdminCurriculum', form)
 
-const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
-  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
       <h4 className="text-primary text-2xl font-semibold">General</h4>
 
       <Form.Item<FieldType>
         name="title"
-        label={t('Title')}
-        rules={[{ required: true, message: t('Please input title!') }]}
+        label="Title"
+        rules={[{ required: true, message: 'Please input title!' }]}
       >
         <Input
           placeholder="Public Speaking and Presentation Skills in English"
           size="middle"
           className="rounded-[8px] h-[40px]"
+          disabled={isAdminCurriculum}
         />
       </Form.Item>
 
       <Form.Item<FieldType>
         name="about"
-        label={t('About')}
-        rules={[{ required: true, message: t('Please input about!') }]}
+        label="About"
+        rules={[{ required: true, message: 'Please input about!' }]}
       >
         <Input
           placeholder="Boost your English public speaking and presentation skills with confidence."
           size="middle"
           className="rounded-[8px] h-[40px]"
+          disabled={isAdminCurriculum}
         />
       </Form.Item>
 
-      <div className="flex flex-col gap-4 lg:flex-row">
+      <div className="flex gap-4">
         <Form.Item<FieldType>
           name="price"
-          label={t('Price')}
+          label="Price"
           rules={[
-            { required: true, message: t('Please input price!') },
+            { required: true, message: 'Please input price!' },
             {
               pattern: /^[0-9.]+$/,
-              message: t('Price can only numbers.'),
+              message: 'Price can only numbers.',
             },
           ]}
           className="flex-1"
@@ -61,29 +62,37 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
             placeholder="$29.00"
             size="middle"
             className="rounded-[8px] h-[40px]"
+            disabled={isAdminCurriculum}
           />
         </Form.Item>
 
         <Form.Item<FieldType>
           name="level"
-          label={t('Level')}
-          rules={[{ required: true, message: t('Please input level!') }]}
+          label="Level"
+          rules={[{ required: true, message: 'Please input level!' }]}
           className="flex-1"
         >
           <Select
-            placeholder={t('Select level')}
+            placeholder="Select level"
             options={Object.values(CEFRLevel).map((level) => ({
               value: level,
               label: level,
             }))}
             className="rounded-[8px] !h-[40px]"
             size="large"
+            disabled={isAdminCurriculum}
           />
         </Form.Item>
       </div>
 
-      <Form.Item name="thumbnail" label={t('Thumbnail')}>
-        <CustomUpload type="picture" onRemove={handleChangeThumbnail} />
+      <Form.Item
+        name="thumbnail"
+        label="Thumbnail"
+        getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
+        rules={[{ required: true, message: 'Please input thumbnail!' }]}
+        valuePropName="fileList"
+      >
+        <CustomUpload type="picture" />
       </Form.Item>
     </div>
   )

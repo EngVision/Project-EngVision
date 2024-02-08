@@ -1,8 +1,24 @@
 /* eslint-disable prettier/prettier */
-import { Button, Collapse, Form, Tooltip } from 'antd'
+import { ExportOutlined, ImportOutlined } from '@ant-design/icons'
+import { useQueryClient } from '@tanstack/react-query'
+import { useMeasure } from '@uidotdev/usehooks'
+import {
+  Button,
+  Collapse,
+  Dropdown,
+  Form,
+  FormListOperation,
+  Tooltip,
+  Upload,
+  message,
+  Space,
+} from 'antd'
+import { UploadChangeParam } from 'antd/es/upload'
+import { MenuProps, UploadFile } from 'antd/lib'
 import { FormInstance, useWatch } from 'antd/lib/form/Form'
+import { useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   MenuIcon,
   PencilLineIcon,
@@ -10,9 +26,10 @@ import {
   TrashIcon,
 } from '../../../components/Icons'
 import CustomInput from '../../../components/common/CustomInput'
-import { useMeasure } from '@uidotdev/usehooks'
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { lessonApi } from '../../../services/lessonApi'
+import AddLessonModel from './AddLessonModel'
+import authApi from '../../../services/authApi'
+
 const { Panel } = Collapse
 
 interface SectionProps {
@@ -20,16 +37,84 @@ interface SectionProps {
 }
 
 const Section = ({ form }: SectionProps) => {
-  const { t } = useTranslation('translation', { keyPrefix: 'common' })
-  const isPersonalized = useWatch('isPersonalized', form)
+  const { courseId = '' } = useParams()
+  const isCurriculum = useWatch('isCurriculum', form)
   const [ref, { height }] = useMeasure()
   const [autoFocus, setAutoFocus] = useState(false)
+  const [isModelOpen, setIsModelOpen] = useState(false)
+  const [currentSectionId, setCurrentSectionId] = useState<string>('')
+  const queryClient = useQueryClient()
+
+  const getAddLessonMenu = (
+    subOpt: FormListOperation,
+    sectionId: string,
+  ): MenuProps['items'] => {
+    return [
+      {
+        key: 'add-new',
+        label: (
+          <div
+            onClick={() => {
+              setAutoFocus(true)
+              subOpt.add({
+                title: 'New lesson',
+                exercises: [],
+              })
+            }}
+          >
+            Add new
+          </div>
+        ),
+      },
+      {
+        key: 'add-existing',
+        label: (
+          <div
+            onClick={() => {
+              setIsModelOpen(true)
+              setCurrentSectionId(sectionId)
+            }}
+          >
+            Add existing
+          </div>
+        ),
+      },
+    ]
+  }
 
   const onDragEnd = (result: any, move: (from: number, to: number) => void) => {
-    if (isPersonalized) return
+    if (isCurriculum) return
     if (!result.destination) return
 
     move(result.source.index, result.destination.index)
+  }
+
+  const importLesson = async (
+    info: UploadChangeParam<UploadFile<any>>,
+    sectionId: string,
+  ) => {
+    const reader = new FileReader()
+    reader.readAsText(info.file.originFileObj!)
+    reader.onload = async () => {
+      const data = JSON.parse(reader.result as string)
+
+      try {
+        await lessonApi.importLesson(courseId, sectionId, data)
+        message.success('Import lesson successfully')
+      } catch (error) {
+        message.error('Import lesson failed')
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['course'] })
+    }
+  }
+
+  const exportLesson = async (lessonId: string) => {
+    await authApi.refreshToken()
+    window.open(
+      `${import.meta.env.VITE_BASE_URL}lessons/${lessonId}/export`,
+      '_self',
+    )
   }
 
   return (
@@ -64,7 +149,6 @@ const Section = ({ form }: SectionProps) => {
                                 className={isActive ? '' : 'opacity-40'}
                               />
                             )}
-                            onChange={() => setAutoFocus(false)}
                             defaultActiveKey={['0']}
                           >
                             <Panel
@@ -72,16 +156,15 @@ const Section = ({ form }: SectionProps) => {
                               header={
                                 <Form.Item
                                   name={[field.name, 'title']}
-                                  className="mb-0 w-full"
+                                  className="mb-0 w-fit"
                                 >
                                   <CustomInput
-                                    placeholder={t('New section')}
-                                    className="pr-16"
-                                    disabled={isPersonalized}
+                                    placeholder="New section"
+                                    disabled={isCurriculum}
                                   />
                                 </Form.Item>
                               }
-                              className="!border-dashed border-2 !border-b-2 !border-wolfGrey !rounded-lg"
+                              className="mb-4 !border-dashed border-2 !border-b-2 !border-gray-300 !rounded-lg"
                             >
                               <Form.Item>
                                 <Form.List name={[field.name, 'lessons']}>
@@ -93,40 +176,27 @@ const Section = ({ form }: SectionProps) => {
                                             field.name
                                           ].lessons[subField.name].id
 
-                                        console.log(
-                                          'LOGS: ',
-                                          form.getFieldValue('sections'),
-                                          field,
-                                          subField,
-                                        )
-                                        // console.log(
-                                        //   '🚀 ~ {subFields.map ~ lessonId:',
-                                        //   lessonId,
-                                        // )
-
                                         return (
-                                          <div
+                                          <Space
                                             key={subField.key}
-                                            className="ml-8 flex"
+                                            className="ml-8 flex justify-between"
                                           >
                                             <div className="flex-1 flex items-center gap-2">
                                               <MenuIcon />
                                               <Form.Item
+                                                noStyle
                                                 name={[subField.name, 'title']}
-                                                className="mb-0 flex-1"
                                               >
                                                 <CustomInput
-                                                  placeholder={t('New lesson')}
+                                                  placeholder="New lesson"
                                                   autoFocus={autoFocus}
                                                 />
                                               </Form.Item>
                                             </div>
 
-                                            <div className="flex gap-4 items-center">
+                                            <div className="flex gap-4">
                                               {lessonId ? (
-                                                <Tooltip
-                                                  title={t('Edit lesson')}
-                                                >
+                                                <Tooltip title="Edit lesson">
                                                   <Link
                                                     to={`lessons/${lessonId}`}
                                                   >
@@ -138,11 +208,7 @@ const Section = ({ form }: SectionProps) => {
                                                   </Link>
                                                 </Tooltip>
                                               ) : (
-                                                <Tooltip
-                                                  title={t(
-                                                    'Please save the course to edit this lesson',
-                                                  )}
-                                                >
+                                                <Tooltip title="Please save the course to edit this lesson">
                                                   <div className="flex">
                                                     <PencilLineIcon
                                                       className="opacity-40 hover:cursor-not-allowed"
@@ -152,10 +218,7 @@ const Section = ({ form }: SectionProps) => {
                                                   </div>
                                                 </Tooltip>
                                               )}
-
-                                              <Tooltip
-                                                title={t('Delete lesson')}
-                                              >
+                                              <Tooltip title="Delete lesson">
                                                 <div className="flex">
                                                   <TrashIcon
                                                     onClick={() => {
@@ -164,6 +227,25 @@ const Section = ({ form }: SectionProps) => {
                                                       )
                                                     }}
                                                     className="hover:cursor-pointer"
+                                                    width={20}
+                                                    height={20}
+                                                  />
+                                                </div>
+                                              </Tooltip>
+
+                                              <Tooltip title="Export lesson">
+                                                <div
+                                                  className="flex"
+                                                  onClick={() =>
+                                                    exportLesson(lessonId)
+                                                  }
+                                                >
+                                                  <ExportOutlined
+                                                    className={
+                                                      lessonId
+                                                        ? 'hover:cursor-pointer'
+                                                        : 'opacity-40 hover:cursor-not-allowed'
+                                                    }
                                                     width={20}
                                                     height={20}
                                                   />
@@ -178,28 +260,40 @@ const Section = ({ form }: SectionProps) => {
                                                 'exercises',
                                               ]}
                                             ></Form.Item>
-                                          </div>
+                                          </Space>
                                         )
                                       })}
                                       <div className="flex gap-4 absolute right-0 top-[-48px]">
-                                        <Tooltip title={t('Add lesson')}>
-                                          <div className="flex">
-                                            <PlusIcon
-                                              onClick={() => {
-                                                setAutoFocus(true)
-                                                subOpt.add({
-                                                  title: t('New lesson'),
-                                                  exercises: [],
-                                                })
-                                              }}
-                                              className="hover:cursor-pointer"
-                                              width={20}
-                                              height={20}
-                                            />
-                                          </div>
+                                        <Tooltip title="Add lesson">
+                                          <Dropdown
+                                            menu={{
+                                              items: getAddLessonMenu(
+                                                subOpt,
+                                                form.getFieldValue('sections')[
+                                                  field.name
+                                                ].id,
+                                              ),
+                                            }}
+                                            trigger={['click']}
+                                          >
+                                            <div className="flex">
+                                              <PlusIcon
+                                                className="hover:cursor-pointer"
+                                                width={20}
+                                                height={20}
+                                              />
+                                            </div>
+                                          </Dropdown>
                                         </Tooltip>
-                                        {!isPersonalized && (
-                                          <Tooltip title={t('Delete section')}>
+                                        {isModelOpen && (
+                                          <AddLessonModel
+                                            isOpen={isModelOpen}
+                                            setIsOpen={setIsModelOpen}
+                                            sectionId={currentSectionId}
+                                          />
+                                        )}
+                                        {!isCurriculum && (
+                                          <Tooltip title="Delete section">
                                             <div className="flex">
                                               <TrashIcon
                                                 onClick={() => {
@@ -212,6 +306,35 @@ const Section = ({ form }: SectionProps) => {
                                             </div>
                                           </Tooltip>
                                         )}
+                                        <Upload
+                                          customRequest={({ onSuccess }) =>
+                                            onSuccess?.('ok')
+                                          }
+                                          accept=".json"
+                                          showUploadList={false}
+                                          onChange={(info) => {
+                                            if (info.file.status === 'done') {
+                                              importLesson(
+                                                info,
+                                                form.getFieldValue('sections')[
+                                                  field.name
+                                                ].id,
+                                              )
+                                            }
+                                          }}
+                                        >
+                                          <Tooltip title="Import lesson">
+                                            <div className="flex">
+                                              <ImportOutlined
+                                                className={
+                                                  'hover:cursor-pointer'
+                                                }
+                                                width={20}
+                                                height={20}
+                                              />
+                                            </div>
+                                          </Tooltip>
+                                        </Upload>
                                       </div>
                                     </div>
                                   )}
@@ -237,15 +360,15 @@ const Section = ({ form }: SectionProps) => {
             <Button
               onClick={() =>
                 add({
-                  title: t('New section'),
+                  title: 'New section',
                   lessons: [],
                 })
               }
               type="primary"
-              className="w-full h-10"
-              disabled={isPersonalized}
+              className="mt-4 w-full h-10"
+              disabled={isCurriculum}
             >
-              {t('Add section')}
+              Add section
             </Button>
           </Form.Item>
         </>
