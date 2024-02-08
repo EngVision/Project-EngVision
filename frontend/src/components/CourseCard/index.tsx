@@ -3,12 +3,13 @@ import { StarIcon, VideoPlayIcon } from '../Icons'
 import { Link } from 'react-router-dom'
 import { LEVELS, STUDENT_ROUTES, UPLOAD_FILE_URL } from '../../utils/constants'
 import CustomImage from '../common/CustomImage'
-
+import { useTranslation } from 'react-i18next'
 import type { CourseDetails } from '../../services/coursesApi/types'
 interface CourseCardProps {
   course: CourseDetails
 }
 export const CourseCard = ({ course }: CourseCardProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   const { Meta } = Card
 
   return (
@@ -34,7 +35,9 @@ export const CourseCard = ({ course }: CourseCardProps) => {
           <div className="flex justify-between text-xs">
             <div className="flex items-center font-light">
               <VideoPlayIcon className="w-4 h-4 mr-2" />
-              <p>{course.totalLessons} Lessons</p>
+              <p>
+                {course.totalLessons} {t('Lessons')}
+              </p>
             </div>
             <div className="flex items-center">
               <p>{course.teacher.fullName}</p>
@@ -55,7 +58,8 @@ export const CourseCard = ({ course }: CourseCardProps) => {
               <p className="font-semibold">{course.avgStar}</p>
             </div>
             <div>
-              <span className="font-bold">{course.attendance}</span> Students
+              <span className="font-bold">{course.attendance}</span>{' '}
+              {t('Students')}
             </div>
           </div>
 

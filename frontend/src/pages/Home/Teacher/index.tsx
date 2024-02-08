@@ -12,8 +12,10 @@ import {
 } from '../../../utils/constants'
 import StudentLearn from '../../../components/Icons/StudentLearn'
 import AdminLearn from '../../../components/Icons/AdminLearn'
+import { useTranslation } from 'react-i18next'
 
 const Teacher = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Home' })
   const user = useAppSelector((state) => state.app.user)
   const status: any = {
     status:
@@ -67,9 +69,9 @@ const Teacher = () => {
         } flex flex-row px-5 justify-between rounded-xl items-center`}
       >
         <div className="basis-1/4 text-xl text-white">
-          Hi, {user?.firstName + ' ' + user?.lastName}! <br /> You have{' '}
-          {exercise.totalInProcess} upcoming assignments due and have to finish
-          0 courses!
+          {t('Hi')}, {user?.firstName + ' ' + user?.lastName}! <br />{' '}
+          {t('You have')} {exercise.totalInProcess}{' '}
+          {t('upcoming assignments due and have to finish 0 courses!')}
         </div>
         <div className="scale-up">
           {user?.role == Role.Teacher && (
@@ -98,14 +100,14 @@ const Teacher = () => {
       </div>
       {rawCourseList && (
         <div className="grid grid-cols-fill-40 gap-x-6 gap-y-4">
-          {DashboardCard('EXERCISES', exercise.totalInProcess)}
-          {DashboardCard('TOTAL EXERCISES', exercise.totalQuestion)}
-          {DashboardCard('NEXT DUE', nextDue.tomorrow)}
-          {DashboardCard('SUBMITTED ASSIGNMENTS', exercise.totalDone)}
-          {DashboardCard('COURSES LEARNING', rawCourseList.data.length)}
-          {DashboardCard('TOTAL COURSES', rawCourseList.data.length)}
-          {DashboardCard('FINISHED COURSES', 0)}
-          {DashboardCard('CERF LEVEL', level.C1)}
+          {DashboardCard(t('EXERCISES'), exercise.totalInProcess)}
+          {DashboardCard(t('TOTAL EXERCISES'), exercise.totalQuestion)}
+          {DashboardCard(t('NEXT DUE'), nextDue.tomorrow)}
+          {DashboardCard(t('SUBMITTED ASSIGNMENTS'), exercise.totalDone)}
+          {DashboardCard(t('COURSES LEARNING'), rawCourseList.data.length)}
+          {DashboardCard(t('TOTAL COURSES'), rawCourseList.data.length)}
+          {DashboardCard(t('FINISHED COURSES'), 0)}
+          {DashboardCard(t('CERF LEVEL'), level.C1)}
         </div>
       )}
     </div>

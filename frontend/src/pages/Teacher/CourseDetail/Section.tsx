@@ -12,7 +12,7 @@ import {
 import CustomInput from '../../../components/common/CustomInput'
 import { useMeasure } from '@uidotdev/usehooks'
 import { useState } from 'react'
-
+import { useTranslation } from 'react-i18next'
 const { Panel } = Collapse
 
 interface SectionProps {
@@ -20,6 +20,7 @@ interface SectionProps {
 }
 
 const Section = ({ form }: SectionProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   const isPersonalized = useWatch('isPersonalized', form)
   const [ref, { height }] = useMeasure()
   const [autoFocus, setAutoFocus] = useState(false)
@@ -74,7 +75,7 @@ const Section = ({ form }: SectionProps) => {
                                   className="mb-0 w-full"
                                 >
                                   <CustomInput
-                                    placeholder="New section"
+                                    placeholder={t('New section')}
                                     className="pr-16"
                                     disabled={isPersonalized}
                                   />
@@ -115,7 +116,7 @@ const Section = ({ form }: SectionProps) => {
                                                 className="mb-0 flex-1"
                                               >
                                                 <CustomInput
-                                                  placeholder="New lesson"
+                                                  placeholder={t('New lesson')}
                                                   autoFocus={autoFocus}
                                                 />
                                               </Form.Item>
@@ -123,7 +124,9 @@ const Section = ({ form }: SectionProps) => {
 
                                             <div className="flex gap-4 items-center">
                                               {lessonId ? (
-                                                <Tooltip title="Edit lesson">
+                                                <Tooltip
+                                                  title={t('Edit lesson')}
+                                                >
                                                   <Link
                                                     to={`lessons/${lessonId}`}
                                                   >
@@ -135,7 +138,11 @@ const Section = ({ form }: SectionProps) => {
                                                   </Link>
                                                 </Tooltip>
                                               ) : (
-                                                <Tooltip title="Please save the course to edit this lesson">
+                                                <Tooltip
+                                                  title={t(
+                                                    'Please save the course to edit this lesson',
+                                                  )}
+                                                >
                                                   <div className="flex">
                                                     <PencilLineIcon
                                                       className="opacity-40 hover:cursor-not-allowed"
@@ -146,7 +153,9 @@ const Section = ({ form }: SectionProps) => {
                                                 </Tooltip>
                                               )}
 
-                                              <Tooltip title="Delete lesson">
+                                              <Tooltip
+                                                title={t('Delete lesson')}
+                                              >
                                                 <div className="flex">
                                                   <TrashIcon
                                                     onClick={() => {
@@ -173,13 +182,13 @@ const Section = ({ form }: SectionProps) => {
                                         )
                                       })}
                                       <div className="flex gap-4 absolute right-0 top-[-48px]">
-                                        <Tooltip title="Add lesson">
+                                        <Tooltip title={t('Add lesson')}>
                                           <div className="flex">
                                             <PlusIcon
                                               onClick={() => {
                                                 setAutoFocus(true)
                                                 subOpt.add({
-                                                  title: 'New lesson',
+                                                  title: t('New lesson'),
                                                   exercises: [],
                                                 })
                                               }}
@@ -190,7 +199,7 @@ const Section = ({ form }: SectionProps) => {
                                           </div>
                                         </Tooltip>
                                         {!isPersonalized && (
-                                          <Tooltip title="Delete section">
+                                          <Tooltip title={t('Delete section')}>
                                             <div className="flex">
                                               <TrashIcon
                                                 onClick={() => {
@@ -228,7 +237,7 @@ const Section = ({ form }: SectionProps) => {
             <Button
               onClick={() =>
                 add({
-                  title: 'New section',
+                  title: t('New section'),
                   lessons: [],
                 })
               }
@@ -236,7 +245,7 @@ const Section = ({ form }: SectionProps) => {
               className="w-full h-10"
               disabled={isPersonalized}
             >
-              Add section
+              {t('Add section')}
             </Button>
           </Form.Item>
         </>

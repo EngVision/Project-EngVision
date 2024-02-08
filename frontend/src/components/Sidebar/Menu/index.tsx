@@ -7,7 +7,6 @@ import MenuItem from './MenuItem'
 import StudentMenu from './StudentMenu'
 import TeacherMenu from './TeacherMenu'
 import Logout from '../../Logout'
-
 const SUB_MENU_ITEMS: MenuItemType[] = [
   {
     icon: <SettingsIcon />,

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAppDispatch } from '../../hooks/redux'
 import { showGetStarted } from '../../redux/app/slice'
 import { FACEBOOK_SOCIAL_URL, YOUTUBE_SOCIAL_URL } from '../../utils/constants'
+import { useTranslation } from 'react-i18next'
 import {
   FacebookCircleIcon,
   HelpMenuIcon,
@@ -11,6 +12,7 @@ import {
 } from '../Icons'
 
 const HelpMenu = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Header' })
   const dispatch = useAppDispatch()
 
   const items: MenuProps['items'] = [
@@ -24,7 +26,7 @@ const HelpMenu = () => {
           }}
         >
           <InfoCircleIcon width={20} height={20} />
-          User guides
+          {t('User guides')}
         </div>
       ),
     },

@@ -3,8 +3,9 @@ import { ArrowDownIcon } from '../../../components/Icons'
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
 import { setCourseStatus } from '../../../redux/course/slice'
 import { COURSE_STATUS } from '../../../utils/constants'
-
+import { useTranslation } from 'react-i18next'
 const StatusMode = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'MyCourses' })
   const dispatch = useAppDispatch()
   const status = useAppSelector((state) => state.course.status)
 
@@ -39,7 +40,7 @@ const StatusMode = () => {
             dispatch(setCourseStatus(COURSE_STATUS.all))
           }}
         >
-          All
+          {t('All')}
         </Button>
         <Button
           type={status === COURSE_STATUS.published ? 'primary' : 'default'}
@@ -52,7 +53,7 @@ const StatusMode = () => {
             dispatch(setCourseStatus(COURSE_STATUS.published))
           }}
         >
-          Published
+          {t('Published')}
         </Button>
         <Button
           type={status === COURSE_STATUS.draft ? 'primary' : 'default'}
@@ -63,7 +64,7 @@ const StatusMode = () => {
             dispatch(setCourseStatus(COURSE_STATUS.draft))
           }}
         >
-          Draft
+          {t('Draft')}
         </Button>
       </div>
 
