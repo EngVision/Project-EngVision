@@ -147,11 +147,11 @@ function Match(props: MatchProps) {
                   <div className="flex items-center">
                     <label
                       htmlFor={`first_column_${pair[0].content}`}
-                      className="pr-4 w-[200px] text-right cursor-pointer"
+                      className="pr-4 md:w-[200px] w-36 cursor-pointer"
                     >
                       {pair[0].type === ExerciseMatchType.Text ? (
                         <AnswerButton
-                          className={`${
+                          className={`text-center ${
                             result
                               ? isCorrect
                                 ? 'border-correct text-correct'
@@ -204,7 +204,7 @@ function Match(props: MatchProps) {
                     >
                       {pair[1].type === ExerciseMatchType.Text ? (
                         <AnswerButton
-                          className={`${
+                          className={`text-center ${
                             result
                               ? isCorrect
                                 ? 'border-correct text-correct'
