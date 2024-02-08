@@ -33,6 +33,7 @@ import MatchForm from './components/MatchForm'
 import DragAndDropForm from './components/DragAndDropForm'
 import { useTranslation } from 'react-i18next'
 import WordSearchForm from './components/WordSearchForm'
+import ReactQuill from 'react-quill'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -117,9 +118,9 @@ const ContentQuestionForm = () => {
         label="Question"
         name={['contentQuestion', 'text']}
       >
-        <Input.TextArea
-          placeholder="Description (optional)"
-          autoSize={{ minRows: 4, maxRows: 10 }}
+        <ReactQuill
+          className="bg-surface"
+          placeholder="Question content (optional)"
         />
       </Form.Item>
       <div className="grid grid-cols-2 gap-4">

@@ -101,11 +101,9 @@ const CourseContent = (course: CourseDetails) => {
 
   return (
     <div>
-      <div className="mb-10">
-        <h3 className="text-2xl text-primary mb-6">
-          {t('Course Details.Course Content')}
-        </h3>
-      </div>
+      <h3 className="text-2xl text-primary mb-6">
+        {t('Course Details.Course Content')}
+      </h3>
 
       <Image
         style={{ display: 'none' }}

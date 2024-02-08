@@ -55,14 +55,13 @@ export function TwoColumnLayout({
             className="w-full rounded-sm"
           />
         )}
-        <p
+        <div
           style={{
             fontSize: fontSize,
             transition: 'font-size 0.5s ease-in-out',
           }}
-        >
-          {contentQuestion.text}
-        </p>
+          dangerouslySetInnerHTML={{ __html: contentQuestion.text || '' }}
+        ></div>
       </div>
       <div className="relative">
         <Divider type="vertical" className="h-full" />
