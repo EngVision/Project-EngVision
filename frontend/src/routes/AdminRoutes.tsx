@@ -9,6 +9,9 @@ import TeacherCourses from '../pages/Teacher/Courses'
 import LessonDetail from '../pages/Teacher/LessonDetail'
 import ManageExercise from '../pages/Teacher/ManageExercise'
 import { ADMIN_ROUTES, PRIVATE_ROUTES } from '../utils/constants'
+import Grading from '../pages/Teacher/Grading/Index'
+import AssignmentTable from '../pages/Teacher/Grading/AssignmentTable'
+import GradeExercise from '../pages/Teacher/GradeExercise'
 
 const adminRoutes: RouteObject[] = [
   {
@@ -84,6 +87,42 @@ const adminRoutes: RouteObject[] = [
                     ],
                   },
                 ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: 'grading',
+        children: [
+          {
+            path: ADMIN_ROUTES.grading,
+            element: <Grading />,
+          },
+          {
+            path: 'course',
+            children: [
+              {
+                path: ':courseID',
+                children: [
+                  {
+                    element: <AssignmentTable />,
+                    path: '',
+                  },
+                  {
+                    element: <GradeExercise />,
+                    path: 'exercises/:exerciseId/submissions/:submissionId',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'exam',
+            children: [
+              {
+                element: <AssignmentTable />,
+                path: ':examID',
               },
             ],
           },

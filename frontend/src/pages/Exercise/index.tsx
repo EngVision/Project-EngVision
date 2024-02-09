@@ -63,7 +63,7 @@ function Exercise({
   const Content = () => {
     return (
       <>
-        <div className={`mb-10 mt-5 ${viewMode ? 'pointer-events-none' : ''}`}>
+        <div className={`mb-10 mt-5`}>
           <ExerciseContent
             exercise={exercise}
             submission={submission}

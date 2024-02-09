@@ -71,13 +71,14 @@ const Grading = () => {
     queryKey: ['submissions'],
     queryFn: async () => submissionApi.getSubmissionList(),
   })
-  rawCourseList?.data?.map((course) => {
+  rawCourseList?.data?.forEach((course) => {
     course.submissionAmount = 0
     course.pendingSubmissionAmount = 0
-    rawSubmissionList?.data?.map((submission) => {
+    rawSubmissionList?.data?.forEach((submission) => {
       if (submission.course?.id === course.id) {
-        course.submissionAmount++
-        if (submission.grade) {
+        if (submission.status === 'graded') {
+          course.submissionAmount++
+        } else {
           course.pendingSubmissionAmount++
         }
       }

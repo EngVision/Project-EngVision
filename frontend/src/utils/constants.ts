@@ -67,6 +67,7 @@ export const ADMIN_ROUTES = {
   manageUsers: '/manage-users',
 
   exams: '/exams',
+  grading: '/grading',
   examDetail: '/exams/:examId',
   createExam: '/exams/new',
   partDetail: '/exams/parts',
