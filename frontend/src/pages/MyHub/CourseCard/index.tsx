@@ -1,33 +1,18 @@
 import { Card, Progress } from 'antd'
-import { PeopleIcon, VideoPlayIcon } from '../../../components/Icons'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { LEVELS, UPLOAD_FILE_URL } from '../../../utils/constants'
+import { PeopleIcon, VideoPlayIcon } from '../../../components/Icons'
 import CustomImage from '../../../components/common/CustomImage'
 import { CourseDetails } from '../../../services/coursesApi/types'
-import { SubmissionResponse } from '../../../services/submissionApi/types'
-import { useTranslation } from 'react-i18next'
+import { LEVELS, UPLOAD_FILE_URL } from '../../../utils/constants'
 interface CourseProps {
   course: CourseDetails
-  submissionArray: SubmissionResponse[]
 }
 
-const CourseCard = ({ course, submissionArray }: CourseProps) => {
+const CourseCard = ({ course }: CourseProps) => {
   const { t } = useTranslation('translation', { keyPrefix: 'common' })
   const navigate = useNavigate()
   const level = LEVELS.find((l) => l.level === course.level)
-
-  const getProgress = () => {
-    if (course.exercises?.length === 0) return 100
-    const countExerciseDone = submissionArray.filter(
-      (submission) => submission.progress === 1,
-    ).length
-
-    return Number(
-      ((countExerciseDone / (course.exercises?.length || 1)) * 100).toPrecision(
-        2,
-      ),
-    )
-  }
 
   return (
     <Card
@@ -75,7 +60,7 @@ const CourseCard = ({ course, submissionArray }: CourseProps) => {
         </div>
       </div>
 
-      <Progress percent={getProgress()} />
+      <Progress percent={Math.round(course.progress * 100)} />
     </Card>
   )
 }
