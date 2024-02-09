@@ -68,7 +68,9 @@
     "English": "English",
     "Vietnamese": "Vietnamese",
     "Account": "Account",
-    "Logout": "Logout"
+    "Logout": "Logout",
+    "DarkMode": "Dark Mode",
+    "LightMode": "Light Mode"
   },
   "Discover": {
     "discover": "Discover",
@@ -145,7 +147,12 @@
     "New lesson": "New lesson",
     "Delete lesson": "Delete lesson",
     "Edit lesson": "Edit lesson",
-    "Please save the course to edit this lesson": "Please save the course to edit this lesson"
+    "Please save the course to edit this lesson": "Please save the course to edit this lesson",
+    "Exams": "Exams",
+    "Statistic": "Statistic",
+    "Chats": "Chats",
+    "Users": "Users",
+    "Achievement": "Achievement"
   },
   "Course Details": {
     "Overview": "Overview",
@@ -191,6 +198,8 @@
     "Draft": "Draft",
     "Sort by": "Sort by",
     "Price ascending": "Price ascending",
-    "Price descending": "Price descending"
+    "Price descending": "Price descending",
+    "Filter": "Filter",
+    "SearchCourse": "Search course..."
   }
 }
