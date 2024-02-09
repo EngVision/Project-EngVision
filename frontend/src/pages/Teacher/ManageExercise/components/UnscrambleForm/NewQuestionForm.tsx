@@ -89,17 +89,22 @@ const NewQuestionForm = ({ index }: NewQuestionFormProps) => {
                                     ref={isDragging ? ref : null}
                                     className="flex justify-between items-center gap-4 border border-primary border-solid p-3 rounded-lg"
                                   >
-                                    <Form.Item
-                                      name={[field.name]}
-                                      className="mb-0 w-full"
-                                    >
-                                      {exerciseType ===
-                                      ExerciseCardType.Text ? (
+                                    {exerciseType === ExerciseCardType.Text ? (
+                                      <Form.Item
+                                        name={[field.name]}
+                                        className="mb-0 w-full"
+                                      >
                                         <CustomInput placeholder="New card" />
-                                      ) : (
+                                      </Form.Item>
+                                    ) : (
+                                      <Form.Item
+                                        valuePropName="fileList"
+                                        name={[field.name]}
+                                        className="mb-0 w-full"
+                                      >
                                         <CustomUpload type="picture-card" />
-                                      )}
-                                    </Form.Item>
+                                      </Form.Item>
+                                    )}
                                     <Tooltip
                                       title="Delete card"
                                       placement="bottom"

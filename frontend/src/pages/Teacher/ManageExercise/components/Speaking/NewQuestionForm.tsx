@@ -3,6 +3,7 @@ import { useState } from 'react'
 import SpeakingSettings from './SpeakingSettings'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
+import { isEmpty } from 'lodash'
 
 type NewQuestionFormProps = {
   index: number
@@ -11,6 +12,7 @@ type NewQuestionFormProps = {
 const NewQuestionForm = ({ index }: NewQuestionFormProps) => {
   const form = Form.useFormInstance()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const content = Form.useWatch('content')?.[index]
 
   const handleOk = () => {
     setIsModalOpen(false)
@@ -22,6 +24,9 @@ const NewQuestionForm = ({ index }: NewQuestionFormProps) => {
         className="flex justify-between bg-white px-3 py-2 border border-bgNeutralHover border-solid rounded-lg mb-4 hover:cursor-pointer"
         onClick={() => setIsModalOpen(true)}
       >
+        {!isEmpty(content?.text) && (
+          <div dangerouslySetInnerHTML={{ __html: content?.text }}></div>
+        )}
         <div className="font-semibold text-primary hover:cursor-pointer">
           Edit
         </div>

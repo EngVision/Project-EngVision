@@ -1,5 +1,11 @@
 import { Button, Divider, Form, Input, Select } from 'antd'
 import { FormSubmit } from '../..'
+import CustomImage from '../../../../../components/common/CustomImage'
+import PreviewInput from '../../../../../components/common/PreviewInput'
+import {
+  ExerciseSchema,
+  QuestionPayload,
+} from '../../../../../services/exerciseApi/types'
 import {
   CEFRLevel,
   ExerciseCardType,
@@ -7,17 +13,11 @@ import {
   UPLOAD_FILE_URL,
 } from '../../../../../utils/constants'
 import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
-import {
-  ExerciseSchema,
-  QuestionPayload,
-} from '../../../../../services/exerciseApi/types'
-import NewQuestionForm from './NewQuestionForm'
-import PreviewInput from '../../../../../components/common/PreviewInput'
-import CustomImage from '../../../../../components/common/CustomImage'
 import ExerciseTagInput, {
   getTagList,
   transformToExerciseTagInputValue,
 } from '../ExerciseTagInput'
+import NewQuestionForm from './NewQuestionForm'
 
 interface QuestionFormProps {
   index: number
@@ -154,7 +154,7 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
       questionTags: transformToExerciseTagInputValue(q.tags),
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
-      items: items,
+      items: q.correctAnswer?.detail || items,
       exerciseType: isUnscrambleByText
         ? ExerciseCardType.Text
         : ExerciseCardType.Image,

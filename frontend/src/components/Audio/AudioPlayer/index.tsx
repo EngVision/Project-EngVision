@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { Slider } from 'antd'
+import { Button, Slider } from 'antd'
 import { useEffect, useRef, useState } from 'react'
 import { AudioVisualizer } from 'react-audio-visualize'
 import ReactPlayer from 'react-player'
@@ -11,8 +11,9 @@ import Play from '../../Icons/Play'
 import Volume from '../../Icons/Volume'
 import AppLoading from '../../common/AppLoading'
 import Duration from '../../common/Duration'
+
 const AudioPlayer = ({ url }: { url: string }) => {
-  const playerRef = useRef(null)
+  const playerRef = useRef<ReactPlayer>(null)
   const [blob, setBlob] = useState<Blob | null>(null)
   const initialState = {
     url: url,
@@ -22,9 +23,10 @@ const AudioPlayer = ({ url }: { url: string }) => {
     light: false,
     volume: 0.8,
     muted: false,
-    played: 0,
     loaded: 0,
     loadedSeconds: 0,
+    played: 0,
+    playedSeconds: 0,
     playbackRate: 1.0,
     loop: false,
     seeking: false,
@@ -35,10 +37,9 @@ const AudioPlayer = ({ url }: { url: string }) => {
   }
   const handleSeekAfterChange = (value: number) => {
     setState({ ...state, played: value, seeking: false })
-    playerRef.current?.seekTo(value)
+    playerRef.current?.seekTo(value, 'fraction')
   }
   const handleProgress = (changeState: any) => {
-    // We only want to update time slider if we are not currently seeking
     if (!state.seeking) {
       setState({ ...state, ...changeState })
     }
@@ -46,19 +47,24 @@ const AudioPlayer = ({ url }: { url: string }) => {
   const handleVolumeChange = (value: number) => {
     setState({ ...state, volume: value })
   }
+  function handleEnded(): void {
+    setState({ ...state, playing: false })
+  }
   const handleDuration = (loadedSeconds: number) => {
     setState({ ...state, loadedSeconds })
   }
   const skipBackward = () => {
-    const value = state.loadedSeconds * state.played - 10
+    const value = state.loadedSeconds * state.played - 1
+    setState({ ...state, played: value / state.loadedSeconds })
     playerRef.current?.seekTo(value)
   }
   const skipForward = () => {
-    const value = state.loadedSeconds * state.played + 10
+    const value = state.loadedSeconds * state.played + 1
+    setState({ ...state, played: value / state.loadedSeconds })
     playerRef.current?.seekTo(value)
   }
-  const formatter = (value: number) => (
-    <Duration seconds={value * state.loadedSeconds} />
+  const formatter = (value: number | undefined) => (
+    <Duration seconds={value! * state.loadedSeconds} />
   )
   const handleMute = () => {
     setState({ ...state, muted: !state.muted })
@@ -67,6 +73,7 @@ const AudioPlayer = ({ url }: { url: string }) => {
     queryKey: ['audio', url],
     queryFn: () => fetch(url).then((res) => res.blob()),
   })
+
   useEffect(() => {
     if (data) {
       setBlob(data)
@@ -74,6 +81,7 @@ const AudioPlayer = ({ url }: { url: string }) => {
   }, [data])
 
   if (isLoading || !url) return <AppLoading />
+
   return (
     <div className="bg-surface rounded-lg p-4 lg:w-1/2 md:w-2/3 w-4/5 h-full">
       <div className="hidden">
@@ -90,17 +98,16 @@ const AudioPlayer = ({ url }: { url: string }) => {
           playbackRate={state.playbackRate}
           volume={state.volume}
           muted={state.muted}
+          progressInterval={100}
           onProgress={handleProgress}
           onDuration={handleDuration}
+          onEnded={handleEnded}
           config={{ file: { forceAudio: true } }}
         />
       </div>
 
       <div className="flex justify-center items-center gap-4">
-        <Duration
-          className="text-sm w-10"
-          seconds={state.played * state.loadedSeconds}
-        />
+        <Duration className="text-sm w-10" seconds={state.playedSeconds} />
 
         <div className="w-full relative py-4">
           {blob && (
@@ -122,7 +129,7 @@ const AudioPlayer = ({ url }: { url: string }) => {
             />
           )}
           <Slider
-            value={state.played}
+            value={state.playedSeconds / state.loadedSeconds}
             onChange={handleSeekChange}
             onAfterChange={handleSeekAfterChange}
             tooltip={{ formatter }}
@@ -134,42 +141,38 @@ const AudioPlayer = ({ url }: { url: string }) => {
         <Duration className="text-sm w-10" seconds={state.loadedSeconds} />
       </div>
       <div className="flex relative justify-center max-lg:flex-col">
-        <div className="flex gap-4 self-center">
-          <button
+        <div className="flex gap-4 self-center items-center">
+          <Button
+            type="text"
             onClick={skipBackward}
-            className="cursor-pointer bg-transparent"
-          >
-            <Backward className="text-primary" />
-          </button>
-          <button
-            className="p-2 cursor-pointer bg-primary rounded-full flex items-center justify-center"
+            icon={<Backward className="text-primary" />}
+          ></Button>
+          <Button
+            type="primary"
+            shape="circle"
+            size="large"
             onClick={() => setState({ ...state, playing: !state.playing })}
-          >
-            {state.playing ? (
-              <Pause className="text-white" width={24} height={24} />
-            ) : (
-              <Play className="text-white" width={24} height={24} />
-            )}
-          </button>
-
-          <button
+            icon={state.playing ? <Pause /> : <Play />}
+          ></Button>
+          <Button
+            type="text"
             onClick={skipForward}
-            className="cursor-pointer bg-transparent"
-          >
-            <Forward className="text-primary" />
-          </button>
+            icon={<Forward className="text-primary" />}
+          ></Button>
         </div>
         <div className="xl:absolute max-lg:self-center right-0 items-center flex gap-1">
-          <button
+          <Button
+            type="text"
             className="cursor-pointer bg-transparent"
             onClick={handleMute}
-          >
-            {state.muted ? (
-              <Mute className="text-primary" />
-            ) : (
-              <Volume className="text-primary" />
-            )}
-          </button>
+            icon={
+              state.muted ? (
+                <Mute className="text-primary" />
+              ) : (
+                <Volume className="text-primary" />
+              )
+            }
+          />
           <Slider
             min={0}
             max={1}
@@ -177,7 +180,7 @@ const AudioPlayer = ({ url }: { url: string }) => {
             value={state.volume}
             onChange={handleVolumeChange}
             tooltip={{
-              formatter: (value: number) => `${(value * 100).toFixed(0)}%`,
+              formatter: (value) => `${(value! * 100).toFixed(0)}%`,
             }}
             className="w-20"
           />

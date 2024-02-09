@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../../../hooks/redux'
 import userLevelApi from '../../../../services/userLevelApi'
 import { setCurrentLevel } from '../../../../redux/app/slice'
 import { Progress } from 'antd'
+import { isNumber } from 'lodash'
 
 interface DoneExerciseProps {
   grade?: number
@@ -26,7 +27,7 @@ function DoneExercise({ grade, isGrading }: DoneExerciseProps) {
     <div className="h-full flex flex-col gap-4 justify-center text-center text-primary">
       {isGrading ? (
         <p className="text-2xl font-semibold">Complete grading</p>
-      ) : !!grade ? (
+      ) : isNumber(grade) ? (
         <>
           <p className="text-2xl font-semibold">
             Your test result has completed with
