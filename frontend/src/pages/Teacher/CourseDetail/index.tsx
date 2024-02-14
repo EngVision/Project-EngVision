@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Form, Tabs, Tooltip } from 'antd'
 import { useWatch } from 'antd/es/form/Form'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import ConfirmDeleteModal from '../../../components/Modal/ConfirmDeleteModal'
 import AppLoading from '../../../components/common/AppLoading'
@@ -12,16 +12,18 @@ import { TEACHER_ROUTES } from '../../../utils/constants'
 import Overview from './Overview'
 import Preview from './Preview'
 import Section from './Section'
-
+import { useTranslation } from 'react-i18next'
 const { TabPane } = Tabs
 
 const TeacherCourseDetail = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   const navigate = useNavigate()
   const { courseId = '' } = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || '1'
 
   const [form] = Form.useForm()
+  const isAdminCurriculum = useWatch('isAdminCurriculum', form)
   const isPublished = useWatch('isPublished', form)
   const apiNotification = useContext(NotificationContext)
   const queryClient = useQueryClient()
@@ -42,6 +44,10 @@ const TeacherCourseDetail = () => {
     queryKey: ['course', courseId],
     queryFn: () => fetchCourseDetail(),
   })
+
+  useEffect(() => {
+    form.setFieldsValue(courseDetails)
+  }, [courseDetails])
 
   const updateCourseMutation = useMutation({
     mutationFn: (newCourse: CourseDetails) =>
@@ -140,7 +146,7 @@ const TeacherCourseDetail = () => {
               ${activeTab === '1' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
                 type={activeTab === '1' ? 'primary' : 'default'}
               >
-                Overview
+                {t('Overview')}
               </Button>
             }
             key="1"
@@ -154,7 +160,7 @@ const TeacherCourseDetail = () => {
               ${activeTab === '2' ? '' : 'text-[#2769E7] border-[#2769E7]'}`}
                 type={activeTab === '2' ? 'primary' : 'default'}
               >
-                Course
+                {t('Course')}
               </Button>
             }
             key="2"
@@ -173,10 +179,11 @@ const TeacherCourseDetail = () => {
                 loading={deleteCourseMutation.isPending}
                 disabled={
                   updateCourseMutation.isPending ||
-                  publishCourseMutation.isPending
+                  publishCourseMutation.isPending ||
+                  isAdminCurriculum
                 }
               >
-                Delete
+                {t('Delete')}
               </Button>
               <ConfirmDeleteModal
                 isOpen={isModalOpen}
@@ -193,7 +200,7 @@ const TeacherCourseDetail = () => {
                 navigate(TEACHER_ROUTES.courses)
               }}
             >
-              Cancel
+              {t('Cancel')}
             </Button>
           </div>
 
@@ -208,7 +215,7 @@ const TeacherCourseDetail = () => {
                 !isFormChange
               }
             >
-              Save
+              {t('Save')}
             </Button>
 
             <Form.Item name="isPublished">
@@ -223,11 +230,13 @@ const TeacherCourseDetail = () => {
                   }
                   loading={publishCourseMutation.isPending}
                 >
-                  Publish
+                  {t('Publish')}
                 </Button>
               </Tooltip>
             </Form.Item>
-            <Form.Item name="isPersonalized" />
+            <Form.Item name="isCurriculum" />
+            <Form.Item name="isAdminCurriculum" />
+            <Form.Item name="thumbnail" />
           </div>
         </div>
       </Form>

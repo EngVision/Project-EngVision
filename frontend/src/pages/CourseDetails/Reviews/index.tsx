@@ -9,7 +9,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { UPLOAD_FILE_URL } from '../../../utils/constants'
 import { formatDate } from '../../../utils/formatDate'
-
+import { useTranslation } from 'react-i18next'
 const { TextArea } = Input
 
 interface ReviewsProps {
@@ -17,6 +17,7 @@ interface ReviewsProps {
 }
 
 const Reviews: React.FC<ReviewsProps> = ({ course }) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Course Details' })
   const queryClient = useQueryClient()
 
   const reviewMutation = useMutation({
@@ -39,7 +40,7 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
   return (
     <div>
       <div className="mb-4">
-        <h3 className="text-2xl text-primary mb-6">Reviews</h3>
+        <h3 className="text-2xl text-primary mb-6">{t('Reviews')}</h3>
       </div>
       {course.isAttended && !course.isReviewed && (
         <div className="mb-8">
@@ -50,20 +51,22 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
           >
-            <div className="font-bold text-sm mb-2">Review this course</div>
+            <div className="font-bold text-sm mb-2">
+              {t('Review this course')}
+            </div>
             <div className="flex flex-col">
-              <Form.Item<ReviewParams> name="comment" label="Reviews">
+              <Form.Item<ReviewParams> name="comment" label={t('Reviews')}>
                 <TextArea
                   rows={3}
                   showCount
                   maxLength={500}
-                  placeholder="Write your review here"
+                  placeholder={t('Write your review here')}
                 />
               </Form.Item>
               <Form.Item<ReviewParams>
                 className="mb-0"
                 name="star"
-                label="Rate this course"
+                label={t('Rate this course')}
                 rules={[{ required: true }]}
               >
                 <Rate
@@ -77,7 +80,7 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
                 htmlType="submit"
                 className="rounded-xl h-[2.5rem] w-[8rem] self-end"
               >
-                Submit
+                {t('Submit')}
               </Button>
             </div>
           </Form>

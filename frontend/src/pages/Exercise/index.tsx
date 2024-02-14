@@ -63,7 +63,7 @@ function Exercise({
   const Content = () => {
     return (
       <>
-        <div className={`mb-10 mt-5 ${viewMode ? 'pointer-events-none' : ''}`}>
+        <div className={`mb-10 mt-5`}>
           <ExerciseContent
             exercise={exercise}
             submission={submission}
@@ -81,9 +81,12 @@ function Exercise({
             isButtonLoading={btnGradeLoading}
           />
         ) : (
-          !exercise?.needGrade &&
           submission?.detail[questionIndex] && (
-            <Explain submission={submission} questionIndex={questionIndex} />
+            <Explain
+              submission={submission}
+              questionDetail={exercise?.content[questionIndex]}
+              questionIndex={questionIndex}
+            />
           )
         )}
       </>

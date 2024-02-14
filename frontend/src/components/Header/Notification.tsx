@@ -1,12 +1,13 @@
 import React from 'react'
 import { NoNotificationIcon, NotificationIcon } from '../Icons'
 import { Popover } from 'antd'
-
+import { useTranslation } from 'react-i18next'
 const Notification = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Header' })
   const renderContent = (
     <div className="p-8 flex flex-col items-center gap-4">
       <NoNotificationIcon width={80} height={80} />
-      <p>No notification yet</p>
+      <p>{t('No notification yet')}</p>
     </div>
   )
 

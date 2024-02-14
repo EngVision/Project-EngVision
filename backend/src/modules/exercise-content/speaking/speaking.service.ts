@@ -6,7 +6,6 @@ import { ExerciseContentService } from '../base-exercise-content.service';
 import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 import { CreateSpeakingDto } from './dto/create-speaking.dto';
 import { Speaking } from './schemas/speaking.schema';
-import { SpeakingAnswerDto } from './dto/speaking-answer.dto';
 
 @Injectable()
 export class SpeakingService extends ExerciseContentService {
@@ -61,15 +60,10 @@ export class SpeakingService extends ExerciseContentService {
     await this.speakingModel.bulkWrite([this.deleteBulkOps(removedQuestion)]);
   }
 
-  async checkAnswer(
-    id: string,
-    answer: SpeakingAnswerDto,
-  ): Promise<QuestionResult> {
-    if (!mongoose.isValidObjectId(answer.fileId)) {
+  async checkAnswer(id: string, answer: string): Promise<QuestionResult> {
+    if (!mongoose.isValidObjectId(answer)) {
       throw new BadRequestException('answer must be a uploaded file id');
     }
-
-    const answerText = answer.text;
 
     const correctAnswer = (
       await this.speakingModel.findById(id).select('correctAnswer')
@@ -81,9 +75,7 @@ export class SpeakingService extends ExerciseContentService {
       correctAnswer: detail,
       explanation,
     };
-    const isCorrect = detail
-      ? answerText.toLowerCase() === detail.toLowerCase()
-      : null;
+    const isCorrect = null;
 
     return {
       ...submission,
@@ -93,7 +85,9 @@ export class SpeakingService extends ExerciseContentService {
 
   setDefaultExplain(questionList: ExerciseQuestionDto[]): void {
     questionList.forEach(q => {
-      q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail}`;
+      q.correctAnswer.explanation = q.correctAnswer.detail
+        ? `Correct answer: ${q.correctAnswer.detail}`
+        : null;
     });
   }
 }

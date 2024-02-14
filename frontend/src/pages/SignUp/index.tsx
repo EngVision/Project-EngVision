@@ -19,8 +19,9 @@ import {
 } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
 import { getNewWindowPosition, validatePassword } from '../../utils/common'
-
+import { useTranslation } from 'react-i18next'
 const SignUp: React.FC = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Auth' })
   const dispatch = useAppDispatch()
   const apiNotification = useContext(NotificationContext)
   const [form] = Form.useForm<SignUpParams>()
@@ -30,7 +31,7 @@ const SignUp: React.FC = () => {
     onSuccess: (data) => {
       dispatch(setUser(data.data))
       apiNotification.success({
-        message: 'Sign up successfully!',
+        message: t('Sign up successfully!'),
       })
     },
   })
@@ -99,7 +100,9 @@ const SignUp: React.FC = () => {
     <div className="flex flex-col bg-surface p-8 rounded-[16px] gap-6 shadow-2xl">
       <div className="flex flex-col items-center gap-3">
         <Logo width={250} />
-        <p className="text-textSubtle">Create an account and start learning!</p>
+        <p className="text-textSubtle">
+          {t('Create an account and start learning!')}
+        </p>
       </div>
 
       <Form
@@ -115,14 +118,14 @@ const SignUp: React.FC = () => {
         <div className="flex gap-4">
           <Form.Item<SignUpParams>
             name="firstName"
-            label="First name"
+            label={t('First Name')}
             rules={[
-              { message: 'Please input your first name!', required: true },
+              { message: t('Please input your first name!'), required: true },
             ]}
             className="flex-1"
           >
             <Input
-              placeholder="First Name"
+              placeholder={t('First Name')}
               size="middle"
               className="rounded-lg py-2 px-3"
             />
@@ -130,14 +133,14 @@ const SignUp: React.FC = () => {
 
           <Form.Item<SignUpParams>
             name="lastName"
-            label="Last name"
+            label={t('Last Name')}
             rules={[
-              { message: 'Please input your last name!', required: true },
+              { message: t('Please input your last name!'), required: true },
             ]}
             className="flex-1"
           >
             <Input
-              placeholder="Last Name"
+              placeholder={t('Last Name')}
               size="middle"
               className="rounded-lg py-2 px-3"
             />
@@ -149,11 +152,11 @@ const SignUp: React.FC = () => {
           label="Email"
           rules={[
             {
-              message: 'Please input your email!',
+              message: t('Please input your email!'),
               required: true,
             },
             {
-              message: 'Invalid email!',
+              message: t('Invalid email!'),
               type: 'email',
             },
           ]}
@@ -167,23 +170,23 @@ const SignUp: React.FC = () => {
 
         <Form.Item<SignUpParams>
           name="gender"
-          label="Gender"
-          rules={[{ message: 'Please input your gender!', required: true }]}
+          label={t('Gender')}
+          rules={[{ message: t('Please input your gender!'), required: true }]}
           className="[&>*]:!text-sm"
         >
           <Select
             options={enumToSelectOptions(Gender)}
             className="h-[40px] !text-[14px]"
-            placeholder="Gender"
+            placeholder={t('Gender')}
             size="large"
           />
         </Form.Item>
 
         <Form.Item<SignUpParams>
           name="password"
-          label="Password"
+          label={t('Password')}
           rules={[
-            { required: true, message: 'Please input your password!' },
+            { required: true, message: t('Please input your password!') },
             {
               async validator(_, value) {
                 return new Promise((resolve, reject) =>
@@ -194,7 +197,7 @@ const SignUp: React.FC = () => {
           ]}
         >
           <Input.Password
-            placeholder="Password"
+            placeholder={t('Password')}
             size="large"
             className="rounded-lg py-2 px-3"
           />
@@ -202,9 +205,12 @@ const SignUp: React.FC = () => {
 
         <Form.Item<SignUpParams>
           name="confirmPassword"
-          label="Confirm password"
+          label={t('Confirm password')}
           rules={[
-            { message: 'Please input your confirm password!', required: true },
+            {
+              message: t('Please input your confirm password!'),
+              required: true,
+            },
             {
               async validator(_, value) {
                 return new Promise((resolve, reject) => {
@@ -213,7 +219,7 @@ const SignUp: React.FC = () => {
                   } else
                     reject(
                       new Error(
-                        'The confirm password must be same as password!',
+                        t('The confirm password must be same as password!'),
                       ),
                     )
                 })
@@ -222,7 +228,7 @@ const SignUp: React.FC = () => {
           ]}
         >
           <Input.Password
-            placeholder="Confirm password"
+            placeholder={t('Confirm password')}
             size="large"
             className="rounded-lg py-2 px-3"
           />
@@ -230,7 +236,7 @@ const SignUp: React.FC = () => {
 
         <Form.Item<SignUpParams>
           name="phoneNumber"
-          label="Phone number"
+          label={t('Phone number')}
           rules={[
             {
               async validator(_, value) {
@@ -240,7 +246,9 @@ const SignUp: React.FC = () => {
                   } else
                     reject(
                       new Error(
-                        'Phone must be longer than or equal to 10 characters',
+                        t(
+                          'Phone must be longer than or equal to 10 characters',
+                        ),
                       ),
                     )
                 })
@@ -248,7 +256,10 @@ const SignUp: React.FC = () => {
             },
           ]}
         >
-          <Input placeholder="Phone Number" className="rounded-lg py-2 px-3" />
+          <Input
+            placeholder={t('Phone number')}
+            className="rounded-lg py-2 px-3"
+          />
         </Form.Item>
 
         <Form.Item<SignUpParams>
@@ -260,26 +271,26 @@ const SignUp: React.FC = () => {
                 return new Promise((resolve, reject) => {
                   if (validateAcceptTerm(value)) {
                     resolve('')
-                  } else reject(new Error('Please accept Terms of Service'))
+                  } else reject(new Error(t('Please accept Terms of Service')))
                 })
               },
             },
           ]}
         >
           <Checkbox>
-            I accept
+            {t('I accept')}
             <Link
               to="/sign-up"
               className="font-semibold text-primary hover:text-secondary pl-2"
             >
-              Terms of Service
+              {t('Terms of Service')}
             </Link>
           </Checkbox>
         </Form.Item>
 
         {error && (
           <p className="text-secondary mt-[-20px] mb-6">
-            Email is existed. Please choose another email!
+            {t('Email is existed. Please choose another email!')}
           </p>
         )}
 
@@ -291,13 +302,13 @@ const SignUp: React.FC = () => {
             className="w-full h-11 mt-4"
             loading={isPending}
           >
-            Create account
+            {t('Create account')}
           </Button>
         </Form.Item>
 
         <div className="text-grey-300 text-center my-4 px-16 flex items-center gap-4 justify-center">
           <div className="h-[1px] bg-grey-300 flex-1" />
-          <span>or continue with</span>
+          <span>{t('or continue with')}</span>
           <div className="h-[1px] bg-grey-300 flex-1" />
         </div>
 
@@ -315,22 +326,22 @@ const SignUp: React.FC = () => {
         </div>
 
         <p className="text-center text-textSubtle">
-          Have an account?
+          {t('Have an account?')}
           <Link
             to={PUBLIC_ROUTES.signIn}
             className="font-semibold text-primary pl-2"
           >
-            Sign In
+            {t('Sign In')}
           </Link>
         </p>
 
         <p className="text-center text-textSubtle">
-          Are you a teacher?
+          {t('Are you a teacher?')}
           <Link
             to={PUBLIC_ROUTES.signUpTeacher}
             className="font-semibold text-primary pl-2"
           >
-            Teacher Sign Up
+            {t('Teacher Sign Up')}
           </Link>
         </p>
       </Form>

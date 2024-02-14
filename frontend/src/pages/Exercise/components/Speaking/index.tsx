@@ -19,7 +19,7 @@ interface SpeakingProps extends QuestionPayload {
 }
 
 interface SpeakingResponse extends SubmitAnswerResponse {
-  answer: string[]
+  answer: string
   correctAnswer: string[]
 }
 
@@ -29,11 +29,15 @@ function Speaking(props: SpeakingProps) {
   const [fileId, setFileId] = useState<string>('')
 
   useEffect(() => {
+    setFileId(result?.answer || '')
+  }, [result])
+
+  useEffect(() => {
     form.setFieldValue('answer', fileId)
   }, [question, fileId])
 
   return (
-    <div className="m-16">
+    <div>
       <h3 className="text-2xl text-primary mb-4">
         This is a speaking exercise
       </h3>

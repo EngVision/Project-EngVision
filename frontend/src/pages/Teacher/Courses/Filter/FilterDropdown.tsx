@@ -1,7 +1,10 @@
 import { Button, Popover } from 'antd'
 import SearchFilter from './SearchFilter'
+import { useTranslation } from 'react-i18next'
 
 const FilterDropdown = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'MyCourses' })
+
   const renderContent = () => {
     return (
       <div className="flex gap-4 p-4">
@@ -19,7 +22,7 @@ const FilterDropdown = () => {
         className="border-primary text-primary"
         onClick={(e) => e.preventDefault()}
       >
-        Filter
+        {t('Filter')}
       </Button>
     </Popover>
   )

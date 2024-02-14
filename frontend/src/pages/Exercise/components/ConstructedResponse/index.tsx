@@ -51,6 +51,8 @@ export default function ConstructedResponse(props: ConstructedResponseProps) {
     }
   }, [result])
 
+  console.log(isGrading)
+
   return (
     <div>
       <p className="mb-5 text-primary text-2xl font-semibold">

@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { toggleLocales } from '../../redux/app/slice'
 
 const LocalesButton = () => {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation('translation', { keyPrefix: 'Header' })
   const dispatch = useAppDispatch()
   const defaultValue = useAppSelector((state) => state.app.locales)
 
@@ -17,8 +17,8 @@ const LocalesButton = () => {
   }
 
   const items: MenuProps['items'] = [
-    { key: 'en', label: 'English' },
-    { key: 'vi', label: 'VietNam' },
+    { key: 'en', label: t('English') },
+    { key: 'vi', label: t('Vietnamese') },
   ]
 
   return (

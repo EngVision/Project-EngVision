@@ -23,6 +23,7 @@ import { EnrollCourseModule } from './modules/enroll-course/enroll-course.module
 import { AchievementsModule } from './modules/achievements/achievements.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { LessonsModule } from './modules/lessons/lessons.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { join } from 'path';
     PaymentModule,
     EnrollCourseModule,
     AchievementsModule,
+    LessonsModule,
   ],
   providers: [
     {

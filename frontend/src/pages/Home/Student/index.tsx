@@ -15,8 +15,10 @@ import {
 import dayjs from 'dayjs'
 import 'dayjs/locale/en'
 import 'dayjs/locale/vi'
+import { isEmpty, map, reduce, slice } from 'lodash'
 import { useMemo } from 'react'
 import { Line } from 'react-chartjs-2'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { CourseCard } from '../../../components/CourseCard'
 import Fire from '../../../components/Icons/Fire'
@@ -25,7 +27,6 @@ import AppLoading from '../../../components/common/AppLoading'
 import { useAppSelector } from '../../../hooks/redux'
 import checkListApi from '../../../services/checkListApi'
 import coursesApi from '../../../services/coursesApi'
-import { ObjectId } from '../../../services/examSubmissionApi/type'
 import submissionApi from '../../../services/submissionApi'
 import { cellRender } from '../Components/CalendarRender'
 import ProgressCard from '../Components/ProgressCard'
@@ -45,6 +46,7 @@ ChartJS.register(
 )
 
 export const Student = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Home' })
   const navigate = useNavigate()
 
   const userLevel = useAppSelector((state) => state.app.currentLevel)
@@ -63,14 +65,6 @@ export const Student = () => {
       queryFn: () => submissionApi.getSubmissionList(),
     })
 
-  const { data: submissions, isLoading: isLoadingSubmissions } = useQuery({
-    queryKey: ['submissions'],
-    queryFn: () => {
-      return fetchSubmissions(rawCourseExercise?.data || [])
-    },
-    enabled: !!rawCourseExercise,
-  })
-
   const { data: rawSuggestedList, isLoading: isLoadingRawSuggestedList } =
     useQuery({
       queryKey: ['suggestedCourses', { levels: userLevel?.CEFRLevel }],
@@ -81,14 +75,6 @@ export const Student = () => {
     queryKey: ['checkListItems'],
     queryFn: () => checkListApi.getCheckListItems(),
   })
-
-  const fetchSubmissions = async (objectIdList: ObjectId[]) => {
-    const submissionsPromises = objectIdList.map((objectId) =>
-      submissionApi.getSubmissionList({ course: objectId.id, limit: -1 }),
-    )
-    const submissionsRes = await Promise.all(submissionsPromises)
-    return submissionsRes
-  }
 
   const calculateExercisesByDay = () => {
     const exercisesByDay: Record<string, number> = {}
@@ -126,7 +112,7 @@ export const Student = () => {
 
   const exerciseData = useMemo(
     () => calculateExercisesByDay(),
-    [rawCourseExercise?.data, submissions],
+    [rawCourseExercise?.data, rawSubmissionList],
   )
 
   const options = {
@@ -186,22 +172,6 @@ export const Student = () => {
     }
 
     return exercise
-  }, [rawSubmissionList?.data])
-
-  const course = useMemo(() => {
-    const course = {
-      totalDone: 0,
-    }
-
-    if (rawCourseExercise?.data) {
-      rawCourseExercise.data.forEach((assignment) => {
-        if (assignment.progress === 1) {
-          course.totalDone += 1
-        }
-      })
-    }
-
-    return course
   }, [rawSubmissionList?.data])
 
   const DashboardCard = (title: any, value: any) => {
@@ -269,12 +239,20 @@ export const Student = () => {
   )
 
   if (
-    isLoadingSubmissions ||
     isLoadingRawCourseExercise ||
     isLoadingRawSuggestedList ||
     isLoadingRawSubmissionList
-  )
+  ) {
     return <AppLoading />
+  }
+
+  const courseTotalDone = reduce(
+    rawCourseExercise?.data,
+    (sum, course: any) => {
+      return course.progress === 1 ? sum + 1 : sum
+    },
+    0,
+  )
 
   return (
     <div className="flex flex-row gap-5 max-lg:flex-wrap">
@@ -282,13 +260,13 @@ export const Student = () => {
       <div className="basis-full lg:basis-3/4">
         <div className="bg-surface flex rounded-2xl mt-0">
           <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#5BB3D7] to-[#001171] text-white">
-            {DashboardCard('Completed Course', course.totalDone)}
+            {DashboardCard(t('Completed Course'), courseTotalDone)}
           </div>
           <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#C6ECFE] to-[#77AFFE] text-dark">
-            {DashboardCard('Completed Exercises', exercise.totalDone)}
+            {DashboardCard(t('Completed Exercises'), exercise.totalDone)}
           </div>
           <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#C7DFF2] to-[#D2BBE6] text-dark">
-            {DashboardCard('Your Level', userLevel?.CEFRLevel)}
+            {DashboardCard(t('Your Level'), userLevel?.CEFRLevel)}
           </div>
         </div>
 
@@ -296,41 +274,35 @@ export const Student = () => {
 
         <div className="bg-surface rounded-2xl my-8 p-5">
           <div className="flex justify-between w-full mb-2">
-            <p className="text-2xl font-bold ">Your Progress</p>
+            <p className="text-2xl font-bold ">{t('Your Progress')}</p>
             <Button
               type="text"
               className="text-base bg-white"
               onClick={() => navigate(`./my-hub`)}
             >
-              Show all &gt;
+              {t('Show all')} &gt;
             </Button>
           </div>
-          {rawCourseExercise &&
-            (rawCourseExercise.data.length > 0 ? (
-              rawCourseExercise.data
-                .filter(
-                  (course: any) => course.progress > 0 && course.progress < 1,
-                )
-                .slice(0, 3)
-                .map((course: any) => (
-                  <div className="my-4" key={course.id}>
-                    <ProgressCard course={course} />
-                  </div>
-                ))
-            ) : (
-              <div className="text-center">No course</div>
-            ))}
+          {!isEmpty(rawCourseExercise?.data) ? (
+            map(slice(rawCourseExercise?.data, 0, 5), (course: any) => (
+              <div className="my-4" key={course.id}>
+                <ProgressCard course={course} />
+              </div>
+            ))
+          ) : (
+            <div className="text-center">{t('No course')}</div>
+          )}
         </div>
 
         <div className="bg-surface rounded-2xl p-5">
           <div className="flex justify-between w-full mb-2">
-            <p className="text-2xl font-bold mb-3">Topics for you</p>
+            <p className="text-2xl font-bold mb-3">{t('Topics for you')}</p>
             <Button
               type="text"
               className="text-base bg-white"
               onClick={() => navigate(`./discover`)}
             >
-              Show all &gt;
+              {t('Show all')} &gt;
             </Button>
           </div>
           {rawSuggestedList && (
@@ -343,7 +315,7 @@ export const Student = () => {
                   ))
               ) : (
                 <div className="col-span-4 text-center italic text-textSubtle">
-                  <p className="text-lg">No courses found</p>
+                  <p className="text-lg">{t('No courses found')}</p>
                 </div>
               )}
             </div>
@@ -358,7 +330,7 @@ export const Student = () => {
             <Fire />
           </div>
           <div className=" bg-slate-200 text-[#F76519] font-semibold text-xl w-fit h-fit py-1 px-3 rounded-2xl top-5 left-5 absolute">
-            <p>STREAK SOCIETY</p>
+            <p>{t('STREAK SOCIETY')}</p>
           </div>
           <div className="bottom-9 left-7 absolute flex flex-col items-center justify-center text-2xl text-blue-600">
             <div className="text-6xl font-bold">{dayStreaks}</div>
@@ -371,8 +343,8 @@ export const Student = () => {
         </div>
         <div className="bg-surface rounded-2xl p-5 mt-8">
           <div className=" w-full mb-2">
-            <p className="text-xl font-bold ">Exercise Learned</p>
-            <p className="text-base mb-5">Data update every time</p>
+            <p className="text-xl font-bold ">{t('Exercise Learned')}</p>
+            <p className="text-base mb-5">{t('Data update every time')}</p>
           </div>
           <div className="flex justify-center">
             <div style={{ width: '100%' }}>

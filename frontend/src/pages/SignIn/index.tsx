@@ -4,17 +4,18 @@ import { Link } from 'react-router-dom'
 
 import { useMutation } from '@tanstack/react-query'
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
+import Logo from '../../components/Icons/Logo'
 import { NotificationContext } from '../../contexts/notification'
 import { useAppDispatch } from '../../hooks/redux'
 import { setCurrentLevel, setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
-import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
-import Logo from '../../components/Icons/Logo'
 import userLevelApi from '../../services/userLevelApi'
 import { getNewWindowPosition, validatePassword } from '../../utils/common'
-
+import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
+import { useTranslation } from 'react-i18next'
 const SignIn: React.FC = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Auth' })
   const dispatch = useAppDispatch()
   const apiNotification = useContext(NotificationContext)
 
@@ -27,7 +28,7 @@ const SignIn: React.FC = () => {
       onSuccess: () => {
         fetchAuthUser()
         apiNotification.success({
-          message: 'Sign in successfully!',
+          message: t('signInSuccess'),
         })
       },
     })
@@ -78,7 +79,7 @@ const SignIn: React.FC = () => {
     <div className="flex flex-col items-center bg-surface p-8 rounded-[16px] self-center shadow-2xl">
       <div className="mb-8 flex flex-col items-center gap-4">
         <Logo width={250} />
-        <p className="text-dark font-light">Let's start learning right now!</p>
+        <p className="text-dark font-light">{t('letsStart')}</p>
       </div>
 
       <Form
@@ -95,11 +96,11 @@ const SignIn: React.FC = () => {
           label="Email"
           rules={[
             {
-              message: 'Please input your email!',
+              message: t('Please input your email!'),
               required: true,
             },
             {
-              message: 'Invalid email!',
+              message: t('Invalid email!'),
               type: 'email',
             },
           ]}
@@ -113,9 +114,9 @@ const SignIn: React.FC = () => {
 
         <Form.Item<SignInParams>
           name="password"
-          label="Password"
+          label={t('Password')}
           rules={[
-            { required: true, message: 'Please input your password!' },
+            { required: true, message: t('Please input your password!') },
             {
               async validator(_, value) {
                 return new Promise((resolve, reject) =>
@@ -133,10 +134,12 @@ const SignIn: React.FC = () => {
         </Form.Item>
 
         {error && (
-          <p className="text-secondary">Email or password is incorrect!</p>
+          <p className="text-secondary">
+            {t('Email or password is incorrect!')}
+          </p>
         )}
         <div className="flex justify-end">
-          <Link to="/forgot-password">Forgot Password?</Link>
+          <Link to="/forgot-password">{t('Forgot Password?')}</Link>
         </div>
 
         <Form.Item className="mt-4">
@@ -148,7 +151,7 @@ const SignIn: React.FC = () => {
             className="w-full h-11 rounded-xl mt-3"
             loading={isPending}
           >
-            Sign In
+            {t('Sign In')}
           </Button>
         </Form.Item>
 
@@ -166,9 +169,9 @@ const SignIn: React.FC = () => {
         </div>
 
         <p className="text-center text-wolfGrey ">
-          Didn't have an account?
+          {t("Didn't have an account?")}
           <Link to="/sign-up" className="font-semibold text-primary pl-2">
-            Sign Up
+            {t('Sign Up')}
           </Link>
         </p>
       </Form>

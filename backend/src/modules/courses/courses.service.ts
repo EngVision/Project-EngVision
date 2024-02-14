@@ -55,7 +55,12 @@ export class CoursesService {
 
     switch (data.status) {
       case StatusCourseSearch.All:
-        if (user.roles.includes(Role.Teacher)) {
+        if (user.roles.includes(Role.Admin)) {
+          dataFilter['$or'] = [
+            { isAdminCurriculum: true },
+            { 'teacher._id': new Types.ObjectId(user.sub) },
+          ];
+        } else if (user.roles.includes(Role.Teacher)) {
           dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
         } else if (user.roles.includes(Role.Student)) {
           dataFilter.isPublished = { $eq: true };
@@ -297,7 +302,7 @@ export class CoursesService {
 
     courseMap.avgStar = this.reviewsService.averageStar(course.reviews);
 
-    if (courseMap.isPersonalized) {
+    if (courseMap.isCurriculum) {
       const userLevel = await this.userLevelService.findOneByUser(user.sub);
 
       if (userLevel) {
@@ -317,7 +322,11 @@ export class CoursesService {
   ) {
     const oldCourse = await this.courseModel.findById(id);
 
-    if (String(oldCourse.teacher) !== user.sub) {
+    if (
+      user.roles.includes(Role.Admin) &&
+      !oldCourse.isAdminCurriculum &&
+      String(oldCourse.teacher) !== user.sub
+    ) {
       throw new ForbiddenException('Access denied');
     }
     await this.courseModel.findOneAndUpdate({ _id: id }, updateCourse);
@@ -558,7 +567,12 @@ export class CoursesService {
       {
         $match: {
           $and: [
-            { teacher: new Types.ObjectId(teacherId) },
+            {
+              $or: [
+                { teacher: new Types.ObjectId(teacherId) },
+                { isAdminCurriculum: true },
+              ],
+            },
             { 'sections.lessons._id': new Types.ObjectId(lessonId) },
           ],
         },

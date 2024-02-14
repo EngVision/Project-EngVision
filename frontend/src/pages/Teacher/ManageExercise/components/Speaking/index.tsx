@@ -1,4 +1,4 @@
-import { Button, Divider, Form, Input, Select } from 'antd'
+import { Button, Checkbox, Divider, Form, Input, Select } from 'antd'
 import { FormSubmit } from '../..'
 import {
   CEFRLevel,
@@ -14,13 +14,15 @@ import {
 import NewQuestionForm from './NewQuestionForm'
 import PreviewInput from '../../../../../components/common/PreviewInput'
 import CustomImage from '../../../../../components/common/CustomImage'
+import TextArea from 'antd/es/input/TextArea'
 
 interface QuestionFormProps {
   index: number
+  needGrade: boolean
   remove: ((index: number) => void) | null
 }
 
-const QuestionForm = ({ index, remove }: QuestionFormProps) => {
+const QuestionForm = ({ index, needGrade, remove }: QuestionFormProps) => {
   const form = Form.useFormInstance()
   const content = Form.useWatch('content', form)
   const exerciseType = content?.[index]?.exerciseType || ExerciseCardType.Text
@@ -65,7 +67,20 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
           )
         }
       </Form.List>
-
+      <div className="flex items-center gap-8 w-full">
+        <Form.Item
+          label="Answer"
+          name={[index, 'answer']}
+          className="flex-1"
+          rules={[{ required: !needGrade }]}
+        >
+          <TextArea
+            placeholder="Answer"
+            autoSize={{ minRows: 2, maxRows: 4 }}
+            disabled={needGrade}
+          />
+        </Form.Item>
+      </div>
       <Form.Item label="Explanation" name={[index, 'explanation']}>
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 4 }}
@@ -114,6 +129,7 @@ interface QuestionFormSchema {
   explanation: string
   id?: string
   countdown: number
+  answer: string
 }
 
 interface SpeakingPayload extends QuestionPayload {
@@ -126,7 +142,7 @@ interface SpeakingPayload extends QuestionPayload {
 }
 
 const transformSubmitData = (exercise: any) => {
-  const { content } = exercise
+  const { content, needGrade } = exercise
 
   exercise.content = content.map((question: QuestionFormSchema) => {
     const transformQuestion: SpeakingPayload = {
@@ -137,7 +153,10 @@ const transformSubmitData = (exercise: any) => {
         text: question.text,
         countdown: question.countdown,
       },
-      correctAnswer: null,
+      correctAnswer: {
+        detail: needGrade ? null : question.answer,
+        explanation: question.explanation,
+      },
     }
 
     return transformQuestion
@@ -159,6 +178,7 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
       explanation: q.correctAnswer?.explanation,
       text: text,
       countdown: countdown,
+      answer: q.correctAnswer?.detail || null,
     }
 
     return questionForm
@@ -168,11 +188,16 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
 }
 
 function SpeakingForm({ form }: { form: FormSubmit }) {
+  const needGrade = Form.useWatch('needGrade', form)
+
   form.transform = transformSubmitData
   form.setInitialContent = setInitialContent
 
   return (
     <>
+      <Form.Item name="needGrade" valuePropName="checked">
+        <Checkbox>Need grade</Checkbox>
+      </Form.Item>
       <Tutorial />
       <Form.List name="content" initialValue={[{}]}>
         {(fields, { add, remove }) => {
@@ -182,6 +207,7 @@ function SpeakingForm({ form }: { form: FormSubmit }) {
             <div key={key}>
               <QuestionForm
                 index={name}
+                needGrade={needGrade}
                 remove={fields.length > 1 ? remove : null}
               />
               <Divider />

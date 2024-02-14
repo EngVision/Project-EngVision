@@ -1,8 +1,10 @@
 import { Button, Progress } from 'antd'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import BookSquare from '../../../components/Icons/BookSquare'
 
-const ProgressCard = (course: any) => {
+const ProgressCard = ({ course }: ProgressCardProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Home' })
   const navigate = useNavigate()
   const progress = course.course.progress.toFixed(2) * 100
 
@@ -11,8 +13,7 @@ const ProgressCard = (course: any) => {
       <div className="ml-5 items-center col-span-2 flex">
         <BookSquare />
         <div className="ml-3">
-          <p className="text-base font-bold">{course.course.title}</p>
-          <p className="text-sm">{course.course.about}</p>
+          <p className="text-base font-bold">{course.title}</p>
         </div>
       </div>
 
@@ -22,9 +23,9 @@ const ProgressCard = (course: any) => {
       <div className="mx-auto">
         <Button
           className="bg-green-500 text-white rounded-xl"
-          onClick={() => navigate(`./my-hub/${course.course.id}`)}
+          onClick={() => navigate(`./my-hub/${course.id}`)}
         >
-          Continue
+          {t('Continue')}
         </Button>
       </div>
     </div>

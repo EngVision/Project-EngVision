@@ -1,6 +1,7 @@
 import { Form, Input, Select } from 'antd'
 import CustomUpload from '../../../components/CustomUpload'
 import { CEFRLevel } from '../../../utils/constants'
+import { useWatch } from 'antd/es/form/Form'
 
 type FieldType = {
   title: string
@@ -10,13 +11,12 @@ type FieldType = {
   thumbnail: string
 }
 
-interface OverviewProps {
-  handleChangeThumbnail: () => void
-}
+const Overview = () => {
+  const form = Form.useFormInstance()
+  const isAdminCurriculum = useWatch('isAdminCurriculum', form)
 
-const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
       <h4 className="text-primary text-2xl font-semibold">General</h4>
 
       <Form.Item<FieldType>
@@ -28,6 +28,7 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
           placeholder="Public Speaking and Presentation Skills in English"
           size="middle"
           className="rounded-[8px] h-[40px]"
+          disabled={isAdminCurriculum}
         />
       </Form.Item>
 
@@ -40,10 +41,11 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
           placeholder="Boost your English public speaking and presentation skills with confidence."
           size="middle"
           className="rounded-[8px] h-[40px]"
+          disabled={isAdminCurriculum}
         />
       </Form.Item>
 
-      <div className="flex flex-col gap-4 lg:flex-row">
+      <div className="flex gap-4">
         <Form.Item<FieldType>
           name="price"
           label="Price"
@@ -60,6 +62,7 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
             placeholder="$29.00"
             size="middle"
             className="rounded-[8px] h-[40px]"
+            disabled={isAdminCurriculum}
           />
         </Form.Item>
 
@@ -77,12 +80,19 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
             }))}
             className="rounded-[8px] !h-[40px]"
             size="large"
+            disabled={isAdminCurriculum}
           />
         </Form.Item>
       </div>
 
-      <Form.Item name="thumbnail" label="Thumbnail">
-        <CustomUpload type="picture" onRemove={handleChangeThumbnail} />
+      <Form.Item
+        name="thumbnail"
+        label="Thumbnail"
+        getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
+        rules={[{ required: true, message: 'Please input thumbnail!' }]}
+        valuePropName="fileList"
+      >
+        <CustomUpload type="picture" />
       </Form.Item>
     </div>
   )

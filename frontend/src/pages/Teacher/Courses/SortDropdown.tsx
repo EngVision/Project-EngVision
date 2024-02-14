@@ -3,19 +3,20 @@ import React, { useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
 import { clearSortOption, setSortOption } from '../../../redux/course/slice'
 import { SortByEnum } from '../../../utils/constants'
-
+import { useTranslation } from 'react-i18next'
 const SortDropdown = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'MyCourses' })
   const dispatch = useAppDispatch()
   const sortOption = useAppSelector((state) => state.course.sortOption)
 
   const sortOptions = [
     {
-      label: 'Price ascending',
+      label: t('Price ascending'),
       sortBy: SortByEnum.price,
       order: 'asc',
     },
     {
-      label: 'Price descending',
+      label: t('Price descending'),
       sortBy: SortByEnum.price,
       order: 'desc',
     },
@@ -66,7 +67,7 @@ const SortDropdown = () => {
         className="border-primary text-primary"
         onClick={(e) => e.preventDefault()}
       >
-        Sort
+        {t('Sort by')}
       </Button>
     </Dropdown>
   )

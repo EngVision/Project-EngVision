@@ -10,9 +10,10 @@ import FileWrapper from '../../../components/FileWrapper'
 import { UPLOAD_FILE_URL } from '../../../utils/constants'
 import { useState } from 'react'
 import userViewsApi from '../../../services/userViewsApi'
-
+import { useTranslation } from 'react-i18next'
 const { Panel } = Collapse
 const CourseContent = (course: CourseDetails) => {
+  const { t } = useTranslation()
   const params = useParams()
   const completedExerciseIds: string[] = []
   const [imagePreview, setImagePreview] = useState('')
@@ -100,9 +101,9 @@ const CourseContent = (course: CourseDetails) => {
 
   return (
     <div>
-      <div className="mb-10">
-        <h3 className="text-2xl text-primary mb-6">Course Content</h3>
-      </div>
+      <h3 className="text-2xl text-primary mb-6">
+        {t('Course Details.Course Content')}
+      </h3>
 
       <Image
         style={{ display: 'none' }}
