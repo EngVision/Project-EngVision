@@ -8,17 +8,17 @@ import {
   Dropdown,
   Form,
   FormListOperation,
+  Space,
   Tooltip,
   Upload,
   message,
-  Space,
 } from 'antd'
 import { UploadChangeParam } from 'antd/es/upload'
 import { MenuProps, UploadFile } from 'antd/lib'
 import { FormInstance, useWatch } from 'antd/lib/form/Form'
 import { useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import {
   MenuIcon,
   PencilLineIcon,
@@ -26,9 +26,9 @@ import {
   TrashIcon,
 } from '../../../components/Icons'
 import CustomInput from '../../../components/common/CustomInput'
+import authApi from '../../../services/authApi'
 import { lessonApi } from '../../../services/lessonApi'
 import AddLessonModel from './AddLessonModel'
-import authApi from '../../../services/authApi'
 
 const { Panel } = Collapse
 

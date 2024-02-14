@@ -35,7 +35,7 @@ export interface SubmissionResponse {
   totalDone: number
   progress: number
   grade: number
-  status: string
+  status: 'graded' | 'pending'
   createdAt: Date
   updatedAt: Date
 }

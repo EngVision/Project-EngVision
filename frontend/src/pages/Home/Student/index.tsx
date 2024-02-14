@@ -15,8 +15,10 @@ import {
 import dayjs from 'dayjs'
 import 'dayjs/locale/en'
 import 'dayjs/locale/vi'
+import { isEmpty, map, reduce, slice } from 'lodash'
 import { useMemo } from 'react'
 import { Line } from 'react-chartjs-2'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { CourseCard } from '../../../components/CourseCard'
 import Fire from '../../../components/Icons/Fire'
@@ -25,12 +27,10 @@ import AppLoading from '../../../components/common/AppLoading'
 import { useAppSelector } from '../../../hooks/redux'
 import checkListApi from '../../../services/checkListApi'
 import coursesApi from '../../../services/coursesApi'
-import { ObjectId } from '../../../services/examSubmissionApi/type'
 import submissionApi from '../../../services/submissionApi'
 import { cellRender } from '../Components/CalendarRender'
 import ProgressCard from '../Components/ProgressCard'
 import RadarChart from '../Components/RadarChart'
-import { useTranslation } from 'react-i18next'
 dayjs.locale('en')
 
 ChartJS.register(
@@ -65,14 +65,6 @@ export const Student = () => {
       queryFn: () => submissionApi.getSubmissionList(),
     })
 
-  const { data: submissions, isLoading: isLoadingSubmissions } = useQuery({
-    queryKey: ['submissions'],
-    queryFn: () => {
-      return fetchSubmissions(rawCourseExercise?.data || [])
-    },
-    enabled: !!rawCourseExercise,
-  })
-
   const { data: rawSuggestedList, isLoading: isLoadingRawSuggestedList } =
     useQuery({
       queryKey: ['suggestedCourses', { levels: userLevel?.CEFRLevel }],
@@ -82,22 +74,6 @@ export const Student = () => {
     queryKey: ['checkListItems'],
     queryFn: () => checkListApi.getCheckListItems(),
   })
-  const fetchSubmissions = async (objectIdList: ObjectId[]) => {
-    const submissionsPromises = objectIdList.map((objectId) =>
-      submissionApi.getSubmissionList({ course: objectId.id, limit: -1 }),
-    )
-    const submissionsRes = await Promise.all(submissionsPromises)
-    return submissionsRes
-  }
-
-  const findSubmissions = (courseId: string) => {
-    if (!Array.isArray(submissions)) return []
-    const data = submissions?.find(
-      (submission) => submission.data?.[0]?.course?.id === courseId,
-    )
-
-    return data?.data
-  }
 
   const calculateExercisesByDay = () => {
     const exercisesByDay: Record<string, number> = {}
@@ -135,7 +111,7 @@ export const Student = () => {
 
   const exerciseData = useMemo(
     () => calculateExercisesByDay(),
-    [rawCourseExercise?.data, submissions],
+    [rawCourseExercise?.data, rawSubmissionList],
   )
 
   const options = {
@@ -195,37 +171,6 @@ export const Student = () => {
     }
 
     return exercise
-  }, [rawSubmissionList?.data])
-
-  const getProgress = (course: any) => {
-    if (course.exercises?.length === 0) return 100
-    const submissionArray = findSubmissions(course.id)
-    const countExerciseDone = submissionArray?.filter(
-      (submission) => submission.progress === 1,
-    ).length
-    if (!countExerciseDone) return 0
-
-    return Number(
-      ((countExerciseDone / (course.exercises?.length || 1)) * 100).toPrecision(
-        2,
-      ),
-    )
-  }
-
-  const course = useMemo(() => {
-    const course = {
-      totalDone: 0,
-    }
-
-    if (rawCourseExercise?.data) {
-      rawCourseExercise.data.forEach((assignment) => {
-        if (getProgress(assignment) === 100) {
-          course.totalDone += 1
-        }
-      })
-    }
-
-    return course
   }, [rawSubmissionList?.data])
 
   const DashboardCard = (title: any, value: any) => {
@@ -293,12 +238,20 @@ export const Student = () => {
   )
 
   if (
-    isLoadingSubmissions ||
     isLoadingRawCourseExercise ||
     isLoadingRawSuggestedList ||
     isLoadingRawSubmissionList
-  )
+  ) {
     return <AppLoading />
+  }
+
+  const courseTotalDone = reduce(
+    rawCourseExercise?.data,
+    (sum, course: any) => {
+      return course.progress === 1 ? sum + 1 : sum
+    },
+    0,
+  )
 
   return (
     <div className="flex flex-row gap-5 max-lg:flex-wrap">
@@ -306,7 +259,7 @@ export const Student = () => {
       <div className="basis-full lg:basis-3/4">
         <div className="bg-surface flex rounded-2xl mt-0">
           <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#5BB3D7] to-[#001171] text-white">
-            {DashboardCard(t('Completed Course'), course.totalDone)}
+            {DashboardCard(t('Completed Course'), courseTotalDone)}
           </div>
           <div className="basis-1/3 rounded-2xl m-3 bg-gradient-to-r from-[#C6ECFE] to-[#77AFFE] text-dark">
             {DashboardCard(t('Completed Exercises'), exercise.totalDone)}
@@ -329,22 +282,15 @@ export const Student = () => {
               {t('Show all')} &gt;
             </Button>
           </div>
-          {rawCourseExercise &&
-            (rawCourseExercise.data.length > 0 ? (
-              rawCourseExercise.data
-                .filter(
-                  (course: any) =>
-                    getProgress(course) > 0 && getProgress(course) < 100,
-                )
-                .slice(0, 3)
-                .map((course: any) => (
-                  <div className="my-4" key={course.id}>
-                    <ProgressCard course={course} />
-                  </div>
-                ))
-            ) : (
-              <div className="text-center">{t('No course')}</div>
-            ))}
+          {!isEmpty(rawCourseExercise?.data) ? (
+            map(slice(rawCourseExercise?.data, 0, 5), (course: any) => (
+              <div className="my-4" key={course.id}>
+                <ProgressCard course={course} />
+              </div>
+            ))
+          ) : (
+            <div className="text-center">{t('No course')}</div>
+          )}
         </div>
 
         <div className="bg-surface rounded-2xl p-5">

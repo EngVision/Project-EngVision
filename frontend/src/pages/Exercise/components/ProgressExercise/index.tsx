@@ -21,12 +21,27 @@ function ProgressExercise({
     if (index === questionIndex) return 'bg-sky-600'
     else if (submission?.detail[index]?.isCorrect === false) return 'bg-red-500'
     else if (
-      submission?.detail[index]?.isCorrect ||
-      submission?.detail[index]?.grade !== null
+      !!submission &&
+      (submission?.detail[index]?.isCorrect ||
+        submission?.detail[index]?.grade !== null)
     )
       return 'bg-green-500'
     else if (submission?.detail[index]?.grade === null) return 'bg-yellow-500'
     else return 'bg-slate-300'
+  }
+
+  const getIcon = (index: number) => {
+    if (
+      !!submission &&
+      (submission?.detail[index]?.isCorrect ||
+        submission?.detail[index]?.grade !== null)
+    ) {
+      return <TickIcon className="bg-transparent" />
+    } else if (!!submission && submission?.detail[index]?.isCorrect === false) {
+      return <XMarkIcon className="bg-transparent" />
+    } else {
+      return <MinusCircle className="bg-transparent" />
+    }
   }
 
   return (
@@ -41,16 +56,7 @@ function ProgressExercise({
               !(index > (submission?.totalDone || 0)) ? 'cursor-pointer' : ''
             } ${getBackground(index)}`}
           >
-            {(submission?.detail[index]?.isCorrect ||
-              submission?.detail[index]?.grade !== null) && (
-              <TickIcon className="bg-transparent" />
-            )}
-            {submission?.detail[index]?.isCorrect === false && (
-              <XMarkIcon className="bg-transparent" />
-            )}
-            {submission?.detail[index]?.grade === null && (
-              <MinusCircle className="bg-transparent" />
-            )}
+            {getIcon(index)}
           </div>
         ))}
       </Space>

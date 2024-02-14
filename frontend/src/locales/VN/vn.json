@@ -68,7 +68,9 @@
     "English": "Tiếng Anh",
     "Vietnamese": "Tiếng Việt",
     "Account": "Tài khoản",
-    "Logout": "Đăng xuất"
+    "Logout": "Đăng xuất",
+    "DarkMode": "Chế độ tối",
+    "LightMode": "Chế độ sáng"
   },
   "Discover": {
     "discover": "Khóa học",
@@ -112,7 +114,7 @@
     "Description": "Mô tả",
     "Level": "Trình độ",
     "Account": "Tài khoản",
-    "Dashboard": "Dashboard",
+    "Dashboard": "Bảng điều khiển",
     "My Hub": "My Hub",
     "Discover": "Khám phá",
     "Are you sure you want to logout?": "Bạn có chắc chắn muốn đăng xuất?",
@@ -145,7 +147,12 @@
     "New lesson": "Bài học mới",
     "Delete lesson": "Xóa bài học",
     "Edit lesson": "Chỉnh sửa bài học",
-    "Please save the course to edit this lesson": "Vui lòng lưu khóa học để chỉnh sửa bài học này"
+    "Please save the course to edit this lesson": "Vui lòng lưu khóa học để chỉnh sửa bài học này",
+    "Exams": "Bài kiểm tra",
+    "Statistic": "Thống kê",
+    "Chats": "Trò chuyện",
+    "Users": "Người dùng",
+    "Achievement": "Thành tựu"
   },
   "Course Details": {
     "Overview": "Tổng quan",
@@ -191,6 +198,8 @@
     "Draft": "Bản nháp",
     "Sort by": "Sắp xếp theo",
     "Price ascending": "Giá tăng dần",
-    "Price descending": "Giá giảm dần"
+    "Price descending": "Giá giảm dần",
+    "Filter": "Lọc",
+    "SearchCourse": "Tìm kiếm khóa học..."
   }
 }

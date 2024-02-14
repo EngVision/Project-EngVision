@@ -130,13 +130,7 @@ function CustomUpload({
     try {
       message.loading(`uploading...`)
 
-      let res
-      if (multiple || !currFileId) {
-        res = await fileApi.create(file, onProgress)
-      } else {
-        res = await fileApi.update(currFileId, file, onProgress)
-      }
-
+      const res = await fileApi.create(file, onProgress)
       onSuccess?.(res)
     } catch (err) {
       onError?.({

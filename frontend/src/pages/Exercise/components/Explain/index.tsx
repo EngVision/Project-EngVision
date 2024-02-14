@@ -18,10 +18,11 @@ import {
 
 interface ExplainProps {
   submission: SubmissionResponse | undefined
+  questionDetail: any
   questionIndex: number
 }
 
-function Explain({ submission, questionIndex }: ExplainProps) {
+function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
   const question = submission?.detail[questionIndex]
   const hasGrade =
     !question?.hasOwnProperty('grade') || question?.grade !== null
@@ -36,13 +37,17 @@ function Explain({ submission, questionIndex }: ExplainProps) {
       return (
         <div className="flex gap-4">
           <span>Correct answer: </span>
-          {correctAnswer.map((answer: string) => (
-            <CustomImage
-              key={answer}
-              className="hidden lg:block object-cover w-20 h-20 rounded-md"
-              src={`${UPLOAD_FILE_URL}${answer}`}
-            />
-          ))}
+          {correctAnswer.map((answer: string) =>
+            questionDetail?.question?.isUnscrambleByText ? (
+              <span key={answer}>{answer}</span>
+            ) : (
+              <CustomImage
+                key={answer}
+                className="hidden lg:block object-cover w-20 h-20 rounded-md"
+                src={`${UPLOAD_FILE_URL}${answer}`}
+              />
+            ),
+          )}
         </div>
       )
     } else if (submission?.exerciseType === ExerciseType.Match) {

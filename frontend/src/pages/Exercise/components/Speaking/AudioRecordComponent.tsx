@@ -19,22 +19,20 @@ const AudioRecorderComponent = ({
   isDisabled,
 }: AudioRecorderComponentProps) => {
   return (
-    <div
-      className={`flex flex-col justify-center items-center ${
-        isDisabled && 'opacity-40 pointer-events-none'
-      }`}
-    >
+    <div className={`flex flex-col justify-center items-center`}>
       {!fileId && (
-        <AudioRecorder
-          limitTime={countdown}
-          onRecordingComplete={(fileId) => {
-            setFileId(fileId)
-            setIsSubmittable(true)
-          }}
-        />
+        <div className={isDisabled ? 'opacity-40 pointer-events-none' : ''}>
+          <AudioRecorder
+            limitTime={countdown}
+            onRecordingComplete={(fileId) => {
+              setFileId(fileId)
+              setIsSubmittable(true)
+            }}
+          />
+        </div>
       )}
       {fileId && <AudioPlayer url={getFileUrl(fileId)} />}
-      {fileId && (
+      {fileId && !isDisabled && (
         <div>
           <span className="text-sm">Not perfect?</span>
           <Button

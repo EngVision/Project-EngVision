@@ -136,6 +136,7 @@ export class LessonsService {
         const newExercise = new this.exerciseModel(exercise);
         newExercise.creator = userId;
         newExercise.content = exerciseContents;
+        newExercise.course = courseId;
         return await newExercise.save();
       }),
     );

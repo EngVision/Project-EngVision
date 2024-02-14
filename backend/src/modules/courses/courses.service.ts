@@ -302,7 +302,7 @@ export class CoursesService {
 
     courseMap.avgStar = this.reviewsService.averageStar(course.reviews);
 
-    if (courseMap.isPersonalized) {
+    if (courseMap.isCurriculum) {
       const userLevel = await this.userLevelService.findOneByUser(user.sub);
 
       if (userLevel) {
