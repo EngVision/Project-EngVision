@@ -11,12 +11,12 @@ const SortDropdown = () => {
 
   const sortOptions = [
     {
-      label: 'Price ascending',
+      label: t('Price ascending'),
       sortBy: SortByEnum.price,
       order: 'asc',
     },
     {
-      label: 'Price descending',
+      label: t('Price descending'),
       sortBy: SortByEnum.price,
       order: 'desc',
     },

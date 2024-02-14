@@ -1,13 +1,13 @@
 import { Form } from 'antd'
 import { useEffect } from 'react'
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import CustomImage from '../../../../components/common/CustomImage'
+import PreviewInput from '../../../../components/common/PreviewInput'
 import {
   QuestionPayload,
   SubmitAnswerResponse,
 } from '../../../../services/exerciseApi/types'
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
-import PreviewInput from '../../../../components/common/PreviewInput'
 import { ExerciseCardType, UPLOAD_FILE_URL } from '../../../../utils/constants'
-import CustomImage from '../../../../components/common/CustomImage'
 
 interface UnscrambleProps extends QuestionPayload {
   question: {
@@ -48,6 +48,10 @@ function Unscramble(props: UnscrambleProps) {
       form.setFieldValue('answer', question.items)
     }
   }, [question])
+
+  useEffect(() => {
+    setIsSubmittable(true)
+  }, [answer])
 
   return (
     <div>

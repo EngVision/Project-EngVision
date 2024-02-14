@@ -105,12 +105,11 @@ export class FilesController {
       return res.redirect(file.url);
     }
 
-    // const stream = createReadStream(join(process.cwd(), file.path));
-
     res.set({
       'Content-Disposition': `inline; filename="${file.filename}"`,
       'Content-Type': file.mimetype,
     });
+
     return new StreamableFile(file.body);
   }
 

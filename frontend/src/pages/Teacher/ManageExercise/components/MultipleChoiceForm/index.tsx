@@ -194,7 +194,7 @@ const transformSubmitData = (exercise: any) => {
 function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
   const { content } = exercise
 
-  const transformedContent = content.map((q: MultipleChoicePayload) => {
+  const transformedContent = content.map((q) => {
     const questionForm: QuestionFormSchema = {
       id: q.id,
       questionText: q.question.text,
@@ -202,7 +202,7 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
       answers: q.question.answers.map(
-        (ans): AnswerFormSchema => ({
+        (ans: any): AnswerFormSchema => ({
           id: ans.id,
           answerText: ans.text,
           answerImage: ans.image,

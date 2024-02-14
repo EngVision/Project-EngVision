@@ -24,6 +24,12 @@ const ADMIN_MENU_ITEMS: MenuItemType[] = [
   },
   {
     icon: <NoteIcon />,
+    path: ADMIN_ROUTES.grading,
+    title: 'Grading',
+    id: 'grading',
+  },
+  {
+    icon: <NoteIcon />,
     path: ADMIN_ROUTES.exams,
     title: 'Exams',
   },

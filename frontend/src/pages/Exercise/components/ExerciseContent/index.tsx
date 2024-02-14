@@ -33,7 +33,12 @@ function ExerciseContent({
 
   if (questionIndex >= (exercise?.content?.length || 0)) {
     return (
-      submission && <DoneExercise grade={grade ? grade : submission.grade} />
+      submission && (
+        <DoneExercise
+          grade={grade ? grade : submission.grade}
+          isGrading={isGrading}
+        />
+      )
     )
   }
 

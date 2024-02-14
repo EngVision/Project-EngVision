@@ -155,7 +155,7 @@ const transformSubmitData = (exercise: any) => {
 function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
   const { content } = exercise
 
-  const transformedContent = content.map((q: ConstructedResponsePayload) => {
+  const transformedContent = content.map((q) => {
     const questionForm: QuestionFormSchema = {
       id: q.id,
       questionText: q.question.text,

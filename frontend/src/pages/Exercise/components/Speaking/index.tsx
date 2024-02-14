@@ -19,7 +19,7 @@ interface SpeakingProps extends QuestionPayload {
 }
 
 interface SpeakingResponse extends SubmitAnswerResponse {
-  answer: string[]
+  answer: string
   correctAnswer: string[]
 }
 
@@ -27,6 +27,10 @@ function Speaking(props: SpeakingProps) {
   const { question, result, setIsSubmittable } = props
   const form = Form.useFormInstance()
   const [fileId, setFileId] = useState<string>('')
+
+  useEffect(() => {
+    setFileId(result?.answer || '')
+  }, [result])
 
   useEffect(() => {
     form.setFieldValue('answer', fileId)

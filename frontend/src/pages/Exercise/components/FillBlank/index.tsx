@@ -22,7 +22,7 @@ function FillBlank(props: FillBlankProps) {
   const form = Form.useFormInstance()
   const firstInput = useRef<InputRef>(null)
 
-  const questionArr = question.text.split('[]')
+  const questionArr = question.text.replaceAll('<p>', '').split('[]')
 
   useEffect(() => {
     form.setFieldValue('answer', Array(questionArr.length - 1).fill(''))
@@ -51,7 +51,10 @@ function FillBlank(props: FillBlankProps) {
             {fields.map(({ key }) => {
               return (
                 <span key={key}>
-                  <span className="text-xl">{questionArr[key]}</span>
+                  <span
+                    className="text-xl"
+                    dangerouslySetInnerHTML={{ __html: questionArr[key] }}
+                  ></span>
                   <Form.Item noStyle name={[key]}>
                     <Input
                       ref={key === 0 ? firstInput : null}
@@ -76,9 +79,12 @@ function FillBlank(props: FillBlankProps) {
                 </span>
               )
             })}
-            <span className="text-xl">
-              {questionArr[questionArr.length - 1]}
-            </span>
+            <span
+              className="text-xl"
+              dangerouslySetInnerHTML={{
+                __html: questionArr[questionArr.length - 1],
+              }}
+            ></span>
           </>
         )}
       </Form.List>

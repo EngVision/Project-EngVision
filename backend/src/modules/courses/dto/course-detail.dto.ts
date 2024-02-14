@@ -73,7 +73,7 @@ export class CourseDetailDto {
     type: Boolean,
     description: 'True if is personalized course',
   })
-  isPersonalized?: boolean;
+  isCurriculum?: boolean;
 
   @Exclude()
   posts?: mongoose.Types.ObjectId[];

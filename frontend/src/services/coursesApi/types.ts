@@ -144,6 +144,7 @@ export interface CourseDetails {
   materials: Materials
   createdAt: string
   updatedAt: string
+  progress: number
 }
 
 export interface ReviewParams {
