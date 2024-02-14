@@ -142,17 +142,20 @@ function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
     )
   }
 
+  console.log(hasGrade, isCorrect)
+
   return hasGrade || isCorrect !== null ? (
     <div
       className={`w-full p-5 rounded-md flex gap-4 mt-7 ${
-        isCorrect ? 'bg-green-500' : 'bg-secondary'
+        isCorrect === null || isCorrect ? 'bg-green-500' : 'bg-secondary'
       }`}
     >
-      {isCorrect ? <TickCircleWhiteIcon /> : <CloseCircleWhiteIcon />}
+      {isCorrect !== null &&
+        (isCorrect ? <TickCircleWhiteIcon /> : <CloseCircleWhiteIcon />)}
       <div className="flex-1 text-primary flex flex-col gap-2 text-white">
         {
           <b className="text-[18px] leading-6">
-            {isCorrect ? 'Correct!' : 'Wrong!'}
+            {isCorrect !== null && (isCorrect ? 'Correct!' : 'Wrong!')}
           </b>
         }
 
@@ -161,7 +164,8 @@ function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
     </div>
   ) : (
     <div className={`w-full p-5 rounded-md flex gap-4 mt-7 bg-primary`}>
-      {isCorrect ? <TickCircleWhiteIcon /> : <CloseCircleWhiteIcon />}
+      {isCorrect !== null &&
+        (isCorrect ? <TickCircleWhiteIcon /> : <CloseCircleWhiteIcon />)}
       <div className="flex-1 text-primary flex flex-col gap-2 text-white">
         {explanation && <p>{explanation}</p>}
         <b className="text-[18px] leading-6">Grading</b>

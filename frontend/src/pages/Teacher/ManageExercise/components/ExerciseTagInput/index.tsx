@@ -122,7 +122,7 @@ function ExerciseTagInput({ onChange, value }: ExerciseTagInputProps) {
     <Cascader
       value={value}
       onChange={onChange}
-      placeholder="Exercise type"
+      placeholder="Tags"
       options={exerciseTagOptions}
       multiple
       maxTagCount="responsive"

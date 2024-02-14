@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConstructedResponseService } from './constructed-response.service';
 import {
@@ -6,6 +6,7 @@ import {
   ConstructedResponseSchema,
 } from './schemas/constructed-response.schema';
 import { OpenAiModule } from 'src/modules/open-ai/open-ai.module';
+import { SubmissionsModule } from 'src/modules/submissions/submissions.module';
 
 @Module({
   imports: [

@@ -212,11 +212,11 @@ export class SubmissionsService {
     if (submission.course) {
       section = submission.course?.['sections'].find(section =>
         section['lessons'].some(lesson =>
-          lesson['exercises'].includes(submission.exercise['_id']),
+          lesson['exercises'].includes(submission.exercise?.['_id']),
         ),
       );
       lesson = section?.lessons.find(lesson =>
-        lesson['exercises'].includes(submission.exercise['_id']),
+        lesson['exercises'].includes(submission.exercise?.['_id']),
       );
     }
 

@@ -15,6 +15,7 @@ import NewQuestionForm from './NewQuestionForm'
 import PreviewInput from '../../../../../components/common/PreviewInput'
 import CustomImage from '../../../../../components/common/CustomImage'
 import TextArea from 'antd/es/input/TextArea'
+import ExerciseTagInput, { getTagList } from '../ExerciseTagInput'
 
 interface QuestionFormProps {
   index: number
@@ -94,13 +95,7 @@ const QuestionForm = ({ index, needGrade, remove }: QuestionFormProps) => {
             name={[index, 'questionTags']}
             rules={[{ required: true }]}
           >
-            <Select
-              mode="multiple"
-              allowClear
-              placeholder="Tags"
-              maxTagCount="responsive"
-              options={enumToSelectOptions(ExerciseTag)}
-            />
+            <ExerciseTagInput />
           </Form.Item>
           <Form.Item
             label="Level"
@@ -147,7 +142,7 @@ const transformSubmitData = (exercise: any) => {
   exercise.content = content.map((question: QuestionFormSchema) => {
     const transformQuestion: SpeakingPayload = {
       id: question.id,
-      tags: question.questionTags,
+      tags: getTagList(question.questionTags as any),
       level: question.questionLevel,
       question: {
         text: question.text,
