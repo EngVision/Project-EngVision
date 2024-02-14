@@ -29,3 +29,13 @@ export interface GetDirectMessageData {
     username: string
   }
 }
+
+export interface SendMessageParams {
+  rid: string
+  msg: string
+}
+
+export interface SendMessageResponse<T> {
+  message: T
+  success: boolean
+}

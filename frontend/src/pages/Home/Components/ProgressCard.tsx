@@ -3,10 +3,17 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import BookSquare from '../../../components/Icons/BookSquare'
 
+interface ProgressCardProps {
+  course: {
+    id: string
+    title: string
+    progress: number
+  }
+}
+
 const ProgressCard = ({ course }: ProgressCardProps) => {
   const { t } = useTranslation('translation', { keyPrefix: 'Home' })
   const navigate = useNavigate()
-  const progress = course.course.progress.toFixed(2) * 100
 
   return (
     <div className="grid grid-cols-4 gap-2 bg-bgNeutral rounded-2xl items-center p-2">
@@ -18,7 +25,11 @@ const ProgressCard = ({ course }: ProgressCardProps) => {
       </div>
 
       <div>
-        <Progress type="circle" size={50} percent={progress} />
+        <Progress
+          type="circle"
+          size={50}
+          percent={Math.round(course.progress * 100)}
+        />
       </div>
       <div className="mx-auto">
         <Button

@@ -1,5 +1,6 @@
-import axiosClient from '../axiosChatClient'
 import sha256 from 'crypto-js/sha256'
+import axiosClient from '../axiosChatClient'
+import type { SendMessageParams } from './types'
 
 import type { ResponseData } from '../types'
 
@@ -78,6 +79,38 @@ const chatApi = {
       return res.data
     } catch (error) {
       console.error('Error post file details:', error)
+      throw error
+    }
+  },
+
+  sendMessage: async (
+    userId: string,
+    authToken: string,
+    messageParams: SendMessageParams,
+  ): Promise<ResponseData> => {
+    try {
+      const res = await axiosClient.post(
+        `${PREFIX}method.call/sendMessage`,
+        {
+          message: JSON.stringify({
+            msg: 'method',
+            id: '0',
+            method: 'sendMessage',
+            params: [messageParams],
+          }),
+        },
+        {
+          headers: {
+            'X-User-Id': userId,
+            'X-Auth-Token': authToken,
+          },
+        },
+      )
+
+      // You can return the relevant data from the response if needed
+      return res.data
+    } catch (error) {
+      console.error('Error sending message:', error)
       throw error
     }
   },
