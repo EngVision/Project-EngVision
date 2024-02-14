@@ -78,18 +78,22 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
           name={[index, 'num_col']}
           label="Number of column"
           className="flex-1"
-          rules={[{ required: true }]}
         >
-          <InputNumber className="w-full" placeholder="Number of column" />
+          <InputNumber
+            className="w-full"
+            placeholder="Number of column (optional)"
+          />
         </Form.Item>
 
         <Form.Item
           name={[index, 'num_row']}
           label="Number of row"
           className="flex-1"
-          rules={[{ required: true }]}
         >
-          <InputNumber className="w-full" placeholder="Number of row" />
+          <InputNumber
+            className="w-full"
+            placeholder="Number of row (optional)"
+          />
         </Form.Item>
       </div>
 
@@ -172,8 +176,8 @@ interface WordSearchPayload extends QuestionPayload {
   question: {
     text: string
     words: string[]
-    col: number
-    row: number
+    col?: number
+    row?: number
     rows?: string[][]
   }
 }

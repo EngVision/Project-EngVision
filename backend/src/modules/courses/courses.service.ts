@@ -88,10 +88,10 @@ export class CoursesService {
       if (data.dateEnd) dataFilter.createdAt.$lte = data.dateEnd;
     }
 
-    if (data.priceMin || data.priceMax) {
+    if (data.priceMin !== undefined || data.priceMax !== undefined) {
       dataFilter.price = {};
-      if (data.priceMin) dataFilter.price.$gte = data.priceMin;
-      if (data.priceMax) dataFilter.price.$lte = data.priceMax;
+      if (data.priceMin !== undefined) dataFilter.price.$gte = data.priceMin;
+      if (data.priceMax !== undefined) dataFilter.price.$lte = data.priceMax;
     }
 
     if (data.levels) {

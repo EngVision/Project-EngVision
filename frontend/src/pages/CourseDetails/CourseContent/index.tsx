@@ -246,13 +246,13 @@ const CourseContent = (course: CourseDetails) => {
                                 (uv) => uv.targetId === material.id,
                               ) ? (
                                 <TickCircle
-                                  className="mr-2"
+                                  className="mr-2 text-primary"
                                   width={24}
                                   height={24}
                                 />
                               ) : (
                                 <Circle
-                                  className="mr-2"
+                                  className="mr-2 text-primary"
                                   width={24}
                                   height={24}
                                 />

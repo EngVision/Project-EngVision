@@ -118,7 +118,7 @@ const ContentQuestionForm = () => {
         name={['contentQuestion', 'text']}
       >
         <Input.TextArea
-          placeholder="Description (optional)"
+          placeholder="Question text - It will be displayed through all the questions (optional)"
           autoSize={{ minRows: 4, maxRows: 10 }}
         />
       </Form.Item>
@@ -250,6 +250,14 @@ function ManageExercise() {
             key: 'submitMessage',
             content: 'Saved',
             type: 'success',
+          })
+        },
+
+        onError: (error: any) => {
+          message.open({
+            key: 'submitMessage',
+            content: error.data.message,
+            type: 'error',
           })
         },
       })
