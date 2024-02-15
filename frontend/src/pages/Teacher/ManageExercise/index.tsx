@@ -120,7 +120,7 @@ const ContentQuestionForm = () => {
       >
         <ReactQuill
           className="bg-surface"
-          placeholder="Question content (optional)"
+          placeholder="Question content - It will be displayed through all the questions (optional)"
         />
       </Form.Item>
       <div className="grid grid-cols-2 gap-4">
@@ -251,6 +251,14 @@ function ManageExercise() {
             key: 'submitMessage',
             content: 'Saved',
             type: 'success',
+          })
+        },
+
+        onError: (error: any) => {
+          message.open({
+            key: 'submitMessage',
+            content: error.data.message,
+            type: 'error',
           })
         },
       })
