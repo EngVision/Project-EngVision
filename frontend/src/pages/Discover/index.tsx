@@ -44,20 +44,21 @@ const Discover = () => {
   const getNewCoursesParams: GetCourseProps = {
     status: COURSE_STATUS.all,
     sortBy: 'createdAt',
+    order: 'desc',
     limit: 5,
-    page: 1,
+    page: 0,
   }
   const getAllCoursesParams: GetCourseProps = {
     status: status,
     sortBy: sortBy,
+    order: 'desc',
     keyword: keyword,
     limit: 8,
     page: page - 1,
   }
   const getFreeCoursesParams: GetCourseProps = {
     status: COURSE_STATUS.all,
-    priceMin: 0,
-    priceMax: 1,
+    priceMax: 0,
   }
 
   const { data: personalizedCourse } = useQuery({

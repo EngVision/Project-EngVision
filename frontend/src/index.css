@@ -163,6 +163,20 @@ input[type='number']::-webkit-outer-spin-button {
   }
 }
 
+.ql-editor {
+  font-size: 14px;
+  padding: 4px 11px;
+  min-height: 50px;
+}
+
+.ql-toolbar {
+  padding: 4px 3px !important;
+}
+
+.ql-editor.ql-blank::before {
+  left: 11px;
+}
+
 :is(.css-dev-only-do-not-override-le3245).ant-btn:not(.ant-btn-primary),
 :is(.css-dev-only-do-not-override-le3245).ant-card,
 :is(.css-dev-only-do-not-override-le3245).ant-input,

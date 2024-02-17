@@ -72,7 +72,6 @@ function getTextFromMatrix(matrix: string[][], start: Position, end: Position) {
 function WordSearch(props: WordSearchProps) {
   const { question, result, setIsSubmittable } = props
   const { words, rows, text } = question
-  console.log('🚀 ~ WordSearch ~ question:', question)
 
   const form = Form.useFormInstance()
 
