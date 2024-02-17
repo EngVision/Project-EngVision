@@ -18,7 +18,6 @@ const LeftComponent = ({
   }
   const chatPreview = previewChats.map((item: any, index: number) => {
     if (item.usersCount === 1) return
-    console.log(item)
     const isSelected = index === selectedChat
     const chatClass = `flex items-center p-2 my-2 border-b border-gray-200 ${
       isSelected ? 'bg-blue-100 rounded-xl' : ''

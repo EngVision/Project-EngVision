@@ -19,11 +19,10 @@ const Chat = () => {
   const user = useAppSelector((state) => state.app.user)
   const formRef = useRef<any>(null)
   const [newMessageCount, setNewMessageCount] = useState(0)
+  const [newMessage, setNewMessage] = useState<any[]>([])
+  const rocketChatSocket = new WebSocket('ws://127.0.0.1:3002/websocket')
   useEffect(() => {
-    const rocketChatSocket = new WebSocket('ws://127.0.0.1:3002/websocket')
-
     rocketChatSocket.onopen = () => {
-      console.log('WebSocket connection established')
       const connectRequest = {
         msg: 'connect',
         version: '1',
@@ -31,7 +30,6 @@ const Chat = () => {
       }
       rocketChatSocket.send(JSON.stringify(connectRequest))
 
-      console.log('WebSocket connection established', userChat)
       // Additionally, you can send login and subscribe requests after the connection is open
       const loginRequest = {
         msg: 'method',
@@ -54,7 +52,6 @@ const Chat = () => {
 
     rocketChatSocket.onmessage = (event) => {
       const message = JSON.parse(event.data)
-      console.log('Received message from WebSocket:', message)
       // Check if the message is the response you're expecting
       if (
         message.msg === 'changed' &&
@@ -75,9 +72,7 @@ const Chat = () => {
       }
     }
 
-    rocketChatSocket.onclose = (event) => {
-      console.log('WebSocket connection closed:', event)
-    }
+    rocketChatSocket.onclose = (event) => {}
 
     rocketChatSocket.onerror = (error) => {
       console.error('WebSocket error:', error)
@@ -86,7 +81,14 @@ const Chat = () => {
     return () => {
       rocketChatSocket.close() // Clean up WebSocket connection when component unmounts
     }
-  }, [isLoggedIn, userChat, previewChats, directChats, selectedChat]) // Empty dependency array to run only once when component mounts
+  }, [
+    isLoggedIn,
+    userChat,
+    previewChats,
+    directChats,
+    selectedChat,
+    rocketChatSocket,
+  ]) // Empty dependency array to run only once when component mounts
 
   useEffect(() => {
     const handleRegisterAndLogin = async () => {
@@ -120,8 +122,14 @@ const Chat = () => {
           userChat.userId,
           userChat.authToken,
         )
+        // Sắp xếp mảng previewChats theo thời gian tin nhắn cuối cùng
+        response.update.sort((a: any, b: any) => {
+          const timeA = new Date(a._updatedAt).getTime()
+          const timeB = new Date(b._updatedAt).getTime()
+          return timeB - timeA
+        })
+
         setPreviewChats(response.update)
-        console.log('Preview Chats:', response.update)
       } catch (error) {
         console.error('Error fetching preview chats:', error)
       }
@@ -183,6 +191,7 @@ const Chat = () => {
       // rocketChatSocket.send(JSON.stringify(request))
     }
     handleGetDirectChat(previewChats[selectedChat]?.usernames[1])
+    handleChatClick(0)
     if (formRef.current) {
       formRef.current.resetFields()
     }
@@ -191,6 +200,14 @@ const Chat = () => {
   const handleChatClick = (index: number) => {
     setSelectedChat(index)
     handleGetDirectChat(previewChats[index]?.usernames[1])
+
+    const subscribeRequest = {
+      msg: 'sub',
+      id: 'unique-id',
+      name: 'stream-notify-room',
+      params: [`${previewChats[index]?._id}/user-activity`, false],
+    }
+    rocketChatSocket.send(JSON.stringify(subscribeRequest))
   }
 
   return (
