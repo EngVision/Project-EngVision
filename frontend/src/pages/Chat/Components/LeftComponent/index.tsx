@@ -18,6 +18,7 @@ const LeftComponent = ({
   }
   const chatPreview = previewChats.map((item: any, index: number) => {
     if (item.usersCount === 1) return
+
     const isSelected = index === selectedChat
     const chatClass = `flex items-center p-2 my-2 border-b border-gray-200 ${
       isSelected ? 'bg-blue-100 rounded-xl' : ''
@@ -50,9 +51,7 @@ const LeftComponent = ({
 
   return (
     <div
-      className={`flex flex-col border-r border-gray-200 bg-surface p-5 rounded-xl ${
-        selectedChat ? 'w-1/3' : 'w-full'
-      }`}
+      className={`flex flex-col border-r border-gray-200 bg-surface p-5 rounded-xl w-1/3`}
     >
       <h1 className="text-2xl font-bold text-blue-700 mb-2">Chats</h1>
       <input
