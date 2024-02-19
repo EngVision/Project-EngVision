@@ -39,7 +39,11 @@ export class AuthController {
   async login(@Body() loginDto: LoginDto, @Res() res: Response) {
     const { tokens, user } = await this.authService.login(loginDto);
 
-    this.authService.attachTokensCookie(res, tokens);
+    const {
+      data: { userId: chatUserId, authToken: chatToken },
+    } = await this.authService.accessChatService(user);
+
+    this.authService.attachTokensCookie(res, tokens, chatUserId, chatToken);
 
     return res
       .status(HttpStatus.OK)
