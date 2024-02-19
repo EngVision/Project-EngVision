@@ -142,8 +142,6 @@ function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
     )
   }
 
-  console.log(hasGrade, isCorrect)
-
   return hasGrade || isCorrect !== null ? (
     <div
       className={`w-full p-5 rounded-md flex gap-4 mt-7 ${

@@ -49,10 +49,15 @@ export class SubmissionsService {
       0,
     );
     submissionDto.totalDone = submissionDto.detail.length;
+    const avgGrade =
+      submissionDto.detail.reduce(
+        (prev, questionResult) =>
+          questionResult.isCorrect ? prev + 10 : prev + questionResult.grade,
+        0,
+      ) / submissionDto.detail.length;
 
     if (!submissionDto.needGrade) {
-      submissionDto.grade =
-        (submissionDto.totalCorrect / submissionDto.totalDone) * 10;
+      submissionDto.grade = avgGrade;
     }
 
     const newSubmission = await this.submissionModel.findOneAndUpdate(
