@@ -44,6 +44,7 @@ function Unscramble(props: UnscrambleProps) {
     if (result) {
       form.setFieldValue('answer', result.answer)
     } else {
+      setTimeout(() => setIsSubmittable(true))
       form.setFieldValue('answer', question.items)
     }
   }, [question])

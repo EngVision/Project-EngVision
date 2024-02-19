@@ -41,6 +41,7 @@ const Discover = () => {
   const getAllCoursesParams: GetCourseProps = {
     status: status,
     sortBy: sortBy,
+    order: 'desc',
     keyword: keyword,
     limit: 10,
     page: page - 1,
