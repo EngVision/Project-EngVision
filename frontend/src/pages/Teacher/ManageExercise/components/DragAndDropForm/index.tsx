@@ -8,6 +8,7 @@ import {
 import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
 import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
 import { DeleteOutlined } from '@ant-design/icons'
+import ExerciseTagInput, { getTagList } from '../ExerciseTagInput'
 
 interface ContentFormProps {
   index: number
@@ -140,13 +141,7 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             name={[index, 'questionTags']}
             rules={[{ required: true }]}
           >
-            <Select
-              mode="multiple"
-              allowClear
-              placeholder="Tags"
-              maxTagCount="responsive"
-              options={enumToSelectOptions(ExerciseTag)}
-            />
+            <ExerciseTagInput />
           </Form.Item>
           <Form.Item
             label="Level"
@@ -191,7 +186,7 @@ const transformSubmitData = (exercise: any) => {
   exercise.content = content.map((question: QuestionFormSchema) => {
     const transformQuestion: DragAndDropPayLoad = {
       id: question.id,
-      tags: question.questionTags,
+      tags: getTagList(question.questionTags as any),
       level: question.questionLevel,
       question: {
         text: question.questionText,

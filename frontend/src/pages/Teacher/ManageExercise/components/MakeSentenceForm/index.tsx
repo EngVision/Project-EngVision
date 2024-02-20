@@ -1,18 +1,15 @@
 import { Button, Divider, Form, Input, Select } from 'antd'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 import { FormSubmit } from '../..'
+import { QuestionPayload } from '../../../../../services/exerciseApi/types'
+import { addAnswersToQuestionTextOfMakeSentenceExercise } from '../../../../../utils/common'
 import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
 import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
-import {
-  ExerciseSchema,
-  QuestionPayload,
-} from '../../../../../services/exerciseApi/types'
-import { addAnswersToQuestionTextOfMakeSentenceExercise } from '../../../../../utils/common'
 import ExerciseTagInput, {
   getTagList,
   transformToExerciseTagInputValue,
 } from '../ExerciseTagInput'
-import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
 
 interface QuestionFormProps {
   index: number
@@ -127,7 +124,7 @@ const transformSubmitData = (exercise: any) => {
   })
 }
 
-function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
+function setInitialContent(this: FormSubmit, exercise: any) {
   const { content } = exercise
 
   const transformedContent = content.map((q: MakeSentenceResponse) => {

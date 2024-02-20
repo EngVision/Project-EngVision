@@ -50,6 +50,7 @@ export class FilesService {
       size: this.getFileSize(file.size),
       userId,
     });
+    newFile.url = `${process.env.S3_BUCKET_URL}/${newFile.id}`;
     await newFile.save();
 
     await this.S3.send(
@@ -57,6 +58,8 @@ export class FilesService {
         Bucket: this.bucketName,
         Key: newFile.id,
         Body: file.buffer,
+        ContentType: file.mimetype,
+        ContentLength: file.size,
       }),
     );
 
@@ -125,24 +128,14 @@ export class FilesService {
     return updatedFile;
   }
 
-  async get(id: string): Promise<LocalFile & { body: any }> {
+  async get(id: string): Promise<LocalFile> {
     const file = await this.fileModel.findById(id);
 
     if (!file) {
       throw new NotFoundException('File not found');
     }
 
-    const s3File = await this.S3.send(
-      new GetObjectCommand({
-        Bucket: this.bucketName,
-        Key: file.id,
-      }),
-    );
-
-    return {
-      ...file.toObject(),
-      body: s3File.Body,
-    };
+    return file;
   }
 
   async remove(id: string, userId: string): Promise<void> {

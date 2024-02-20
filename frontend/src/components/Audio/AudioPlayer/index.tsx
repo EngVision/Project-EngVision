@@ -54,12 +54,12 @@ const AudioPlayer = ({ url }: { url: string }) => {
     setState({ ...state, loadedSeconds })
   }
   const skipBackward = () => {
-    const value = state.loadedSeconds * state.played - 1
+    const value = state.loadedSeconds * state.played - 10
     setState({ ...state, played: value / state.loadedSeconds })
     playerRef.current?.seekTo(value)
   }
   const skipForward = () => {
-    const value = state.loadedSeconds * state.played + 1
+    const value = state.loadedSeconds * state.played + 10
     setState({ ...state, played: value / state.loadedSeconds })
     playerRef.current?.seekTo(value)
   }
