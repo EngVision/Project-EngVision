@@ -1,6 +1,4 @@
 import { Card } from 'antd'
-
-import { getFormattedPrice } from '../../utils/common'
 import { PeopleIcon, StarIcon, VideoPlayIcon } from '../Icons'
 import { useNavigate } from 'react-router-dom'
 import { CourseDetails } from '../../services/coursesApi/types'
@@ -57,7 +55,7 @@ const Course = ({ course }: CourseProps) => {
       </div>
 
       <span className="text-primary text-2xl font-semibold">
-        {getFormattedPrice(course.price)}
+        {course.price} VND
       </span>
     </Card>
   )

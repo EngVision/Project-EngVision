@@ -3,7 +3,7 @@ import { StarIcon } from '../../../components/Icons'
 import PreviewInput from '../../../components/common/PreviewInput'
 import { FormInstance, useWatch } from 'antd/lib/form/Form'
 import CustomImage from '../../../components/common/CustomImage'
-import { getFormattedDate, getFormattedPrice } from '../../../utils/common'
+import { getFormattedDate } from '../../../utils/common'
 import { UPLOAD_FILE_URL } from '../../../utils/constants'
 import { useTranslation } from 'react-i18next'
 interface PreviewProps {
@@ -62,7 +62,7 @@ const Preview = ({ form }: PreviewProps) => {
           <div className="flex flex-col items-center">
             <PreviewInput
               className="text-3xl text-primary text-center"
-              value={getFormattedPrice(price || 0)}
+              value={`${price} VND`}
             />
             <span className="text-xs text-textSubtle text-center">
               {t('Course price')}
@@ -75,7 +75,7 @@ const Preview = ({ form }: PreviewProps) => {
             <div className="flex flex-col items-center">
               <PreviewInput
                 className="text-3xl text-primary text-center"
-                value={getFormattedPrice(price * attendance)}
+                value={`${price * attendance} VND`}
               />
               <span className="text-xs text-textSubtle text-center">
                 {t('Revenue')}

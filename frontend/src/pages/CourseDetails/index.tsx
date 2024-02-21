@@ -11,7 +11,7 @@ import Overview from './Overview'
 import Reviews from './Reviews'
 import CustomImage from '../../components/common/CustomImage'
 import paymentsApi from '../../services/payment'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import enrollCourseApi from '../../services/enrollCourse'
 import { useTranslation } from 'react-i18next'
 const { TabPane } = Tabs
@@ -21,8 +21,6 @@ const CourseDetailsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
   const tab = searchParams.get('tab') || '1'
-  const orderCode = searchParams.get('orderCode')
-  const paymentStatus = searchParams.get('status')
   const { courseId = '' } = useParams<{ courseId: string }>()
   const queryClient = useQueryClient()
   const [enrollLoading, setEnrollLoading] = useState(false)
@@ -35,13 +33,6 @@ const CourseDetailsPage = () => {
   const attendCourseMutation = useMutation({
     mutationFn: (courseId: string) => enrollCourseApi.enroll(courseId),
   })
-
-  useEffect(() => {
-    if (orderCode) {
-      if (paymentStatus === 'PAID') enroll()
-      navigate('./')
-    }
-  }, [])
 
   const handleTabChange = (key: string) => {
     setSearchParams({ tab: key })
@@ -69,11 +60,11 @@ const CourseDetailsPage = () => {
   }
 
   const handleClickEnroll = async () => {
+    setEnrollLoading(true)
     if (courseDetail?.price === 0) {
       enroll()
       return
     }
-    setEnrollLoading(true)
 
     const { isPaid } = await paymentsApi.checkPaid(courseDetail?.id || '')
     if (isPaid) {
@@ -123,7 +114,7 @@ const CourseDetailsPage = () => {
                   onClick={handleClickEnroll}
                   loading={enrollLoading || attendCourseMutation.isPending}
                 >
-                  {t('Course Details.Enroll with')} ${courseDetail.price}
+                  {t('Course Details.Enroll with')} {courseDetail.price} VND
                 </Button>
               </div>
             )}
