@@ -51,18 +51,7 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
           >
-            <div className="font-bold text-sm mb-2">
-              {t('Review this course')}
-            </div>
             <div className="flex flex-col">
-              <Form.Item<ReviewParams> name="comment" label={t('Reviews')}>
-                <TextArea
-                  rows={3}
-                  showCount
-                  maxLength={500}
-                  placeholder={t('Write your review here')}
-                />
-              </Form.Item>
               <Form.Item<ReviewParams>
                 className="mb-0"
                 name="star"
@@ -75,6 +64,15 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
                   defaultValue={0}
                 />
               </Form.Item>
+              <Form.Item<ReviewParams> name="comment" label={t('Reviews')}>
+                <TextArea
+                  rows={3}
+                  showCount
+                  maxLength={500}
+                  placeholder={t('Write your review here')}
+                />
+              </Form.Item>
+
               <Button
                 type="primary"
                 htmlType="submit"
@@ -90,18 +88,19 @@ const Reviews: React.FC<ReviewsProps> = ({ course }) => {
         {course.reviews &&
           course.reviews.map((review: Review) => (
             <div className="border-dashed border-[1px] rounded-lg mb-10">
-              <div className="flex p-4">
+              <div className="flex p-4 items-center">
                 <Avatar
                   className="mr-3"
-                  size={64}
+                  size={{ xs: 24, sm: 32, md: 40, lg: 52, xl: 60, xxl: 64 }}
                   src={
                     review.user && review.user.avatar
                       ? `${UPLOAD_FILE_URL}${review.user.avatar}`
                       : 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80'
                   }
                 />
+
                 <div className="w-full">
-                  <div className="font-bold text-base mb-4">
+                  <div className="font-bold text-base">
                     {review.user
                       ? review.user.firstName ??
                         '' + ' ' + review.user?.lastName
