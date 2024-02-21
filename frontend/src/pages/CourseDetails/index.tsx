@@ -11,6 +11,7 @@ import Overview from './Overview'
 import Reviews from './Reviews'
 import CustomImage from '../../components/common/CustomImage'
 import paymentsApi from '../../services/payment'
+import chatApi from '../../services/chatApi'
 import { useEffect, useState } from 'react'
 import enrollCourseApi from '../../services/enrollCourse'
 import { useTranslation } from 'react-i18next'
@@ -50,13 +51,34 @@ const CourseDetailsPage = () => {
 
   const enroll = async () => {
     attendCourseMutation.mutate(courseId, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries({ queryKey: ['courseDetail'] })
+
+        const teacherEmail = response?.teacher?.email
+        const isTeacherChatRegistered = response?.teacher?.chatRegistered
+
+        if (teacherEmail && isTeacherChatRegistered) {
+          // TODO: Get auth token from Redux
+          chatApi.createIm(
+            '2YvpBkJGpTa27L3Gv',
+            'oh40OwgEXO-6MqpIxqg4OeKusgehXBEgsjW6210Ee1C',
+            teacherEmail,
+          )
+        }
+
         message.open({
           key: 'submitMessage',
-          content: 'Enroll successfully',
+          content: 'Enroll successfully.',
           type: 'success',
         })
+
+        if (!isTeacherChatRegistered) {
+          message.open({
+            key: 'teacherChatMessage',
+            content: 'Teacher have not registered chat account yet',
+            type: 'error',
+          })
+        }
       },
       onError: () => {
         message.open({

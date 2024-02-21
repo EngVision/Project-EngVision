@@ -114,6 +114,28 @@ const chatApi = {
       throw error
     }
   },
+
+  createIm: async (userId: string, authToken: string, username: string) => {
+    try {
+      const res = await axiosClient.post(
+        `${PREFIX}im.create`,
+        {
+          username,
+        },
+        {
+          headers: {
+            'X-User-Id': userId,
+            'X-Auth-Token': authToken,
+          },
+        },
+      )
+
+      return res.data
+    } catch (error) {
+      console.error('Error sending message:', error)
+      throw error
+    }
+  },
 }
 
 export default chatApi
