@@ -50,16 +50,34 @@ const Overview = () => {
           name="price"
           label="Price"
           rules={[
-            { required: true, message: 'Please input price!' },
+            { required: true, message: '' },
             {
-              pattern: /^[0-9.]+$/,
-              message: 'Price can only numbers.',
+              async validator(_, value) {
+                if (value.length === 0)
+                  return Promise.reject(new Error('Please input price!'))
+
+                if (!/^[0-9.]+$/.test(value)) {
+                  return Promise.reject(
+                    new Error('Price can only contain numbers.'),
+                  )
+                }
+
+                const price = parseFloat(value)
+                if (price === 0 || price >= 2000) {
+                  return Promise.resolve()
+                }
+                return Promise.reject(
+                  new Error(
+                    'Price must be 0 for free or must be at least 2000!',
+                  ),
+                )
+              },
             },
           ]}
           className="flex-1"
         >
           <Input
-            placeholder="$29.00"
+            placeholder="0 VND"
             size="middle"
             className="rounded-[8px] h-[40px]"
             disabled={isAdminCurriculum}
@@ -89,7 +107,6 @@ const Overview = () => {
         name="thumbnail"
         label="Thumbnail"
         getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
-        rules={[{ required: true, message: 'Please input thumbnail!' }]}
         valuePropName="fileList"
       >
         <CustomUpload type="picture" />
