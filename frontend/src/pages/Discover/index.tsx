@@ -45,7 +45,6 @@ const Discover = () => {
     keyword: keyword,
     limit: 10,
     page: page - 1,
-    order: 'desc',
   }
 
   const { data: personalizedCourse } = useQuery({
