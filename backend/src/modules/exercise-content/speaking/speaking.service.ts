@@ -6,12 +6,14 @@ import { ExerciseContentService } from '../base-exercise-content.service';
 import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 import { CreateSpeakingDto } from './dto/create-speaking.dto';
 import { Speaking } from './schemas/speaking.schema';
+import { WhisperService } from 'src/modules/whisper/whisper.service';
 
 @Injectable()
 export class SpeakingService extends ExerciseContentService {
   constructor(
     @InjectModel(Speaking.name)
     private speakingModel: Model<Speaking>,
+    private readonly whisperService: WhisperService,
   ) {
     super();
   }
@@ -69,25 +71,42 @@ export class SpeakingService extends ExerciseContentService {
       await this.speakingModel.findById(id).select('correctAnswer')
     ).correctAnswer;
     const { detail, explanation } = correctAnswer;
-    const submission = {
+    const submission: QuestionResult = {
       question: id,
       answer,
       correctAnswer: detail,
       explanation,
     };
-    const isCorrect = null;
 
-    return {
-      ...submission,
-      isCorrect,
-    };
+    if (correctAnswer.detail) {
+      const {
+        pronunciation_accuracy,
+        original_ipa_transcript,
+        correct_letters,
+      } = await this.whisperService.speechEvaluation({
+        fileId: answer,
+        original: correctAnswer.detail,
+      });
+
+      submission.grade = parseInt(pronunciation_accuracy) / 10;
+
+      var ipa = original_ipa_transcript
+        .split('')
+        .map((c, i) => {
+          if (correct_letters[i] === '1')
+            return `<span style="color: green">${c}</span>`;
+          if (correct_letters[i] === '0')
+            return `<span style="color: red">${c}</span>`;
+          return c;
+        })
+        .join('');
+      submission.explanation = `/${ipa}/ <p>Your pronunciation accuracy: ${pronunciation_accuracy}</p>`;
+    } else {
+      this.whisperService.speechToText(submission.question, answer);
+    }
+
+    return submission;
   }
 
-  setDefaultExplain(questionList: ExerciseQuestionDto[]): void {
-    questionList.forEach(q => {
-      q.correctAnswer.explanation = q.correctAnswer.detail
-        ? `Correct answer: ${q.correctAnswer.detail}`
-        : null;
-    });
-  }
+  setDefaultExplain(questionList: ExerciseQuestionDto[]): void {}
 }

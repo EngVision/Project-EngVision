@@ -15,7 +15,10 @@ import NewQuestionForm from './NewQuestionForm'
 import PreviewInput from '../../../../../components/common/PreviewInput'
 import CustomImage from '../../../../../components/common/CustomImage'
 import TextArea from 'antd/es/input/TextArea'
-import ExerciseTagInput, { getTagList } from '../ExerciseTagInput'
+import ExerciseTagInput, {
+  getTagList,
+  transformToExerciseTagInputValue,
+} from '../ExerciseTagInput'
 
 interface QuestionFormProps {
   index: number
@@ -168,7 +171,7 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
 
     const questionForm: QuestionFormSchema = {
       id: q.id,
-      questionTags: q.tags,
+      questionTags: transformToExerciseTagInputValue(q.tags),
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
       text: text,
