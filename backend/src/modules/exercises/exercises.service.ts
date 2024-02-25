@@ -175,6 +175,7 @@ export class ExercisesService {
       teacher: exercise.creator,
       needGrade: exercise.needGrade,
       course: exercise.course,
+      grade: result.grade,
     });
 
     return { ...result, id };

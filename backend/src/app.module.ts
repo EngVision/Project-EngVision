@@ -24,6 +24,7 @@ import { AchievementsModule } from './modules/achievements/achievements.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { LessonsModule } from './modules/lessons/lessons.module';
+import { WhisperModule } from './modules/whisper/whisper.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { LessonsModule } from './modules/lessons/lessons.module';
     EnrollCourseModule,
     AchievementsModule,
     LessonsModule,
+    WhisperModule,
   ],
   providers: [
     {

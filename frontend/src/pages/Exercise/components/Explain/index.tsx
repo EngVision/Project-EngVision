@@ -108,6 +108,18 @@ function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
     }
   }
 
+  if (
+    submission?.exerciseType === ExerciseType.Speaking &&
+    question?.explanation
+  ) {
+    return (
+      <p
+        className="text-center"
+        dangerouslySetInnerHTML={{ __html: question.explanation }}
+      ></p>
+    )
+  }
+
   if (submission?.exerciseType === ExerciseType.WordSearch) {
     const { numberQuestionCorrect, numberQuestion } = answer
     return (
