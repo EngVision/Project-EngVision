@@ -1,112 +1,112 @@
 import React, { useState, useEffect, useRef } from 'react'
 import chatApi from '../../services/chatApi'
-import { useAppSelector } from '../../hooks/redux'
 import LeftComponent from './Components/LeftComponent'
 import RightComponent from './Components/RightComponent'
 import { SendMessageParams } from '../../services/chatApi/types'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
+import { setIsNewMessage } from '../../redux/app/slice'
 
 const Chat = () => {
+  const dispatch = useAppDispatch()
   const [selectedChat, setSelectedChat] = useState<number | undefined>()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userChat, setUserChat] = useState({
     userId: '',
     authToken: '',
-    name: '',
-    avatar: '',
   })
   const [previewChats, setPreviewChats] = useState<any[]>([])
   const [directChats, setDirectChats] = useState<any[]>([])
+  const [oppositeIndex, setOppositeIndex] = useState<number>(0)
   const user = useAppSelector((state) => state.app.user)
   const formRef = useRef<any>(null)
-  const [newMessageCount, setNewMessageCount] = useState(0)
-  const [newMessage, setNewMessage] = useState<any[]>([])
-  const rocketChatSocket = new WebSocket('ws://127.0.0.1:3002/websocket')
+  const [rocketChatSocket, setRocketChatSocket] = useState<WebSocket | null>(
+    null,
+  )
+
   useEffect(() => {
-    rocketChatSocket.onopen = () => {
-      const connectRequest = {
-        msg: 'connect',
-        version: '1',
-        support: ['1', 'pre2', 'pre1'],
-      }
-      rocketChatSocket.send(JSON.stringify(connectRequest))
+    if (!rocketChatSocket) {
+      const socket = new WebSocket('ws://127.0.0.1:3002/websocket')
 
-      // Additionally, you can send login and subscribe requests after the connection is open
-      const loginRequest = {
-        msg: 'method',
-        method: 'login',
-        id: userChat.userId,
-        params: [{ resume: userChat.authToken }],
-      }
-
-      rocketChatSocket.send(JSON.stringify(loginRequest))
-
-      const subscribeRequest = {
-        msg: 'sub',
-        id: 'unique-id',
-        name: 'stream-notify-room',
-        params: [`${previewChats[selectedChat]?._id}/user-activity`, false],
-      }
-
-      rocketChatSocket.send(JSON.stringify(subscribeRequest))
+      setRocketChatSocket(socket)
     }
+    if (
+      userChat.userId &&
+      userChat.authToken &&
+      selectedChat !== undefined &&
+      previewChats.length > 0 &&
+      formRef.current &&
+      rocketChatSocket
+    ) {
+      socket.onopen = () => {
+        const connectRequest = {
+          msg: 'connect',
+          version: '1',
+          support: ['1', 'pre2', 'pre1'],
+        }
+        socket.send(JSON.stringify(connectRequest))
 
-    rocketChatSocket.onmessage = (event) => {
-      const message = JSON.parse(event.data)
-      // Check if the message is the response you're expecting
-      if (
-        message.msg === 'changed' &&
-        message.collection === 'stream-notify-room'
-      ) {
-        const userName = message.fields.args[0]
-        handleGetDirectChat(userName)
-      } else if (
-        message.msg === 'changed' &&
-        message.collection === 'stream-room-messages'
-      ) {
-        setNewMessageCount(newMessageCount + 1)
-      } else if (
-        message.msg === 'changed' &&
-        message.collection === 'stream-room-user'
-      ) {
-        setNewMessageCount(0)
+        const loginRequest = {
+          msg: 'method',
+          method: 'login',
+          id: userChat.userId,
+          params: [{ resume: userChat.authToken }],
+        }
+
+        socket.send(JSON.stringify(loginRequest))
+
+        const subscribeRequest = {
+          msg: 'sub',
+          id: 'unique-id',
+          name: 'stream-notify-room',
+          params: [`${previewChats[selectedChat]?._id}/user-activity`, false],
+        }
+
+        socket.send(JSON.stringify(subscribeRequest))
+
+        const subscribeRequest2 = {
+          msg: 'sub',
+          id: 'unique-id',
+          name: 'stream-room-messages',
+          params: ['event', false],
+        }
+
+        socket.send(JSON.stringify(subscribeRequest2))
       }
-    }
 
-    rocketChatSocket.onclose = (event) => {}
+      socket.onclose = (event) => {}
 
-    rocketChatSocket.onerror = (error) => {
-      console.error('WebSocket error:', error)
+      socket.onerror = (error) => {
+        console.error('WebSocket error:', error)
+      }
     }
 
     return () => {
-      rocketChatSocket.close() // Clean up WebSocket connection when component unmounts
+      if (rocketChatSocket) {
+        rocketChatSocket.close()
+      }
     }
-  }, [
-    isLoggedIn,
-    userChat,
-    previewChats,
-    directChats,
-    selectedChat,
-    rocketChatSocket,
-  ]) // Empty dependency array to run only once when component mounts
+  }, [userChat, selectedChat, previewChats, formRef, rocketChatSocket])
 
   useEffect(() => {
     const handleRegisterAndLogin = async () => {
-      try {
-        const loginResponse = await chatApi.login(
-          'engvision_admin',
-          'EngVision2023@',
-        )
+      function getCookieValue(cookieName: string) {
+        const cookies = document.cookie.split(';')
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim()
+          if (cookie.startsWith(cookieName + '=')) {
+            return cookie.substring(cookieName.length + 1)
+          }
+        }
+        return null
+      }
+
+      const chatUserId = getCookieValue('chat_user_id')
+      const chatToken = getCookieValue('chat_token')
+
+      if (chatUserId && chatToken) {
         setUserChat({
-          userId: loginResponse.data.userId,
-          authToken: loginResponse.data.authToken,
-          name: loginResponse.data.me.name,
-          avatar: loginResponse.data.me.avatarUrl,
+          userId: chatUserId,
+          authToken: chatToken,
         })
-        setIsLoggedIn(true)
-      } catch (error) {
-        setIsLoggedIn(false)
-        console.error('Error during registration or login:', error)
       }
     }
 
@@ -115,36 +115,56 @@ const Chat = () => {
     }
   }, [user])
 
-  useEffect(() => {
-    const handleGetPreviewChats = async () => {
-      try {
-        const response = await chatApi.getRoom(
+  const handleGetPreviewChats = async () => {
+    try {
+      const response = await chatApi.getRoom(
+        userChat.userId,
+        userChat.authToken,
+      )
+
+      response.update.sort((a: any, b: any) => {
+        const timeA = new Date(a._updatedAt).getTime()
+        const timeB = new Date(b._updatedAt).getTime()
+        return timeB - timeA
+      })
+
+      const myUserName = response.update.filter((chat: any) => {
+        return chat.usersCount === 1
+      })[0].usernames[0]
+
+      const filteredChats = response.update.filter((chat: any) => {
+        return chat.usersCount === 2 && chat.name !== 'general'
+      })
+
+      const index = filteredChats[0].usernames[0] === myUserName ? 1 : 0
+      setOppositeIndex(index)
+
+      for (const chat of filteredChats) {
+        const opposite = await chatApi.getName(
           userChat.userId,
           userChat.authToken,
+          chat.usernames[index],
         )
-        // Sắp xếp mảng previewChats theo thời gian tin nhắn cuối cùng
-        response.update.sort((a: any, b: any) => {
-          const timeA = new Date(a._updatedAt).getTime()
-          const timeB = new Date(b._updatedAt).getTime()
-          return timeB - timeA
-        })
-
-        setPreviewChats(response.update)
-      } catch (error) {
-        console.error('Error fetching preview chats:', error)
+        chat.oppositeName = opposite.user.name
       }
-    }
 
-    if (isLoggedIn) {
+      setPreviewChats(filteredChats)
+    } catch (error) {
+      console.error('Error fetching preview chats:', error)
+    }
+  }
+
+  useEffect(() => {
+    if (userChat.userId && userChat.authToken && oppositeIndex !== undefined) {
       handleGetPreviewChats()
     }
-  }, [
-    isLoggedIn,
-    directChats,
-    selectedChat,
-    userChat.userId,
-    userChat.authToken,
-  ])
+  }, [userChat, oppositeIndex])
+
+  useEffect(() => {
+    if (selectedChat !== undefined) {
+      handleGetDirectChat(previewChats[selectedChat]?.usernames[oppositeIndex])
+    }
+  }, [selectedChat])
 
   const handleGetDirectChat = async (userName: string) => {
     try {
@@ -153,10 +173,15 @@ const Chat = () => {
         userChat.authToken,
         userName,
       )
+
       setDirectChats(response.messages)
     } catch (error) {
       console.error('Error fetching direct chat:', error)
     }
+  }
+
+  const generateRandomId = () => {
+    return Math.random().toString(36).substr(2, 9)
   }
 
   const handleSendMessage = async (value: string) => {
@@ -170,27 +195,60 @@ const Chat = () => {
     }
 
     if (value.trim() !== '') {
-      await chatApi.sendMessage(
-        userChat.userId,
-        userChat.authToken,
-        sendMessageParams,
-      )
-      // const request = {
-      //   msg: 'method',
-      //   method: 'sendMessage',
-      //   id: '1',
-      //   params: [
-      //     {
-      //       _id: previewChats[selectedChat]?._id,
-      //       rid: previewChats[selectedChat]?._id,
-      //       msg: value,
-      //     },
-      //   ],
-      // }
+      if (rocketChatSocket) {
+        const socket = new WebSocket('ws://127.0.0.1:3002/websocket')
 
-      // rocketChatSocket.send(JSON.stringify(request))
+        socket.onopen = () => {
+          const connectRequest = {
+            msg: 'connect',
+            version: '1',
+            support: ['1', 'pre2', 'pre1'],
+          }
+          socket.send(JSON.stringify(connectRequest))
+
+          const loginRequest = {
+            msg: 'method',
+            method: 'login',
+            id: userChat.userId,
+            params: [{ resume: userChat.authToken }],
+          }
+
+          socket.send(JSON.stringify(loginRequest))
+
+          const subscribeRequest = {
+            msg: 'sub',
+            id: 'unique-id',
+            name: 'stream-notify-room',
+            params: [`${previewChats[selectedChat]?._id}/user-activity`, false],
+          }
+
+          socket.send(JSON.stringify(subscribeRequest))
+
+          const sendMessage = {
+            msg: 'method',
+            method: 'sendMessage',
+            params: [
+              {
+                _id: generateRandomId(),
+                rid: previewChats[selectedChat]?._id,
+                msg: value,
+              },
+            ],
+            id: '11',
+          }
+          socket.send(JSON.stringify(sendMessage))
+        }
+
+        socket.onclose = (event) => {}
+
+        socket.onerror = (error) => {
+          console.error('WebSocket error:', error)
+        }
+
+        setRocketChatSocket(socket)
+      }
     }
-    handleGetDirectChat(previewChats[selectedChat]?.usernames[1])
+    handleGetDirectChat(previewChats[selectedChat]?.usernames[oppositeIndex])
     handleChatClick(0)
     if (formRef.current) {
       formRef.current.resetFields()
@@ -199,7 +257,8 @@ const Chat = () => {
 
   const handleChatClick = (index: number) => {
     setSelectedChat(index)
-    handleGetDirectChat(previewChats[index]?.usernames[1])
+    handleGetDirectChat(previewChats[index]?.usernames[oppositeIndex])
+    handleGetPreviewChats()
 
     const subscribeRequest = {
       msg: 'sub',
@@ -207,19 +266,21 @@ const Chat = () => {
       name: 'stream-notify-room',
       params: [`${previewChats[index]?._id}/user-activity`, false],
     }
-    rocketChatSocket.send(JSON.stringify(subscribeRequest))
+    if (rocketChatSocket) {
+      rocketChatSocket.send(JSON.stringify(subscribeRequest))
+    }
   }
 
   return (
     <div className="h-full">
       <div className="flex h-[100%]">
         <LeftComponent
-          newMessageCount={newMessageCount}
           selectedChat={selectedChat}
           previewChats={previewChats}
           handleChatClick={handleChatClick}
         />
         <RightComponent
+          oppositeIndex={oppositeIndex}
           selectedChat={selectedChat}
           previewChats={previewChats}
           directChats={directChats}

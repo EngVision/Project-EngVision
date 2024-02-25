@@ -61,6 +61,28 @@ const chatApi = {
     }
   },
 
+  getIn4Room: async (
+    userId: string,
+    authToken: string,
+    roomId: string,
+  ): Promise<ResponseData> => {
+    try {
+      const res: ResponseData = await axiosClient.get(
+        `${PREFIX}rooms.info?roomId=${roomId}`,
+        {
+          headers: {
+            'X-User-Id': userId,
+            'X-Auth-Token': authToken,
+          },
+        },
+      )
+      return res.data
+    } catch (error) {
+      console.error('Error post file details:', error)
+      throw error
+    }
+  },
+
   getDirectMessage: async (
     userId: string,
     authToken: string,
@@ -111,6 +133,46 @@ const chatApi = {
       return res.data
     } catch (error) {
       console.error('Error sending message:', error)
+      throw error
+    }
+  },
+
+  getName: async (
+    userId: string,
+    authToken: string,
+    userName: string,
+  ): Promise<ResponseData> => {
+    try {
+      const res: ResponseData = await axiosClient.get(
+        `${PREFIX}users.info?username=${userName}`,
+        {
+          headers: {
+            'X-User-Id': userId,
+            'X-Auth-Token': authToken,
+          },
+        },
+      )
+      return res.data
+    } catch (error) {
+      console.error('Error post file details:', error)
+      throw error
+    }
+  },
+
+  getUser: async (userId: string, authToken: string): Promise<ResponseData> => {
+    try {
+      const res: ResponseData = await axiosClient.get(
+        `${PREFIX}users.info?userId=${userId}&fields={"userRooms": 1}`,
+        {
+          headers: {
+            'X-User-Id': userId,
+            'X-Auth-Token': authToken,
+          },
+        },
+      )
+      return res.data
+    } catch (error) {
+      console.error('Error post file details:', error)
       throw error
     }
   },

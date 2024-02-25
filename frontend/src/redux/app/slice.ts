@@ -11,6 +11,7 @@ interface AppState {
   showGetStartedAgain: boolean
   currentLevel: IUserLevel | null
   showingLogoutModal: boolean
+  isNewMessage: boolean
 }
 
 const initialState: AppState = {
@@ -22,6 +23,7 @@ const initialState: AppState = {
   showGetStartedAgain: true,
   currentLevel: null,
   showingLogoutModal: false,
+  isNewMessage: false,
 }
 
 const appSlice = createSlice({
@@ -52,6 +54,9 @@ const appSlice = createSlice({
     setShowLogoutModal: (state, action) => {
       state.showingLogoutModal = action.payload
     },
+    setIsNewMessage: (state, action) => {
+      state.isNewMessage = action.payload
+    },
   },
 })
 export const {
@@ -63,6 +68,7 @@ export const {
   hideGetStarted,
   setCurrentLevel,
   setShowLogoutModal,
+  setIsNewMessage,
 } = appSlice.actions
 
 export default appSlice.reducer
