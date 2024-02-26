@@ -23,19 +23,17 @@ const Chat = () => {
   )
 
   useEffect(() => {
-    if (!rocketChatSocket) {
-      const socket = new WebSocket('ws://127.0.0.1:3002/websocket')
-
-      setRocketChatSocket(socket)
-    }
     if (
       userChat.userId &&
       userChat.authToken &&
       selectedChat !== undefined &&
       previewChats.length > 0 &&
       formRef.current &&
-      rocketChatSocket
+      !rocketChatSocket
     ) {
+      const socket = new WebSocket('ws://127.0.0.1:3002/websocket')
+
+      setRocketChatSocket(socket)
       socket.onopen = () => {
         const connectRequest = {
           msg: 'connect',
