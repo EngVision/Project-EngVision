@@ -109,6 +109,11 @@ const coursesApi = {
     const res = await axiosClient.get(PERSONALIZED_COURSE_PREFIX)
     return res.data.data
   },
+
+  getTotalCoursePublished: async () => {
+    const res = await axiosClient.get(`${PREFIX}total`)
+    return res.data.data
+  },
 }
 
 export default coursesApi

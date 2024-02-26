@@ -3,12 +3,11 @@ import DefaultLayout from '../layouts/DefaultLayout'
 import ManageExam from '../pages/Admin/ManageExam'
 import ExamDetail from '../pages/Admin/ManageExam/Component/ExamDetail'
 import ManageUsers from '../pages/ManageUsers'
-import Statistic from '../pages/Statistic'
 import TeacherCourseDetail from '../pages/Teacher/CourseDetail'
 import TeacherCourses from '../pages/Teacher/Courses'
 import LessonDetail from '../pages/Teacher/LessonDetail'
 import ManageExercise from '../pages/Teacher/ManageExercise'
-import { ADMIN_ROUTES, PRIVATE_ROUTES } from '../utils/constants'
+import { ADMIN_ROUTES } from '../utils/constants'
 import Grading from '../pages/Teacher/Grading/Index'
 import AssignmentTable from '../pages/Teacher/Grading/AssignmentTable'
 import GradeExercise from '../pages/Teacher/GradeExercise'
@@ -131,10 +130,6 @@ const adminRoutes: RouteObject[] = [
       {
         element: <ManageUsers />,
         path: ADMIN_ROUTES.manageUsers,
-      },
-      {
-        element: <Statistic />,
-        path: PRIVATE_ROUTES.statistic,
       },
     ],
   },

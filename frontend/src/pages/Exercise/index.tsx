@@ -57,9 +57,6 @@ function Exercise({
     setIsSubmittable(false)
   }, [submission, questionIndex])
 
-  const viewMode =
-    isGrading || (!exercise?.needGrade && submission?.detail[questionIndex])
-
   const Content = () => {
     return (
       <>
