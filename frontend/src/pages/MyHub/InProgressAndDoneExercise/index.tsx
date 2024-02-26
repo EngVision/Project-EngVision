@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom'
 import './index.css'
 
 const InProgressAndDoneExercise = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('translation', { keyPrefix: 'MyHub' })
   const [searchText, setSearchText] = useState('')
   const searchInput = useRef<InputRef>(null)
 
@@ -49,7 +49,7 @@ const InProgressAndDoneExercise = () => {
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
-          placeholder={`Search by exercise or course name`}
+          placeholder={t('Search by exercise or course name')}
           value={selectedKeys[0]}
           onChange={(e) => {
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -64,14 +64,14 @@ const InProgressAndDoneExercise = () => {
             size="small"
             style={{ width: 90 }}
           >
-            Filter
+            {t('Filter')}
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size="small"
             style={{ width: 90 }}
           >
-            Reset
+            {t('Reset')}
           </Button>
           <Button
             type="link"
@@ -80,7 +80,7 @@ const InProgressAndDoneExercise = () => {
               close()
             }}
           >
-            close
+            {t('Close')}
           </Button>
         </Space>
       </div>
@@ -106,7 +106,7 @@ const InProgressAndDoneExercise = () => {
 
   const columns: ColumnsType<SubmissionResponse> = [
     {
-      title: 'Title',
+      title: t('Title'),
       dataIndex: 'course',
       key: 'title',
       render: (course, record) => (
@@ -136,16 +136,16 @@ const InProgressAndDoneExercise = () => {
       key: 'section',
     },
     {
-      title: 'Lesson',
+      title: t('Lesson'),
       dataIndex: ['lesson', 'title'],
       key: 'lesson',
     },
     {
-      title: 'Skill',
+      title: t('Skills'),
       dataIndex: ['exercise', 'tags'],
       key: 'skill',
       render: (tags) => (
-        <div>
+        <div className="flex flex-wrap gap-2">
           {tags.map((tag: string, index: number) => (
             <div key={index} className="flex justify-start align-middle">
               <div
@@ -161,7 +161,7 @@ const InProgressAndDoneExercise = () => {
       ),
     },
     {
-      title: 'Type',
+      title: t('Type'),
       dataIndex: 'exerciseType',
       key: 'type',
       render: (type: string) => {
@@ -179,7 +179,7 @@ const InProgressAndDoneExercise = () => {
       },
     },
     {
-      title: 'Progress',
+      title: t('Progress'),
       dataIndex: 'progress',
       key: 'progress',
       render: (percent: number) => {
@@ -193,7 +193,7 @@ const InProgressAndDoneExercise = () => {
 
   const { data: submissions, isLoading } = useQuery({
     queryKey: ['mySubmissions'],
-    queryFn: () => submissionApi.getSubmissionList({ limit: 10000 }),
+    queryFn: () => submissionApi.getSubmissionList({ limit: -1 }),
   })
 
   if (isLoading) return <AppLoading />
@@ -202,7 +202,7 @@ const InProgressAndDoneExercise = () => {
     <div>
       <div className="my-6 flex justify-between align-middle">
         <p className="font-bold text-3xl text-primary">
-          {t('MyHub.inProgressAndDoneExercises')}
+          {t('inProgressAndDoneExercises')}
         </p>
       </div>
       <Table

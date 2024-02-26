@@ -20,10 +20,11 @@ import type {
 } from '../../services/accountApi/types'
 import { PRIVATE_ROUTES } from '../../utils/constants'
 import { setUser } from '../../redux/app/slice'
-
+import { useTranslation } from 'react-i18next'
 type NotificationType = 'success' | 'info' | 'warning' | 'error'
 
 export const UpdateProfile = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Account' })
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.app.user)
 
@@ -31,9 +32,9 @@ export const UpdateProfile = () => {
   const [api, contextHolder] = notification.useNotification()
 
   const gender = [
-    { value: 'Male', label: 'Male' },
-    { value: 'Female', label: 'Female' },
-    { value: 'Other', label: 'Other' },
+    { value: 'Male', label: t('Male') },
+    { value: 'Female', label: t('Female') },
+    { value: 'Other', label: t('Other') },
   ]
 
   const openNotificationWithIcon = (
@@ -43,11 +44,11 @@ export const UpdateProfile = () => {
     api[type](
       type === 'success'
         ? {
-            message: 'Successfully',
+            message: t('Successfully'),
             description: [description],
           }
         : {
-            message: 'Failed',
+            message: t('Failed'),
             description: [description],
           },
     )
@@ -64,7 +65,7 @@ export const UpdateProfile = () => {
     try {
       if (keyCollapse.includes('1') || !keyCollapse) {
         const newInfoUser = await accountApi.update(values)
-        openNotificationWithIcon('success', 'Update profile successfully.')
+        openNotificationWithIcon('success', t('Update profile successfully.'))
         dispatch(setUser(newInfoUser.data))
       }
       if (
@@ -72,10 +73,10 @@ export const UpdateProfile = () => {
         values.password === values.retypePassword
       ) {
         await accountApi.changePassword(password)
-        openNotificationWithIcon('success', 'Change password successfully.')
+        openNotificationWithIcon('success', t('Change password successfully.'))
       }
     } catch (error) {
-      openNotificationWithIcon('error', 'Change password failed.')
+      openNotificationWithIcon('error', t('Change password failed.'))
       throw error
     }
   }
@@ -87,7 +88,7 @@ export const UpdateProfile = () => {
   const items: TabsProps['items'] = [
     {
       key: '1',
-      label: 'Profile',
+      label: t('Profile'),
       children: (
         <p>
           {user && (
@@ -100,10 +101,10 @@ export const UpdateProfile = () => {
               >
                 <CustomUpload type="picture-circle" onRemove={removeAvatar} />
               </Form.Item>
-              <div className="flex max-xl:flex-col gap-8">
+              <div className="flex max-xl:flex-col max-xl:gap-0 gap-8">
                 <Form.Item<ProfileParams>
                   name="firstName"
-                  label="First Name"
+                  label={t('First Name')}
                   className="flex-1"
                 >
                   <Input
@@ -114,7 +115,7 @@ export const UpdateProfile = () => {
                 </Form.Item>
                 <Form.Item<ProfileParams>
                   name="lastName"
-                  label="Last Name"
+                  label={t('Last Name')}
                   className="flex-1"
                 >
                   <Input
@@ -125,10 +126,10 @@ export const UpdateProfile = () => {
                 </Form.Item>
               </div>
 
-              <div className="flex max-xl:flex-col gap-8">
+              <div className="flex max-xl:flex-col max-xl:gap-0 gap-8">
                 <Form.Item<ProfileParams>
                   name="gender"
-                  label="Gender"
+                  label={t('Gender')}
                   className="flex-1"
                 >
                   <Select
@@ -138,13 +139,10 @@ export const UpdateProfile = () => {
                     options={gender}
                   />
                 </Form.Item>
-                <Form.Item<ProfileParams>
-                  name="email"
-                  label="Email"
-                  className="flex-1"
-                >
+                <Form.Item<ProfileParams> label="Email" className="flex-1">
                   <Input
                     defaultValue={user.email}
+                    disabled
                     size="large"
                     className="text-sm w-[100%] shadow-sm hover:border-slate-40 rounded-md"
                   />
@@ -184,31 +182,37 @@ export const UpdateProfile = () => {
     },
     {
       key: '2',
-      label: 'Change Password',
+      label: t('Change Password'),
       children: (
         <p>
           {
             <div>
-              <Form.Item<ProfileParams> name="oldPassword" label="Old Password">
+              <Form.Item<ProfileParams>
+                name="oldPassword"
+                label={t('Old Password')}
+              >
                 <Input.Password
-                  placeholder="Enter old password"
+                  placeholder={t('Enter old password')}
                   size="large"
                   className="hover:border-slate-40 rounded-md shadow-sm"
                 />
               </Form.Item>
-              <Form.Item<ProfileParams> name="password" label="New Password">
+              <Form.Item<ProfileParams>
+                name="password"
+                label={t('New Password')}
+              >
                 <Input.Password
-                  placeholder="Enter new password"
+                  placeholder={t('Enter new password')}
                   size="large"
                   className="hover:border-slate-40 rounded-md shadow-sm"
                 />
               </Form.Item>
               <Form.Item<ProfileParams>
                 name="retypePassword"
-                label="Retype Password"
+                label={t('Retype Password')}
               >
                 <Input.Password
-                  placeholder="Enter retype new password"
+                  placeholder={t('Enter retype new password')}
                   size="large"
                   className="hover:border-slate-40 rounded-md shadow-sm"
                 />
@@ -236,13 +240,13 @@ export const UpdateProfile = () => {
           items={items}
           onChange={(e) => setKeyCollapse(e)}
         />
-        <div className="mt-6">
+        <div className="py-6">
           <Space className="flex justify-end">
             <Link to={PRIVATE_ROUTES.home}>
-              <Button className="h-10 w-20">Cancel</Button>
+              <Button className="h-10 w-20">{t('Cancel')}</Button>
             </Link>
             <Button type="primary" htmlType="submit" className="h-10 w-20 ">
-              Save
+              {t('Save')}
             </Button>
           </Space>
         </div>

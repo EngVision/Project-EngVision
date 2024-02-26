@@ -11,7 +11,7 @@ interface CourseCardProps {
 export const CourseCardInLine = ({ course }: CourseCardProps) => {
   const navigate = useNavigate()
   return (
-    <div className="bg-bgNeutral flex items-center gap-20 rounded-xl overflow-hidden transition-shadow hover:shadow-lg ">
+    <div className="bg-surface flex items-center gap-20 rounded-xl overflow-hidden transition-shadow hover:shadow-lg ">
       <div className="relative h-[14rem]">
         <CustomImage
           onClick={() => navigate(`./${course.id}`)}
@@ -56,7 +56,7 @@ export const CourseCardInLine = ({ course }: CourseCardProps) => {
         <div className="flex justify-between items-center text-xs w-[40rem]">
           <div className="flex">
             <p className="font-semibold text-2xl text-primary">
-              ${course.price}
+              {course.price} VND
             </p>
           </div>
           <Button onClick={() => navigate(`./${course.id}`)}>

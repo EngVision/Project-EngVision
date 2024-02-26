@@ -9,15 +9,17 @@ import coursesApi from '../../services/coursesApi'
 import { GetCourseProps } from '../../services/coursesApi/types'
 import { COURSE_STATUS } from '../../utils/constants'
 import { CourseCardInLine } from './CourseCardInline'
-import FeaturedCourse from './FeaturedCourse'
 import SortDropDown from './SortDropDown'
 const { Search } = Input
+
 const Discover = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Discover' })
   const [sortBy, setSortBy] = useState<string>('createdAt')
   const [isGrid, setIsGrid] = useState<boolean>(true)
   const [keyword, setKeyword] = useState<string>('')
   const [page, setPage] = useState<number>(1)
   const [status, setStatus] = useState<COURSE_STATUS>(COURSE_STATUS.all)
+
   const onSearch = (value: string) => {
     setKeyword(value)
     setPage(1)
@@ -36,42 +38,23 @@ const Discover = () => {
         break
     }
   }
-  const { t } = useTranslation()
-  const getNewCoursesParams: GetCourseProps = {
-    status: COURSE_STATUS.all,
-    sortBy: 'createdAt',
-    limit: 5,
-    page: 1,
-  }
   const getAllCoursesParams: GetCourseProps = {
     status: status,
     sortBy: sortBy,
+    order: 'desc',
     keyword: keyword,
-    limit: 8,
+    limit: 10,
     page: page - 1,
   }
-  const getFreeCoursesParams: GetCourseProps = {
-    status: COURSE_STATUS.all,
-    priceMin: 0,
-    priceMax: 1,
-  }
-  const { data: rawSuggestedList } = useQuery({
-    queryKey: ['suggestedCourses'],
-    queryFn: () => coursesApi.getSuggestedCourses(),
+
+  const { data: personalizedCourse } = useQuery({
+    queryKey: ['personalizedCourse'],
+    queryFn: () => coursesApi.getPersonalizedCourse(),
   })
-  const { data: rawNewCourseList, isLoading } = useQuery({
-    queryKey: ['courses', getNewCoursesParams],
-    queryFn: () => coursesApi.getCourses(getNewCoursesParams),
-  })
-  const { data: rawAllCourseList } = useQuery({
+  const { data: rawAllCourseList, isLoading } = useQuery({
     queryKey: ['courses', getAllCoursesParams],
     queryFn: () => coursesApi.getCourses(getAllCoursesParams),
   })
-  const { data: rawFreeCourseList } = useQuery({
-    queryKey: ['courses', getFreeCoursesParams],
-    queryFn: () => coursesApi.getCourses(getFreeCoursesParams),
-  })
-  if (isLoading) return <AppLoading />
   return (
     <>
       {isLoading ? (
@@ -79,27 +62,44 @@ const Discover = () => {
       ) : (
         <>
           <div className="flex flex-col gap-12 mx-10">
-            {Array.isArray(rawSuggestedList?.data) &&
-              rawSuggestedList?.data.length &&
-              rawSuggestedList?.data.length > 0 && (
-                <div className="">
-                  <p className="font-bold text-2xl text-primary mb-6">
-                    Featured Course
-                  </p>
-
-                  <FeaturedCourse course={rawSuggestedList.data[0]} />
-                  {/* <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
-                {rawSuggestedList.data.map((course) => (
-                  <CourseCard course={course} key={course.id} />
-                ))}
-              </div> */}
+            {personalizedCourse && (
+              <div className="">
+                <p className="font-bold text-3xl text-primary mb-6">
+                  {t('Personalized Courses')}
+                </p>
+                <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+                  <CourseCard
+                    course={personalizedCourse}
+                    key={personalizedCourse.id}
+                  />
                 </div>
-              )}
-            {rawAllCourseList && (
+              </div>
+            )}
+
+            {/* {rawSuggestedList && (
+              <div className="">
+                <p className="font-bold text-3xl text-primary mb-6">
+                  {t('Recommended Courses')}
+                </p>
+                <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+                  {rawSuggestedList?.data.length ? (
+                    rawSuggestedList?.data.map((course) => (
+                      <CourseCard course={course} key={course.id} />
+                    ))
+                  ) : (
+                    <div className="col-span-4 text-center italic text-textSubtle">
+                      <p className="text-lg">{t('No courses found')}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )} */}
+
+            {/* {rawAllCourseList && (
               <div className="">
                 <div className="flex justify-between items-center">
                   <p className="font-bold text-3xl text-primary mb-6">
-                    New Courses
+                    {t('New Courses')}
                   </p>
                 </div>
 
@@ -110,22 +110,22 @@ const Discover = () => {
                     ))
                   ) : (
                     <div className="col-span-4 text-center italic text-textSubtle">
-                      <p className="text-lg">No courses found</p>
+                      <p className="text-lg">{t('No courses found')}</p>
                     </div>
                   )}
                 </div>
               </div>
-            )}
+            )} */}
 
             <div className="">
               <div className="flex justify-between">
                 <div className="font-bold text-3xl text-primary mb-10">
-                  All Courses
+                  {t('All Courses')}
                 </div>
                 <div className="flex gap-4">
                   <Search
                     className="rounded-md"
-                    placeholder="Search course..."
+                    placeholder={t('Search course...')}
                     allowClear
                     enterButton
                     size="middle"
@@ -160,7 +160,7 @@ const Discover = () => {
                     ))
                   ) : (
                     <div className="col-span-4 text-center italic text-textSubtle">
-                      <p className="text-lg">No courses found</p>
+                      <p className="text-lg">{t('No courses found')}</p>
                     </div>
                   )}
                 </div>
@@ -172,7 +172,7 @@ const Discover = () => {
                     ))
                   ) : (
                     <div className="col-span-4 text-center italic text-textSubtle">
-                      <p className="text-lg">No courses found</p>
+                      <p className="text-lg">{t('No courses found')}</p>
                     </div>
                   )}
                 </div>
@@ -184,12 +184,12 @@ const Discover = () => {
                 onChange={(page) => setPage(page)}
                 total={rawAllCourseList?.total}
               />
-              {rawFreeCourseList?.data &&
+              {/* {rawFreeCourseList?.data &&
                 rawFreeCourseList?.data.length &&
                 rawFreeCourseList?.data.length > 0 && (
                   <div>
                     <div className="font-bold text-3xl text-primary mb-10">
-                      Free Courses
+                      {t('Free Courses')}
                     </div>
                     <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
                       {rawFreeCourseList?.data.length ? (
@@ -198,12 +198,12 @@ const Discover = () => {
                         ))
                       ) : (
                         <div className="col-span-4 text-center italic text-textSubtle">
-                          <p className="text-lg">No courses found</p>
+                          <p className="text-lg">{t('No courses found')}</p>
                         </div>
                       )}
                     </div>
                   </div>
-                )}
+                )} */}
             </div>
           </div>
         </>

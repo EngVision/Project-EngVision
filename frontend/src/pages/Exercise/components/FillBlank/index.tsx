@@ -22,22 +22,20 @@ function FillBlank(props: FillBlankProps) {
   const form = Form.useFormInstance()
   const firstInput = useRef<InputRef>(null)
 
-  const questionArr = question.text.split('[]')
+  const questionArr = question.text.replaceAll('<p>', '').split('[]')
 
   useEffect(() => {
     form.setFieldValue('answer', Array(questionArr.length - 1).fill(''))
     if (result) {
       form.setFieldValue('answer', result.correctAnswer)
     }
+
+    firstInput.current?.focus()
   }, [question])
 
   useEffect(() => {
     setIsSubmittable(answer?.every((value) => value.length > 0) || false)
   }, [answer])
-
-  useEffect(() => {
-    firstInput.current?.focus()
-  }, [firstInput.current])
 
   return (
     <div>
@@ -52,14 +50,17 @@ function FillBlank(props: FillBlankProps) {
           <>
             {fields.map(({ key }) => {
               return (
-                <>
-                  <span className="text-xl">{questionArr[key]}</span>
+                <span key={key}>
+                  <span
+                    className="text-xl"
+                    dangerouslySetInnerHTML={{ __html: questionArr[key] }}
+                  ></span>
                   <Form.Item noStyle name={[key]}>
                     <Input
                       ref={key === 0 ? firstInput : null}
                       className={`font-bold text-xl ${
                         result
-                          ? result.correctAnswer[key] === result.answer[key]
+                          ? result.isCorrect
                             ? '!text-green-500'
                             : '!text-red-500'
                           : ''
@@ -75,12 +76,15 @@ function FillBlank(props: FillBlankProps) {
                       }}
                     />
                   </Form.Item>
-                </>
+                </span>
               )
             })}
-            <span className="text-xl">
-              {questionArr[questionArr.length - 1]}
-            </span>
+            <span
+              className="text-xl"
+              dangerouslySetInnerHTML={{
+                __html: questionArr[questionArr.length - 1],
+              }}
+            ></span>
           </>
         )}
       </Form.List>

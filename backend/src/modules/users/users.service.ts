@@ -14,23 +14,37 @@ import { User, UserDocument } from './schemas/user.schema';
 import { emailContent } from './template/email.content';
 import { FilesService } from '../files/files.service';
 import { UserQueryDto } from './dto/user-query.dto';
-import { Order, AccountStatus, Role } from 'src/common/enums';
+import { Order, AccountStatus, Role, Gender } from 'src/common/enums';
+import { ChecklistService } from '../checklist/checklist.service';
+
+interface Account {
+  email: string;
+  password: string;
+}
 
 @Injectable()
 export class UsersService {
+  private adminAccount: Account;
   private transporter;
 
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly filesService: FilesService,
+    private readonly checklistService: ChecklistService,
   ) {
+    this.adminAccount = {
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    };
     this.transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-        user: 'engvision.dev@gmail.com',
+        user: this.adminAccount.email,
         pass: process.env.MAIL_PASSWORD,
       },
     });
+
+    this.createAdmin();
   }
 
   /* Create new user */
@@ -41,16 +55,44 @@ export class UsersService {
       await this.filesService.getDefaultAvatar(newUser._id, newUser.email)
     ).id;
 
-    if (newUser.role === 'Teacher') {
+    if (newUser.role === 'Teacher' || newUser.role === 'Admin') {
       newUser.status = AccountStatus.Pending;
     }
 
     await newUser.save();
 
+    this.checklistService.create(newUser._id);
+
     return newUser;
   }
 
+  async createAdmin() {
+    const admin = await this.userModel.findOne({
+      email: this.adminAccount.email,
+    });
+
+    if (admin) return;
+
+    const newUser = new this.userModel({
+      email: this.adminAccount.email,
+      password: this.adminAccount.password,
+      firstName: 'Admin',
+      role: Role.Admin,
+      gender: Gender.Other,
+    });
+
+    newUser.avatar = (
+      await this.filesService.getDefaultAvatar(newUser._id, newUser.email)
+    ).id;
+
+    await newUser.save();
+  }
+
   async createWithSSO(user: User): Promise<UserDocument> {
+    if (!user.gender) {
+      user.gender = Gender.Other;
+    }
+
     const newUser = new this.userModel(user);
 
     if (user.avatar) {
@@ -63,11 +105,13 @@ export class UsersService {
       ).id;
     }
 
-    if (newUser.role === 'Teacher') {
+    if (newUser.role === 'Teacher' || newUser.role === 'Admin') {
       newUser.status = AccountStatus.Pending;
     }
 
     await newUser.save();
+
+    this.checklistService.create(newUser._id);
 
     return newUser;
   }
@@ -79,9 +123,11 @@ export class UsersService {
       { returnDocument: 'after' },
     );
 
-    if (updatedUser.role === 'Teacher') {
+    if (updatedUser.role === 'Teacher' || updatedUser.role === 'Admin') {
       updatedUser.status = AccountStatus.Pending;
     }
+
+    await updatedUser.save();
 
     return updatedUser;
   }
@@ -91,12 +137,20 @@ export class UsersService {
     const { limit, page, sortBy, order, ...query } = userQuery;
 
     const documentQuery = {
-      $and: [{ role: { $ne: Role.Admin } }, { ...query }],
+      $and: [
+        {
+          $or: [
+            { role: { $ne: Role.Admin } },
+            { status: AccountStatus.Pending },
+          ],
+        },
+        { ...query },
+      ],
     };
 
     const users = await this.userModel.find(documentQuery, null, {
-      skip: page * limit,
-      limit: limit,
+      skip: limit === -1 ? 0 : page * limit,
+      limit: limit === -1 ? null : limit,
       sort: { [sortBy]: order === Order.desc ? -1 : 1 },
     });
 
@@ -178,7 +232,7 @@ export class UsersService {
     await this.updateResetPasswordCode(user.id, resetPasswordCode);
 
     const mailOptions = {
-      from: 'engvision.dev@gmail.com',
+      from: this.adminAccount.email,
       to: email,
       subject: 'The reset password link for Engvision',
       text: 'This is text property',
@@ -229,7 +283,7 @@ export class UsersService {
     }
 
     const mailOptions = {
-      from: 'engvision.dev@gmail.com',
+      from: this.adminAccount.email,
       to: user.email,
       subject: 'Your account has been approved',
       html: 'Welcome to EngVision, your account has been approved',
@@ -247,7 +301,7 @@ export class UsersService {
     }
 
     const mailOptions = {
-      from: 'engvision.dev@gmail.com',
+      from: this.adminAccount.email,
       to: user.email,
       subject: 'Your account has been blocked',
       html: 'Your account has been blocked. Reason: ' + reason,
@@ -265,11 +319,39 @@ export class UsersService {
     }
 
     const mailOptions = {
-      from: 'engvision.dev@gmail.com',
+      from: this.adminAccount.email,
       to: user.email,
       subject: 'Your account has been unblocked',
       html: 'Your account has been unblocked. Welcome back!',
     };
     await this.transporter.sendMail(mailOptions);
+  }
+
+  async setShowGetStarted(id: string, isShow: boolean): Promise<UserDocument> {
+    const user = await this.userModel.findByIdAndUpdate(
+      id,
+      { showGetStarted: isShow },
+      { returnDocument: 'after' },
+    );
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  async setHideGuideTour(id: string): Promise<UserDocument> {
+    const user = await this.userModel.findByIdAndUpdate(
+      id,
+      { showGuideTour: false },
+      { returnDocument: 'after' },
+    );
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 }

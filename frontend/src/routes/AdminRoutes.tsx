@@ -9,6 +9,9 @@ import TeacherCourses from '../pages/Teacher/Courses'
 import LessonDetail from '../pages/Teacher/LessonDetail'
 import ManageExercise from '../pages/Teacher/ManageExercise'
 import { ADMIN_ROUTES, PRIVATE_ROUTES } from '../utils/constants'
+import Grading from '../pages/Teacher/Grading/Index'
+import AssignmentTable from '../pages/Teacher/Grading/AssignmentTable'
+import GradeExercise from '../pages/Teacher/GradeExercise'
 
 const adminRoutes: RouteObject[] = [
   {
@@ -52,28 +55,74 @@ const adminRoutes: RouteObject[] = [
             path: '',
           },
           {
-            element: <TeacherCourseDetail />,
             path: ':courseId',
-          },
-          {
-            path: 'lessons',
             children: [
               {
-                element: <LessonDetail />,
-                path: ':lessonId',
+                element: <TeacherCourseDetail />,
+                path: '',
               },
               {
-                path: 'exercises',
+                path: 'lessons',
                 children: [
                   {
-                    element: <ManageExercise />,
+                    path: ':lessonId',
+                    children: [
+                      {
+                        element: <LessonDetail />,
+                        path: '',
+                      },
+                      {
+                        path: 'exercises',
+                        children: [
+                          {
+                            element: <ManageExercise />,
+                            path: '',
+                          },
+                          {
+                            element: <ManageExercise />,
+                            path: ':exerciseId',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: 'grading',
+        children: [
+          {
+            path: ADMIN_ROUTES.grading,
+            element: <Grading />,
+          },
+          {
+            path: 'course',
+            children: [
+              {
+                path: ':courseID',
+                children: [
+                  {
+                    element: <AssignmentTable />,
                     path: '',
                   },
                   {
-                    element: <ManageExercise />,
-                    path: ':exerciseId',
+                    element: <GradeExercise />,
+                    path: 'exercises/:exerciseId/submissions/:submissionId',
                   },
                 ],
+              },
+            ],
+          },
+          {
+            path: 'exam',
+            children: [
+              {
+                element: <AssignmentTable />,
+                path: ':examID',
               },
             ],
           },

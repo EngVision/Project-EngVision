@@ -79,10 +79,7 @@ export class AuthController {
     @CurrentUser() user: JwtPayloadWithRt,
     @Res() res: Response,
   ) {
-    const tokens = await this.authService.refreshTokens(
-      user.sub,
-      user.refreshToken,
-    );
+    const tokens = await this.authService.refreshTokens(user.sub);
 
     this.authService.attachTokensCookie(res, tokens);
 

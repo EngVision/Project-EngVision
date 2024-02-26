@@ -76,6 +76,20 @@ const accountApi = {
     const res: ResponseData = await axiosClient.post(`${PREFIX}${id}/unblock`)
     return res.data
   },
+
+  updateGetStarted: async (isShow: boolean) => {
+    const res: ResponseData = await axiosClient.post(`${PREFIX}get-started`, {
+      isShow,
+    })
+    return res.data
+  },
+
+  setHideGuideTour: async () => {
+    const res: ResponseData = await axiosClient.post(
+      `${PREFIX}tour-guide-onboarding`,
+    )
+    return res.data
+  },
 }
 
 export default accountApi

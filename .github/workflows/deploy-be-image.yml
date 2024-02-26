@@ -1,4 +1,4 @@
-name: Deploy EngVision Image
+name: Deploy EngVision Backend Image
 on:
   push:
     branches: ["develop", "master"]
@@ -8,10 +8,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
-  VITE_SERVER_FILES_URL: ${{ secrets.VITE_SERVER_FILES_URL }}
-  VITE_GA4_TRACKING_ID: ${{ secrets.VITE_GA4_TRACKING_ID }}
-  VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
 
 jobs:
   build-and-push-image:
@@ -23,8 +19,6 @@ jobs:
         include:
           - context: ./backend
             tags: backend
-          - context: ./frontend
-            tags: frontend
 
     permissions:
       contents: read
@@ -59,11 +53,6 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ matrix.tags }}-${{ github.head_ref || github.ref_name }}-${{ github.run_number }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            VITE_BASE_URL
-            VITE_SERVER_FILES_URL
-            VITE_GA4_TRACKING_ID
-            VITE_SENTRY_DSN
 
   modify-yaml:
     needs: build-and-push-image
@@ -85,10 +74,9 @@ jobs:
         run: |
           git config --global user.name 'minhtringuyennn'
           git config --global user.email 'contact@minhtringuyennn.com'
-          sed -i "s+ghcr.io/engvision/project-engvision:frontend-${{ github.head_ref || github.ref_name }}.*+ghcr.io/engvision/project-engvision:frontend-${{ github.head_ref || github.ref_name }}-${{ github.run_number }}+g" ./k8s/evs-fe-deployment.yml
           sed -i "s+ghcr.io/engvision/project-engvision:backend-${{ github.head_ref || github.ref_name }}.*+ghcr.io/engvision/project-engvision:backend-${{ github.head_ref || github.ref_name }}-${{ github.run_number }}+g" ./k8s/evs-be-deployment.yml
           git add .
-          git commit -m 'Github Actions - Deploy ${{ github.head_ref || github.ref_name }} build ver ${{ github.run_number }}'
+          git commit -m 'Github Actions - Deploy ${{ github.head_ref || github.ref_name }} backend build ver ${{ github.run_number }}'
           git push origin main
         env:
           RUN_NUMBER: ${{ github.run_number }}

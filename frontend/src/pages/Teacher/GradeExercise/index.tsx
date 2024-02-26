@@ -69,7 +69,12 @@ const GradeExercise = () => {
   const onFinish = (values: any) => {
     const data: GradePayload = {}
     data.grade = Number(values.grade)
-    if (values.explanation) data.explanation = values.explanation
+    if (values.explanation) {
+      data.explanation = values.explanation
+    }
+    if (values.teacherCorrection) {
+      data.teacherCorrection = values.teacherCorrection
+    }
 
     gradeSubmission(exercise?.content[questionIndex].id || '', data)
   }

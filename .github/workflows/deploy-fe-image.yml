@@ -1,0 +1,112 @@
+name: Deploy EngVision Frontend Image
+on:
+  push:
+    branches: ["develop", "master"]
+  pull_request:
+    branches: ["develop", "master"]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+  VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+  VITE_SERVER_FILES_URL: ${{ secrets.VITE_SERVER_FILES_URL }}
+  VITE_GA4_TRACKING_ID: ${{ secrets.VITE_GA4_TRACKING_ID }}
+  VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+
+  STG_VITE_BASE_URL: ${{ secrets.STG_VITE_BASE_URL }}
+  STG_VITE_SERVER_FILES_URL: ${{ secrets.VITE_SERVER_FILES_URL }}
+  STG_VITE_GA4_TRACKING_ID: ${{ secrets.VITE_GA4_TRACKING_ID }}
+  STG_VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    environment: EngVision
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - context: ./frontend
+            tags: frontend
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4.3.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: PrepareReg Names
+        run: |
+          echo IMAGE_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+
+      - name: Build and push Docker master image
+        uses: docker/build-push-action@v4.0.0
+        if: github.ref == 'refs/heads/master'
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ matrix.tags }}-${{ github.head_ref || github.ref_name }}-${{ github.run_number }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VITE_BASE_URL
+            VITE_SERVER_FILES_URL
+            VITE_GA4_TRACKING_ID
+            VITE_SENTRY_DSN
+
+      - name: Build and push Docker develop image
+        uses: docker/build-push-action@v4.0.0
+        if: github.ref == 'refs/heads/develop'
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ matrix.tags }}-${{ github.head_ref || github.ref_name }}-${{ github.run_number }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            STG_VITE_BASE_URL
+            STG_VITE_SERVER_FILES_URL
+            STG_VITE_GA4_TRACKING_ID
+            STG_VITE_SENTRY_DSN
+
+  modify-yaml:
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    environment: EngVision
+
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+        name: Changing the deployment yaml
+        with:
+          repository: "EngVision/Engvision-Deployment"
+          token: ${{ secrets.PAT_GH_ACTION }}
+      - name: Modify the image
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+        run: |
+          git config --global user.name 'minhtringuyennn'
+          git config --global user.email 'contact@minhtringuyennn.com'
+          sed -i "s+ghcr.io/engvision/project-engvision:frontend-${{ github.head_ref || github.ref_name }}.*+ghcr.io/engvision/project-engvision:frontend-${{ github.head_ref || github.ref_name }}-${{ github.run_number }}+g" ./k8s/evs-fe-deployment.yml
+          git add .
+          git commit -m 'Github Actions - Deploy ${{ github.head_ref || github.ref_name }} frontend build ver ${{ github.run_number }}'
+          git push origin main
+        env:
+          RUN_NUMBER: ${{ github.run_number }}
+          PAT_GH_ACTION: ${{ secrets.PAT_GH_ACTION }}

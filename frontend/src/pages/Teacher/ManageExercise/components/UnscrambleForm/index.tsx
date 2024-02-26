@@ -1,12 +1,23 @@
 import { Button, Divider, Form, Input, Select } from 'antd'
 import { FormSubmit } from '../..'
-import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
-import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
+import CustomImage from '../../../../../components/common/CustomImage'
+import PreviewInput from '../../../../../components/common/PreviewInput'
 import {
   ExerciseSchema,
   QuestionPayload,
 } from '../../../../../services/exerciseApi/types'
-import { addAnswersToQuestionTextOfMakeSentenceExercise } from '../../../../../utils/common'
+import {
+  CEFRLevel,
+  ExerciseCardType,
+  ExerciseTag,
+  UPLOAD_FILE_URL,
+} from '../../../../../utils/constants'
+import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
+import ExerciseTagInput, {
+  getTagList,
+  transformToExerciseTagInputValue,
+} from '../ExerciseTagInput'
+import NewQuestionForm from './NewQuestionForm'
 
 interface QuestionFormProps {
   index: number
@@ -14,6 +25,11 @@ interface QuestionFormProps {
 }
 
 const QuestionForm = ({ index, remove }: QuestionFormProps) => {
+  const form = Form.useFormInstance()
+  const content = Form.useWatch('content', form)
+  const exerciseType = content?.[index]?.exerciseType || ExerciseCardType.Text
+  const items = content?.[index]?.items || []
+
   return (
     <>
       <div className="flex items-center justify-between gap-4">
@@ -24,17 +40,35 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
           </Button>
         )}
       </div>
-      <Form.Item
-        label="Question"
-        name={[index, 'questionText']}
-        rules={[{ required: true }]}
-      >
-        <Input.TextArea
-          className="h-full"
-          autoSize={{ minRows: 2, maxRows: 4 }}
-          placeholder="Question"
-        />
-      </Form.Item>
+
+      <NewQuestionForm index={index} />
+
+      <Form.List name={[index, 'items']}>
+        {(fields) =>
+          fields.length > 0 && (
+            <div className="flex gap-4 mb-4 flex-wrap border border-primary border-dashed p-3 rounded-lg select-none">
+              {fields.map((field) => (
+                <div className="border border-primary border-solid p-2 rounded-lg w-40 flex justify-center items-center">
+                  <Form.Item name={[field.name]} noStyle>
+                    {exerciseType === ExerciseCardType.Text ? (
+                      <PreviewInput
+                        placeholder="New card"
+                        className="w-full text-center"
+                      />
+                    ) : (
+                      <CustomImage
+                        className="hidden lg:block object-cover w-20 h-20 rounded-md"
+                        src={`${UPLOAD_FILE_URL}${items[field.name]}`}
+                      />
+                    )}
+                  </Form.Item>
+                </div>
+              ))}
+            </div>
+          )
+        }
+      </Form.List>
+
       <Form.Item label="Explanation" name={[index, 'explanation']}>
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 4 }}
@@ -48,13 +82,7 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             name={[index, 'questionTags']}
             rules={[{ required: true }]}
           >
-            <Select
-              mode="multiple"
-              allowClear
-              placeholder="Tags"
-              maxTagCount="responsive"
-              options={enumToSelectOptions(ExerciseTag)}
-            />
+            <ExerciseTagInput />
           </Form.Item>
           <Form.Item
             label="Level"
@@ -73,41 +101,22 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
 }
 
 const Tutorial = () => {
-  return (
-    <p className="mb-5">
-      Use <b>"[option 1|option 2|option 3]"</b> to represent a question. Use{' '}
-      <b>"*"</b> to mark the correct option.
-      <br />
-      Example: <b>[Red|Blue|*Green]</b> is the <b>[*color|smell]</b> of the
-      leaf.
-    </p>
-  )
+  return <p className="mb-5">Add cards to question</p>
 }
 
 interface QuestionFormSchema {
-  questionText: string
+  items: string[]
   questionTags: ExerciseTag[]
   questionLevel: CEFRLevel
   explanation: string
   id?: string
+  exerciseType?: ExerciseCardType
 }
 
-interface MakeSentencePayload extends QuestionPayload {
+interface UnscramblePayload extends QuestionPayload {
   question: {
-    text: string
-    image?: string | null
-    answers?: string[][]
-  }
-  correctAnswer: {
-    explanation: string
-  }
-}
-
-interface MakeSentenceResponse
-  extends Omit<MakeSentencePayload, 'correctAnswer'> {
-  correctAnswer: {
-    explanation: string
-    detail?: string
+    items: string[]
+    isUnscrambleByText: boolean
   }
 }
 
@@ -115,16 +124,17 @@ const transformSubmitData = (exercise: any) => {
   const { content } = exercise
 
   exercise.content = content.map((question: QuestionFormSchema) => {
-    const transformQuestion: MakeSentencePayload = {
+    const transformQuestion: UnscramblePayload = {
       id: question.id,
-      tags: question.questionTags,
+      tags: getTagList(question.questionTags as any),
       level: question.questionLevel,
       question: {
-        text: question.questionText,
+        items: question.items,
+        isUnscrambleByText:
+          !question.exerciseType ||
+          question.exerciseType === ExerciseCardType.Text,
       },
-      correctAnswer: {
-        explanation: question.explanation,
-      },
+      correctAnswer: null,
     }
 
     return transformQuestion
@@ -134,29 +144,20 @@ const transformSubmitData = (exercise: any) => {
 function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
   const { content } = exercise
 
-  const transformedContent = content.map((q: MakeSentenceResponse) => {
+  const transformedContent = content.map((q: UnscramblePayload) => {
     const {
-      question: { answers },
-      correctAnswer: { detail },
+      question: { items, isUnscrambleByText },
     } = q
-
-    const answersString =
-      answers?.map((answer, index) => {
-        const a = answer.map((ans: string) =>
-          detail?.[index]?.includes(ans) ? '*' + ans : ans,
-        )
-        return a.join('|') || ''
-      }) || []
 
     const questionForm: QuestionFormSchema = {
       id: q.id,
-      questionText: addAnswersToQuestionTextOfMakeSentenceExercise(
-        answersString,
-        q.question.text,
-      ),
-      questionTags: q.tags,
+      questionTags: transformToExerciseTagInputValue(q.tags),
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
+      items: q.correctAnswer?.detail || items,
+      exerciseType: isUnscrambleByText
+        ? ExerciseCardType.Text
+        : ExerciseCardType.Image,
     }
 
     return questionForm
@@ -165,7 +166,7 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
   this.setFieldValue('content', transformedContent)
 }
 
-function MakeSentenceForm({ form }: { form: FormSubmit }) {
+function UnscrambleForm({ form }: { form: FormSubmit }) {
   form.transform = transformSubmitData
   form.setInitialContent = setInitialContent
 
@@ -191,4 +192,4 @@ function MakeSentenceForm({ form }: { form: FormSubmit }) {
   )
 }
 
-export default MakeSentenceForm
+export default UnscrambleForm

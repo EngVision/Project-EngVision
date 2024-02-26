@@ -10,10 +10,12 @@ import { examApi } from '../../../services/examApi'
 import AppLoading from '../../../components/common/AppLoading'
 import { COURSE_STATUS } from '../../../utils/constants'
 import submissionApi from '../../../services/submissionApi'
+
 enum Direction {
   left = 'left',
   right = 'right',
 }
+
 const Grading = () => {
   const [disabledScrollLeft, setDisabledScrollLeft] = useState<boolean>(true)
   const [disabledScrollRight, setDisabledScrollRight] = useState<boolean>(true)
@@ -69,19 +71,20 @@ const Grading = () => {
     queryKey: ['submissions'],
     queryFn: async () => submissionApi.getSubmissionList(),
   })
-  rawCourseList?.data?.map((course) => {
+  rawCourseList?.data?.forEach((course) => {
     course.submissionAmount = 0
     course.pendingSubmissionAmount = 0
-    rawSubmissionList?.data?.map((submission) => {
+    rawSubmissionList?.data?.forEach((submission) => {
       if (submission.course?.id === course.id) {
-        course.submissionAmount++
-        if (submission.grade) {
+        if (submission.status === 'graded') {
+          course.submissionAmount++
+        } else {
           course.pendingSubmissionAmount++
         }
       }
     })
   })
-  console.log(rawCourseList?.data)
+
   const { data: rawExamList } = useQuery({
     queryKey: ['exam'],
     queryFn: async () => examApi.getExam(),
@@ -120,7 +123,7 @@ const Grading = () => {
         ) : (
           <div
             id="course-list"
-            className="flex gap-10 overflow-x-scroll scrollbar-hide scroll-smooth snap-mandatory snap-x"
+            className="flex gap-6 overflow-x-scroll scrollbar-hide scroll-smooth snap-mandatory snap-x"
             onScroll={handleChangeScroll}
           >
             {rawCourseList?.data && rawCourseList.data.length > 0 ? (

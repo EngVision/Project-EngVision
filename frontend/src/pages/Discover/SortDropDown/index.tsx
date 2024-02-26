@@ -1,14 +1,11 @@
 import React from 'react'
-import { DownOutlined, UserOutlined } from '@ant-design/icons'
+import { DownOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Button, Dropdown } from 'antd'
 import { MenuItemType } from 'antd/es/menu/hooks/useItems'
-// const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-//   message.info('Click on left button.')
-//   console.log('click left button', e)
-// }
-
+import { useTranslation } from 'react-i18next'
 const SortDropDown = ({ onSort }: any) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Discover' })
   const [selected, setSelected] = React.useState(1)
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     setSelected(Number(e.key))
@@ -16,11 +13,11 @@ const SortDropDown = ({ onSort }: any) => {
   }
   const items: MenuItemType[] = [
     {
-      label: 'Newly Created',
+      label: t('Newly Created'),
       key: '1',
     },
     {
-      label: 'My Progress',
+      label: t('My Progress'),
       key: '2',
     },
   ]

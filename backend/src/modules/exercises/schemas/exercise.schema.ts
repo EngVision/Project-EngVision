@@ -6,13 +6,13 @@ import { Course } from 'src/modules/courses/schemas/course.schema';
 
 @Schema({ _id: false, versionKey: false })
 class ContentQuestion {
-  @Prop({ type: String, required: true })
+  @Prop({ type: String })
   text: string;
 
-  @Prop({ default: null })
+  @Prop({})
   image?: string;
 
-  @Prop({ default: null })
+  @Prop({})
   audio?: string;
 }
 const ContentQuestionSchema = SchemaFactory.createForClass(ContentQuestion);

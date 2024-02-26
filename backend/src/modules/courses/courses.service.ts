@@ -7,25 +7,27 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import mongoose, { Model, Types } from 'mongoose';
+import { Order, Role, SortBy, StatusCourseSearch } from 'src/common/enums';
+import { JwtPayload } from '../auth/types';
+import { ExercisesService } from '../exercises/exercises.service';
 import { FilesService } from '../files/files.service';
 import { ReviewDto } from '../reviews/dto/review.dto';
 import { ReviewsService } from '../reviews/reviews.service';
+import { SubmissionsService } from '../submissions/submissions.service';
 import { UserBriefDto } from '../users/dto/user-brief.dto';
-import { Course, CourseDocument } from './schemas/course.schema';
 import {
-  UpdateLessonDto,
+  CourseDetailDto,
   CourseDto,
+  CourseExercisesDto,
   CreateCourseDto,
   CreateLessonDto,
   CreateSectionDto,
   SearchCourseDto,
   UpdateCourseDto,
-  CourseDetailDto,
-  CourseExercisesDto,
+  UpdateLessonDto,
 } from './dto';
-import { Order, Role, SortBy, StatusCourseSearch } from 'src/common/enums';
-import { JwtPayload } from '../auth/types';
-import { ExercisesService } from '../exercises/exercises.service';
+import { Course, CourseDocument } from './schemas/course.schema';
+import { UserLevelService } from '../user-level/user-level.service';
 
 @Injectable()
 export class CoursesService {
@@ -35,6 +37,8 @@ export class CoursesService {
     private readonly reviewsService: ReviewsService,
     private readonly filesService: FilesService,
     private readonly exercisesService: ExercisesService,
+    private readonly submissionsService: SubmissionsService,
+    private readonly userLevelService: UserLevelService,
   ) {}
 
   async createCourse(course: CreateCourseDto, user: JwtPayload) {
@@ -51,7 +55,12 @@ export class CoursesService {
 
     switch (data.status) {
       case StatusCourseSearch.All:
-        if (user.roles.includes(Role.Teacher)) {
+        if (user.roles.includes(Role.Admin)) {
+          dataFilter['$or'] = [
+            { isAdminCurriculum: true },
+            { 'teacher._id': new Types.ObjectId(user.sub) },
+          ];
+        } else if (user.roles.includes(Role.Teacher)) {
           dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
         } else if (user.roles.includes(Role.Student)) {
           dataFilter.isPublished = { $eq: true };
@@ -79,10 +88,10 @@ export class CoursesService {
       if (data.dateEnd) dataFilter.createdAt.$lte = data.dateEnd;
     }
 
-    if (data.priceMin || data.priceMax) {
+    if (data.priceMin !== undefined || data.priceMax !== undefined) {
       dataFilter.price = {};
-      if (data.priceMin) dataFilter.price.$gte = data.priceMin;
-      if (data.priceMax) dataFilter.price.$lte = data.priceMax;
+      if (data.priceMin !== undefined) dataFilter.price.$gte = data.priceMin;
+      if (data.priceMax !== undefined) dataFilter.price.$lte = data.priceMax;
     }
 
     if (data.levels) {
@@ -115,7 +124,13 @@ export class CoursesService {
             {
               $addFields: {
                 fullName: {
-                  $concat: ['$firstName', ' ', '$lastName'],
+                  $concat: [
+                    '$firstName',
+                    {
+                      $cond: [{ $ne: ['$lastName', null] }, ' ', ''],
+                    },
+                    { $ifNull: ['$lastName', ''] },
+                  ],
                 },
               },
             },
@@ -255,6 +270,9 @@ export class CoursesService {
           lesson.exercises = lesson.exercises.map(
             exercise => exercise.id,
           ) as any;
+          lesson.materials = lesson.materials.map(
+            material => material.id,
+          ) as any;
         });
       });
     }
@@ -268,20 +286,31 @@ export class CoursesService {
           options: { sort: { createdAt: -1 } },
           populate: { path: 'user' },
         })
-        .populate('sections.lessons.exercises', 'id title');
+        .populate('sections.lessons.exercises', 'id title')
+        .populate('sections.lessons.materials');
 
       if (user.roles.includes(Role.Student)) {
         courseMap = {
           ...plainToInstance(CourseDetailDto, course.toObject()),
           isAttended: true,
           isReviewed: !!course.reviews.find(
-            review => review.user.id === user.sub,
+            review => review.user?.id === user.sub,
           ),
         };
       } else courseMap = plainToInstance(CourseDetailDto, course.toObject());
     }
 
     courseMap.avgStar = this.reviewsService.averageStar(course.reviews);
+
+    if (courseMap.isCurriculum) {
+      const userLevel = await this.userLevelService.findOneByUser(user.sub);
+
+      if (userLevel) {
+        courseMap.sections = courseMap.sections.filter(
+          section => section.title === `Level ${userLevel.CEFRLevel}`,
+        );
+      }
+    }
 
     return courseMap;
   }
@@ -293,10 +322,13 @@ export class CoursesService {
   ) {
     const oldCourse = await this.courseModel.findById(id);
 
-    if (String(oldCourse.teacher) !== user.sub) {
+    if (
+      user.roles.includes(Role.Admin) &&
+      !oldCourse.isAdminCurriculum &&
+      String(oldCourse.teacher) !== user.sub
+    ) {
       throw new ForbiddenException('Access denied');
     }
-
     await this.courseModel.findOneAndUpdate({ _id: id }, updateCourse);
 
     return this.getCourse(id, user);
@@ -535,7 +567,12 @@ export class CoursesService {
       {
         $match: {
           $and: [
-            { teacher: new Types.ObjectId(teacherId) },
+            {
+              $or: [
+                { teacher: new Types.ObjectId(teacherId) },
+                { isAdminCurriculum: true },
+              ],
+            },
             { 'sections.lessons._id': new Types.ObjectId(lessonId) },
           ],
         },
@@ -570,6 +607,14 @@ export class CoursesService {
           as: 'exercises',
         },
       },
+      {
+        $lookup: {
+          from: 'localfiles',
+          localField: 'materials',
+          foreignField: '_id',
+          as: 'materials',
+        },
+      },
     ]);
 
     if (!lesson) {
@@ -586,10 +631,6 @@ export class CoursesService {
       _id: courseId,
       isPublished: true,
     });
-
-    if (!course) throw new BadRequestException('Course not found');
-    if (course.attendanceList.includes(studentId))
-      throw new ConflictException('You have already attended this course');
 
     course.attendanceList.push(studentId);
     await course.save();
@@ -652,7 +693,13 @@ export class CoursesService {
             {
               $addFields: {
                 fullName: {
-                  $concat: ['$firstName', ' ', '$lastName'],
+                  $concat: [
+                    '$firstName',
+                    {
+                      $cond: [{ $ne: ['$lastName', null] }, ' ', ''],
+                    },
+                    { $ifNull: ['$lastName', ''] },
+                  ],
                 },
               },
             },
@@ -673,6 +720,11 @@ export class CoursesService {
         },
       },
       {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
         $project: {
           _id: 1,
           title: 1,
@@ -687,6 +739,25 @@ export class CoursesService {
         },
       },
     ]);
+
+    const [submissions] = await this.submissionsService.findByUser(
+      {},
+      user.sub,
+    );
+
+    for (const course of courses) {
+      const courseSubmissions = submissions.filter(
+        submission =>
+          submission.course?.['_id'].toString() === course._id.toString(),
+      );
+
+      const progress =
+        courseSubmissions.filter(submission => {
+          return submission.progress === 1;
+        }).length / course.exercises.length;
+
+      course.progress = progress ? progress : 0;
+    }
 
     return plainToInstance(CourseExercisesDto, courses);
   }
@@ -712,5 +783,65 @@ export class CoursesService {
     });
 
     return coursesExercises;
+  }
+
+  async createMaterial(
+    materialId: string,
+    lessonId: string,
+    teacherId: string,
+  ) {
+    const course = await this.courseModel.findOneAndUpdate(
+      {
+        teacher: teacherId,
+        'sections.lessons._id': lessonId,
+      },
+      { $push: { 'sections.$.lessons.$[index].materials': materialId } },
+      { arrayFilters: [{ 'index._id': lessonId }], new: true },
+    );
+
+    if (!course) {
+      throw new BadRequestException('Lesson ID is missing or access denied');
+    }
+
+    return course;
+  }
+
+  async removeMaterial(
+    materialId: string,
+    lessonId: string,
+    teacherId: string,
+  ) {
+    const course = await this.courseModel.findOneAndUpdate(
+      {
+        teacher: teacherId,
+        'sections.lessons._id': lessonId,
+        'sections.lessons.materials': {
+          $elemMatch: { $eq: materialId },
+        },
+      },
+      { $pull: { 'sections.$.lessons.$[index].materials': materialId } },
+      { arrayFilters: [{ 'index._id': lessonId }], new: true },
+    );
+
+    if (!course)
+      throw new BadRequestException(
+        'Lesson ID or material ID is either missing or access denied',
+      );
+
+    const newLesson = await this.getLesson(lessonId, teacherId);
+
+    return newLesson;
+  }
+
+  async getCourseRaw(id: string) {
+    const course = await this.courseModel.findOne(
+      {
+        _id: id,
+        isPublished: true,
+      },
+      { _id: 1, title: 1, attendanceList: 1, price: 1 },
+    );
+
+    return course;
   }
 }

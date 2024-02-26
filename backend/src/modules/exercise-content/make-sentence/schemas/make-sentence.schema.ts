@@ -13,7 +13,7 @@ class Question {
   audio?: string;
 
   @Prop([[{ type: String }]])
-  answers: String[][];
+  answers: string[][];
 }
 const QuestionSchema = SchemaFactory.createForClass(Question);
 
@@ -32,10 +32,10 @@ export type MakeSentenceDocument = MakeSentence & Document;
 @Schema({ versionKey: false, timestamps: true })
 export class MakeSentence {
   @Prop({ type: [String], enum: ExerciseTag, required: true })
-  tags: string[];
+  tags: ExerciseTag[];
 
   @Prop({ enum: CEFRLevel, required: true })
-  level: string;
+  level: CEFRLevel;
 
   @Prop({ type: QuestionSchema, required: true })
   question: Question;
@@ -45,7 +45,3 @@ export class MakeSentence {
 }
 
 export const MakeSentenceSchema = SchemaFactory.createForClass(MakeSentence);
-
-// MakeSentenceSchema.post('find', function (docs: MultipleChoice[]) {
-//   docs.forEach(doc => shuffleArray(doc.question.answers));
-// });

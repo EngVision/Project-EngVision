@@ -42,19 +42,16 @@ export class User {
   phone?: string;
 
   @Prop({ default: null })
-  about?: string;
-
-  @Prop({ default: 'Vietnam' })
-  country?: string;
-
-  @Prop({ default: null })
-  refreshToken?: string;
-
-  @Prop({ default: null })
   resetPasswordCode?: string;
 
   @Prop({ default: AccountStatus.Active, enum: AccountStatus })
   status?: AccountStatus;
+
+  @Prop({ default: true })
+  showGetStarted?: boolean;
+
+  @Prop({ default: true })
+  showGuideTour?: boolean;
 
   validatePassword?: (password: string) => Promise<boolean>;
   validateRefreshToken?: (refreshToken: string) => Promise<boolean>;
@@ -88,11 +85,5 @@ UserSchema.methods.preSave = async function () {
 UserSchema.methods.preUpdate = async function (updatedUser: User) {
   if (updatedUser?.password) {
     updatedUser.password = await hashString(updatedUser.password);
-  }
-
-  if (updatedUser?.refreshToken) {
-    updatedUser.refreshToken = await hashString(
-      updatedUser.refreshToken.slice(-25),
-    );
   }
 };

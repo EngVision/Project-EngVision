@@ -9,10 +9,10 @@ const MAX_COUNT = 20
 interface CustomUploadProps {
   fileList?: string[] | string
   onChange?: (value: any) => void
-  onRemove?: (value: any) => Promise<void>
+  onRemove?: (value: any) => Promise<void> | void
   multiple?: boolean
   type?: UploadProps['listType']
-  accept?: 'image' | 'audio' | 'video'
+  accept?: 'image/*' | 'audio/*' | 'video/*' | '.pdf'
   className?: string
 }
 
@@ -22,7 +22,7 @@ function CustomUpload({
   onChange,
   type = 'text',
   multiple = false,
-  accept = 'image',
+  accept = 'image/*',
   onRemove,
 }: CustomUploadProps) {
   const [previewOpen, setPreviewOpen] = useState(false)
@@ -130,13 +130,7 @@ function CustomUpload({
     try {
       message.loading(`uploading...`)
 
-      let res
-      if (multiple || !currFileId) {
-        res = await fileApi.create(file, onProgress)
-      } else {
-        res = await fileApi.update(currFileId, file, onProgress)
-      }
-
+      const res = await fileApi.create(file, onProgress)
       onSuccess?.(res)
     } catch (err) {
       onError?.({
@@ -170,7 +164,7 @@ function CustomUpload({
         className={className}
         name="file"
         listType={type}
-        accept={`${accept}/*`}
+        accept={accept}
         maxCount={multiple ? MAX_COUNT : 1}
         multiple={multiple}
         fileList={fileList}

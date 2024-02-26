@@ -69,6 +69,12 @@ export class CourseDetailDto {
   })
   isReviewed?: boolean;
 
+  @ApiPropertyOptional({
+    type: Boolean,
+    description: 'True if is personalized course',
+  })
+  isCurriculum?: boolean;
+
   @Exclude()
   posts?: mongoose.Types.ObjectId[];
 }

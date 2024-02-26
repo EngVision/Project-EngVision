@@ -16,13 +16,24 @@ import exerciseApi from '../../../services/exerciseApi'
 import { ExerciseSchema } from '../../../services/exerciseApi/types'
 import { CEFRLevel, ExerciseTag, ExerciseType } from '../../../utils/constants'
 import enumToSelectOptions from '../../../utils/enumsToSelectOptions'
-import ConstructedResponseForm from './components/ConstructedResponseForm'
-import FillBlankForm from './components/FillBlankForm'
-import MultipleChoiceForm from './components/MultipleChoiceForm'
 import CustomUpload from '../../../components/CustomUpload'
 import AppLoading from '../../../components/common/AppLoading'
-import MakeSentenceForm from './components/MakeSentence'
 import { ArrowLeftIcon } from '../../../components/Icons'
+
+import ConstructedResponseForm from './components/ConstructedResponseForm'
+import ExerciseTagInput, {
+  transformToExerciseTagInputValue,
+} from './components/ExerciseTagInput'
+import FillBlankForm from './components/FillBlankForm'
+import MakeSentenceForm from './components/MakeSentenceForm'
+import MultipleChoiceForm from './components/MultipleChoiceForm'
+import UnscrambleForm from './components/UnscrambleForm'
+import SpeakingForm from './components/Speaking'
+import MatchForm from './components/MatchForm'
+import DragAndDropForm from './components/DragAndDropForm'
+import { useTranslation } from 'react-i18next'
+import WordSearchForm from './components/WordSearchForm'
+import ReactQuill from 'react-quill'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -34,10 +45,11 @@ interface GeneralInfo {
 }
 
 const GeneralInfoForm = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   return (
     <>
       <Form.Item<GeneralInfo>
-        label="Title"
+        label={t('Title')}
         name="title"
         rules={[{ required: true }]}
       >
@@ -74,13 +86,7 @@ const GeneralInfoForm = () => {
           name="tags"
           rules={[{ required: true }]}
         >
-          <Select
-            mode="multiple"
-            allowClear
-            placeholder="Exercise tags"
-            maxTagCount="responsive"
-            options={enumToSelectOptions(ExerciseTag)}
-          />
+          <ExerciseTagInput />
         </Form.Item>
         <Form.Item<GeneralInfo>
           label="Exercise level"
@@ -112,9 +118,9 @@ const ContentQuestionForm = () => {
         label="Question"
         name={['contentQuestion', 'text']}
       >
-        <Input.TextArea
-          placeholder="Description (optional)"
-          autoSize={{ minRows: 4, maxRows: 10 }}
+        <ReactQuill
+          className="bg-surface"
+          placeholder="Question content - It will be displayed through all the questions (optional)"
         />
       </Form.Item>
       <div className="grid grid-cols-2 gap-4">
@@ -130,7 +136,7 @@ const ContentQuestionForm = () => {
           label="Question audio"
           name={['contentQuestion', 'audio']}
         >
-          <CustomUpload accept="audio" type="picture-card" />
+          <CustomUpload accept="audio/*" type="picture-card" />
         </Form.Item>
       </div>
     </>
@@ -152,6 +158,16 @@ const ExerciseForm = ({ type, form }: ExerciseFormProps) => {
       return <ConstructedResponseForm form={form} />
     case ExerciseType.MakeSentence:
       return <MakeSentenceForm form={form} />
+    case ExerciseType.Unscramble:
+      return <UnscrambleForm form={form} />
+    case ExerciseType.Speaking:
+      return <SpeakingForm form={form} />
+    case ExerciseType.Match:
+      return <MatchForm form={form} />
+    case ExerciseType.DragAndDrop:
+      return <DragAndDropForm form={form} />
+    case ExerciseType.WordSearch:
+      return <WordSearchForm form={form} />
     default:
       return <></>
   }
@@ -206,6 +222,7 @@ function ManageExercise() {
     const valueForm = {
       ...value,
       deadline: value.deadline ? dayjs(value.deadline) : undefined,
+      tags: transformToExerciseTagInputValue(value.tags as any),
     }
     formSubmit.setFieldsValue(valueForm)
 
@@ -216,6 +233,8 @@ function ManageExercise() {
 
   const onSubmit = async (values: ExerciseSchema, formSubmit: FormSubmit) => {
     formSubmit.transform(values)
+
+    values.tags = values.tags?.map((tag: any) => tag.at(-1))
 
     message.open({
       key: 'submitMessage',
@@ -232,6 +251,14 @@ function ManageExercise() {
             key: 'submitMessage',
             content: 'Saved',
             type: 'success',
+          })
+        },
+
+        onError: (error: any) => {
+          message.open({
+            key: 'submitMessage',
+            content: error.data.message,
+            type: 'error',
           })
         },
       })

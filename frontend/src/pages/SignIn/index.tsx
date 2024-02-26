@@ -4,15 +4,18 @@ import { Link } from 'react-router-dom'
 
 import { useMutation } from '@tanstack/react-query'
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
+import Logo from '../../components/Icons/Logo'
 import { NotificationContext } from '../../contexts/notification'
 import { useAppDispatch } from '../../hooks/redux'
-import { setUser } from '../../redux/app/slice'
+import { setCurrentLevel, setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
+import userLevelApi from '../../services/userLevelApi'
+import { getNewWindowPosition, validatePassword } from '../../utils/common'
 import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
-import Logo from '../../components/Icons/Logo'
-
+import { useTranslation } from 'react-i18next'
 const SignIn: React.FC = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Auth' })
   const dispatch = useAppDispatch()
   const apiNotification = useContext(NotificationContext)
 
@@ -22,10 +25,10 @@ const SignIn: React.FC = () => {
 
   const onFinish = async (values: SignInParams) => {
     mutate(values, {
-      onSuccess: (data) => {
-        dispatch(setUser(data.data))
+      onSuccess: () => {
+        fetchAuthUser()
         apiNotification.success({
-          message: 'Sign in successfully!',
+          message: t('signInSuccess'),
         })
       },
     })
@@ -34,6 +37,11 @@ const SignIn: React.FC = () => {
   const fetchAuthUser = async () => {
     try {
       const data = await authApi.fetchAuthUser()
+
+      if (data.role === 'Student') {
+        const level = await userLevelApi.getUserLevel()
+        dispatch(setCurrentLevel(level))
+      }
 
       dispatch(setUser(data))
     } catch (error) {
@@ -47,15 +55,11 @@ const SignIn: React.FC = () => {
   }, [])
 
   const signInWithGoogle = async () => {
-    window.open(GOOGLE_LOGIN, '_blank', 'width=500,height=600,left=400,top=200')
+    window.open(GOOGLE_LOGIN, '_blank', getNewWindowPosition(500, 600))
   }
 
   const signInWithFacebook = async () => {
-    window.open(
-      FACEBOOK_LOGIN,
-      '_blank',
-      'width=500,height=600,left=400,top=200',
-    )
+    window.open(FACEBOOK_LOGIN, '_blank', getNewWindowPosition(500, 600))
   }
 
   const SIGN_IN_VENDORS = [
@@ -71,17 +75,11 @@ const SignIn: React.FC = () => {
     },
   ]
 
-  const validatePassword = (password: string) => {
-    if (!password) return true
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/
-    return password && password.length >= 8 && passwordRegex.test(password)
-  }
-
   return (
-    <div className="flex flex-col items-center bg-surface py-8 px-10 rounded-[16px] self-center shadow-2xl">
+    <div className="flex flex-col items-center bg-surface p-8 rounded-[16px] self-center shadow-2xl">
       <div className="mb-8 flex flex-col items-center gap-4">
         <Logo width={250} />
-        <p className="text-dark font-light">Let's start learning right now!</p>
+        <p className="text-dark font-light">{t('letsStart')}</p>
       </div>
 
       <Form
@@ -98,11 +96,11 @@ const SignIn: React.FC = () => {
           label="Email"
           rules={[
             {
-              message: 'Please input your email!',
+              message: t('Please input your email!'),
               required: true,
             },
             {
-              message: 'Invalid email!',
+              message: t('Invalid email!'),
               type: 'email',
             },
           ]}
@@ -116,21 +114,14 @@ const SignIn: React.FC = () => {
 
         <Form.Item<SignInParams>
           name="password"
-          label="Password"
+          label={t('Password')}
           rules={[
-            { message: 'Please input your password!', required: true },
+            { required: true, message: t('Please input your password!') },
             {
               async validator(_, value) {
-                return new Promise((resolve, reject) => {
-                  if (validatePassword(value)) {
-                    resolve('')
-                  } else
-                    reject(
-                      new Error(
-                        'The password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number or special character',
-                      ),
-                    )
-                })
+                return new Promise((resolve, reject) =>
+                  validatePassword(resolve, reject, value),
+                )
               },
             },
           ]}
@@ -143,10 +134,12 @@ const SignIn: React.FC = () => {
         </Form.Item>
 
         {error && (
-          <p className="text-secondary">Email or password is incorrect!</p>
+          <p className="text-secondary">
+            {t('Email or password is incorrect!')}
+          </p>
         )}
         <div className="flex justify-end">
-          <Link to="/forgot-password">Forgot Password?</Link>
+          <Link to="/forgot-password">{t('Forgot Password?')}</Link>
         </div>
 
         <Form.Item className="mt-4">
@@ -158,7 +151,7 @@ const SignIn: React.FC = () => {
             className="w-full h-11 rounded-xl mt-3"
             loading={isPending}
           >
-            Sign In
+            {t('Sign In')}
           </Button>
         </Form.Item>
 
@@ -176,9 +169,9 @@ const SignIn: React.FC = () => {
         </div>
 
         <p className="text-center text-wolfGrey ">
-          Didn't have an account?
+          {t("Didn't have an account?")}
           <Link to="/sign-up" className="font-semibold text-primary pl-2">
-            Sign Up
+            {t('Sign Up')}
           </Link>
         </p>
       </Form>

@@ -6,14 +6,23 @@ import { ExerciseContentService } from '../base-exercise-content.service';
 import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 import { CreateConstructedResponseDto } from './dto/create-constructed-response.dto';
 import { ConstructedResponse } from './schemas/constructed-response.schema';
+import { OpenAiService } from 'src/modules/open-ai/open-ai.service';
+import { SubmissionsService } from 'src/modules/submissions/submissions.service';
 
 @Injectable()
 export class ConstructedResponseService extends ExerciseContentService {
   constructor(
     @InjectModel(ConstructedResponse.name)
     private constructedResponseModel: Model<ConstructedResponse>,
+    private readonly openAiService: OpenAiService,
   ) {
     super();
+  }
+
+  async getContent(id: string): Promise<ExerciseQuestionDto> {
+    const question = await this.constructedResponseModel.findById(id);
+
+    return question;
   }
 
   async createContent(
@@ -24,9 +33,8 @@ export class ConstructedResponseService extends ExerciseContentService {
       CreateConstructedResponseDto,
     );
 
-    const questionList = await this.constructedResponseModel.insertMany(
-      validatedContent,
-    );
+    const questionList =
+      await this.constructedResponseModel.insertMany(validatedContent);
 
     return questionList.map(q => q.id);
   }
@@ -63,13 +71,20 @@ export class ConstructedResponseService extends ExerciseContentService {
       throw new BadRequestException('answer must be a string');
     }
 
-    const correctAnswer = (
-      await this.constructedResponseModel.findById(id).select('correctAnswer')
-    ).correctAnswer;
-    const { detail, explanation } = correctAnswer;
+    const exercise = await this.constructedResponseModel.findById(id);
+    const correctAnswer = exercise.correctAnswer;
+    let { detail, explanation } = correctAnswer;
+
+    if (!detail) {
+      explanation = await this.openAiService.chat(
+        `Evaluate skill Grammar, Vocabulary, Organization, Coherence, Conciseness the writing with topic '${exercise.question.text}': '${answer}'`,
+      );
+    }
+
     const submission = {
       question: id,
       answer,
+      teacherCorrection: answer,
       correctAnswer: detail,
       explanation,
     };
@@ -85,7 +100,9 @@ export class ConstructedResponseService extends ExerciseContentService {
 
   setDefaultExplain(questionList: ExerciseQuestionDto[]): void {
     questionList.forEach(q => {
-      q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail}`;
+      q.correctAnswer.explanation = q.correctAnswer.detail
+        ? `Correct answer: ${q.correctAnswer.detail}`
+        : null;
     });
   }
 }

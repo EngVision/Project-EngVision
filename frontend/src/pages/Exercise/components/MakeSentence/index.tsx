@@ -27,12 +27,12 @@ function MakeSentence(props: MakeSentenceProps) {
   const selectedAnswers = Form.useWatch('answer')
   const form = Form.useFormInstance()
 
-  const questionArr = question.text.split('[]')
+  const questionArr = question.text.replaceAll('<p>', '').split('[]')
 
   const selectAnswers = (answer: string, key: number) => {
     selectedAnswers[key] = answer
     if (question.answers) {
-      form.setFieldValue('answer', selectedAnswers)
+      form.setFieldValue('answer', [...selectedAnswers])
     } else {
       form.setFieldValue('answer', Array(questionArr.length - 1).fill(''))
     }
@@ -56,9 +56,11 @@ function MakeSentence(props: MakeSentenceProps) {
             {fields.map(({ key }) => {
               return (
                 <div key={key} className="inline">
-                  <span className="text-xl">{questionArr[key]}</span>
-
-                  <div className="inline-flex flex-col gap-3 align-middle mx-2">
+                  <span
+                    className="text-xl"
+                    dangerouslySetInnerHTML={{ __html: questionArr[key] }}
+                  ></span>
+                  <div className="inline-flex flex-col gap-3 align-middle mx-2 mb-4">
                     {question.answers[key].map((answer, index) => {
                       const isSubmitAnswer =
                         result && result.answer?.includes(answer)
@@ -98,9 +100,12 @@ function MakeSentence(props: MakeSentenceProps) {
                 </div>
               )
             })}
-            <span className="text-xl">
-              {questionArr[questionArr.length - 1]}
-            </span>
+            <span
+              className="text-xl"
+              dangerouslySetInnerHTML={{
+                __html: questionArr[questionArr.length - 1],
+              }}
+            ></span>
           </>
         )}
       </Form.List>

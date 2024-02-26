@@ -100,7 +100,7 @@ const StudentLearn = ({
         ></path>
         <path
           fill="#383333"
-          fill-rule="evenodd"
+          fillRule="evenodd"
           d="M243.92 140.54a6.09 6.09 0 1 1 .14-8.6 6.12 6.12 0 0 1-.14 8.6zM191.62 138.14a6.09 6.09 0 1 1 .64-8.58 6.11 6.11 0 0 1-.64 8.58z"
           opacity="1"
           data-original="#383333"

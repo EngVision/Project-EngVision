@@ -9,12 +9,13 @@ import GetStarted from '../pages/Student/GetStarted'
 import NoLayout from '../layouts/NoLayout'
 import DoExercise from '../pages/DoExercise'
 import DoExam from '../pages/DoExam'
-
+import Achievements from '../pages/Student/Achievements'
 export const studentRoutes: RouteObject[] = [
   {
     element: <DefaultLayout />,
     children: [
       { element: <MyHub />, path: STUDENT_ROUTES.myHub },
+      { element: <Achievements />, path: STUDENT_ROUTES.achievement },
       {
         path: STUDENT_ROUTES.myHub,
         children: [
@@ -63,6 +64,10 @@ export const studentRoutes: RouteObject[] = [
             children: [
               {
                 path: '',
+                element: <CourseDetailsPage />,
+              },
+              {
+                path: '?tab=:tab',
                 element: <CourseDetailsPage />,
               },
               {

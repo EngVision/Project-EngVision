@@ -2,7 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Validator } from 'class-validator';
 import { ExerciseQuestionDto } from './dto/exercise-content.dto';
-import { Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { QuestionResult } from '../submissions/schemas/submission.schema';
 
 export abstract class ExerciseContentService {
@@ -58,6 +58,8 @@ export abstract class ExerciseContentService {
       },
     };
   }
+
+  abstract getContent(id: string): Promise<ExerciseQuestionDto | Document>;
 
   abstract createContent(
     questionListDto: ExerciseQuestionDto[],

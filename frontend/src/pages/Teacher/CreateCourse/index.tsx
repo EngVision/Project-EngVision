@@ -90,15 +90,33 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
             name="price"
             label="Price"
             rules={[
+              { required: true, message: '' },
               {
-                pattern: /^[0-9.]+$/,
-                message: 'Price can only numbers.',
+                async validator(_, value) {
+                  if (value.length === 0)
+                    return Promise.reject(new Error('Please input price!'))
+
+                  if (!/^[0-9.]+$/.test(value)) {
+                    return Promise.reject(
+                      new Error('Price can only contain numbers.'),
+                    )
+                  }
+
+                  const price = parseFloat(value)
+                  if (price === 0 || price >= 2000) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(
+                    new Error(
+                      'Price must be 0 for free or must be at least 2000!',
+                    ),
+                  )
+                },
               },
-              { required: true, message: 'Please input price!' },
             ]}
           >
             <Input
-              placeholder="$29.00"
+              placeholder="0 VND"
               size="middle"
               className="rounded-[8px] h-[40px]"
             />
@@ -120,12 +138,7 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
             />
           </Form.Item>
 
-          <Form.Item
-            name="thumbnail"
-            label="Thumbnail"
-            rules={[{ required: true, message: 'Please upload thumbnail!' }]}
-            getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
-          >
+          <Form.Item name="thumbnail" label="Thumbnail">
             <CustomUpload type="picture" />
           </Form.Item>
 

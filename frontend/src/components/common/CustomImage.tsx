@@ -26,6 +26,7 @@ const CustomImage = ({
   return (
     <img
       ref={imageRef}
+      style={{ borderRadius: 6 }}
       className={className}
       onClick={onClick}
       src={src}

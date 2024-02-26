@@ -35,13 +35,11 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Email or password is incorrect');
     }
-
     if (user.status === AccountStatus.Blocked) {
       throw new ForbiddenException('Your account has been blocked');
     }
 
     const tokens = await this.getTokens(user);
-    // await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return {
       tokens,
@@ -52,8 +50,6 @@ export class AuthService {
   async logout(userId: string, res: Response): Promise<void> {
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
-
-    // await this.updateRefreshToken(userId, null);
   }
 
   async register(
@@ -67,18 +63,16 @@ export class AuthService {
     const user = await this.usersService.create(createUserDto);
 
     const tokens = await this.getTokens(user);
-    // await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return { tokens, user };
   }
 
-  async refreshTokens(id: string, refreshToken: string): Promise<Tokens> {
+  async refreshTokens(id: string): Promise<Tokens> {
     const user = await this.usersService.getById(id);
 
     if (!user) throw new ForbiddenException('Access denied');
 
     const tokens = await this.getTokens(user);
-    // await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
   }
@@ -154,7 +148,6 @@ export class AuthService {
       });
 
       const tokens = await this.getTokens(newUser);
-      // await this.updateRefreshToken(newUser.id, tokens.refreshToken);
       return { tokens, user: newUser };
     }
 
@@ -163,16 +156,8 @@ export class AuthService {
     }
 
     const tokens = await this.getTokens(user);
-    // await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return { tokens, user };
-  }
-
-  async updateRefreshToken(
-    userId: string,
-    refreshToken: string,
-  ): Promise<void> {
-    await this.usersService.update(userId, { refreshToken });
   }
 
   attachTokensCookie(res: Response, tokens: Tokens): void {

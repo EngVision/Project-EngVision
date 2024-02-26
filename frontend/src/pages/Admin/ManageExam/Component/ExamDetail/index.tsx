@@ -32,7 +32,6 @@ const ExamDetail = () => {
   const { TextArea } = Input
   const navigate = useNavigate()
 
-  const [useExamDetail, setExamDetail] = useState<ExamParams | null>(null)
   const [isReuseModalOpen, setIsReuseModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [api, contextHolder] = notification.useNotification()
@@ -44,16 +43,14 @@ const ExamDetail = () => {
   )
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([])
 
-  const { isLoading } = useQuery({
+  const { data: examData, isLoading } = useQuery({
     queryKey: ['examDetail', examId],
+    queryFn: async () => examApi.getExamById(examId),
   })
 
   useEffect(() => {
     const fetchExercises = async () => {
       try {
-        const examData = await examApi.getExamById(examId)
-        console.log(examData, 'examData')
-        setExamDetail(examData)
         setDataPart(examData?.parts as ExerciseSchema[])
 
         const data: any = await exerciseApi.getAllExercise()
@@ -145,7 +142,7 @@ const ExamDetail = () => {
           }}
           className=" text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
         >
-          <span onClick={(e) => e.preventDefault()} role="presentation">
+          <span role="presentation">
             <More />
           </span>
         </Dropdown>
@@ -160,7 +157,7 @@ const ExamDetail = () => {
             }}
             className=" text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
           >
-            <span onClick={(e) => e.preventDefault()} role="presentation">
+            <span role="presentation">
               <MoreVertical />
             </span>
           </Dropdown>
@@ -191,14 +188,14 @@ const ExamDetail = () => {
 
   const generalIn4 = () => {
     return (
-      useExamDetail && (
+      examData && (
         <div className="flex flex-col">
           <div className=" flex flex-row gap-6">
             <Form.Item<ExamParams> name="title" className="flex-1">
               <Input
                 size="large"
                 placeholder="Title"
-                defaultValue={useExamDetail.title as string}
+                defaultValue={examData.title as string}
                 className="w-[100%] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
               />
             </Form.Item>
@@ -207,7 +204,7 @@ const ExamDetail = () => {
                 className="shadow-sm"
                 size="large"
                 placeholder="Default Level"
-                defaultValue={useExamDetail.level as string}
+                defaultValue={examData.level as string}
                 options={enumToSelectOptions(CEFRLevel)}
               />
             </Form.Item>
@@ -217,7 +214,7 @@ const ExamDetail = () => {
               <TextArea
                 size="large"
                 placeholder="Description"
-                defaultValue={useExamDetail.description as string}
+                defaultValue={examData.description as string}
                 className="w-[100%] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
               />
             </Form.Item>
@@ -345,7 +342,7 @@ const ExamDetail = () => {
   }
 
   const handleDelTest = async () => {
-    showModal(useExamDetail, 'exam')
+    showModal(examData, 'exam')
   }
 
   if (isLoading) return <AppLoading />

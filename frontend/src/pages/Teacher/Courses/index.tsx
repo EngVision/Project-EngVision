@@ -11,8 +11,9 @@ import TeacherCreateCourse from '../CreateCourse'
 import FilterDropdown from './Filter/FilterDropdown'
 import SortDropdown from './SortDropdown'
 import StatusMode from './StatusMode'
-
+import { useTranslation } from 'react-i18next'
 const Courses: React.FC = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'MyCourses' })
   const status = useAppSelector((state) => state.course.status)
   const sortOption = useAppSelector((state) => state.course.sortOption)
   const filterOptions = useAppSelector((state) => state.course.filterOptions)
@@ -27,7 +28,7 @@ const Courses: React.FC = () => {
 
   return (
     <div>
-      <h3 className="text-primary text-3xl mb-8">My courses</h3>
+      <h3 className="text-primary text-3xl mb-8">{t('My courses')}</h3>
 
       <div className="flex justify-between mb-8">
         <StatusMode />
@@ -43,7 +44,7 @@ const Courses: React.FC = () => {
               className="flex items-center"
               onClick={() => setIsModalOpen(true)}
             >
-              New course
+              {t('New course')}
             </Button>
 
             <Modal
@@ -63,14 +64,14 @@ const Courses: React.FC = () => {
       {isLoading ? (
         <AppLoading />
       ) : (
-        <div className="grid grid-cols-fill-40 gap-x-6 gap-y-4">
+        <div className="grid grid-cols-fill-40 gap-6">
           {rawCourseList?.data && rawCourseList.data.length > 0 ? (
             rawCourseList.data.map((course) => (
               <Course key={course.id} course={course} />
             ))
           ) : (
             <div className="col-span-4 text-center italic text-textSubtle">
-              <p className="text-lg">No courses found</p>
+              <p className="text-lg">{t('No courses found')}</p>
             </div>
           )}
         </div>

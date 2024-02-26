@@ -4,13 +4,17 @@ import Logout from '../Logout'
 import { useNavigate } from 'react-router-dom'
 import { PRIVATE_ROUTES } from '../../utils/constants'
 import { LogoutIcon, SettingsIcon } from '../Icons'
-
+import { useAppDispatch } from '../../hooks/redux'
+import { setShowLogoutModal } from '../../redux/app/slice'
+import { useTranslation } from 'react-i18next'
 type Props = {
   user: any
 }
 
 function UserSettings({ user }: Props) {
+  const { t } = useTranslation('translation', { keyPrefix: 'Header' })
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
 
   const items: MenuProps['items'] = [
     {
@@ -21,14 +25,17 @@ function UserSettings({ user }: Props) {
           className="w-full flex gap-2 items-center text-left border-none cursor-pointer"
         >
           <SettingsIcon width={16} height={16} />
-          Account
+          {t('Account')}
         </div>
       ),
     },
     {
       key: 'logout',
       label: (
-        <div className="flex gap-2 items-center">
+        <div
+          className="flex gap-2 items-center"
+          onClick={() => dispatch(setShowLogoutModal(true))}
+        >
           <LogoutIcon width={22} height={16} />
           <Logout />
         </div>

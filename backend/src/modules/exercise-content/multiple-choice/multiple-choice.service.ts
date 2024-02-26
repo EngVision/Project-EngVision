@@ -5,6 +5,7 @@ import { ExerciseContentService } from '../base-exercise-content.service';
 import { CreateMultipleChoiceDto } from './dto/create-multiple-choice.dto';
 import { MultipleChoice } from './schemas/multiple-choice.schema';
 import { QuestionResult } from 'src/modules/submissions/schemas/submission.schema';
+import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 
 export class MultipleChoiceService extends ExerciseContentService {
   constructor(
@@ -12,6 +13,12 @@ export class MultipleChoiceService extends ExerciseContentService {
     private multipleChoiceModel: Model<MultipleChoice>,
   ) {
     super();
+  }
+
+  async getContent(id: string): Promise<ExerciseQuestionDto> {
+    const question = await this.multipleChoiceModel.findById(id);
+
+    return question;
   }
 
   async createContent(
@@ -25,9 +32,8 @@ export class MultipleChoiceService extends ExerciseContentService {
     this.setDefaultExplain(validatedContent);
     this.setIsMultipleCorrectAnswer(validatedContent);
 
-    const questionList = await this.multipleChoiceModel.insertMany(
-      validatedContent,
-    );
+    const questionList =
+      await this.multipleChoiceModel.insertMany(validatedContent);
 
     return questionList.map(q => q.id);
   }

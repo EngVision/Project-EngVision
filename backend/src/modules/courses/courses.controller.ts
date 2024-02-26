@@ -21,7 +21,7 @@ import {
 } from 'src/common/decorators/api-response-data.decorator';
 import { GetResponse } from 'src/common/dto';
 import { GetResponseList } from 'src/common/dto/paginated-response.dto';
-import { Role, StatusCourseSearch } from 'src/common/enums';
+import { MaterialTypes, Role, StatusCourseSearch } from 'src/common/enums';
 import { AtGuard, RoleGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
 import { CreateReviewDto } from '../reviews/dto/create-review.dto';
@@ -43,6 +43,7 @@ import {
   UpdateSectionDto,
 } from './dto';
 import { courseIdDto } from './dto/course-id.dto';
+import { LessonMaterialIdDto } from './dto/lesson-material-id.dto';
 
 @ApiTags('Courses')
 @Controller('courses')
@@ -491,6 +492,52 @@ export class CoursesController {
     return res.status(HttpStatus.OK).send(
       GetResponse({
         message: 'Publish course successful',
+      }),
+    );
+  }
+
+  @Post('/lessons/:lessonId/materials')
+  @ApiResponseData(CourseDetailDto)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async createMaterial(
+    @CurrentUser() user: JwtPayload,
+    @Param('lessonId') lessonId: string,
+    @Body('materialId') materialId: string,
+    @Res() res: Response,
+  ) {
+    const course = await this.coursesService.createMaterial(
+      materialId,
+      lessonId,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        data: course,
+        dataType: CourseDetailDto,
+      }),
+    );
+  }
+
+  @Delete('/lessons/:lessonId/materials/:materialId')
+  @ApiResponseData(LessonDto)
+  @UseGuards(AtGuard, RoleGuard(Role.Teacher))
+  async removeMaterial(
+    @Res() res: Response,
+    @Param() params: LessonMaterialIdDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const newLesson = await this.coursesService.removeMaterial(
+      params.materialId,
+      params.lessonId,
+      user.sub,
+    );
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        data: newLesson,
+        dataType: LessonDto,
+        message: 'Delete material successful',
       }),
     );
   }

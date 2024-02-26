@@ -18,5 +18,5 @@ export class ExerciseDto {
   creator?: string;
 
   @Type(() => ContentDto)
-  content: string;
+  content: ContentDto;
 }

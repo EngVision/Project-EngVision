@@ -45,9 +45,12 @@ export class FilesService {
   ): Promise<LocalFileDocument> {
     const newFile = new this.fileModel({
       filename: `${uuid()}${extname(file.originalname)}`,
+      originalName: file.originalname,
       mimetype: file.mimetype,
+      size: this.getFileSize(file.size),
       userId,
     });
+    newFile.url = `${process.env.S3_BUCKET_URL}/${newFile.id}`;
     await newFile.save();
 
     await this.S3.send(
@@ -55,6 +58,8 @@ export class FilesService {
         Bucket: this.bucketName,
         Key: newFile.id,
         Body: file.buffer,
+        ContentType: file.mimetype,
+        ContentLength: file.size,
       }),
     );
 
@@ -88,7 +93,9 @@ export class FilesService {
     if (!updatedFile) {
       updatedFile = new this.fileModel({
         filename: `${uuid()}${extname(file.originalname)}`,
+        originalname: file.originalname,
         mimetype: file.mimetype,
+        size: this.getFileSize(file.size),
         userId,
       });
     }
@@ -104,6 +111,8 @@ export class FilesService {
     }
 
     updatedFile.url = null;
+    updatedFile.originalName = file.originalname;
+    updatedFile.size = this.getFileSize(file.size);
     updatedFile.filename = file.filename;
     updatedFile.mimetype = file.mimetype;
     updatedFile.save();
@@ -119,24 +128,14 @@ export class FilesService {
     return updatedFile;
   }
 
-  async get(id: string): Promise<LocalFile & { body: any }> {
+  async get(id: string): Promise<LocalFile> {
     const file = await this.fileModel.findById(id);
 
     if (!file) {
       throw new NotFoundException('File not found');
     }
 
-    const s3File = await this.S3.send(
-      new GetObjectCommand({
-        Bucket: this.bucketName,
-        Key: file.id,
-      }),
-    );
-
-    return {
-      ...file.toObject(),
-      body: s3File.Body,
-    };
+    return file;
   }
 
   async remove(id: string, userId: string): Promise<void> {
@@ -180,5 +179,12 @@ export class FilesService {
     const newFile = await this.createWithUrl(avatarUrl, userId);
 
     return newFile;
+  }
+
+  getFileSize(size: number): string {
+    if (!size) return '0';
+    return size > 1048576
+      ? `${(size / 1048576).toFixed(2)} MB`
+      : `${(size / 1024).toFixed(2)} KB`;
   }
 }

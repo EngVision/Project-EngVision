@@ -3,14 +3,15 @@ import { StarIcon } from '../../../components/Icons'
 import PreviewInput from '../../../components/common/PreviewInput'
 import { FormInstance, useWatch } from 'antd/lib/form/Form'
 import CustomImage from '../../../components/common/CustomImage'
-import { getFormattedDate, getFormattedPrice } from '../../../utils/common'
+import { getFormattedDate } from '../../../utils/common'
 import { UPLOAD_FILE_URL } from '../../../utils/constants'
-
+import { useTranslation } from 'react-i18next'
 interface PreviewProps {
   form: FormInstance
 }
 
 const Preview = ({ form }: PreviewProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   const thumbnail = useWatch('thumbnail', form)
   const price = useWatch('price', form)
   const reviews = useWatch('reviews', form)
@@ -30,7 +31,7 @@ const Preview = ({ form }: PreviewProps) => {
           </div>
           <Form.Item name="updatedAt" noStyle>
             <span>
-              Last Update: <b>{getFormattedDate(updatedAt)}</b>
+              {t('Last Updated')}: <b>{getFormattedDate(updatedAt)}</b>
             </span>
           </Form.Item>
         </div>
@@ -52,7 +53,7 @@ const Preview = ({ form }: PreviewProps) => {
           </span>
           <Form.Item name="reviews" noStyle>
             <div className="mr-1.5 text-[#706E68]">
-              ({reviews?.length || 0} ratings)
+              ({reviews?.length || 0} {t('ratings')})
             </div>
           </Form.Item>
         </div>
@@ -61,10 +62,10 @@ const Preview = ({ form }: PreviewProps) => {
           <div className="flex flex-col items-center">
             <PreviewInput
               className="text-3xl text-primary text-center"
-              value={getFormattedPrice(price || 0)}
+              value={`${price} VND`}
             />
             <span className="text-xs text-textSubtle text-center">
-              Course price
+              {t('Course price')}
             </span>
           </div>
 
@@ -74,10 +75,10 @@ const Preview = ({ form }: PreviewProps) => {
             <div className="flex flex-col items-center">
               <PreviewInput
                 className="text-3xl text-primary text-center"
-                value={getFormattedPrice(price * attendance)}
+                value={`${price * attendance} VND`}
               />
               <span className="text-xs text-textSubtle text-center">
-                Revenue
+                {t('Revenue')}
               </span>
             </div>
           </Form.Item>

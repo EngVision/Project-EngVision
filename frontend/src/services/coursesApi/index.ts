@@ -5,6 +5,8 @@ import { CourseDetails, type GetCourseProps, type ReviewParams } from './types'
 
 const PREFIX = 'courses/'
 
+const PERSONALIZED_COURSE_PREFIX = 'personalized-course/'
+
 const coursesApi = {
   getCourseDetails: async (coursesId: string): Promise<CourseDetails> => {
     const res = await axiosClient.get(`${PREFIX}${coursesId}`)
@@ -61,11 +63,6 @@ const coursesApi = {
     return res.data
   },
 
-  postAttend: async (courseId: string): Promise<ResponseData<unknown>> => {
-    const res = await axiosClient.post(`${PREFIX}${courseId}/attend`)
-    return res.data
-  },
-
   addExercise: async (
     lessonId: string,
     exerciseId: string,
@@ -85,6 +82,32 @@ const coursesApi = {
       `${PREFIX}lessons/${lessonId}/exercises/${exerciseId}`,
     )
     return res.data
+  },
+
+  createMaterial: async (
+    lessonId: string,
+    fileId: string,
+  ): Promise<ResponseData<CourseDetails>> => {
+    const res = await axiosClient.post(
+      `${PREFIX}lessons/${lessonId}/materials`,
+      { materialId: fileId },
+    )
+    return res.data
+  },
+
+  deleteMaterial: async (
+    lessonId: string,
+    materialId: string,
+  ): Promise<ResponseData<CourseDetails>> => {
+    const res = await axiosClient.delete(
+      `${PREFIX}lessons/${lessonId}/materials/${materialId}`,
+    )
+    return res.data
+  },
+
+  getPersonalizedCourse: async (): Promise<CourseDetails> => {
+    const res = await axiosClient.get(PERSONALIZED_COURSE_PREFIX)
+    return res.data.data
   },
 }
 

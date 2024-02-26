@@ -34,4 +34,6 @@ export interface IUser {
   createdAt: Date
   updatedAt: Date
   status: AccountStatus
+  showGetStarted: boolean
+  showGuideTour: boolean
 }

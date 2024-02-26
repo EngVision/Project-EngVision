@@ -33,6 +33,7 @@ import {
 import { UserQueryDto } from './dto/user-query.dto';
 import { UsersService } from './users.service';
 import { BlockUserDto } from './dto/block-user.dto';
+import { GetStartedDto } from './dto/show-get-started';
 
 @ApiTags('Account')
 @Controller('account')
@@ -184,5 +185,40 @@ export class UsersController {
     return res
       .status(HttpStatus.OK)
       .send(GetResponse({ message: 'User unblocked' }));
+  }
+
+  @Post('/get-started')
+  @UseGuards(AtGuard)
+  async setGetStarted(
+    @Body() getStartedDto: GetStartedDto,
+    @CurrentUser() user: JwtPayload,
+    @Res() res: Response,
+  ) {
+    const updatedUser = await this.usersService.setShowGetStarted(
+      user.sub,
+      getStartedDto.isShow,
+    );
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        dataType: UserDto,
+        data: updatedUser,
+        message: 'Change show get started successfully',
+      }),
+    );
+  }
+
+  @Post('/tour-guide-onboarding')
+  @UseGuards(AtGuard)
+  async hideTourGuide(@CurrentUser() user: JwtPayload, @Res() res: Response) {
+    const updatedUser = await this.usersService.setHideGuideTour(user.sub);
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        dataType: UserDto,
+        data: updatedUser,
+        message: 'Set seen tour guide successfully',
+      }),
+    );
   }
 }

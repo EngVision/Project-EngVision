@@ -1,23 +1,29 @@
-import { Button, Tabs } from 'antd'
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
-
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Button, Tabs, message } from 'antd'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import Star from '../../components/Icons/Star'
 import AppLoading from '../../components/common/AppLoading'
 import coursesApi from '../../services/coursesApi'
 import { UPLOAD_FILE_URL } from '../../utils/constants'
+import { formatDate } from '../../utils/formatDate'
 import CourseContent from './CourseContent'
 import Overview from './Overview'
 import Reviews from './Reviews'
-import React from 'react'
 import CustomImage from '../../components/common/CustomImage'
+import paymentsApi from '../../services/payment'
+import { useState } from 'react'
+import enrollCourseApi from '../../services/enrollCourse'
+import { useTranslation } from 'react-i18next'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {
+  const { t } = useTranslation()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const tab = searchParams.get('tab') || '1'
   const { courseId = '' } = useParams<{ courseId: string }>()
-  const [activeKey, setActiveKey] = useState<string>('1')
   const queryClient = useQueryClient()
+  const [enrollLoading, setEnrollLoading] = useState(false)
 
   const { data: courseDetail, isLoading } = useQuery({
     queryKey: ['courseDetail', courseId],
@@ -25,19 +31,49 @@ const CourseDetailsPage = () => {
   })
 
   const attendCourseMutation = useMutation({
-    mutationFn: (courseId: string) => coursesApi.postAttend(courseId),
+    mutationFn: (courseId: string) => enrollCourseApi.enroll(courseId),
   })
 
   const handleTabChange = (key: string) => {
-    setActiveKey(key)
+    setSearchParams({ tab: key })
+    navigate({ search: `?tab=${key}` })
   }
 
-  const handleAttendCourse = async () => {
+  const enroll = async () => {
     attendCourseMutation.mutate(courseId, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['courseDetail'] })
+        message.open({
+          key: 'submitMessage',
+          content: 'Enroll successfully',
+          type: 'success',
+        })
+      },
+      onError: () => {
+        message.open({
+          key: 'submitMessage',
+          content: 'Enroll fail',
+          type: 'error',
+        })
       },
     })
+  }
+
+  const handleClickEnroll = async () => {
+    setEnrollLoading(true)
+    if (courseDetail?.price === 0) {
+      enroll()
+      return
+    }
+
+    const { isPaid } = await paymentsApi.checkPaid(courseDetail?.id || '')
+    if (isPaid) {
+      enroll()
+      return
+    }
+    const payment = await paymentsApi.create(courseDetail?.id || '')
+
+    window.location.href = payment.checkoutUrl
   }
 
   if (isLoading) return <AppLoading />
@@ -55,9 +91,9 @@ const CourseDetailsPage = () => {
           <div className="flex flex-col h-full justify-between">
             <div className="flex text-sm">
               <div>
-                Last Update:{' '}
+                {t('Course Details.Last Updated')}:{' '}
                 <span className="font-bold">
-                  {courseDetail.updatedAt.substring(0, 10)}
+                  {formatDate(courseDetail.updatedAt)}
                 </span>
               </div>
             </div>
@@ -66,35 +102,34 @@ const CourseDetailsPage = () => {
             <div className="flex items-center leading-6">
               <Star className="text-secondary mr-1.5" />
               <span className="mr-1.5 font-bold">{courseDetail.avgStar}</span>
-              <div className="mr-1.5 text-wolfGrey">{`(${courseDetail.reviews.length} Rating)`}</div>
+              <div className="mr-1.5 text-wolfGrey">{`(${
+                courseDetail.reviews.length
+              } ${t('Course Details.rating')})`}</div>
             </div>
             {!courseDetail.isAttended && (
               <div>
                 <Button
                   className="flex items-center text-lg px-10 py-5"
                   type="primary"
-                  onClick={handleAttendCourse}
+                  onClick={handleClickEnroll}
+                  loading={enrollLoading || attendCourseMutation.isPending}
                 >
-                  Enroll with ${courseDetail.price}
+                  {t('Course Details.Enroll with')} {courseDetail.price} VND
                 </Button>
               </div>
             )}
           </div>
         </div>
-        <Tabs
-          className="w-full "
-          onChange={handleTabChange}
-          activeKey={activeKey}
-        >
+        <Tabs className="w-full " onChange={handleTabChange} activeKey={tab}>
           <TabPane
             tab={
               <Button
                 className={`flex font-light items-center text-lg px-10 py-5 rounded-xl ${
-                  activeKey === '1' ? '' : 'text-primary border-primary'
+                  tab === '1' ? '' : 'text-primary border-primary'
                 }`}
-                type={activeKey === '1' ? 'primary' : 'default'}
+                type={tab === '1' ? 'primary' : 'default'}
               >
-                Overview
+                {t('Course Details.Overview')}
               </Button>
             }
             key="1"
@@ -105,11 +140,11 @@ const CourseDetailsPage = () => {
             tab={
               <Button
                 className={`flex font-light items-center text-lg px-10 py-5 rounded-xl ${
-                  activeKey === '2' ? '' : 'text-primary border-primary'
+                  tab === '2' ? '' : 'text-primary border-primary'
                 }`}
-                type={activeKey === '2' ? 'primary' : 'default'}
+                type={tab === '2' ? 'primary' : 'default'}
               >
-                Course
+                {t('common.Course')}
               </Button>
             }
             key="2"
@@ -120,11 +155,11 @@ const CourseDetailsPage = () => {
             tab={
               <Button
                 className={`flex font-light items-center text-lg px-10 py-5 rounded-xl ${
-                  activeKey === '3' ? '' : 'text-primary border-primary'
+                  tab === '3' ? '' : 'text-primary border-primary'
                 }`}
-                type={activeKey === '3' ? 'primary' : 'default'}
+                type={tab === '3' ? 'primary' : 'default'}
               >
-                Reviews
+                {t('common.Reviews')}
               </Button>
             }
             key="3"

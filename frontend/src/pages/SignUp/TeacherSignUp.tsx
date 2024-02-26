@@ -1,5 +1,5 @@
 import { Button, Checkbox, Form, Input, Select } from 'antd'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { useMutation } from '@tanstack/react-query'
@@ -10,6 +10,7 @@ import { useAppDispatch } from '../../hooks/redux'
 import { setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignUpParams } from '../../services/authApi/types'
+import { getNewWindowPosition, validatePassword } from '../../utils/common'
 import {
   FACEBOOK_LOGIN,
   GOOGLE_LOGIN,
@@ -19,8 +20,9 @@ import {
   ROLES,
 } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
-
+import { useTranslation } from 'react-i18next'
 const TeacherSignUp: React.FC = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Auth' })
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const apiNotification = useContext(NotificationContext)
@@ -31,7 +33,7 @@ const TeacherSignUp: React.FC = () => {
     onSuccess: (data) => {
       dispatch(setUser(data.data))
       apiNotification.success({
-        message: 'Sign up successfully!',
+        message: t('Sign up successfully!'),
       })
       navigate(PRIVATE_ROUTES.home)
     },
@@ -45,52 +47,27 @@ const TeacherSignUp: React.FC = () => {
     mutate(newUser)
   }
 
-  const fetchAuthUser = async (timer: ReturnType<typeof setInterval>) => {
+  const fetchAuthUser = async () => {
     try {
       const data = await authApi.fetchAuthUser()
 
       dispatch(setUser(data))
-      navigate(PUBLIC_ROUTES.createProfile)
-      clearInterval(timer)
     } catch (error) {
       console.log('error: ', error)
     }
   }
 
+  useEffect(() => {
+    window.addEventListener('storage', fetchAuthUser)
+    return () => window.removeEventListener('storage', fetchAuthUser)
+  }, [])
+
   const signUpWithGoogle = async () => {
-    let timer: ReturnType<typeof setInterval>
-
-    const newWindow = window.open(
-      GOOGLE_LOGIN,
-      '_blank',
-      'width=500,height=600,left=400,top=200',
-    )
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser(timer)
-        }
-      }, 1000)
-    }
+    window.open(GOOGLE_LOGIN, '_blank', getNewWindowPosition(500, 600))
   }
 
   const signUpWithFacebook = async () => {
-    let timer: ReturnType<typeof setInterval>
-
-    const newWindow = window.open(
-      FACEBOOK_LOGIN,
-      '_blank',
-      'width=500,height=600,left=400,top=200',
-    )
-
-    if (newWindow) {
-      timer = setInterval(() => {
-        if (newWindow.closed) {
-          fetchAuthUser(timer)
-        }
-      }, 1000)
-    }
+    window.open(FACEBOOK_LOGIN, '_blank', getNewWindowPosition(500, 600))
   }
 
   const SIGN_UP_VENDORS = [
@@ -105,12 +82,6 @@ const TeacherSignUp: React.FC = () => {
       onClick: signUpWithFacebook,
     },
   ]
-
-  const validatePassword = (password: string) => {
-    if (!password) return true
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/
-    return password && password.length >= 8 && passwordRegex.test(password)
-  }
 
   const validateConfirmPassword = (confirmPassword: string) => {
     if (!confirmPassword) return true
@@ -132,9 +103,11 @@ const TeacherSignUp: React.FC = () => {
     <div className="flex flex-col bg-surface p-8 rounded-[16px] gap-6">
       <div className="flex flex-col items-center">
         <h4 className="text-center font-semibold text-4xl mb-4 text-primary">
-          Welcome to EngVision
+          {t('Welcome to EngVision')}
         </h4>
-        <p className="text-textSubtle">Create an account and start learning!</p>
+        <p className="text-textSubtle">
+          {t('Create an account and start learning!')}
+        </p>
       </div>
 
       <Form
@@ -142,7 +115,7 @@ const TeacherSignUp: React.FC = () => {
         initialValues={{ accepted: false }}
         onFinish={onFinish}
         autoComplete="off"
-        className="w-[560px] flex flex-col"
+        className="w-[36rem] flex flex-col"
         layout="vertical"
         form={form}
         onChange={reset}
@@ -150,9 +123,9 @@ const TeacherSignUp: React.FC = () => {
         <div className="flex gap-4">
           <Form.Item<SignUpParams>
             name="firstName"
-            label="First Name"
+            label={t('First Name')}
             rules={[
-              { message: 'Please input your first name!', required: true },
+              { message: t('Please input your first name!'), required: true },
             ]}
             className="flex-1"
           >
@@ -165,14 +138,14 @@ const TeacherSignUp: React.FC = () => {
 
           <Form.Item<SignUpParams>
             name="lastName"
-            label="Last Name"
+            label={t('Last Name')}
             rules={[
-              { message: 'Please input your last name!', required: true },
+              { message: t('Please input your last name!'), required: true },
             ]}
             className="flex-1"
           >
             <Input
-              placeholder="Last Name"
+              placeholder={t('Last Name')}
               size="middle"
               className="rounded-lg px-3 py-2"
             />
@@ -184,11 +157,11 @@ const TeacherSignUp: React.FC = () => {
           label="Email"
           rules={[
             {
-              message: 'Please input your email!',
+              message: t('Please input your email!'),
               required: true,
             },
             {
-              message: 'Invalid email!',
+              message: t('Invalid email!'),
               type: 'email',
             },
           ]}
@@ -202,8 +175,8 @@ const TeacherSignUp: React.FC = () => {
 
         <Form.Item<SignUpParams>
           name="gender"
-          label="Gender"
-          rules={[{ message: 'Please input your gender!', required: true }]}
+          label={t('Gender')}
+          rules={[{ message: t('Please input your gender!'), required: true }]}
           className="[&>*]:!text-sm"
         >
           <Select
@@ -216,27 +189,20 @@ const TeacherSignUp: React.FC = () => {
 
         <Form.Item<SignUpParams>
           name="password"
-          label="Password"
+          label={t('Password')}
           rules={[
-            { message: 'Please input your password!', required: true },
+            { required: true, message: t('Please input your password!') },
             {
               async validator(_, value) {
-                return new Promise((resolve, reject) => {
-                  if (validatePassword(value)) {
-                    resolve('')
-                  } else
-                    reject(
-                      new Error(
-                        'The password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number or special character',
-                      ),
-                    )
-                })
+                return new Promise((resolve, reject) =>
+                  validatePassword(resolve, reject, value),
+                )
               },
             },
           ]}
         >
           <Input.Password
-            placeholder="Password"
+            placeholder={t('Password')}
             size="large"
             className="rounded-lg px-3 py-2"
           />
@@ -244,10 +210,10 @@ const TeacherSignUp: React.FC = () => {
 
         <Form.Item<SignUpParams>
           name="confirmPassword"
-          label="Confirm Password"
+          label={t('Confirm password')}
           rules={[
             {
-              message: 'Please input your confirm password!',
+              message: t('Please input your confirm password!'),
               required: true,
             },
             {
@@ -258,7 +224,7 @@ const TeacherSignUp: React.FC = () => {
                   } else
                     reject(
                       new Error(
-                        'The confirm password must be same as password!',
+                        t('The confirm password must be same as password!'),
                       ),
                     )
                 })
@@ -267,7 +233,7 @@ const TeacherSignUp: React.FC = () => {
           ]}
         >
           <Input.Password
-            placeholder="Confirm password"
+            placeholder={t('Confirm password')}
             size="large"
             className="rounded-lg px-3 py-2"
           />
@@ -275,7 +241,7 @@ const TeacherSignUp: React.FC = () => {
 
         <Form.Item<SignUpParams>
           name="phoneNumber"
-          label="Phone Number"
+          label={t('Phone number')}
           rules={[
             {
               async validator(_, value) {
@@ -285,7 +251,9 @@ const TeacherSignUp: React.FC = () => {
                   } else
                     reject(
                       new Error(
-                        'Phone must be longer than or equal to 10 characters',
+                        t(
+                          'Phone must be longer than or equal to 10 characters',
+                        ),
                       ),
                     )
                 })
@@ -293,14 +261,17 @@ const TeacherSignUp: React.FC = () => {
             },
           ]}
         >
-          <Input placeholder="Phone Number" className="rounded-lg px-3 py-2" />
+          <Input
+            placeholder={t('Phone number')}
+            className="rounded-lg px-3 py-2"
+          />
         </Form.Item>
 
         <Form.Item<SignUpParams>
           name="certificates"
-          label="Certificates"
+          label={t('Certificates')}
           rules={[
-            { message: 'Please input your certificates!', required: true },
+            { message: t('Please input your certificates!'), required: true },
           ]}
         >
           <CustomUpload type="picture" multiple />
@@ -315,26 +286,26 @@ const TeacherSignUp: React.FC = () => {
                 return new Promise((resolve, reject) => {
                   if (validateAcceptTerm(value)) {
                     resolve('')
-                  } else reject(new Error('Please accept Terms of Service'))
+                  } else reject(new Error(t('Please accept Terms of Service')))
                 })
               },
             },
           ]}
         >
           <Checkbox>
-            I accept
+            {t('I accept')}
             <Link
               to="/sign-up"
               className="font-semibold text-primary hover:text-secondary pl-2"
             >
-              Terms of Service
+              {t('Terms of Service')}
             </Link>
           </Checkbox>
         </Form.Item>
 
         {error && (
           <p className="text-secondary mt-[-20px] mb-6">
-            Email is existed. Please choose another email!
+            {t('Email is existed. Please choose another email!')}
           </p>
         )}
 
@@ -346,13 +317,13 @@ const TeacherSignUp: React.FC = () => {
             className="h-11 w-full font-semibold mt-4"
             loading={isPending}
           >
-            Create account
+            {t('Create account')}
           </Button>
         </Form.Item>
 
         <div className="text-grey-300 text-center my-4 px-16 flex items-center gap-4 justify-center">
           <div className="h-[1px] bg-grey-300 flex-1" />
-          <span>or continue with</span>
+          <span>{t('or continue with')}</span>
           <div className="h-[1px] bg-grey-300 flex-1" />
         </div>
 
@@ -370,17 +341,17 @@ const TeacherSignUp: React.FC = () => {
         </div>
 
         <p className="text-center text-textSubtle">
-          Have an account?
+          {t('Have an account?')}
           <Link
             to={PUBLIC_ROUTES.signIn}
             className="font-semibold text-primary pl-2"
           >
-            Sign In
+            {t('Sign In')}
           </Link>
         </p>
 
         <p className="text-center text-textSubtle">
-          Are you a student?
+          {t('Are you a student?')}
           <Link
             to={PUBLIC_ROUTES.signUp}
             className="font-semibold text-primary pl-2"

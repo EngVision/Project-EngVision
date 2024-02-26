@@ -11,11 +11,16 @@ import {
   Submission,
   SubmissionDocument,
 } from './schemas/submission.schema';
+import { ExerciseContentServiceFactory } from '../exercise-content/exercise-content-factory.service';
+import { UserLevelService } from '../user-level/user-level.service';
+import { ExerciseQuestionDto } from '../exercise-content/dto/exercise-content.dto';
 
 @Injectable()
 export class SubmissionsService {
   constructor(
     @InjectModel(Submission.name) private submissionModel: Model<Submission>,
+    private readonly exerciseContentServiceFactory: ExerciseContentServiceFactory,
+    private readonly userLevelService: UserLevelService,
   ) {}
 
   async update(
@@ -44,10 +49,15 @@ export class SubmissionsService {
       0,
     );
     submissionDto.totalDone = submissionDto.detail.length;
+    const avgGrade =
+      submissionDto.detail.reduce(
+        (prev, questionResult) =>
+          questionResult.isCorrect ? prev + 10 : prev + questionResult.grade,
+        0,
+      ) / submissionDto.detail.length;
 
     if (!submissionDto.needGrade) {
-      submissionDto.grade =
-        (submissionDto.totalCorrect / submissionDto.totalDone) * 10;
+      submissionDto.grade = avgGrade;
     }
 
     const newSubmission = await this.submissionModel.findOneAndUpdate(
@@ -61,6 +71,11 @@ export class SubmissionsService {
         new: true,
       },
     );
+
+    const questionContent = (await this.exerciseContentServiceFactory
+      .createService(submissionDto.exerciseType)
+      .getContent(result.question)) as ExerciseQuestionDto;
+    this.userLevelService.update(userId, result, questionContent);
 
     return {
       ...newSubmission,
@@ -104,19 +119,19 @@ export class SubmissionsService {
   async findByUser(
     query: SubmissionQueryDto,
     userId: string,
-    roles: Role[],
+    roles: Role[] = [],
   ): Promise<[SubmissionDto[], number]> {
     const { limit, page, sortBy, order, ...filter } = query;
 
     const documentQuery = {
-      skip: page * limit,
-      limit: limit,
+      skip: limit === -1 ? 0 : page * limit,
+      limit: limit === -1 ? null : limit,
       sort: { [sortBy]: order === Order.asc ? 1 : -1 },
     };
 
     let filterQuery;
 
-    if (roles.includes(Role.Teacher)) {
+    if (roles?.includes(Role.Teacher)) {
       filterQuery = {
         ...filter,
         teacher: userId,
@@ -127,6 +142,7 @@ export class SubmissionsService {
       filterQuery = {
         ...filter,
         user: userId,
+        $expr: { $ne: ['$course', null] },
       };
     }
 
@@ -175,10 +191,20 @@ export class SubmissionsService {
 
     submission.detail[i].grade = gradingDto.grade;
     submission.detail[i].explanation = gradingDto.explanation;
+    submission.detail[i].teacherCorrection = gradingDto.teacherCorrection;
 
     submission.grade =
       submission.detail.reduce((accumulator, q) => q.grade + accumulator, 0) /
       submission.detail.length;
+
+    const questionContent = (await this.exerciseContentServiceFactory
+      .createService(submission.exerciseType)
+      .getContent(questionId)) as ExerciseQuestionDto;
+    this.userLevelService.update(
+      submission.user,
+      submission.detail[i],
+      questionContent,
+    );
 
     await submission.save();
 
@@ -191,11 +217,11 @@ export class SubmissionsService {
     if (submission.course) {
       section = submission.course?.['sections'].find(section =>
         section['lessons'].some(lesson =>
-          lesson['exercises'].includes(submission.exercise['_id']),
+          lesson['exercises'].includes(submission.exercise?.['_id']),
         ),
       );
       lesson = section?.lessons.find(lesson =>
-        lesson['exercises'].includes(submission.exercise['_id']),
+        lesson['exercises'].includes(submission.exercise?.['_id']),
       );
     }
 
@@ -203,11 +229,10 @@ export class SubmissionsService {
       ...submission.toObject(),
       section: section ? { ...section.toObject() } : null,
       lesson: lesson ? { ...lesson.toObject() } : null,
-      progress: +(submission.totalDone / submission.totalQuestion).toPrecision(
-        2,
-      ),
+      progress: +(submission.totalDone / submission.totalQuestion).toFixed(2),
       status:
-        submission.needGrade && submission.detail.every(res => res.grade)
+        submission.needGrade &&
+        submission.detail.every(res => res.grade !== null)
           ? SubmissionStatus.Graded
           : SubmissionStatus.Pending,
     };

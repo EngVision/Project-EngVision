@@ -2,13 +2,11 @@ import { useQuery } from '@tanstack/react-query'
 import { Button } from 'antd'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import coursesApi from '../../../services/coursesApi'
-import AppLoading from '../../../components/common/AppLoading'
 import ArrowLeft from '../../../components/Icons/ArrowLeft'
 import ArrowRight from '../../../components/Icons/ArrowRight'
+import AppLoading from '../../../components/common/AppLoading'
+import coursesApi from '../../../services/coursesApi'
 import CourseCard from '../CourseCard'
-import submissionApi from '../../../services/submissionApi'
-import { ObjectId } from '../../../services/examSubmissionApi/type'
 
 enum Direction {
   left = 'left',
@@ -23,22 +21,6 @@ const AttendedCourses = () => {
   const { data: rawCourseExercise, isLoading } = useQuery({
     queryKey: ['coursesExercises'],
     queryFn: () => coursesApi.getCoursesExercises(),
-  })
-
-  const fetchSubmissions = async (objectIdList: ObjectId[]) => {
-    const submissionsPromises = objectIdList.map((objectId) =>
-      submissionApi.getSubmissionList({ course: objectId.id, limit: 10000 }),
-    )
-    const submissionsRes = await Promise.all(submissionsPromises)
-    return submissionsRes
-  }
-
-  const { data: submissions, isLoading: isLoadingSubmissions } = useQuery({
-    queryKey: ['submissions'],
-    queryFn: () => {
-      return fetchSubmissions(rawCourseExercise?.data || [])
-    },
-    enabled: !!rawCourseExercise,
   })
 
   useEffect(() => {
@@ -85,16 +67,7 @@ const AttendedCourses = () => {
     } else setDisabledScrollRight(false)
   }
 
-  const findSubmissions = (courseId: string) => {
-    if (!Array.isArray(submissions)) return []
-    const data = submissions?.find(
-      (submission) => submission.data?.[0]?.course?.id === courseId,
-    )
-
-    return data?.data
-  }
-
-  if (isLoading && isLoadingSubmissions) return <AppLoading />
+  if (isLoading) return <AppLoading />
 
   return (
     rawCourseExercise && (
@@ -126,16 +99,12 @@ const AttendedCourses = () => {
         </div>
         <div
           id="course-list"
-          className="flex gap-10 overflow-x-scroll scrollbar-hide scroll-smooth snap-mandatory snap-x"
+          className="flex gap-6 overflow-x-scroll scrollbar-hide scroll-smooth snap-mandatory snap-x"
           onScroll={handleChangeScroll}
         >
           {rawCourseExercise.data.length > 0 ? (
             rawCourseExercise.data.map((course) => (
-              <CourseCard
-                key={course.id}
-                course={course}
-                submissionArray={findSubmissions(course.id) || []}
-              />
+              <CourseCard key={course.id} course={course} />
             ))
           ) : (
             <div className="col-span-4 text-center italic text-textSubtle">

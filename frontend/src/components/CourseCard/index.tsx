@@ -1,21 +1,22 @@
-import { Button, Card, Popover, Tooltip } from 'antd'
+import { Card, Tooltip } from 'antd'
 import { StarIcon, VideoPlayIcon } from '../Icons'
 import { Link } from 'react-router-dom'
 import { LEVELS, STUDENT_ROUTES, UPLOAD_FILE_URL } from '../../utils/constants'
 import CustomImage from '../common/CustomImage'
-
+import { useTranslation } from 'react-i18next'
 import type { CourseDetails } from '../../services/coursesApi/types'
 interface CourseCardProps {
   course: CourseDetails
 }
 export const CourseCard = ({ course }: CourseCardProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   const { Meta } = Card
 
   return (
     <Link to={STUDENT_ROUTES.discover + '/' + course.id}>
       <Card
         bodyStyle={{ padding: '1rem' }}
-        className="w-[16rem] bg-bgNeutral"
+        className="bg-surface"
         hoverable
         cover={
           <CustomImage
@@ -34,10 +35,12 @@ export const CourseCard = ({ course }: CourseCardProps) => {
           <div className="flex justify-between text-xs">
             <div className="flex items-center font-light">
               <VideoPlayIcon className="w-4 h-4 mr-2" />
-              <p>{course.totalLessons} Lessons</p>
+              <p>
+                {course.totalLessons} {t('Lessons')}
+              </p>
             </div>
             <div className="flex items-center">
-              <p>{course.teacher.firstName + ' ' + course.teacher.lastName}</p>
+              <p>{course.teacher.fullName}</p>
             </div>
           </div>
           <Meta
@@ -55,14 +58,15 @@ export const CourseCard = ({ course }: CourseCardProps) => {
               <p className="font-semibold">{course.avgStar}</p>
             </div>
             <div>
-              <span className="font-bold">{course.attendance}</span> Students
+              <span className="font-bold">{course.attendance}</span>{' '}
+              {t('Students')}
             </div>
           </div>
 
           <div className="flex justify-between items-center text-xs">
             <div className="flex">
               <p className="font-semibold text-2xl text-primary">
-                ${course.price}
+                {course.price} VND
               </p>
             </div>
           </div>

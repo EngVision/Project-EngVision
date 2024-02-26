@@ -39,7 +39,7 @@ export const STUDENT_ROUTES = {
   myHub: '/my-hub',
   exercisesAndExams: '/exercises-exams',
   discover: '/discover',
-
+  achievement: '/achievement',
   appearance: '/appearance',
 
   courses: '/discover',
@@ -67,6 +67,7 @@ export const ADMIN_ROUTES = {
   manageUsers: '/manage-users',
 
   exams: '/exams',
+  grading: '/grading',
   examDetail: '/exams/:examId',
   createExam: '/exams/new',
   partDetail: '/exams/parts',
@@ -93,6 +94,11 @@ export enum ExerciseType {
   FillBlank = 'FillBlank',
   ConstructedResponse = 'ConstructedResponse',
   MakeSentence = 'MakeSentence',
+  Unscramble = 'Unscramble',
+  Speaking = 'Speaking',
+  Match = 'Match',
+  DragAndDrop = 'DragAndDrop',
+  WordSearch = 'WordSearch',
 }
 
 export enum ExerciseTag {
@@ -119,6 +125,7 @@ export enum CEFRLevel {
   B1 = 'B1',
   A2 = 'A2',
   A1 = 'A1',
+  Any = 'Any',
 }
 
 export const LEVELS = [
@@ -128,6 +135,7 @@ export const LEVELS = [
   { level: CEFRLevel.B2, color: 'bg-primary' },
   { level: CEFRLevel.C1, color: 'bg-secondary' },
   { level: CEFRLevel.C2, color: 'bg-secondary' },
+  { level: CEFRLevel.Any, color: 'bg-blue-400' },
 ]
 
 export const GENDERS = [
@@ -195,3 +203,41 @@ export enum SortByEnum {
   createdAt = 'createdAt',
   price = 'price',
 }
+
+export enum ExerciseCardType {
+  Text = 'text',
+  Image = 'image',
+}
+
+export enum MaterialTypes {
+  Image = 'Image',
+  Pdf = 'Pdf',
+  Audio = 'Audio',
+  Link = 'Link',
+  None = 'None',
+}
+
+export enum ExerciseMatchType {
+  Text = 'Text',
+  Image = 'Image',
+}
+
+export const STUDENT_GET_STARTED_VIDEO_URL =
+  'https://www.youtube.com/embed/ZIccuK7kSZw?si=i92mMWjOyEH1qjly'
+export const TEACHER_GET_STARTED_VIDEO_URL =
+  'https://www.youtube.com/embed/BrmLUSJsKQU?si=m4YgMTgyMLGWdm7V'
+export const FACEBOOK_SOCIAL_URL = 'https://www.facebook.com/engvision.dev'
+export const YOUTUBE_SOCIAL_URL = 'https://www.youtube.com/@engvisionofficial'
+
+export const LINE_COLOR = [
+  '#f87171',
+  '#a3e635',
+  '#22d3ee',
+  '#818cf8',
+  '#e879f9',
+  '#34d399',
+  '#c084fc',
+  '#db2777',
+  '#ca8a04',
+  '#78716c',
+]

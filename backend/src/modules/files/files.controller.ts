@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -100,17 +101,7 @@ export class FilesController {
   ) {
     const file = await this.filesService.get(id);
 
-    if (file.url) {
-      return res.redirect(file.url);
-    }
-
-    // const stream = createReadStream(join(process.cwd(), file.path));
-
-    res.set({
-      'Content-Disposition': `inline; filename="${file.filename}"`,
-      'Content-Type': file.mimetype,
-    });
-    return new StreamableFile(file.body);
+    return res.redirect(file.url);
   }
 
   @Delete(':id')
@@ -126,5 +117,22 @@ export class FilesController {
     return res
       .status(HttpStatus.OK)
       .send(GetResponse({ message: 'Remove file successful' }));
+  }
+
+  @Post('/url')
+  @UseGuards(AtGuard)
+  @ApiResponseData(Object)
+  async createWithUrl(
+    @CurrentUser() user: JwtPayload,
+    @Body('url') url: string,
+    @Res() res: Response,
+  ) {
+    const newFile = await this.filesService.createWithUrl(url, user.sub);
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        data: { fileId: newFile.id },
+        message: 'Create file successful',
+      }),
+    );
   }
 }

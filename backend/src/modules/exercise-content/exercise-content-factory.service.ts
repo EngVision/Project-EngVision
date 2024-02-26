@@ -1,10 +1,15 @@
+import { WordSearchService } from './word-search/word-search.service';
+import { SpeakingService } from './speaking/speaking.service';
 import { MakeSentenceService } from './make-sentence/make-sentence.service';
+import { UnscrambleService } from './unscramble/unscramble.service';
+import { MatchService } from './match/match.service';
 import { FillBlankService } from './fill-blank/fill-blank.service';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { MultipleChoiceService } from './multiple-choice/multiple-choice.service';
 import { ExerciseContentService } from './base-exercise-content.service';
 import { ExerciseType } from 'src/common/enums';
 import { ConstructedResponseService } from './constructed-response/constructed-response.service';
+import { DragAndDropService } from './drag-and-drop/drag-and-drop.service';
 
 @Injectable()
 export class ExerciseContentServiceFactory {
@@ -13,6 +18,11 @@ export class ExerciseContentServiceFactory {
     private readonly fillBlankService: FillBlankService,
     private readonly constructedResponseService: ConstructedResponseService,
     private readonly MakeSentenceService: MakeSentenceService,
+    private readonly UnscrambleService: UnscrambleService,
+    private readonly MatchService: MatchService,
+    private readonly speakingService: SpeakingService,
+    private readonly dragAndDropService: DragAndDropService,
+    private readonly wordSearchService: WordSearchService,
   ) {}
 
   createService(type: ExerciseType): ExerciseContentService {
@@ -25,6 +35,16 @@ export class ExerciseContentServiceFactory {
         return this.constructedResponseService;
       case ExerciseType.MakeSentence:
         return this.MakeSentenceService;
+      case ExerciseType.Unscramble:
+        return this.UnscrambleService;
+      case ExerciseType.Match:
+        return this.MatchService;
+      case ExerciseType.Speaking:
+        return this.speakingService;
+      case ExerciseType.DragAndDrop:
+        return this.dragAndDropService;
+      case ExerciseType.WordSearch:
+        return this.wordSearchService;
       default:
         throw new BadRequestException('Exercise type not found');
     }

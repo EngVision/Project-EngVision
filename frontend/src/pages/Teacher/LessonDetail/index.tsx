@@ -5,6 +5,7 @@ import { lessonApi } from '../../../services/lessonApi'
 import ExerciseTable from './ExerciseTable'
 import { Button } from 'antd'
 import { ArrowLeftIcon } from '../../../components/Icons'
+import MaterialsTable from './MaterialsTable'
 
 const LessonDetail = () => {
   const { lessonId = '' } = useParams()
@@ -30,6 +31,7 @@ const LessonDetail = () => {
         <h2>{lesson?.title}</h2>
       </div>
       <ExerciseTable exerciseList={lesson?.exercises ?? []} />
+      <MaterialsTable materials={lesson?.materials ?? []} />
     </div>
   )
 }
