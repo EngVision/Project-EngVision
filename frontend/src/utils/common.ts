@@ -6,7 +6,7 @@ export const getFileUrl = (id: string) => `${UPLOAD_FILE_URL}${id}`
 export const getFormattedPrice = (price: number | string) => {
   if (typeof price === 'string') price = parseFloat(price)
 
-  return price || price === 0 ? `$${price.toFixed(2)}` : '$0'
+  return price || price === 0 ? `${price.toFixed(2)} VND` : '0 VND'
 }
 
 export function getFormattedDate(inputDate: string): string {

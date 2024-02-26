@@ -14,6 +14,7 @@ import { AtGuard, RoleGuard } from 'src/common/guards';
 import { JwtPayload } from '../auth/types';
 import { PaymentsService } from './payments.service';
 import { Role } from '../reviews/enums';
+import { WebhookType } from '@payos/node/lib/type';
 
 @Controller('payments')
 @ApiTags('Payments')
@@ -52,5 +53,30 @@ export class PaymentsController {
     return res
       .status(HttpStatus.CREATED)
       .send(GetResponse({ success: true, data: { isPaid } }));
+  }
+
+  @Post('confirm-webhook')
+  @UseGuards(AtGuard, RoleGuard(Role.Admin))
+  async confirmWebhook(
+    @Body('webhookUrl') webhookUrl: string,
+    @Res() res: Response,
+  ) {
+    await this.paymentsService.confirmWebhook(webhookUrl);
+
+    return res.status(HttpStatus.CREATED).send(
+      GetResponse({
+        success: true,
+        message: 'Confirm webhook successfully!',
+      }),
+    );
+  }
+
+  @Post('webhook-event-handler')
+  async webhook(@Body() webhookData: WebhookType, @Res() res: Response) {
+    const payment = await this.paymentsService.verifyWebhookData(webhookData);
+
+    await this.paymentsService.handleWebhook(payment);
+
+    return res.status(HttpStatus.CREATED).send(payment);
   }
 }

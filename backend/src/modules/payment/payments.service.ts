@@ -8,7 +8,11 @@ import { Model } from 'mongoose';
 import { Payment, PaymentDocument } from './schemas/payment.schema';
 import { CoursesService } from '../courses/courses.service';
 import PayOS from '@payos/node';
-import { CheckoutResponseDataType } from '@payos/node/lib/type';
+import {
+  CheckoutResponseDataType,
+  WebhookDataType,
+  WebhookType,
+} from '@payos/node/lib/type';
 import { generateUniqueRandomNumber } from 'src/common/utils';
 @Injectable()
 export class PaymentsService {
@@ -48,13 +52,13 @@ export class PaymentsService {
 
     const body = {
       orderCode,
-      amount: course.price * 24350,
+      amount: course.price,
       description: 'Pay for buy the course',
       items: [
         {
           name: course.title,
           quantity: 1,
-          price: course.price * 24350,
+          price: course.price,
         },
       ],
       cancelUrl: `${process.env.CLIENT_URL}/discover/${courseId}`,
@@ -109,5 +113,36 @@ export class PaymentsService {
     await payment.save();
 
     return true;
+  }
+
+  async confirmWebhook(webhookUrl: string) {
+    try {
+      await this.payOS.confirmWebhook(webhookUrl);
+    } catch (error) {
+      throw new BadRequestException('Webhook invalid');
+    }
+  }
+
+  async verifyWebhookData(webhookData: WebhookType) {
+    try {
+      const payment: WebhookDataType =
+        await this.payOS.verifyPaymentWebhookData(webhookData);
+      return payment;
+    } catch (error) {
+      throw new BadRequestException('The data is unreliable');
+    }
+  }
+
+  async handleWebhook(paymentData: WebhookDataType) {
+    const payment = await this.paymentModel.findOne({
+      orderCode: paymentData.orderCode,
+    });
+
+    if (!payment) return;
+
+    payment.status = 'PAID';
+    await payment.save();
+
+    await this.coursesService.attendCourse(payment.courseId, payment.userId);
   }
 }

@@ -56,7 +56,7 @@ export const CourseCardInLine = ({ course }: CourseCardProps) => {
         <div className="flex justify-between items-center text-xs w-[40rem]">
           <div className="flex">
             <p className="font-semibold text-2xl text-primary">
-              ${course.price}
+              {course.price} VND
             </p>
           </div>
           <Button onClick={() => navigate(`./${course.id}`)}>

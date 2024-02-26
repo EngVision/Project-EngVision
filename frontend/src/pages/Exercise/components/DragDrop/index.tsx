@@ -16,6 +16,7 @@ interface DragDropProps extends QuestionPayload {
   }
   result: any
   exerciseId?: string
+  result?: any
   setIsSubmittable: (value: boolean) => void
 }
 

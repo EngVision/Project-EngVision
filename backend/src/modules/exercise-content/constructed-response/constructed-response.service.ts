@@ -7,6 +7,7 @@ import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 import { CreateConstructedResponseDto } from './dto/create-constructed-response.dto';
 import { ConstructedResponse } from './schemas/constructed-response.schema';
 import { OpenAiService } from 'src/modules/open-ai/open-ai.service';
+import { SubmissionsService } from 'src/modules/submissions/submissions.service';
 
 @Injectable()
 export class ConstructedResponseService extends ExerciseContentService {
@@ -99,7 +100,9 @@ export class ConstructedResponseService extends ExerciseContentService {
 
   setDefaultExplain(questionList: ExerciseQuestionDto[]): void {
     questionList.forEach(q => {
-      q.correctAnswer.explanation = `Correct answer: ${q.correctAnswer.detail}`;
+      q.correctAnswer.explanation = q.correctAnswer.detail
+        ? `Correct answer: ${q.correctAnswer.detail}`
+        : null;
     });
   }
 }

@@ -101,16 +101,7 @@ export class FilesController {
   ) {
     const file = await this.filesService.get(id);
 
-    if (file.url) {
-      return res.redirect(file.url);
-    }
-
-    res.set({
-      'Content-Disposition': `inline; filename="${file.filename}"`,
-      'Content-Type': file.mimetype,
-    });
-
-    return new StreamableFile(file.body);
+    return res.redirect(file.url);
   }
 
   @Delete(':id')

@@ -66,7 +66,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
           <div className="flex justify-between items-center text-xs">
             <div className="flex">
               <p className="font-semibold text-2xl text-primary">
-                ${course.price}
+                {course.price} VND
               </p>
             </div>
           </div>

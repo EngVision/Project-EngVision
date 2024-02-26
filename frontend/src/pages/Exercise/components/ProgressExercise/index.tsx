@@ -21,7 +21,7 @@ function ProgressExercise({
     if (index === questionIndex) return 'bg-sky-600'
     else if (submission?.detail[index]?.isCorrect === false) return 'bg-red-500'
     else if (
-      !!submission &&
+      !!submission?.detail[index] &&
       (submission?.detail[index]?.isCorrect ||
         submission?.detail[index]?.grade !== null)
     )
@@ -32,15 +32,20 @@ function ProgressExercise({
 
   const getIcon = (index: number) => {
     if (
-      !!submission &&
+      !!submission?.detail[index] &&
       (submission?.detail[index]?.isCorrect ||
         submission?.detail[index]?.grade !== null)
     ) {
       return <TickIcon className="bg-transparent" />
-    } else if (!!submission && submission?.detail[index]?.isCorrect === false) {
+    } else if (
+      !!submission?.detail[index] &&
+      submission?.detail[index]?.isCorrect === false
+    ) {
       return <XMarkIcon className="bg-transparent" />
-    } else {
+    } else if (submission?.detail[index]?.grade === null) {
       return <MinusCircle className="bg-transparent" />
+    } else {
+      return <></>
     }
   }
 

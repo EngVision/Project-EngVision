@@ -2,15 +2,14 @@ import { AppstoreOutlined, MenuOutlined } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
 import { Button, Input, Pagination, Tooltip } from 'antd'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { CourseCard } from '../../components/CourseCard'
 import AppLoading from '../../components/common/AppLoading'
-import { useAppSelector } from '../../hooks/redux'
 import coursesApi from '../../services/coursesApi'
 import { GetCourseProps } from '../../services/coursesApi/types'
 import { COURSE_STATUS } from '../../utils/constants'
 import { CourseCardInLine } from './CourseCardInline'
 import SortDropDown from './SortDropDown'
-import { useTranslation } from 'react-i18next'
 const { Search } = Input
 
 const Discover = () => {
@@ -20,8 +19,6 @@ const Discover = () => {
   const [keyword, setKeyword] = useState<string>('')
   const [page, setPage] = useState<number>(1)
   const [status, setStatus] = useState<COURSE_STATUS>(COURSE_STATUS.all)
-
-  const currentLevel = useAppSelector((state) => state.app.currentLevel)
 
   const onSearch = (value: string) => {
     setKeyword(value)
@@ -41,48 +38,23 @@ const Discover = () => {
         break
     }
   }
-  const getNewCoursesParams: GetCourseProps = {
-    status: COURSE_STATUS.all,
-    sortBy: 'createdAt',
-    order: 'desc',
-    limit: 5,
-    page: 0,
-  }
   const getAllCoursesParams: GetCourseProps = {
     status: status,
     sortBy: sortBy,
     order: 'desc',
     keyword: keyword,
-    limit: 8,
+    limit: 10,
     page: page - 1,
-  }
-  const getFreeCoursesParams: GetCourseProps = {
-    status: COURSE_STATUS.all,
-    priceMax: 0,
   }
 
   const { data: personalizedCourse } = useQuery({
     queryKey: ['personalizedCourse'],
     queryFn: () => coursesApi.getPersonalizedCourse(),
   })
-  const { data: rawSuggestedList } = useQuery({
-    queryKey: ['suggestedCourses', { levels: currentLevel }],
-    queryFn: () =>
-      coursesApi.getCourses({ status, levels: currentLevel?.CEFRLevel }),
-  })
-  const { data: rawNewCourseList, isLoading } = useQuery({
-    queryKey: ['courses', getNewCoursesParams],
-    queryFn: () => coursesApi.getCourses(getNewCoursesParams),
-  })
-  const { data: rawAllCourseList } = useQuery({
+  const { data: rawAllCourseList, isLoading } = useQuery({
     queryKey: ['courses', getAllCoursesParams],
     queryFn: () => coursesApi.getCourses(getAllCoursesParams),
   })
-  const { data: rawFreeCourseList } = useQuery({
-    queryKey: ['courses', getFreeCoursesParams],
-    queryFn: () => coursesApi.getCourses(getFreeCoursesParams),
-  })
-
   return (
     <>
       {isLoading ? (
@@ -90,22 +62,6 @@ const Discover = () => {
       ) : (
         <>
           <div className="flex flex-col gap-12 mx-10">
-            {/* {Array.isArray(rawSuggestedList?.data) &&
-              rawSuggestedList?.data.length &&
-              rawSuggestedList?.data.length > 0 && (
-                <div className="">
-                  <p className="font-bold text-2xl text-primary mb-6">
-                    Featured Course
-                  </p>
-
-                  <FeaturedCourse course={rawSuggestedList.data[0]} />
-                  <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
-                    {rawSuggestedList.data.map((course) => (
-                      <CourseCard course={course} key={course.id} />
-                    ))}
-                  </div>
-                </div>
-              )} */}
             {personalizedCourse && (
               <div className="">
                 <p className="font-bold text-3xl text-primary mb-6">
@@ -120,7 +76,7 @@ const Discover = () => {
               </div>
             )}
 
-            {rawSuggestedList && (
+            {/* {rawSuggestedList && (
               <div className="">
                 <p className="font-bold text-3xl text-primary mb-6">
                   {t('Recommended Courses')}
@@ -137,9 +93,9 @@ const Discover = () => {
                   )}
                 </div>
               </div>
-            )}
+            )} */}
 
-            {rawAllCourseList && (
+            {/* {rawAllCourseList && (
               <div className="">
                 <div className="flex justify-between items-center">
                   <p className="font-bold text-3xl text-primary mb-6">
@@ -159,7 +115,7 @@ const Discover = () => {
                   )}
                 </div>
               </div>
-            )}
+            )} */}
 
             <div className="">
               <div className="flex justify-between">
@@ -228,7 +184,7 @@ const Discover = () => {
                 onChange={(page) => setPage(page)}
                 total={rawAllCourseList?.total}
               />
-              {rawFreeCourseList?.data &&
+              {/* {rawFreeCourseList?.data &&
                 rawFreeCourseList?.data.length &&
                 rawFreeCourseList?.data.length > 0 && (
                   <div>
@@ -247,7 +203,7 @@ const Discover = () => {
                       )}
                     </div>
                   </div>
-                )}
+                )} */}
             </div>
           </div>
         </>
