@@ -176,6 +176,24 @@ const chatApi = {
       throw error
     }
   },
+
+  getMessage: async (userId: string, authToken: string, messageId: string) => {
+    try {
+      const res: ResponseData = await axiosClient.get(
+        `${PREFIX}chat.getMessage?msgId=${messageId}`,
+        {
+          headers: {
+            'X-User-Id': userId,
+            'X-Auth-Token': authToken,
+          },
+        },
+      )
+      return res.data
+    } catch (error) {
+      console.error('Error post file details:', error)
+      throw error
+    }
+  },
 }
 
 export default chatApi

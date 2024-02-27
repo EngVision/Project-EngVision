@@ -15,6 +15,7 @@ const RightComponent = ({
     console.log('No chat selected')
     return null
   }
+  console.log(directChats)
 
   const dispatch = useAppDispatch()
 
@@ -60,7 +61,7 @@ const RightComponent = ({
           {/* Loop through and display direct messages */}
           {directChats.slice().map((message: any, index: any) => (
             <div
-              key={index}
+              key={message._id}
               className={`flex flex-col p-1 border-b border-gray-200 ${
                 message.u.username !==
                 previewChats[selectedChat].usernames[oppositeIndex]
