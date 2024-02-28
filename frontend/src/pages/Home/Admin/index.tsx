@@ -42,10 +42,10 @@ const Admin = () => {
         <div className="basis-1/2 text-xl text-white">
           {t('Hi')}, {user?.firstName + ' ' + user?.lastName}! <br />
           {t(
-            'Thank you for choosing to share your knowledge and inspire others on our platform. We are here to support you every step on this journey with us!',
+            'Thank you for choosing to share your knowledge and inspire others on our platform!',
           )}
         </div>
-        <div className="scale-up">
+        <div>
           <AdminLearn height={241} width={240} />
         </div>
       </div>

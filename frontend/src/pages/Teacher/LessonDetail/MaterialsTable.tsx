@@ -21,12 +21,14 @@ import { ColumnsType } from 'antd/es/table'
 import { useForm } from 'antd/es/form/Form'
 import CustomUpload from '../../../components/CustomUpload'
 import fileApi from '../../../services/fileApi'
+import { useTranslation } from 'react-i18next'
 
 interface MaterialsTableProps {
   materials: File[]
 }
 
 const MaterialsTable = ({ materials }: MaterialsTableProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'EditLesson' })
   const { lessonId = '' } = useParams()
   const queryClient = useQueryClient()
   const [type, setType] = useState<MaterialTypes>(MaterialTypes.None)
@@ -87,7 +89,7 @@ const MaterialsTable = ({ materials }: MaterialsTableProps) => {
 
   const columns: ColumnsType<File> = [
     {
-      title: 'Material',
+      title: t('Material'),
       key: 'material',
       className: '!px-6 !py-6',
       render: (_, file) => {
@@ -133,7 +135,7 @@ const MaterialsTable = ({ materials }: MaterialsTableProps) => {
           className="float-right"
           onClick={() => setType(MaterialTypes.Image)}
         >
-          Add new
+          {t('Add new')}
         </Button>
       ),
       width: '140px',
@@ -148,7 +150,7 @@ const MaterialsTable = ({ materials }: MaterialsTableProps) => {
                 onClick={async () => deleteMaterial(file.id)}
                 loading={deleteMaterialMutation.isPending}
               >
-                Delete
+                {t('Delete')}
               </Button>
             </div>
           }
@@ -200,7 +202,7 @@ const MaterialsTable = ({ materials }: MaterialsTableProps) => {
 
   return (
     <div>
-      <h4 className="mb-4 mt-5 text-2xl">Materials</h4>
+      <h4 className="mb-4 mt-5 text-2xl">{t('Materials')}</h4>
       <Table
         rowKey="id"
         dataSource={materials}

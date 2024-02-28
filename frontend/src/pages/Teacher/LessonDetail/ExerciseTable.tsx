@@ -7,12 +7,14 @@ import coursesApi from '../../../services/coursesApi'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { NotificationContext } from '../../../contexts/notification'
 import { ExerciseSchema } from '../../../services/exerciseApi/types'
+import { useTranslation } from 'react-i18next'
 
 interface ExerciseTableProps {
   exerciseList: ExerciseSchema[]
 }
 
 const ExerciseTable = ({ exerciseList }: ExerciseTableProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'EditLesson' })
   const { lessonId = '' } = useParams()
   const apiNotification = useContext(NotificationContext)
   const queryClient = useQueryClient()
@@ -33,13 +35,13 @@ const ExerciseTable = ({ exerciseList }: ExerciseTableProps) => {
 
   const columns: any[] = [
     {
-      title: 'Title',
+      title: t('Title'),
       dataIndex: 'title',
       width: '30%',
       className: '!px-6 !py-6',
     },
     {
-      title: 'Description',
+      title: t('Description'),
       dataIndex: 'description',
       className: '!px-6 !py-6',
     },
@@ -47,7 +49,7 @@ const ExerciseTable = ({ exerciseList }: ExerciseTableProps) => {
       title: (
         <Link to="exercises">
           <Button type="primary" className="float-right">
-            Add new
+            {t('Add new')}
           </Button>
         </Link>
       ),
@@ -60,7 +62,7 @@ const ExerciseTable = ({ exerciseList }: ExerciseTableProps) => {
             <div className="flex flex-col gap-1 py-2 min-w-[100px]">
               <Link to={`exercises/${id}`}>
                 <Button type="text" className="w-full text-left">
-                  Edit
+                  {t('Edit')}
                 </Button>
               </Link>
               <Button
@@ -69,7 +71,7 @@ const ExerciseTable = ({ exerciseList }: ExerciseTableProps) => {
                 onClick={async () => handleDeleteExercise(id)}
                 loading={deleteCourseMutation.isPending}
               >
-                Delete
+                {t('Delete')}
               </Button>
             </div>
           }
@@ -88,7 +90,7 @@ const ExerciseTable = ({ exerciseList }: ExerciseTableProps) => {
 
   return (
     <div>
-      <h4 className="mb-4 text-2xl">Exercises</h4>
+      <h4 className="mb-4 text-2xl">{t('Exercises')}</h4>
       <Table
         dataSource={exerciseList.map((exercise) => ({
           ...exercise,
