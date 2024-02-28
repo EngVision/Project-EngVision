@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { IUser } from '../../services/authApi/types'
 import { IUserLevel } from '../../services/userLevelApi/type'
+import { IUserChat } from '../../services/chatApi/types'
 
 interface AppState {
   user: IUser | null
+  userChat: IUserChat | null
   darkMode: boolean
   locales: string
   isSidebarCollapsed: boolean
@@ -12,10 +14,12 @@ interface AppState {
   currentLevel: IUserLevel | null
   showingLogoutModal: boolean
   isNewMessage: boolean
+  newNotifyRoomId: string[]
 }
 
 const initialState: AppState = {
   user: null,
+  userChat: null,
   darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
   locales: 'en',
   isSidebarCollapsed: false,
@@ -24,6 +28,7 @@ const initialState: AppState = {
   currentLevel: null,
   showingLogoutModal: false,
   isNewMessage: false,
+  newNotifyRoomId: [],
 }
 
 const appSlice = createSlice({
@@ -32,6 +37,9 @@ const appSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload
+    },
+    setUserChat: (state, action) => {
+      state.userChat = action.payload
     },
     toggleDarkMode: (state) => {
       state.darkMode = !state.darkMode
@@ -57,10 +65,21 @@ const appSlice = createSlice({
     setIsNewMessage: (state, action) => {
       state.isNewMessage = action.payload
     },
+    setNewNotifyRoomId: (state, action) => {
+      if (state.newNotifyRoomId === undefined) state.newNotifyRoomId = []
+      if (state.newNotifyRoomId.includes(action.payload)) return
+      state.newNotifyRoomId.push(action.payload)
+    },
+    setRemoveNotifyRoomId: (state, action) => {
+      state.newNotifyRoomId = state.newNotifyRoomId.filter(
+        (id) => id !== action.payload,
+      )
+    },
   },
 })
 export const {
   setUser,
+  setUserChat,
   toggleDarkMode,
   toggleLocales,
   setSidebarCollapsed,
@@ -69,6 +88,8 @@ export const {
   setCurrentLevel,
   setShowLogoutModal,
   setIsNewMessage,
+  setNewNotifyRoomId,
+  setRemoveNotifyRoomId,
 } = appSlice.actions
 
 export default appSlice.reducer

@@ -39,3 +39,8 @@ export interface SendMessageResponse<T> {
   message: T
   success: boolean
 }
+
+export interface IUserChat {
+  userId: string
+  authToken: string
+}

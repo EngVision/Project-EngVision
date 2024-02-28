@@ -2,6 +2,9 @@ import { Button, Form, Input } from 'antd'
 import Send from '../../../../components/Icons/Send'
 import { useAppDispatch } from '../../../../hooks/redux'
 import { setIsNewMessage } from '../../../../redux/app/slice'
+import EmojiPicker from 'emoji-picker-react'
+import { useEffect, useRef, useState } from 'react'
+import Icon from '../../../../components/Icons/Icon'
 
 const RightComponent = ({
   oppositeIndex,
@@ -12,12 +15,31 @@ const RightComponent = ({
   formRef,
 }: any) => {
   if (selectedChat === undefined) {
-    console.log('No chat selected')
     return null
   }
-  console.log(directChats)
 
   const dispatch = useAppDispatch()
+  const emojiPickerRef = useRef<HTMLDivElement>(null)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+
+  useEffect(() => {
+    function handleClickOutside(event: { target: any }) {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target)
+      ) {
+        setShowEmojiPicker(false)
+      }
+    }
+
+    // Thêm event listener để theo dõi sự kiện click ra ngoài
+    document.addEventListener('mousedown', handleClickOutside)
+
+    // Xóa event listener khi component bị unmount
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [emojiPickerRef])
 
   const onFinish = (values: any) => {
     // Gửi tin nhắn khi nút gửi được nhấn
@@ -33,8 +55,17 @@ const RightComponent = ({
     handleSendMessage(message)
   }
 
+  const handleEmojiSelect = (emoji: any) => {
+    console.log('emoji', emoji)
+    const currentValue = formRef.current.getFieldValue('value')
+    console.log('currentValue', currentValue)
+    formRef.current.setFieldsValue({
+      value: currentValue ? currentValue + emoji.emoji : emoji.emoji,
+    })
+  }
+
   return (
-    <div className="flex flex-col w-2/3 bg-surface ml-5 px-5 rounded-xl">
+    <div className="flex flex-col w-2/3 bg-surface ml-5 px-5 rounded-xl h-full">
       {/* Chat messages */}
       <div className="flex flex-col p-2">
         <div className="flex flex-row justify-between border-solid border-b border-0 border-gray-300">
@@ -57,7 +88,7 @@ const RightComponent = ({
         </div>
 
         {/* Chat messages */}
-        <div className="overflow-y-auto flex-grow h-[27rem] flex flex-col-reverse">
+        <div className="overflow-y-auto flex-grow h-[32rem] m-0 p-0 flex flex-col-reverse">
           {/* Loop through and display direct messages */}
           {directChats.slice().map((message: any, index: any) => (
             <div
@@ -123,7 +154,10 @@ const RightComponent = ({
         ref={formRef}
       >
         <div className="flex items-center p-2 border-t border-gray-200 w-[100%]">
-          <Form.Item name="value" style={{ flex: 1, marginRight: '8px' }}>
+          <Form.Item
+            name="value"
+            style={{ flex: 1, marginRight: '8px', position: 'relative' }}
+          >
             <Input
               id="messageInput"
               className="w-full p-2 rounded-lg border-solid border-2 border-blue-500"
@@ -131,15 +165,35 @@ const RightComponent = ({
               onClick={() => dispatch(setIsNewMessage(false))}
             />
           </Form.Item>
-
           <Button
-            className="mb-5 p-1 bg-surface rounded"
+            className="mb-6  bg-surface rounded h-10"
+            type="primary"
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          >
+            <Icon />
+          </Button>
+          {/* <Button
+            className="mb-6 p-1 bg-surface rounded h-10"
             type="primary"
             htmlType="submit"
           >
             <Send />
-          </Button>
+          </Button> */}
         </div>
+
+        {showEmojiPicker && (
+          <div ref={emojiPickerRef}>
+            <EmojiPicker
+              onEmojiClick={handleEmojiSelect}
+              style={{
+                position: 'absolute',
+                bottom: '8rem',
+                right: '4rem',
+                zIndex: 2,
+              }}
+            />
+          </div>
+        )}
       </Form>
     </div>
   )

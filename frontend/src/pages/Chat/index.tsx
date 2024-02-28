@@ -4,23 +4,27 @@ import LeftComponent from './Components/LeftComponent'
 import RightComponent from './Components/RightComponent'
 import { SendMessageParams } from '../../services/chatApi/types'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
-import { setIsNewMessage } from '../../redux/app/slice'
+import {
+  setIsNewMessage,
+  setNewNotifyRoomId,
+  setRemoveNotifyRoomId,
+  setUserChat,
+} from '../../redux/app/slice'
 
 const Chat = () => {
   const dispatch = useAppDispatch()
+  const userChat = useAppSelector((state) => state.app.userChat)
   const [selectedChat, setSelectedChat] = useState<number | undefined>()
-  const [userChat, setUserChat] = useState<{
-    userId: string
-    authToken: string
-  } | null>(null)
   const [previewChats, setPreviewChats] = useState<any[]>([])
   const [directChats, setDirectChats] = useState<any[]>([])
   const [oppositeIndex, setOppositeIndex] = useState<number>(0)
+  const isNewMessage = useAppSelector((state) => state.app.isNewMessage)
   const user = useAppSelector((state) => state.app.user)
+  const newNotifyRoomId = useAppSelector((state) => state.app.newNotifyRoomId)
   const formRef = useRef<any>(null)
 
   useEffect(() => {
-    const socket = new WebSocket('ws://127.0.0.1:3002/websocket')
+    const socket = new WebSocket(import.meta.env.VITE_WS_URL as string)
 
     socket.onopen = () => {
       const connectRequest = {
@@ -35,7 +39,7 @@ const Chat = () => {
           msg: 'method',
           method: 'login',
           id: '1',
-          params: [{ resume: 'Ab93RJYtRExw455ST4lTJIOwGr2njfs-gdIIeqIKisQ' }],
+          params: [{ resume: userChat?.authToken }],
         }),
       )
 
@@ -44,36 +48,36 @@ const Chat = () => {
           msg: 'sub',
           id: 'JkY4pZ8FRyoegcXGk',
           name: 'stream-notify-user',
-          params: ['6LXzvT8A5iXcPMjoq/notification', false],
+          params: [`${userChat?.userId}/notification`, false],
         }),
       )
     }
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data)
-      if (data.fields.eventName === '6LXzvT8A5iXcPMjoq/notification') {
+      console.log('WebSocket message:', data)
+      if (data.fields.eventName === `${userChat?.userId}/notification`) {
         pushNewMessage(data.fields.args[0].payload._id)
-        dispatch(setIsNewMessage(true))
+        dispatch(setNewNotifyRoomId(data.fields.args[0].payload.rid))
       }
     }
 
     socket.onerror = (error) => {
       console.error('WebSocket error:', error)
     }
-    return () => {
-      socket.close()
-    }
   }, [])
 
   const pushNewMessage = async (messageId: string) => {
     if (userChat) {
-      console.log(userChat)
       const { message } = await chatApi.getMessage(
         userChat.userId,
         userChat.authToken,
         messageId,
       )
-      console.log(message, directChats)
+
+      handleGetPreviewChats()
+      dispatch(setIsNewMessage(true))
+
       setDirectChats((prev) => [message, ...prev])
     }
   }
@@ -95,10 +99,7 @@ const Chat = () => {
       const chatToken = getCookieValue('chat_token')
 
       if (chatUserId && chatToken) {
-        setUserChat({
-          userId: chatUserId,
-          authToken: chatToken,
-        })
+        dispatch(setUserChat({ userId: chatUserId, authToken: chatToken }))
       }
     }
 
@@ -213,6 +214,16 @@ const Chat = () => {
 
   const handleChatClick = (index: number) => {
     setSelectedChat(index)
+
+    for (let i = 0; i < newNotifyRoomId.length; i++) {
+      if (newNotifyRoomId[i] === directChats[0].rid) {
+        dispatch(setRemoveNotifyRoomId(directChats[0].rid))
+      }
+    }
+
+    if (newNotifyRoomId.length === 1 || newNotifyRoomId === undefined) {
+      dispatch(setIsNewMessage(false))
+    }
     handleGetPreviewChats()
   }
 
@@ -224,6 +235,7 @@ const Chat = () => {
           previewChats={previewChats}
           handleChatClick={handleChatClick}
         />
+
         <RightComponent
           oppositeIndex={oppositeIndex}
           selectedChat={selectedChat}
