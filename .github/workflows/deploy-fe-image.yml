@@ -64,10 +64,10 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ matrix.tags }}-${{ github.head_ref || github.ref_name }}-${{ github.run_number }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            VITE_BASE_URL
-            VITE_SERVER_FILES_URL
-            VITE_GA4_TRACKING_ID
-            VITE_SENTRY_DSN
+            VITE_BASE_URL=${{ env.VITE_BASE_URL }}
+            VITE_SERVER_FILES_URL=${{ env.VITE_SERVER_FILES_URL }}
+            VITE_GA4_TRACKING_ID=${{ env.VITE_GA4_TRACKING_ID }}
+            VITE_SENTRY_DSN=${{ env.VITE_SENTRY_DSN }}
 
       - name: Build and push Docker develop image
         uses: docker/build-push-action@v4.0.0
@@ -78,10 +78,10 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ matrix.tags }}-${{ github.head_ref || github.ref_name }}-${{ github.run_number }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            VITE_BASE_URL=${{ secrets.STG_VITE_BASE_URL }}
-            VITE_SERVER_FILES_URL=${{ secrets.STG_VITE_SERVER_FILES_URL }}
-            VITE_GA4_TRACKING_ID=${{ secrets.STG_VITE_GA4_TRACKING_ID }}
-            VITE_SENTRY_DSN=${{ secrets.STG_VITE_SENTRY_DSN }}
+            VITE_BASE_URL=${{ env.STG_VITE_BASE_URL }}
+            VITE_SERVER_FILES_URL=${{ env.STG_VITE_SERVER_FILES_URL }}
+            VITE_GA4_TRACKING_ID=${{ env.STG_VITE_GA4_TRACKING_ID }}
+            VITE_SENTRY_DSN=${{ env.STG_VITE_SENTRY_DSN }}
 
   modify-yaml:
     needs: build-and-push-image
