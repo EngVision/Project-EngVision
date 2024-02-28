@@ -59,8 +59,17 @@
     "SUBMITTED ASSIGNMENTS": "SUBMITTED ASSIGNMENTS",
     "COURSES LEARNING": "COURSES LEARNING",
     "TOTAL COURSES": "TOTAL COURSES",
+    "TOTAL ACTIVE COURSES": "TOTAL ACTIVE COURSES",
     "FINISHED COURSES": "FINISHED COURSES",
-    "CERF LEVEL": "CERF LEVEL"
+    "CERF LEVEL": "CERF LEVEL",
+    "TOTAL YOUR COURSES": "TOTAL YOUR COURSES",
+    "TOTAL YOUR STUDENTS": "TOTAL YOUR STUDENTS",
+    "TOTAL YOUR REVENUE": "TOTAL YOUR REVENUE",
+    "AVERAGE RATING YOUR COURSES": "AVERAGE RATING YOUR COURSES",
+    "Thank you for choosing to share your knowledge and inspire others on our platform!": "Thank you for choosing to share your knowledge and inspire others on our platform!",
+    "TOTAL STUDENTS": "TOTAL STUDENTS",
+    "TOTAL TEACHERS": "TOTAL TEACHER",
+    "TOTAL TEACHERS NEED APPROVE": "TOTAL TEACHERS NEED APPROVE"
   },
   "Header": {
     "No notification yet": "No notification yet",

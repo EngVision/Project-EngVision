@@ -1,7 +1,6 @@
 import { ADMIN_ROUTES, PRIVATE_ROUTES } from '../../../utils/constants'
 import {
   BookIcon,
-  ChartIcon,
   DashboardIcon,
   MessageIcon,
   NoteIcon,
@@ -32,11 +31,6 @@ const ADMIN_MENU_ITEMS: MenuItemType[] = [
     icon: <NoteIcon />,
     path: ADMIN_ROUTES.exams,
     title: 'Exams',
-  },
-  {
-    icon: <ChartIcon />,
-    path: PRIVATE_ROUTES.statistic,
-    title: 'Statistic',
   },
   {
     icon: <MessageIcon />,

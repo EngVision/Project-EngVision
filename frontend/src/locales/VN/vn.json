@@ -58,9 +58,17 @@
     "NEXT DUE": "BÀI TẬP TIẾP THEO",
     "SUBMITTED ASSIGNMENTS": "BÀI TẬP ĐÃ NỘP",
     "COURSES LEARNING": "KHÓA HỌC ĐANG HỌC",
-    "TOTAL COURSES": "TỔNG KHÓA HỌC",
+    "TOTAL ACTIVE COURSES": "TỔNG KHÓA HỌC ĐANG HOẠT ĐỘNG",
     "FINISHED COURSES": "KHÓA HỌC ĐÃ HOÀN THÀNH",
-    "CERF LEVEL": "CERF LEVEL"
+    "CERF LEVEL": "CERF LEVEL",
+    "TOTAL YOUR COURSES": "TỔNG KHÓA HỌC",
+    "TOTAL YOUR STUDENTS": "TỔNG HỌC SINH THAM GIA",
+    "TOTAL YOUR REVENUE": "TỔNG THU NHẬP",
+    "AVERAGE RATING YOUR COURSES": "ĐIÊM ĐÁNH GIÁ TRUNG BÌNH TẤT CẢ KHÓA HỌC",
+    "Thank you for choosing to share your knowledge and inspire others on our platform!": "Cảm ơn bạn đã chọn chia sẻ kiến thức của mình và truyền cảm hứng cho người khác trên nền tảng của chúng tôi!",
+    "TOTAL STUDENTS": "TỔNG HỌC SINH",
+    "TOTAL TEACHERS": "TỔNG GIÁO VIÊN",
+    "TOTAL TEACHERS NEED APPROVE": "SỐ GIÁO VIÊN CẦN DUYỆT"
   },
   "Header": {
     "No notification yet": "Không có thông báo nào",
@@ -115,7 +123,7 @@
     "Level": "Trình độ",
     "Account": "Tài khoản",
     "Dashboard": "Bảng điều khiển",
-    "My Hub": "My Hub",
+    "My Hub": "Trung tâm của tôi",
     "Discover": "Khám phá",
     "Are you sure you want to logout?": "Bạn có chắc chắn muốn đăng xuất?",
     "Logout": "Đăng xuất",

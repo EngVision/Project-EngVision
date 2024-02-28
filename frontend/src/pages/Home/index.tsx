@@ -1,4 +1,5 @@
 import { useAppSelector } from '../../hooks/redux'
+import Admin from './Admin'
 import Student from './Student'
 import Teacher from './Teacher'
 
@@ -10,7 +11,7 @@ export const Home = () => {
     <>
       {role === 'Student' && <Student />}
       {role === 'Teacher' && <Teacher />}
-      {role === 'Admin' && <Teacher />}
+      {role === 'Admin' && <Admin />}
     </>
   )
 }
