@@ -53,6 +53,9 @@ export class User {
   @Prop({ default: true })
   showGuideTour?: boolean;
 
+  @Prop({ default: false })
+  chatRegistered?: boolean;
+
   validatePassword?: (password: string) => Promise<boolean>;
   validateRefreshToken?: (refreshToken: string) => Promise<boolean>;
   preSave?: () => Promise<void>;

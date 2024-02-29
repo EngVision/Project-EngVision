@@ -1,14 +1,14 @@
 import { RouteObject } from 'react-router-dom'
 import AuthLayout from '../layouts/AuthLayout'
+import NotFound from '../pages/NotFound'
 import ResetForgotPassword from '../pages/ResetForgotPassword'
 import SendMailResetPassword from '../pages/SendMailResetPassword'
 import SignIn from '../pages/SignIn'
 import SSOSuccess from '../pages/SignIn/components/SSOSuccess'
 import SignUp from '../pages/SignUp'
 import TeacherSignUp from '../pages/SignUp/TeacherSignUp'
-import { PUBLIC_ROUTES } from '../utils/constants'
-import NotFound from '../pages/NotFound'
 import HomePage from '../pages/test'
+import { PUBLIC_ROUTES } from '../utils/constants'
 
 const publicRoutes: RouteObject[] = [
   {

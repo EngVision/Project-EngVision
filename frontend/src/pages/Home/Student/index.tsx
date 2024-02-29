@@ -70,6 +70,7 @@ export const Student = () => {
       queryKey: ['suggestedCourses', { levels: userLevel?.CEFRLevel }],
       queryFn: () => coursesApi.getSuggestedCourses(),
     })
+
   const { data: rawCheckListItems } = useQuery({
     queryKey: ['checkListItems'],
     queryFn: () => checkListApi.getCheckListItems(),

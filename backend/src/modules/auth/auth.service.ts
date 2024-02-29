@@ -6,9 +6,13 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import axios from 'axios';
+import sha256 from 'crypto-js/sha256';
+
 import {
   accessTokenConfig,
   refreshTokenConfig,
+  chatTokenConfig,
 } from 'src/common/config/cookie.config';
 import { User, UserDocument } from '../users/schemas/user.schema';
 import { CreateUserDto } from './../users/dto/create-user.dto';
@@ -160,8 +164,97 @@ export class AuthService {
     return { tokens, user };
   }
 
-  attachTokensCookie(res: Response, tokens: Tokens): void {
+  attachTokensCookie(
+    res: Response,
+    tokens: Tokens,
+    chatUserId?: string,
+    chatToken?: string,
+  ): void {
     res.cookie('access_token', tokens.accessToken, accessTokenConfig);
     res.cookie('refresh_token', tokens.refreshToken, refreshTokenConfig);
+    res.cookie('chat_user_id', chatUserId || '', chatTokenConfig);
+    res.cookie('chat_token', chatToken || '', chatTokenConfig);
+  }
+
+  async accessChatService(user: UserDocument): Promise<{
+    data?: {
+      userId?: string;
+      authToken?: string;
+    };
+  }> {
+    if (!user.chatRegistered) {
+      try {
+        const registrationResponse = await this.registerUserOnChatService(user);
+        if (registrationResponse.success) {
+          await this.usersService.updateChatRegisteredStatus(user.id, true);
+        }
+      } catch (error) {
+        console.error('Registration with chat service failed:', error);
+      }
+    }
+
+    try {
+      const loginResponse = await this.loginUserOnChatService(user);
+      if (!loginResponse.success) {
+        console.error('Login with chat service failed:', loginResponse.error);
+      }
+
+      return loginResponse.data;
+    } catch (error) {
+      console.error('Login with chat service failed:', error);
+    }
+  }
+
+  async registerUserOnChatService(
+    user: UserDocument,
+  ): Promise<{ success: boolean; data?: any; error?: any }> {
+    const url = process.env.CHAT_SERVICE_URL + '/api/v1/users.register';
+    const userData = {
+      name: user.firstName + ' ' + user.lastName,
+      pass: user.email,
+      email: user.email,
+      username: sha256(user.email).toString(),
+    };
+
+    try {
+      const response = await axios.post(url, userData);
+      return {
+        success: true,
+        data: response.data,
+      };
+    } catch (error) {
+      console.error('Error during user registration on chat service:', error);
+      return {
+        success: false,
+        error: error.response?.data || error.message,
+      };
+    }
+  }
+
+  async loginUserOnChatService(
+    user: UserDocument,
+  ): Promise<{ success: boolean; data?: any; error?: any }> {
+    const url = process.env.CHAT_SERVICE_URL + '/api/v1/login';
+    const credentials = {
+      user: sha256(user.email).toString(),
+      password: {
+        digest: sha256(user.email).toString(),
+        algorithm: 'sha-256',
+      },
+    };
+
+    try {
+      const response = await axios.post(url, credentials);
+      return {
+        success: true,
+        data: response.data,
+      };
+    } catch (error) {
+      console.error('Error during user login on chat service:', error);
+      return {
+        success: false,
+        error: error.response?.data || error.message,
+      };
+    }
   }
 }

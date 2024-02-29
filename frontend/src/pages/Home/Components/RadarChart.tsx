@@ -54,17 +54,17 @@ const RadarChart = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   const gradientColorsLight: GradientColors = {
-    Listening: { start: '#5BB3D7', end: '#001171' },
-    Reading: { start: '#F76519', end: '#001171' },
-    Writing: { start: '#0088FE', end: '#001171' },
-    Speaking: { start: '#00C49F', end: '#001171' },
+    Listening: { start: '#C8B4E5', end: '#759fdd' },
+    Reading: { start: '#FFD5B1', end: '#759fdd' },
+    Writing: { start: '#99C2FF', end: '#759fdd' },
+    Speaking: { start: '#C5FFE0', end: '#759fdd' },
   }
 
   const gradientColorsDark: GradientColors = {
-    Listening: { start: '#274472', end: '#001171' },
-    Reading: { start: '#A64510', end: '#001171' },
-    Writing: { start: '#00569D', end: '#001171' },
-    Speaking: { start: '#007E66', end: '#001171' },
+    Listening: { start: '#7A63AE', end: '#759fdd' },
+    Reading: { start: '#D9966E', end: '#759fdd' },
+    Writing: { start: '#4F8CCB', end: '#759fdd' },
+    Speaking: { start: '#5B9B76', end: '#759fdd' },
   }
 
   const gradientColors = isDarkMode ? gradientColorsDark : gradientColorsLight
@@ -189,7 +189,7 @@ const RadarChart = () => {
       <div style={{ width: '30%', paddingLeft: '20px' }}>
         <div>
           <div
-            className="rounded-2xl mb-3 hover:cursor-pointer bg-gradient-to-r from-[#8B5CF6] to-[#001171] text-white transform transition-transform hover:scale-105"
+            className="rounded-2xl mb-3 hover:cursor-pointer bg-gradient-to-r  to-[#a375f7] from-[#8ba3dd] text-white transform transition-transform hover:scale-105"
             onClick={() => handleClick('')}
           >
             <div className="w-[100%/2] h-40 p-2 my-4 flex flex-col items-center justify-center text-2xl">

@@ -354,4 +354,18 @@ export class UsersService {
 
     return user;
   }
+
+  updateChatRegisteredStatus(id: string, chatRegistered: boolean) {
+    const user = this.userModel.findByIdAndUpdate(
+      id,
+      { chatRegistered },
+      { returnDocument: 'after' },
+    );
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
 }

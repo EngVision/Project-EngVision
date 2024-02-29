@@ -1,6 +1,6 @@
 export interface ResponseData<T = any> {
   data: T
-  message: string
+  message: []
   success: boolean
   limit?: number
   offset?: number
