@@ -101,6 +101,7 @@
     "inProgressAndDoneExercises": "Bài tập đang làm và hoàn thành",
     "Search by exercise or course name": "Tìm kiếm theo tên bài tập hoặc khóa học",
     "Title": "Tiêu đề",
+    "Section": "Phần",
     "Lesson": "Bài học",
     "Skills": "Kỹ năng",
     "Type": "Loại",
@@ -160,7 +161,7 @@
     "Statistic": "Thống kê",
     "Chats": "Trò chuyện",
     "Users": "Người dùng",
-    "Achievement": "Thành tựu"
+    "Achievements": "Thành tựu"
   },
   "Course Details": {
     "Overview": "Tổng quan",
@@ -172,7 +173,13 @@
     "Review this course": "Đánh giá khóa học này",
     "Write your review here": "Viết đánh giá của bạn ở đây",
     "Rate this course": "Đánh giá khóa học này",
-    "Submit": "Gửi"
+    "Submit": "Gửi",
+    "General": "Thông tin chung",
+    "Title": "Tiêu đề",
+    "About": "Giới thiệu",
+    "Price": "Giá",
+    "Level": "Trình độ",
+    "Thumbnail": "Ảnh tiêu đề"
   },
   "Account": {
     "Male": "Nam",
@@ -195,7 +202,8 @@
     "Save": "Lưu",
     "First Name": "Tên",
     "Last Name": "Họ",
-    "Profile": "Thông tin cá nhân"
+    "Profile": "Thông tin cá nhân",
+    "Avatar": "Ảnh đại diện"
   },
   "MyCourses": {
     "My courses": "Khóa học của tôi",
@@ -209,5 +217,60 @@
     "Price descending": "Giá giảm dần",
     "Filter": "Lọc",
     "SearchCourse": "Tìm kiếm khóa học..."
+  },
+  "Grading": {
+    "Grading Course": "Chấm điểm theo khóa học",
+    "students": "Học sinh",
+    "Lessons": "Bài học",
+    "submissions": "bài nộp",
+    "submission are pending": "bài nộp chờ chấm điểm",
+    "No courses found": "Không tìm thấy khóa học nào",
+    "Name": "Tên học sinh",
+    "Section": "Phần",
+    "Lesson": "Bài học",
+    "Exercise": "Bài tập",
+    "Type": "Loại",
+    "Submit Date": "Ngày nộp",
+    "Grade": "Điểm",
+    "Status": "Trạng thái",
+    "Action": "Hành động"
+  },
+  "DoExercise": {
+    "Quiz progress": "Tiến trình bài tập",
+    "Previous": "Câu trước",
+    "Confirm": "Xác nhận",
+    "Next": "Tiếp tục"
+  },
+  "EditLesson": {
+    "Exercises": "Các bài tập",
+    "Materials": "Các tài liệu",
+    "Material": "Tài liệu",
+    "Title": "Tiêu đề",
+    "Description": "Mô tả",
+    "Add new": "Thêm mới",
+    "Edit": "Chỉnh sửa",
+    "Delete": "Xóa"
+  },
+  "ManageExercise": {
+    "Title": "Tiêu đề",
+    "General": "Phần chung",
+    "Description": "Mô tả",
+    "Description (optional)": "Mô tả (tùy chọn)",
+    "Exercise type": "Loại bài tập",
+    "Exercise tags": "Thẻ bài tập",
+    "Exercise level": "Cấp độ bài tập",
+    "Exercise content": "Nôi dung bài tập",
+    "Question": "Câu hỏi",
+    "Question content - It will be displayed through all the questions (optional)": "Nội dung câu hỏi - Sẽ được hiển thị qua tất cả các câu hỏi (tùy chọn).",
+    "Question image": "Hình ảnh câu hỏi",
+    "Question audio": "Âm thanh câu hỏi",
+    "Explanation": "Giải thích",
+    "Tags": "Thẻ",
+    "Level": "Cấp độ",
+    "Add question": "Thêm câu hỏi",
+    "Save": "Lưu",
+    "Remove": "Xóa",
+    "Upload": "Tải lên",
+    "Create": "Tạo"
   }
 }

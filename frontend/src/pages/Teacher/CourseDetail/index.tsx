@@ -114,8 +114,7 @@ const TeacherCourseDetail = () => {
   }
 
   const handleChangeThumbnail = () => {
-    form.setFieldValue('thumbnail', courseDetails?.thumbnail)
-    handleChangeForm()
+    form.setFieldValue('thumbnail', null)
   }
 
   if (isLoading) return <AppLoading />

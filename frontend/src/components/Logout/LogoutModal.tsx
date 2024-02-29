@@ -35,7 +35,7 @@ const LogoutModal = () => {
       title={
         <div className="flex gap-3 items-center mb-4">
           <WarningIcon />
-          <h3 className="text-2xl font-semibold">Logout</h3>
+          <h3 className="text-2xl font-semibold">{t('Logout')}</h3>
         </div>
       }
       open={showingLogoutModal}
@@ -43,6 +43,7 @@ const LogoutModal = () => {
         e.stopPropagation()
         dispatch(setShowLogoutModal(false))
       }}
+      cancelText={t('Cancel')}
       footer={(_, { CancelBtn }) => (
         <>
           <CancelBtn />

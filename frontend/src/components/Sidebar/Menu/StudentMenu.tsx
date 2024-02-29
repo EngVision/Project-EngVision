@@ -27,8 +27,8 @@ const STUDENT_MENU_ITEMS: MenuItemType[] = [
   {
     icon: <Cup />,
     path: STUDENT_ROUTES.achievement,
-    title: 'Achievement',
-    id: 'achievement',
+    title: 'Achievements',
+    id: 'achievements',
   },
   // {
   //   icon: <MessageIcon />,

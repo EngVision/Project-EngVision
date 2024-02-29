@@ -114,7 +114,7 @@ const InProgressAndDoneExercise = () => {
           <CustomImage
             src={`${UPLOAD_FILE_URL}${course?.thumbnail}`}
             fallback={
-              'https://freerangestock.com:443/sample/84205/exercise-words-shows-working-out-and-exercised.jpg'
+              'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
             }
             className="w-14 h-11 rounded"
           />
@@ -131,7 +131,7 @@ const InProgressAndDoneExercise = () => {
       ...courseExercisesSearch(),
     },
     {
-      title: 'Section',
+      title: t('Section'),
       dataIndex: ['section', 'title'],
       key: 'section',
     },
