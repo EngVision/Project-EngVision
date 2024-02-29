@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { LEVELS } from '../../../../utils/constants'
 import CustomImage from '../../../../components/common/CustomImage'
 import { CourseDetails } from '../../../../services/coursesApi/types'
+import { useTranslation } from 'react-i18next'
 // import { CourseExercisesDue } from '../../../../services/coursesApi/types'
 
 interface CourseProps {
@@ -12,6 +13,7 @@ interface CourseProps {
 }
 
 const CourseCard = ({ course }: CourseProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Grading' })
   const navigate = useNavigate()
   const level = LEVELS.find((l) => l.level === course?.level)
 
@@ -35,20 +37,26 @@ const CourseCard = ({ course }: CourseProps) => {
       <div className="flex justify-between text-xs">
         <div className="flex items-center">
           <PeopleIcon width={20} height={20} className="pr-1" />
-          <p>{course.attendance} Students</p>
+          <p>
+            {course.attendance} {t('students')}
+          </p>
         </div>
 
         <div className="flex items-center">
           <NoteIcon className="pr-1" />
-          <p>{course.totalLessons} Lessons</p>
+          <p>
+            {course.totalLessons} {t('Lessons')}
+          </p>
         </div>
       </div>
 
       <p className="text-sm font-bold uppercase py-4">{course.title}</p>
 
-      <p className="text-alternative">{course.submissionAmount} submissions</p>
+      <p className="text-alternative">
+        {course.submissionAmount} {t('submissions')}
+      </p>
       <p className="text-secondary">
-        {course.pendingSubmissionAmount} submission are pending
+        {course.pendingSubmissionAmount} {t('submission are pending')}
       </p>
     </Card>
   )

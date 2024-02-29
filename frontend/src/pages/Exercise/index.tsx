@@ -11,6 +11,7 @@ import GradingExercise from './components/GradingExercise'
 import { ExerciseSchema } from '../../services/exerciseApi/types'
 import Joyride, { CallBackProps, STATUS } from 'react-joyride'
 import { DO_EXERCISE_STEPS } from '../../utils/guideTourSteps'
+import { useTranslation } from 'react-i18next'
 
 interface ExerciseProps {
   exercise?: ExerciseSchema
@@ -41,6 +42,7 @@ function Exercise({
   grade,
   backUrl,
 }: ExerciseProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'DoExercise' })
   const [form] = Form.useForm()
   const [hasResult, setHasResult] = useState<boolean>(false)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(false)
@@ -56,9 +58,6 @@ function Exercise({
 
     setIsSubmittable(false)
   }, [submission, questionIndex])
-
-  const viewMode =
-    isGrading || (!exercise?.needGrade && submission?.detail[questionIndex])
 
   const Content = () => {
     return (
@@ -175,7 +174,7 @@ function Exercise({
             disabled={questionIndex <= 0 && !hasPreviousPart}
             onClick={previousQuestion}
           >
-            Previous
+            {t('Previous')}
           </Button>
           <Button
             id="button-confirm"
@@ -187,8 +186,8 @@ function Exercise({
             loading={btnConfirmLoading}
           >
             {!hasResult || questionIndex >= (exercise?.content?.length || 0)
-              ? 'Confirm'
-              : 'Next'}
+              ? t('Confirm')
+              : t('Next')}
           </Button>
         </div>
       </div>

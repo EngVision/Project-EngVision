@@ -6,7 +6,9 @@ import AppLoading from '../../../../components/common/AppLoading'
 import submissionApi from '../../../../services/submissionApi'
 import { SubmissionResponse } from '../../../../services/submissionApi/types'
 import { UPLOAD_FILE_URL } from '../../../../utils/constants'
+import { useTranslation } from 'react-i18next'
 const AssignmentTable = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Grading' })
   const navigate = useNavigate()
   const params = useParams()
   const { data: rawSubmissionList, isLoading } = useQuery({
@@ -16,7 +18,7 @@ const AssignmentTable = () => {
   })
   const columns: ColumnsType<SubmissionResponse> = [
     {
-      title: 'Name',
+      title: t('Name'),
       dataIndex: 'user',
       key: 'user',
       render: (user) => {
@@ -33,36 +35,36 @@ const AssignmentTable = () => {
       },
     },
     {
-      title: 'Section',
+      title: t('Section'),
       dataIndex: 'section',
       key: 'section',
       align: 'center',
       render: (section) => section?.title,
     },
     {
-      title: 'Lesson',
+      title: t('Lesson'),
       dataIndex: 'lesson',
       key: 'lesson',
       align: 'center',
       render: (lesson) => lesson?.title,
     },
     {
-      title: 'Exercise',
+      title: t('Exercise'),
       dataIndex: 'exercise',
       key: 'exercise',
       align: 'center',
       render: (exercise) => exercise?.title,
     },
-    { title: 'Type', dataIndex: 'exerciseType', key: 'exerciseType' },
+    { title: t('Type'), dataIndex: 'exerciseType', key: 'exerciseType' },
     {
-      title: 'Submit Date',
+      title: t('Submit Date'),
       dataIndex: 'updatedAt',
       key: 'updatedAr',
       align: 'center',
       render: (updatedAt) => new Date(updatedAt).toLocaleDateString(),
     },
     {
-      title: 'Grade',
+      title: t('Grade'),
       dataIndex: 'grade',
       key: 'grade',
       align: 'center',
@@ -76,7 +78,7 @@ const AssignmentTable = () => {
         ),
     },
     {
-      title: 'Status',
+      title: t('Status'),
       dataIndex: 'status',
       key: 'status',
       align: 'center',
@@ -92,7 +94,7 @@ const AssignmentTable = () => {
         ),
     },
     {
-      title: 'Action',
+      title: t('Action'),
       key: 'action',
       align: 'center',
       fixed: 'right',

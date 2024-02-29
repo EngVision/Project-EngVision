@@ -5,8 +5,16 @@ import { achievementApi } from '../../../services/achievementApi'
 import { AchievementItem } from '../../../services/achievementApi/types'
 import { getFileUrl } from '../../../utils/common'
 import AppLoading from '../../../components/common/AppLoading'
+import { useTranslation } from 'react-i18next'
+
+interface Achievements {
+  name: string
+  description: string
+  progress: number
+}
 
 const Achievements = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'common' })
   const { data: achievement, isLoading } = useQuery({
     queryKey: ['achievement'],
     queryFn: () => achievementApi.get(),
@@ -75,15 +83,13 @@ const Achievements = () => {
   }
 
   return (
-    <div className="rounded-xl p-5">
-      <h1 className="text-blue-700">Achievements</h1>
-      <div className="flex flex-wrap mt-5 space-x-4">
-        {isLoading ? (
-          <AppLoading />
-        ) : (
-          achievement?.items.map((item) => achievementsCard(item))
-        )}
-      </div>
+    <div className="bg-surface rounded-xl p-5">
+      <h1 className="text-blue-700">{t('Achievements')}</h1>
+      {isLoading ? (
+        <AppLoading />
+      ) : (
+        achievement?.items.map((item) => achievementsCard(item))
+      )}
     </div>
   )
 }

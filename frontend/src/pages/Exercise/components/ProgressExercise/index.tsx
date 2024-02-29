@@ -3,6 +3,7 @@ import { TickIcon, XMarkIcon } from '../../../../components/Icons'
 import MinusCircle from '../../../../components/Icons/MinusCircle'
 import { ExerciseSchema } from '../../../../services/exerciseApi/types'
 import { SubmissionResponse } from '../../../../services/submissionApi/types'
+import { useTranslation } from 'react-i18next'
 
 interface ProgressExerciseProps {
   exercise?: ExerciseSchema
@@ -17,6 +18,8 @@ function ProgressExercise({
   questionIndex,
   gotoQuestion,
 }: ProgressExerciseProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'DoExercise' })
+
   const getBackground = (index: number) => {
     if (index === questionIndex) return 'bg-sky-600'
     else if (submission?.detail[index]?.isCorrect === false) return 'bg-red-500'
@@ -51,7 +54,7 @@ function ProgressExercise({
 
   return (
     <>
-      <p className="mb-1">Quiz progress</p>
+      <p className="mb-1">{t('Quiz progress')}</p>
       <Space>
         {exercise?.content.map((_, index) => (
           <div

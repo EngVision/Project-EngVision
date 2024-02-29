@@ -59,8 +59,17 @@
     "SUBMITTED ASSIGNMENTS": "SUBMITTED ASSIGNMENTS",
     "COURSES LEARNING": "COURSES LEARNING",
     "TOTAL COURSES": "TOTAL COURSES",
+    "TOTAL ACTIVE COURSES": "TOTAL ACTIVE COURSES",
     "FINISHED COURSES": "FINISHED COURSES",
-    "CERF LEVEL": "CERF LEVEL"
+    "CERF LEVEL": "CERF LEVEL",
+    "TOTAL YOUR COURSES": "TOTAL YOUR COURSES",
+    "TOTAL YOUR STUDENTS": "TOTAL YOUR STUDENTS",
+    "TOTAL YOUR REVENUE": "TOTAL YOUR REVENUE",
+    "AVERAGE RATING YOUR COURSES": "AVERAGE RATING YOUR COURSES",
+    "Thank you for choosing to share your knowledge and inspire others on our platform!": "Thank you for choosing to share your knowledge and inspire others on our platform!",
+    "TOTAL STUDENTS": "TOTAL STUDENTS",
+    "TOTAL TEACHERS": "TOTAL TEACHER",
+    "TOTAL TEACHERS NEED APPROVE": "TOTAL TEACHERS NEED APPROVE"
   },
   "Header": {
     "No notification yet": "No notification yet",
@@ -93,6 +102,7 @@
     "inProgressAndDoneExercises": "In Progress And Done Exercises",
     "Search by exercise or course name": "Search by exercise or course name",
     "Title": "Title",
+    "Section": "Section",
     "Lesson": "Lesson",
     "Skills": "Skills",
     "Type": "Type",
@@ -152,7 +162,7 @@
     "Statistic": "Statistic",
     "Chats": "Chats",
     "Users": "Users",
-    "Achievement": "Achievement"
+    "Achievements": "Achievements"
   },
   "Course Details": {
     "Overview": "Overview",
@@ -164,7 +174,13 @@
     "Review this course": "Review this course",
     "Write your review here": "Write your review here",
     "Rate this course": "Rate this course",
-    "Submit": "Submit"
+    "Submit": "Submit",
+    "General": "General",
+    "Title": "Title",
+    "About": "About",
+    "Price": "Price",
+    "Level": "Level",
+    "Thumbnail": "Thumbnail"
   },
   "Account": {
     "Male": "Male",
@@ -187,7 +203,8 @@
     "Save": "Save",
     "First Name": "First Name",
     "Last Name": "Last Name",
-    "Profile": "Profile"
+    "Profile": "Profile",
+    "Avatar": "Avatar"
   },
   "MyCourses": {
     "My courses": "My courses",
@@ -201,5 +218,60 @@
     "Price descending": "Price descending",
     "Filter": "Filter",
     "SearchCourse": "Search course..."
+  },
+  "Grading": {
+    "Grading Course": "Grading Course",
+    "students": "students",
+    "Lessons": "Lessons",
+    "submissions": "submissions",
+    "submission are pending": "submission are pending",
+    "No courses found": "No courses found",
+    "Name": "Name",
+    "Section": "Section",
+    "Lesson": "Lesson",
+    "Exercise": "Exercise",
+    "Type": "Type",
+    "Submit Date": "Submit Date",
+    "Grade": "Grade",
+    "Status": "Status",
+    "Action": "Action"
+  },
+  "DoExercise": {
+    "Quiz progress": "Quiz progress",
+    "Previous": "Previous",
+    "Confirm": "Confirm",
+    "Next": "Next"
+  },
+  "EditLesson": {
+    "Exercises": "Exercises",
+    "Materials": "Materials",
+    "Material": "Material",
+    "Title": "Title",
+    "Description": "Description",
+    "Add new": "Add new",
+    "Edit": "Edit",
+    "Delete": "Delete"
+  },
+  "ManageExercise": {
+    "Title": "Title",
+    "General": "General",
+    "Description": "Description",
+    "Description (optional)": "Description (optional)",
+    "Exercise type": "Exercise type",
+    "Exercise tags": "Exercise tags",
+    "Exercise level": "Exercise level",
+    "Exercise content": "Exercise content",
+    "Question": "Question",
+    "Question content - It will be displayed through all the questions (optional)": "Question content - It will be displayed through all the questions (optional)",
+    "Question image": "Question image",
+    "Question audio": "Question audio",
+    "Explanation": "Explanation",
+    "Tags": "Tags",
+    "Level": "Level",
+    "Add question": "Add question",
+    "Save": "Save",
+    "Remove": "Remove",
+    "Upload": "Upload",
+    "Create": "Create"
   }
 }
