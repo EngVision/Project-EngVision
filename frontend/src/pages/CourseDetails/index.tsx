@@ -1,23 +1,28 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Tabs, message } from 'antd'
+import sha256 from 'crypto-js/sha256'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import Star from '../../components/Icons/Star'
 import AppLoading from '../../components/common/AppLoading'
+import CustomImage from '../../components/common/CustomImage'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
+import { setIsNewMessage, setNewNotifyRoomId } from '../../redux/app/slice'
+import chatApi from '../../services/chatApi'
+import { SendMessageParams } from '../../services/chatApi/types'
 import coursesApi from '../../services/coursesApi'
+import enrollCourseApi from '../../services/enrollCourse'
+import paymentsApi from '../../services/payment'
 import { UPLOAD_FILE_URL } from '../../utils/constants'
 import { formatDate } from '../../utils/formatDate'
 import CourseContent from './CourseContent'
 import Overview from './Overview'
 import Reviews from './Reviews'
-import CustomImage from '../../components/common/CustomImage'
-import paymentsApi from '../../services/payment'
-import chatApi from '../../services/chatApi'
-import { useEffect, useState } from 'react'
-import enrollCourseApi from '../../services/enrollCourse'
-import { useTranslation } from 'react-i18next'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -25,6 +30,7 @@ const CourseDetailsPage = () => {
   const { courseId = '' } = useParams<{ courseId: string }>()
   const queryClient = useQueryClient()
   const [enrollLoading, setEnrollLoading] = useState(false)
+  const userChat = useAppSelector((state) => state.app.userChat)
 
   const { data: courseDetail, isLoading } = useQuery({
     queryKey: ['courseDetail', courseId],
@@ -42,19 +48,35 @@ const CourseDetailsPage = () => {
 
   const enroll = async () => {
     attendCourseMutation.mutate(courseId, {
-      onSuccess: (response) => {
+      onSuccess: async (response) => {
         queryClient.invalidateQueries({ queryKey: ['courseDetail'] })
 
         const teacherEmail = response?.teacher?.email
         const isTeacherChatRegistered = response?.teacher?.chatRegistered
 
-        if (teacherEmail && isTeacherChatRegistered) {
+        if (teacherEmail && isTeacherChatRegistered && userChat) {
           // TODO: Get auth token from Redux
-          chatApi.createIm(
-            '2YvpBkJGpTa27L3Gv',
-            'oh40OwgEXO-6MqpIxqg4OeKusgehXBEgsjW6210Ee1C',
-            teacherEmail,
+          const userName = sha256(teacherEmail).toString()
+          const room = await chatApi.createIm(
+            userChat.userId,
+            userChat.authToken,
+            userName,
           )
+
+          const sendMessageParams: SendMessageParams = {
+            rid: room.room.rid,
+            msg: `Hello, I have just enrolled in ${
+              courseDetail ? courseDetail.title : 'your course'
+            }.`,
+          }
+
+          await chatApi.sendMessage(
+            userChat.userId,
+            userChat.authToken,
+            sendMessageParams,
+          )
+          dispatch(setNewNotifyRoomId(room.room.rid))
+          dispatch(setIsNewMessage(true))
         }
 
         message.open({
