@@ -55,7 +55,6 @@ const Chat = () => {
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data)
-      console.log('WebSocket message:', data)
       if (data.fields.eventName === `${userChat?.userId}/notification`) {
         pushNewMessage(data.fields.args[0].payload._id)
         dispatch(setNewNotifyRoomId(data.fields.args[0].payload.rid))
@@ -122,13 +121,18 @@ const Chat = () => {
           return timeB - timeA
         })
 
-        const myUserName = response.update.filter((chat: any) => {
-          return chat.usersCount === 1
-        })[0].usernames[0]
-
         const filteredChats = response.update.filter((chat: any) => {
           return chat.usersCount === 2 && chat.name !== 'general'
         })
+
+        console.log('response:', response)
+
+        const userName = await chatApi.getUser(
+          userChat.userId,
+          userChat.authToken,
+        )
+
+        const myUserName = userName.user.username
 
         const index = filteredChats[0].usernames[0] === myUserName ? 1 : 0
         setOppositeIndex(index)

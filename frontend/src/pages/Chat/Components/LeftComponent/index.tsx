@@ -66,7 +66,21 @@ const LeftComponent = ({
               {formatTimestamp(filteredItem.lastMessage.ts)}
             </span>
           </div>
-        ) : null}
+        ) : (
+          <div
+            className={`${chatClass} ${backgroundColor}`}
+            onClick={() => handleChatClick(index)}
+          >
+            <span className="text-xl flex font-bold text-blue-600 w-10 h-10 rounded-full bg-grey-100 justify-center items-center ">
+              {filteredItem.oppositeName?.charAt(0).toUpperCase()}
+            </span>
+            <div className={`ml-2`}>
+              <h4 className="font-bold">{filteredItem.oppositeName}</h4>
+              <p className="text-sm "></p>
+            </div>
+            <span className="ml-auto text-sm"></span>
+          </div>
+        )}
       </React.Fragment>
     )
   })
