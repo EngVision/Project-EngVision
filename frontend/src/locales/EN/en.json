@@ -91,7 +91,11 @@
     "Search course...": "Search course...",
     "Free Courses": "Free Courses",
     "Newly Created": "Newly Created",
-    "My Progress": "My Progress"
+    "My Progress": "My Progress",
+    "Price Up": "Price Up",
+    "Price Down": "Price Down",
+    "Rating Up": "Rating Up",
+    "Rating Down": "Rating Down"
   },
   "Exercises": {
     "exercises": "Exercises"

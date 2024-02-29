@@ -1,4 +1,8 @@
-import { COURSE_STATUS, MaterialTypes } from '../../utils/constants'
+import {
+  COURSE_STATUS,
+  ExerciseType,
+  MaterialTypes,
+} from '../../utils/constants'
 
 export interface CourseParams {
   id: string
@@ -39,6 +43,7 @@ export interface Review {
 export interface Exercise {
   id: string
   title: string
+  type: ExerciseType
   completed: boolean
 }
 export interface Lesson {

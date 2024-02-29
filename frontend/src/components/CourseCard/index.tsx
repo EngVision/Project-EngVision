@@ -56,7 +56,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
           <div className="flex justify-between items-center text-xs ">
             <div className="flex items-center gap-2">
               <StarIcon className="text-secondary" />
-              <p className="font-semibold">{course.avgStar}</p>
+              <p className="font-semibold">{course.avgStar || 0}</p>
             </div>
             <div>
               <span className="font-bold">{course.attendance}</span>{' '}

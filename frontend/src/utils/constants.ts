@@ -110,6 +110,14 @@ export enum ExerciseType {
   WordSearch = 'WordSearch',
 }
 
+export const MobileAvailableExerciseTypes = [
+  ExerciseType.MultipleChoice,
+  ExerciseType.FillBlank,
+  ExerciseType.ConstructedResponse,
+  ExerciseType.MakeSentence,
+  ExerciseType.Speaking,
+]
+
 export enum ExerciseTag {
   Grammar = 'Grammar',
   Vocabulary = 'Vocabulary',

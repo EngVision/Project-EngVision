@@ -90,7 +90,11 @@
     "Search course...": "Tìm khóa học...",
     "Free Courses": "Khóa học miễn phí",
     "Newly Created": "Mới tạo",
-    "My Progress": "Tiến độ của tôi"
+    "My Progress": "Tiến độ của tôi",
+    "Price Up": "Giá tăng dần",
+    "Price Down": "Giá giảm dần",
+    "Rating Up": "Đánh giá tăng dần",
+    "Rating Down": "Đánh giá giảm dần"
   },
   "Exercises": {
     "exercises": "Bài tập"

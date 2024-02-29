@@ -19,7 +19,7 @@ import { SendMessageParams } from '../../services/chatApi/types'
 import coursesApi from '../../services/coursesApi'
 import enrollCourseApi from '../../services/enrollCourse'
 import paymentsApi from '../../services/payment'
-import { UPLOAD_FILE_URL } from '../../utils/constants'
+import { STUDENT_ROUTES_MOBILE, UPLOAD_FILE_URL } from '../../utils/constants'
 import { formatDate } from '../../utils/formatDate'
 import CourseContent from './CourseContent'
 import Overview from './Overview'
@@ -40,7 +40,6 @@ const CourseDetailsPage = () => {
   const userChat = useAppSelector((state) => state.app.userChat)
 
   const { pathname } = useLocation()
-  console.log('🚀 ~ CourseDetailsPage ~ pathname:', pathname)
 
   const { data: courseDetail, isLoading } = useQuery({
     queryKey: ['courseDetail', courseId],
@@ -131,7 +130,7 @@ const CourseDetailsPage = () => {
   }
 
   const back = () => {
-    navigate(-1)
+    navigate(STUDENT_ROUTES_MOBILE.myHub)
   }
 
   if (isLoading) return <AppLoading />

@@ -1,23 +1,31 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Collapse, Image } from 'antd'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Circle from '../../../components/Icons/Circle'
 import TickCircle from '../../../components/Icons/TickCircle'
 import { CourseDetails } from '../../../services/coursesApi/types'
 import submissionApi from '../../../services/submissionApi'
 import AppLoading from '../../../components/common/AppLoading'
 import FileWrapper from '../../../components/FileWrapper'
-import { UPLOAD_FILE_URL } from '../../../utils/constants'
-import { useState } from 'react'
+import {
+  MobileAvailableExerciseTypes,
+  UPLOAD_FILE_URL,
+} from '../../../utils/constants'
+import { useContext, useState } from 'react'
 import userViewsApi from '../../../services/userViewsApi'
 import { useTranslation } from 'react-i18next'
+import { NotificationContext } from '../../../contexts/notification'
 const { Panel } = Collapse
+
 const CourseContent = (course: CourseDetails) => {
   const { t } = useTranslation()
   const params = useParams()
   const completedExerciseIds: string[] = []
   const [imagePreview, setImagePreview] = useState('')
   const queryClient = useQueryClient()
+  const { pathname } = useLocation()
+
+  const apiNotification = useContext(NotificationContext)
 
   const navigate = useNavigate()
   const { data: rawSubmissionList, isLoading } = useQuery({
@@ -69,9 +77,6 @@ const CourseContent = (course: CourseDetails) => {
             lesson.completed = false
           } else {
             lesson.exercises?.forEach((exercise) => {
-              // if (lastSubmissionID === exercise.id) {
-              //   lastLessonID = lesson.id
-              // }
               if (completedExerciseIds.includes(exercise.id)) {
                 exercise.completed = true
                 countExerciseCompleted++
@@ -208,7 +213,7 @@ const CourseContent = (course: CourseDetails) => {
                           key={exerciseIndex.toString()}
                           className="pl-6 lg:pl-10 pr-4 lg:pr-24"
                         >
-                          <div className="flex items-center justify-between mb-4 hover:outline-dashed hover:outline-[1px] hover:outline-primary py-2 px-2 rounded-lg">
+                          <div className="flex items-center justify-between mb-4 outline-none py-2 px-2 rounded-lg">
                             <div className="flex items-center">
                               {completedExerciseIds.includes(exercise.id) ? (
                                 <TickCircle
@@ -227,15 +232,37 @@ const CourseContent = (course: CourseDetails) => {
                                 Exercise:
                               </div>
                               <span className="font-bold text-lg">
-                                {lesson.title}
+                                {exercise.title}
                               </span>
                             </div>
                             <Button
-                              onClick={() =>
+                              onClick={() => {
+                                if (
+                                  pathname.includes('/m/') &&
+                                  !MobileAvailableExerciseTypes.includes(
+                                    exercise.type,
+                                  )
+                                ) {
+                                  apiNotification.warning({
+                                    message:
+                                      'This exercise type only works on desktop for now',
+                                  })
+                                  return
+                                }
+
                                 navigate(`./exercise/${exercise.id}`)
-                              }
+                              }}
                               type="primary"
                               className="rounded-xl text-lg leading-5 px-4 lg:px-6 h-full py-2"
+                              style={{
+                                opacity:
+                                  pathname.includes('/m/') &&
+                                  !MobileAvailableExerciseTypes.includes(
+                                    exercise.type,
+                                  )
+                                    ? 0.5
+                                    : 1,
+                              }}
                             >
                               Learn
                             </Button>
