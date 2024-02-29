@@ -142,7 +142,10 @@ function Exercise({
             icon={<ArrowLeft />}
             onClick={() => back()}
           />
-          <div id="quiz-progress" className="flex flex-col items-center">
+          <div
+            id="quiz-progress"
+            className="flex flex-col items-center mt-6 lg:mt-0"
+          >
             <QuizProgressComponent />
           </div>
           <Button

@@ -142,7 +142,9 @@ const CourseContent = (course: CourseDetails) => {
                     <Circle className="mr-2" width={24} height={24} />
                   )}
 
-                  <div className="mr-2">Section {sectionIndex}:</div>
+                  <div className="hidden lg:block mr-2">
+                    Section {sectionIndex}:
+                  </div>
                   <span>{section.title}</span>
                 </div>
               }
@@ -179,7 +181,9 @@ const CourseContent = (course: CourseDetails) => {
                         ) : (
                           <Circle className="mr-2" width={24} height={24} />
                         )}
-                        <div className="mr-2">Lesson {lessonIndex + 1}:</div>
+                        <div className="hidden lg:block mr-2">
+                          Lesson {lessonIndex + 1}:
+                        </div>
                         <span>{lesson.title}</span>
                       </div>
                     }
@@ -202,7 +206,7 @@ const CourseContent = (course: CourseDetails) => {
                       lesson.exercises?.map((exercise, exerciseIndex) => (
                         <div
                           key={exerciseIndex.toString()}
-                          className="pl-10 pr-24"
+                          className="pl-6 lg:pl-10 pr-4 lg:pr-24"
                         >
                           <div className="flex items-center justify-between mb-4 hover:outline-dashed hover:outline-[1px] hover:outline-primary py-2 px-2 rounded-lg">
                             <div className="flex items-center">
@@ -219,16 +223,19 @@ const CourseContent = (course: CourseDetails) => {
                                   height={24}
                                 />
                               )}
-                              <div className="font-bold text-lg">
-                                Exercise: {exercise.title}
+                              <div className="hidden lg:block mr-2 font-bold text-lg">
+                                Exercise:
                               </div>
+                              <span className="font-bold text-lg">
+                                {lesson.title}
+                              </span>
                             </div>
                             <Button
                               onClick={() =>
                                 navigate(`./exercise/${exercise.id}`)
                               }
                               type="primary"
-                              className="rounded-xl text-lg leading-5 px-6 h-full py-2"
+                              className="rounded-xl text-lg leading-5 px-4 lg:px-6 h-full py-2"
                             >
                               Learn
                             </Button>

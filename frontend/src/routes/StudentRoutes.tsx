@@ -3,13 +3,19 @@ import DefaultLayout from '../layouts/DefaultLayout'
 import CourseDetailsPage from '../pages/CourseDetails'
 import Discover from '../pages/Discover'
 import Statistic from '../pages/Statistic'
-import { PRIVATE_ROUTES, STUDENT_ROUTES } from '../utils/constants'
+import {
+  PRIVATE_ROUTES,
+  STUDENT_ROUTES,
+  STUDENT_ROUTES_MOBILE,
+} from '../utils/constants'
 import MyHub from '../pages/MyHub'
 import GetStarted from '../pages/Student/GetStarted'
 import NoLayout from '../layouts/NoLayout'
 import DoExercise from '../pages/DoExercise'
 import DoExam from '../pages/DoExam'
 import Achievements from '../pages/Student/Achievements'
+import MobileLayout from '../layouts/MobileLayout'
+
 export const studentRoutes: RouteObject[] = [
   {
     element: <DefaultLayout />,
@@ -104,6 +110,74 @@ export const studentRoutes: RouteObject[] = [
                   {
                     element: <DoExam />,
                     path: ':examId',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+]
+
+export const studentRoutesMobile: RouteObject[] = [
+  {
+    element: <MobileLayout />,
+    children: [
+      { element: <MyHub />, path: STUDENT_ROUTES_MOBILE.myHub },
+      { element: <Achievements />, path: STUDENT_ROUTES_MOBILE.achievement },
+      {
+        path: STUDENT_ROUTES_MOBILE.myHub,
+        children: [
+          {
+            element: <MyHub />,
+            path: '',
+          },
+          {
+            path: ':courseId',
+            children: [
+              {
+                path: '',
+                element: <CourseDetailsPage />,
+              },
+              {
+                path: 'exercise',
+                children: [
+                  {
+                    element: <DoExercise />,
+                    path: ':exerciseId',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: STUDENT_ROUTES_MOBILE.discover,
+        children: [
+          {
+            element: <Discover />,
+            path: '',
+          },
+          {
+            path: ':courseId',
+            children: [
+              {
+                path: '',
+                element: <CourseDetailsPage />,
+              },
+              {
+                path: '?tab=:tab',
+                element: <CourseDetailsPage />,
+              },
+              {
+                path: 'exercise',
+                children: [
+                  {
+                    element: <DoExercise />,
+                    path: ':exerciseId',
                   },
                 ],
               },

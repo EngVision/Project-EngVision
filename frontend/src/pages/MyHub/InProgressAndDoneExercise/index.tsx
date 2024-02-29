@@ -199,7 +199,7 @@ const InProgressAndDoneExercise = () => {
   if (isLoading) return <AppLoading />
 
   return (
-    <div>
+    <div className="hidden lg:block">
       <div className="my-6 flex justify-between align-middle">
         <p className="font-bold text-3xl text-primary">
           {t('inProgressAndDoneExercises')}
