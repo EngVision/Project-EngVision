@@ -2,6 +2,7 @@ import { Form, Input, Select } from 'antd'
 import CustomUpload from '../../../components/CustomUpload'
 import { CEFRLevel } from '../../../utils/constants'
 import { useWatch } from 'antd/es/form/Form'
+import { useTranslation } from 'react-i18next'
 
 type FieldType = {
   title: string
@@ -11,7 +12,12 @@ type FieldType = {
   thumbnail: string
 }
 
-const Overview = () => {
+interface OverviewProps {
+  handleChangeThumbnail: () => void
+}
+
+const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Course Details' })
   const form = Form.useFormInstance()
   const isAdminCurriculum = useWatch('isAdminCurriculum', form)
 
@@ -21,7 +27,7 @@ const Overview = () => {
 
       <Form.Item<FieldType>
         name="title"
-        label="Title"
+        label={t('Title')}
         rules={[{ required: true, message: 'Please input title!' }]}
       >
         <Input
@@ -34,7 +40,7 @@ const Overview = () => {
 
       <Form.Item<FieldType>
         name="about"
-        label="About"
+        label={t('About')}
         rules={[{ required: true, message: 'Please input about!' }]}
       >
         <Input
@@ -48,7 +54,7 @@ const Overview = () => {
       <div className="flex gap-4">
         <Form.Item<FieldType>
           name="price"
-          label="Price"
+          label={t('Price')}
           rules={[
             { required: true, message: '' },
             {
@@ -86,7 +92,7 @@ const Overview = () => {
 
         <Form.Item<FieldType>
           name="level"
-          label="Level"
+          label={t('Level')}
           rules={[{ required: true, message: 'Please input level!' }]}
           className="flex-1"
         >
@@ -103,13 +109,8 @@ const Overview = () => {
         </Form.Item>
       </div>
 
-      <Form.Item
-        name="thumbnail"
-        label="Thumbnail"
-        getValueFromEvent={(e: any) => e?.file?.response?.data?.fileId || e}
-        valuePropName="fileList"
-      >
-        <CustomUpload type="picture" />
+      <Form.Item name="thumbnail" label={t('Thumbnail')}>
+        <CustomUpload type="picture" onRemove={handleChangeThumbnail} />
       </Form.Item>
     </div>
   )

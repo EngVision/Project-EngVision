@@ -3,6 +3,7 @@ import { Button, Modal, Upload, UploadFile, UploadProps, message } from 'antd'
 import { useEffect, useState } from 'react'
 import fileApi from '../../services/fileApi'
 import { getFileUrl } from '../../utils/common'
+import { useTranslation } from 'react-i18next'
 
 const MAX_COUNT = 20
 
@@ -25,6 +26,7 @@ function CustomUpload({
   accept = 'image/*',
   onRemove,
 }: CustomUploadProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewImage, setPreviewImage] = useState('')
   const [previewTitle, setPreviewTitle] = useState('')

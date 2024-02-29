@@ -110,6 +110,9 @@ export class CoursesService {
       case SortBy.level:
         sort.level = data.order === Order.asc ? 1 : -1;
         break;
+      case SortBy.star:
+        sort.avgStar = data.order === Order.asc ? 1 : -1;
+        break;
       default:
         sort.createdAt = -1;
     }
@@ -155,6 +158,12 @@ export class CoursesService {
           as: 'reviews',
         },
       },
+      { $unwind: { path: '$reviews', preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          avgStar: '$reviews.avgStar',
+        },
+      },
       {
         $match: {
           $and: [
@@ -168,10 +177,10 @@ export class CoursesService {
         $facet: {
           courses: [
             {
-              $skip: data.page * data.limit,
+              $skip: data.limit === -1 ? 0 : data.page * data.limit,
             },
             {
-              $limit: data.limit,
+              $limit: data.limit === -1 ? Number.MAX_SAFE_INTEGER : data.limit,
             },
           ],
           total: [
@@ -196,9 +205,7 @@ export class CoursesService {
 
       return {
         ...plainToInstance(CourseDto, course),
-        avgStar: course.reviews[0]
-          ? course.reviews[0].avgStar.toFixed(1)
-          : null,
+        avgStar: course.avgStar ? course.avgStar.toFixed(1) : null,
         totalLessons: totalLessons,
       };
     });
@@ -843,5 +850,13 @@ export class CoursesService {
     );
 
     return course;
+  }
+
+  async totalCoursesPublished() {
+    const courses = await this.courseModel.find({
+      isPublished: true,
+    });
+
+    return courses.length;
   }
 }

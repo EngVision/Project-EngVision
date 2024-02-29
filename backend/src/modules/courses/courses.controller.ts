@@ -146,6 +146,20 @@ export class CoursesController {
     );
   }
 
+  @Get('/total')
+  @ApiResponseData(Object)
+  @UseGuards(AtGuard, RoleGuard(Role.Admin))
+  async totalCoursesPublished(@Res() res: Response) {
+    const totalCourse = await this.coursesService.totalCoursesPublished();
+
+    return res.status(HttpStatus.OK).send(
+      GetResponse({
+        message: 'Get attendance list',
+        data: { total: totalCourse },
+      }),
+    );
+  }
+
   @Get('/:id')
   @ApiResponseData(CourseDetailDto)
   @UseGuards(AtGuard)

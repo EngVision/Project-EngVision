@@ -3,13 +3,12 @@ import { useEffect, useState } from 'react'
 import ArrowLeft from '../../../components/Icons/ArrowLeft'
 import ArrowRight from '../../../components/Icons/ArrowRight'
 import CourseCard from './CourseCard'
-import ExamTable from './ExamTable'
 import { useQuery } from '@tanstack/react-query'
 import coursesApi from '../../../services/coursesApi'
-import { examApi } from '../../../services/examApi'
 import AppLoading from '../../../components/common/AppLoading'
 import { COURSE_STATUS } from '../../../utils/constants'
 import submissionApi from '../../../services/submissionApi'
+import { useTranslation } from 'react-i18next'
 
 enum Direction {
   left = 'left',
@@ -17,6 +16,7 @@ enum Direction {
 }
 
 const Grading = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Grading' })
   const [disabledScrollLeft, setDisabledScrollLeft] = useState<boolean>(true)
   const [disabledScrollRight, setDisabledScrollRight] = useState<boolean>(true)
   useEffect(() => {
@@ -85,14 +85,10 @@ const Grading = () => {
     })
   })
 
-  const { data: rawExamList } = useQuery({
-    queryKey: ['exam'],
-    queryFn: async () => examApi.getExam(),
-  })
   return (
     <div>
       <div className="mb-8">
-        <h3 className="text-primary text-2xl">Grading Course</h3>
+        <h3 className="text-primary text-2xl">{t('Grading Course')}</h3>
         <div className="flex justify-between align-middle">
           <p className="font-bold text-3xl text-primary">
             {/* {t('Exercises.exercises')} */}
@@ -132,19 +128,9 @@ const Grading = () => {
               ))
             ) : (
               <div className="col-span-4 text-center italic text-textSubtle">
-                <p className="text-lg">No courses found</p>
+                <p className="text-lg">{t('No courses found')}</p>
               </div>
             )}
-          </div>
-        )}
-      </div>
-      <div>
-        <h3 className="text-primary text-2xl mb-4">Grading Exam</h3>
-        {rawExamList?.data && rawExamList.data.length > 0 ? (
-          <ExamTable exams={rawExamList.data} />
-        ) : (
-          <div className="col-span-4 text-center italic text-textSubtle">
-            <p className="text-lg">No exam found</p>
           </div>
         )}
       </div>

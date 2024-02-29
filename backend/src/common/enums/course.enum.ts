@@ -9,6 +9,7 @@ export enum SortBy {
   time = 'createdAt',
   price = 'price',
   level = 'level',
+  star = 'star',
 }
 
 export enum Order {

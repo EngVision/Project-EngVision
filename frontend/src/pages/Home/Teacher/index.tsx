@@ -1,86 +1,34 @@
 import { useQuery } from '@tanstack/react-query'
-import { useMemo } from 'react'
 import TeacherLearn from '../../../components/Icons/TeacherLearn'
 import { useAppSelector } from '../../../hooks/redux'
 import coursesApi from '../../../services/coursesApi'
-import submissionApi from '../../../services/submissionApi'
-import {
-  CEFRLevel,
-  COURSE_STATUS,
-  NextDue,
-  Role,
-} from '../../../utils/constants'
-import StudentLearn from '../../../components/Icons/StudentLearn'
-import AdminLearn from '../../../components/Icons/AdminLearn'
+import { COURSE_STATUS } from '../../../utils/constants'
 import { useTranslation } from 'react-i18next'
+import AppLoading from '../../../components/common/AppLoading'
 
 const Teacher = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'Home' })
   const user = useAppSelector((state) => state.app.user)
-  const status: any = {
-    status:
-      user?.role === Role.Teacher
-        ? COURSE_STATUS.published
-        : COURSE_STATUS.attended,
-  }
-
-  const level = CEFRLevel
-  const nextDue = NextDue
 
   const { data: rawCourseList } = useQuery({
-    queryKey: ['courses', status],
-    queryFn: () => coursesApi.getCourses(status),
+    queryKey: ['courses'],
+    queryFn: () =>
+      coursesApi.getCourses({ status: COURSE_STATUS.all, limit: -1 }),
   })
-
-  const { data: rawSubmissionList } = useQuery({
-    queryKey: ['submissions'],
-    queryFn: () => submissionApi.getSubmissionList(),
-  })
-
-  const exercise = useMemo(() => {
-    const exercise = {
-      totalDone: 0,
-      totalQuestion: 0,
-      totalInProcess: 0,
-    }
-
-    if (rawSubmissionList?.data) {
-      rawSubmissionList.data.forEach((assignment) => {
-        if (assignment.totalDone) {
-          exercise.totalDone += assignment.totalDone
-        }
-        if (assignment.totalQuestion) {
-          exercise.totalQuestion += assignment.totalQuestion
-        }
-      })
-      exercise.totalInProcess = exercise.totalQuestion - exercise.totalDone
-    }
-
-    return exercise
-  }, [rawSubmissionList?.data])
 
   const DashboardNoti = () => {
     return (
       <div
-        className={`${user?.role == Role.Teacher && ' bg-[#41AB3F] '} 
-        ${user?.role == Role.Student && ' bg-blue-600 '} 
-        ${
-          user?.role == Role.Admin && ' bg-yellow-600 '
-        } flex flex-row px-5 justify-between rounded-xl items-center`}
+        className={`bg-[#41AB3F] flex flex-row px-5 justify-between rounded-xl items-center`}
       >
-        <div className="basis-1/4 text-xl text-white">
-          {t('Hi')}, {user?.firstName + ' ' + user?.lastName}! <br />{' '}
-          {t('You have')} {exercise.totalInProcess}{' '}
-          {t('upcoming assignments due and have to finish 0 courses!')}
+        <div className="basis-1/2 text-xl text-white">
+          {t('Hi')}, {user?.firstName + ' ' + user?.lastName}! <br />
+          {t(
+            'Thank you for choosing to share your knowledge and inspire others on our platform!',
+          )}
         </div>
-        <div className="scale-up">
-          {user?.role == Role.Teacher && (
-            <TeacherLearn height={241} width={240} />
-          )}
-          {user?.role == Role.Student && (
-            <StudentLearn height={241} width={240} />
-          )}
-          {user?.role == Role.Admin && <AdminLearn height={241} width={240} />}
+        <div>
+          <TeacherLearn height={241} width={240} />
         </div>
       </div>
     )
@@ -93,6 +41,18 @@ const Teacher = () => {
       </div>
     )
   }
+
+  if (!rawCourseList) return <AppLoading />
+
+  let totalStudents = 0
+  let totalRevenue = 0
+  let totalRating = 0
+  rawCourseList.data.forEach((course) => {
+    totalStudents += course.attendance
+    totalRevenue += course.attendance * course.price
+    totalRating += course.avgStar ? course.avgStar : 0
+  })
+
   return (
     <div className="flex flex-col">
       <div className="mb-8">
@@ -100,14 +60,14 @@ const Teacher = () => {
       </div>
       {rawCourseList && (
         <div className="grid grid-cols-fill-40 gap-x-6 gap-y-4">
-          {DashboardCard(t('EXERCISES'), exercise.totalInProcess)}
-          {DashboardCard(t('TOTAL EXERCISES'), exercise.totalQuestion)}
-          {DashboardCard(t('NEXT DUE'), nextDue.tomorrow)}
-          {DashboardCard(t('SUBMITTED ASSIGNMENTS'), exercise.totalDone)}
-          {DashboardCard(t('COURSES LEARNING'), rawCourseList.data.length)}
-          {DashboardCard(t('TOTAL COURSES'), rawCourseList.data.length)}
-          {DashboardCard(t('FINISHED COURSES'), 0)}
-          {DashboardCard(t('CERF LEVEL'), level.C1)}
+          {DashboardCard(t('TOTAL YOUR COURSES'), rawCourseList.total)}
+          {DashboardCard(t('TOTAL YOUR STUDENTS'), totalStudents)}
+          {DashboardCard(t('TOTAL YOUR REVENUE'), `${totalRevenue} VNĐ`)}
+          {DashboardCard(
+            t('AVERAGE RATING YOUR COURSES'),
+            totalRating /
+              rawCourseList.data.filter((course) => course.avgStar > 0).length,
+          )}
         </div>
       )}
     </div>

@@ -1,13 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import {
-  Button,
-  DatePicker,
-  Form,
-  FormInstance,
-  Input,
-  Select,
-  message,
-} from 'antd'
+import { Button, Form, FormInstance, Input, Select, message } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
 import { useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -45,7 +37,7 @@ interface GeneralInfo {
 }
 
 const GeneralInfoForm = () => {
-  const { t } = useTranslation('translation', { keyPrefix: 'common' })
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
   return (
     <>
       <Form.Item<GeneralInfo>
@@ -53,48 +45,48 @@ const GeneralInfoForm = () => {
         name="title"
         rules={[{ required: true }]}
       >
-        <Input placeholder="Title" />
+        <Input placeholder={t('Title')} />
       </Form.Item>
-      <Form.Item<GeneralInfo> label="Description" name="description">
+      <Form.Item<GeneralInfo> label={t('Description')} name="description">
         <Input.TextArea
-          placeholder="Description (optional)"
+          placeholder={t('Description (optional)')}
           autoSize={{ minRows: 4, maxRows: 10 }}
         />
       </Form.Item>
       <div className="grid grid-cols-2 gap-4">
         <Form.Item<GeneralInfo>
-          label="Exercise type"
+          label={t('Exercise type')}
           name="type"
           rules={[{ required: true }]}
         >
           <Select
-            placeholder="Exercise type"
+            placeholder={t('Exercise type')}
             options={enumToSelectOptions(ExerciseType)}
           />
         </Form.Item>
-        <Form.Item<GeneralInfo> label="Deadline" name="deadline">
+        {/* <Form.Item<GeneralInfo> label="Deadline" name="deadline">
           <DatePicker
             showTime
             placeholder="Deadline (optional)"
             className="w-full"
           />
-        </Form.Item>
+        </Form.Item> */}
       </div>
       <div className="grid grid-cols-2 gap-4">
         <Form.Item<GeneralInfo>
-          label="Exercise tags"
+          label={t('Exercise tags')}
           name="tags"
           rules={[{ required: true }]}
         >
           <ExerciseTagInput />
         </Form.Item>
         <Form.Item<GeneralInfo>
-          label="Exercise level"
+          label={t('Exercise level')}
           name="level"
           rules={[{ required: true }]}
         >
           <Select
-            placeholder="Exercise level"
+            placeholder={t('Exercise level')}
             options={enumToSelectOptions(CEFRLevel)}
           />
         </Form.Item>
@@ -112,28 +104,31 @@ interface ContentQuestion {
 }
 
 const ContentQuestionForm = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
   return (
     <>
       <Form.Item<ContentQuestion>
-        label="Question"
+        label={t('Question')}
         name={['contentQuestion', 'text']}
       >
         <ReactQuill
           className="bg-surface"
-          placeholder="Question content - It will be displayed through all the questions (optional)"
+          placeholder={t(
+            'Question content - It will be displayed through all the questions (optional)',
+          )}
         />
       </Form.Item>
       <div className="grid grid-cols-2 gap-4">
         <Form.Item<ContentQuestion>
           valuePropName="fileList"
-          label="Question image"
+          label={t('Question image')}
           name={['contentQuestion', 'image']}
         >
           <CustomUpload type="picture-card" />
         </Form.Item>
         <Form.Item<ContentQuestion>
           valuePropName="fileList"
-          label="Question audio"
+          label={t('Question audio')}
           name={['contentQuestion', 'audio']}
         >
           <CustomUpload accept="audio/*" type="picture-card" />
@@ -184,6 +179,7 @@ interface FormSchema extends GeneralInfo {
 }
 
 function ManageExercise() {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
   const bottomDivRef = useRef<null | HTMLDivElement>(null)
   const [form] = Form.useForm<FormSchema>()
   const type = Form.useWatch('type', form)
@@ -329,10 +325,10 @@ function ManageExercise() {
                   navigate(exerciseId ? '../..' : '..', { relative: 'path' })
                 }
               />
-              <p className="text-2xl font-bold">General</p>
+              <p className="text-2xl font-bold">{t('General')}</p>
             </div>
             <GeneralInfoForm />
-            <p className="text-2xl font-bold my-5">Exercise content</p>
+            <p className="text-2xl font-bold my-5">{t('Exercise content')}</p>
             <ContentQuestionForm />
             <ExerciseForm type={type} form={form as FormSubmit} />
             <div
@@ -352,7 +348,7 @@ function ManageExercise() {
                   icon={'+'}
                   onClick={() => addQuestion(form as FormSubmit)}
                 >
-                  Add question
+                  {t('Add question')}
                 </Button>
               </Form.Item>
             )}
@@ -366,7 +362,7 @@ function ManageExercise() {
                   createExerciseMutation.isPending
                 }
               >
-                {exerciseId ? 'Save' : 'Create'}
+                {exerciseId ? t('Save') : t('Create')}
               </Button>
             </Form.Item>
           </div>

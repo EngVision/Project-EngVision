@@ -94,7 +94,7 @@ export const UpdateProfile = () => {
           {user && (
             <div>
               <Form.Item<ProfileParams>
-                label="Avatar"
+                label={t('Avatar')}
                 initialValue={user.avatar}
                 name="avatar"
                 valuePropName="fileList"

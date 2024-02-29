@@ -160,7 +160,7 @@ const StudentLearn = ({
           opacity="1"
           data-original="#ffb833"
         ></circle>
-        <g clip-path="url(#a)">
+        <g clipPath="url(#a)">
           <path
             fill="#ffb833"
             d="M400.25 319.45 374 323.64a43 43 0 0 1-48.25-31.16l-13.85-50.91a43 43 0 0 1 34.68-53.71l37.36-6a43 43 0 0 1 49.7 40.22l2.71 52.69a43 43 0 0 1-36.1 44.68z"
