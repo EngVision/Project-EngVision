@@ -65,9 +65,9 @@ const RightComponent = ({
   }
 
   return (
-    <div className="flex flex-col w-2/3 bg-surface ml-5 px-5 rounded-xl">
+    <div className="flex flex-col w-2/3 bg-surface ml-5 px-5 rounded-xl justify-between">
       {/* Chat messages */}
-      <div className="flex flex-col p-2">
+      <div className="flex flex-col p-2 ">
         <div className="flex flex-row justify-between border-solid border-b border-0 border-gray-300">
           <div className="flex flex-row items-center">
             <span className="text-xl flex font-bold text-blue-600 w-10 h-10 rounded-full bg-grey-100 justify-center items-center">
