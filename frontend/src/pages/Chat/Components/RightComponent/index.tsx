@@ -56,9 +56,8 @@ const RightComponent = ({
   }
 
   const handleEmojiSelect = (emoji: any) => {
-    console.log('emoji', emoji)
     const currentValue = formRef.current.getFieldValue('value')
-    console.log('currentValue', currentValue)
+
     formRef.current.setFieldsValue({
       value: currentValue ? currentValue + emoji.emoji : emoji.emoji,
     })
@@ -67,7 +66,7 @@ const RightComponent = ({
   return (
     <div className="flex flex-col w-2/3 bg-surface ml-5 px-5 rounded-xl justify-between">
       {/* Chat messages */}
-      <div className="flex flex-col p-2 ">
+      <div className="flex flex-col p-2 h-[90%]">
         <div className="flex flex-row justify-between border-solid border-b border-0 border-gray-300">
           <div className="flex flex-row items-center">
             <span className="text-xl flex font-bold text-blue-600 w-10 h-10 rounded-full bg-grey-100 justify-center items-center">
@@ -90,58 +89,86 @@ const RightComponent = ({
         {/* Chat messages */}
         <div className="overflow-y-auto flex-grow h-[32rem] m-0 p-0 flex flex-col-reverse">
           {/* Loop through and display direct messages */}
-          {directChats.slice().map((message: any, index: any) => (
-            <div
-              key={message._id}
-              className={`flex flex-col p-1 border-b border-gray-200 ${
-                message.u.username !==
+          {directChats.slice().map((message: any, index: any) => {
+            // Kiểm tra xem tin nhắn hiện tại có cùng oppositeName với tin nhắn trước đó không
+            const showOppositeName =
+              index === directChats.length - 1 ||
+              directChats[index + 1].u.username !==
                 previewChats[selectedChat].usernames[oppositeIndex]
-                  ? 'items-end'
-                  : 'items-start'
-              }`}
-            >
-              <div className="flex">
-                {/* Avatar and User Info */}
-                <div
-                  className={`flex ${
-                    message.u.username !==
-                    previewChats[selectedChat].usernames[oppositeIndex]
-                      ? 'order-1'
-                      : ''
-                  }`}
-                >
-                  {/* Display Avatar Component or Image */}
-                </div>
 
-                {/* Individual Chat Message */}
-                <div
-                  className={`rounded-md ${
-                    message.u.username !==
-                    previewChats[selectedChat].usernames[oppositeIndex]
-                      ? 'text-right'
-                      : ''
-                  }`}
-                >
-                  {message.u.username ===
-                    previewChats[selectedChat].usernames[oppositeIndex] && (
-                    <h4 className="text-[0.75rem] font-[400]">
-                      {previewChats[selectedChat].oppositeName}
-                    </h4>
-                  )}
+            const showAvatar =
+              index === 0 ||
+              directChats[index - 1].u.username !==
+                previewChats[selectedChat].usernames[oppositeIndex]
+
+            return (
+              <div
+                key={message._id}
+                className={`flex flex-col p-1 border-b border-gray-200 ${
+                  message.u.username !==
+                  previewChats[selectedChat].usernames[oppositeIndex]
+                    ? 'items-end'
+                    : 'items-start'
+                }`}
+              >
+                <div className="flex items-end">
+                  {showAvatar &&
+                    message.u.username ===
+                      previewChats[selectedChat].usernames[oppositeIndex] && (
+                      <div
+                        className={`flex${
+                          message.u.username !==
+                          previewChats[selectedChat].usernames[oppositeIndex]
+                            ? 'order-1'
+                            : ''
+                        }`}
+                      >
+                        <span className="text-xl flex font-bold text-blue-600 w-9 h-9 rounded-full bg-grey-100 justify-center items-center">
+                          {previewChats[selectedChat].oppositeName
+                            .charAt(0)
+                            .toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+
+                  {/* Individual Chat Message */}
                   <div
-                    className={`border-solid border-2 ${
+                    className={`rounded-md ml-2 ${
                       message.u.username !==
                       previewChats[selectedChat].usernames[oppositeIndex]
-                        ? 'border-blue-500 bg-blue-500 text-white'
-                        : 'border-grey-100 bg-grey-100 text-gray-700'
-                    } rounded-lg p-2 w-fit`}
+                        ? 'text-right'
+                        : ''
+                    }`}
                   >
-                    <p className="text-sm">{message.msg}</p>
+                    {/* Hiển thị oppositeName nếu là tin nhắn đầu tiên trong nhóm */}
+                    {showOppositeName &&
+                      message.u.username ===
+                        previewChats[selectedChat].usernames[oppositeIndex] && (
+                        <h4
+                          className={`text-[0.8rem] mb-1 font-[400] ${
+                            !showAvatar ? 'ml-10' : ''
+                          }`}
+                        >
+                          {previewChats[selectedChat].oppositeName}
+                        </h4>
+                      )}
+                    <div
+                      className={`border-solid border-2 ${
+                        !showAvatar ? 'ml-9' : ''
+                      } ${
+                        message.u.username !==
+                        previewChats[selectedChat].usernames[oppositeIndex]
+                          ? 'border-blue-500 bg-blue-500 text-white'
+                          : 'border-grey-100 bg-grey-100 text-gray-700'
+                      } rounded-lg p-2 w-fit`}
+                    >
+                      <p className="text-sm">{message.msg}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 
@@ -160,25 +187,28 @@ const RightComponent = ({
           >
             <Input
               id="messageInput"
-              className="w-full p-2 rounded-lg border-solid border-2 border-blue-500"
+              className="w-full p-2 rounded-lg border-solid border-2 border-blue-500 bg-surface"
               placeholder="Your messages..."
+              suffix={
+                <Button
+                  className="m-0"
+                  type="text"
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                >
+                  <Icon />
+                </Button>
+              }
               onClick={() => dispatch(setIsNewMessage(false))}
             />
           </Form.Item>
+
           <Button
-            className="mb-6  bg-surface rounded h-10"
-            type="primary"
-            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          >
-            <Icon />
-          </Button>
-          {/* <Button
-            className="mb-6 p-1 bg-surface rounded h-10"
+            className="mb-6 p-1 bg-surface rounded h-12"
             type="primary"
             htmlType="submit"
           >
             <Send />
-          </Button> */}
+          </Button>
         </div>
 
         {showEmojiPicker && (

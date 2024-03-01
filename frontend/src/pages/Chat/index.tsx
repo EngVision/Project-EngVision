@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react'
-import chatApi from '../../services/chatApi'
-import LeftComponent from './Components/LeftComponent'
-import RightComponent from './Components/RightComponent'
-import { SendMessageParams } from '../../services/chatApi/types'
+import { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import {
   setIsNewMessage,
   setNewNotifyRoomId,
   setRemoveNotifyRoomId,
-  setUserChat,
 } from '../../redux/app/slice'
+import chatApi from '../../services/chatApi'
+import { SendMessageParams } from '../../services/chatApi/types'
+import LeftComponent from './Components/LeftComponent'
+import RightComponent from './Components/RightComponent'
 
 const Chat = () => {
   const dispatch = useAppDispatch()
@@ -30,7 +29,7 @@ const Chat = () => {
       const connectRequest = {
         msg: 'connect',
         version: '1',
-        support: ['1', 'pre2', 'pre1'],
+        support: ['1'],
       }
       socket.send(JSON.stringify(connectRequest))
 
@@ -46,17 +45,45 @@ const Chat = () => {
       socket.send(
         JSON.stringify({
           msg: 'sub',
-          id: 'JkY4pZ8FRyoegcXGk',
+          id: 'IkY4pZ8FRyoegcXGk',
           name: 'stream-notify-user',
           params: [`${userChat?.userId}/notification`, false],
+        }),
+      )
+
+      socket.send(
+        JSON.stringify({
+          msg: 'sub',
+          id: 'KkY4pZ8FRyoegcXGk',
+          name: 'stream-notify-user',
+          params: [`${userChat?.userId}/subscriptions-changed`, false],
+        }),
+      )
+
+      socket.send(
+        JSON.stringify({
+          msg: 'sub',
+          id: 'JkY4pZ8FRyoegcXGk',
+          name: 'stream-notify-user',
+          params: [`${userChat?.userId}/rooms-changed`, false],
         }),
       )
     }
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data)
-      if (data.fields.eventName === `${userChat?.userId}/notification`) {
+      if (data.msg === 'ping') {
+        socket.send(
+          JSON.stringify({
+            msg: 'pong',
+          }),
+        )
+      } else if (data.fields.eventName === `${userChat?.userId}/notification`) {
         pushNewMessage(data.fields.args[0].payload._id)
+        dispatch(setNewNotifyRoomId(data.fields.args[0].payload.rid))
+      } else if (
+        data.fields.eventName === `${userChat?.userId}/rooms-changed`
+      ) {
         dispatch(setNewNotifyRoomId(data.fields.args[0].payload.rid))
       }
     }
@@ -81,32 +108,6 @@ const Chat = () => {
     }
   }
 
-  useEffect(() => {
-    const handleRegisterAndLogin = async () => {
-      function getCookieValue(cookieName: string) {
-        const cookies = document.cookie.split(';')
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim()
-          if (cookie.startsWith(cookieName + '=')) {
-            return cookie.substring(cookieName.length + 1)
-          }
-        }
-        return null
-      }
-
-      const chatUserId = getCookieValue('chat_user_id')
-      const chatToken = getCookieValue('chat_token')
-
-      if (chatUserId && chatToken) {
-        dispatch(setUserChat({ userId: chatUserId, authToken: chatToken }))
-      }
-    }
-
-    if (user) {
-      handleRegisterAndLogin()
-    }
-  }, [user])
-
   const handleGetPreviewChats = async () => {
     try {
       if (userChat) {
@@ -124,8 +125,6 @@ const Chat = () => {
         const filteredChats = response.update.filter((chat: any) => {
           return chat.usersCount === 2 && chat.name !== 'general'
         })
-
-        console.log('response:', response)
 
         const userName = await chatApi.getUser(
           userChat.userId,

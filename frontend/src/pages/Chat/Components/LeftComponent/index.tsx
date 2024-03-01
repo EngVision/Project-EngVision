@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useAppSelector } from '../../../../hooks/redux'
-import { setNewNotifyRoomId } from '../../../../redux/app/slice'
 
 const LeftComponent = ({
   selectedChat,
@@ -99,7 +98,7 @@ const LeftComponent = ({
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <div className="overflow-y-auto max-h-96">
+      <div className="overflow-y-auto max-h-full">
         {previewChats ? chatPreview : ''}
       </div>
     </div>
