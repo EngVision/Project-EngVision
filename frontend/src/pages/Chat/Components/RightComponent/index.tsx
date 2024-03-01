@@ -112,22 +112,24 @@ const RightComponent = ({
                 }`}
               >
                 <div className="flex items-end">
-                  {showAvatar && (
-                    <div
-                      className={`flex${
-                        message.u.username !==
-                        previewChats[selectedChat].usernames[oppositeIndex]
-                          ? 'order-1'
-                          : ''
-                      }`}
-                    >
-                      <span className="text-xl flex font-bold text-blue-600 w-9 h-9 rounded-full bg-grey-100 justify-center items-center">
-                        {previewChats[selectedChat].oppositeName
-                          .charAt(0)
-                          .toUpperCase()}
-                      </span>
-                    </div>
-                  )}
+                  {showAvatar &&
+                    message.u.username ===
+                      previewChats[selectedChat].usernames[oppositeIndex] && (
+                      <div
+                        className={`flex${
+                          message.u.username !==
+                          previewChats[selectedChat].usernames[oppositeIndex]
+                            ? 'order-1'
+                            : ''
+                        }`}
+                      >
+                        <span className="text-xl flex font-bold text-blue-600 w-9 h-9 rounded-full bg-grey-100 justify-center items-center">
+                          {previewChats[selectedChat].oppositeName
+                            .charAt(0)
+                            .toUpperCase()}
+                        </span>
+                      </div>
+                    )}
 
                   {/* Individual Chat Message */}
                   <div
@@ -139,15 +141,17 @@ const RightComponent = ({
                     }`}
                   >
                     {/* Hiển thị oppositeName nếu là tin nhắn đầu tiên trong nhóm */}
-                    {showOppositeName && (
-                      <h4
-                        className={`text-[0.8rem] mb-1 font-[400] ${
-                          !showAvatar ? 'ml-10' : ''
-                        }`}
-                      >
-                        {previewChats[selectedChat].oppositeName}
-                      </h4>
-                    )}
+                    {showOppositeName &&
+                      message.u.username ===
+                        previewChats[selectedChat].usernames[oppositeIndex] && (
+                        <h4
+                          className={`text-[0.8rem] mb-1 font-[400] ${
+                            !showAvatar ? 'ml-10' : ''
+                          }`}
+                        >
+                          {previewChats[selectedChat].oppositeName}
+                        </h4>
+                      )}
                     <div
                       className={`border-solid border-2 ${
                         !showAvatar ? 'ml-9' : ''
