@@ -296,7 +296,7 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
       questionTags: transformToExerciseTagInputValue(q.tags),
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
-      answers: q.question.pairs.map((ans): AnswerFormSchema => {
+      answers: q.correctAnswer?.detail.map((ans: any): AnswerFormSchema => {
         const result: AnswerFormSchema = {}
 
         if (firstColumnType === ExerciseMatchType.Text) {

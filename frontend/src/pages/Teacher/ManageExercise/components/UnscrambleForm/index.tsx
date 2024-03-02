@@ -56,7 +56,7 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
                   <Form.Item name={[field.name]} noStyle>
                     {exerciseType === ExerciseCardType.Text ? (
                       <PreviewInput
-                        placeholder="New card"
+                        placeholder={t('New card')}
                         className="w-full text-center"
                       />
                     ) : (
