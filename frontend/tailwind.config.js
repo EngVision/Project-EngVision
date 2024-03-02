@@ -59,7 +59,7 @@ module.exports = {
         '3xl': '1800px',
       },
       gridTemplateColumns: {
-        'fill-40': 'repeat(auto-fill, minmax(16rem, 1fr))',
+        'fill-40': 'repeat(auto-fill, minmax(18rem, 1fr))',
       },
     },
   },

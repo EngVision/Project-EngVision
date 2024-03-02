@@ -39,6 +39,7 @@ const SortDropDown = ({ onSort }: any) => {
   ]
   const menuProps = {
     items,
+    selectable: true,
     onClick: handleMenuClick,
   }
   return (

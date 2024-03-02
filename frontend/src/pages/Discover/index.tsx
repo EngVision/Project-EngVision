@@ -1,6 +1,6 @@
 import { AppstoreOutlined, MenuOutlined } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
-import { Button, Input, Pagination, Tooltip } from 'antd'
+import { Button, Input, Pagination, Spin, Tooltip } from 'antd'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CourseCard } from '../../components/CourseCard'
@@ -47,12 +47,12 @@ const Discover = () => {
         setOrder(Order.desc)
         break
       case 5:
-        setSortBy('rating')
+        setSortBy('star')
         setStatus(COURSE_STATUS.all)
         setOrder(Order.asc)
         break
       case 6:
-        setSortBy('rating')
+        setSortBy('star')
         setStatus(COURSE_STATUS.all)
         setOrder(Order.desc)
         break
@@ -76,17 +76,18 @@ const Discover = () => {
     queryFn: () => coursesApi.getPersonalizedCourse(),
   })
 
-  const { data: rawAllCourseList } = useQuery({
+  const { data: rawAllCourseList, isLoading } = useQuery({
     queryKey: ['courses', getAllCoursesParams],
     queryFn: () => coursesApi.getCourses(getAllCoursesParams),
   })
+  console.log('🚀 ~ Discover ~ rawAllCourseList:', rawAllCourseList)
   return (
     <>
       <>
         <div className="flex flex-col gap-12 mx-6 lg:mx-10">
           <PersonalizeCourses course={personalizedCourse} />
 
-          <div className="">
+          <div className="min-h-[800px]">
             <div className="flex justify-between flex-col gap-4 lg:flex-row mb-10">
               <div className="font-bold text-2xl lg:text-3xl text-primary">
                 {t('All Courses')}
@@ -103,7 +104,7 @@ const Discover = () => {
 
                 <div className="flex justify-between gap-4">
                   <SortDropDown onSort={handleSort} />
-                  <div className="flex gap-2">
+                  <div className="hidden lg:flex gap-2">
                     <Tooltip title="Grid View">
                       <Button
                         shape="circle"
@@ -124,8 +125,12 @@ const Discover = () => {
                 </div>
               </div>
             </div>
-            {isGrid ? (
-              <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+            {isLoading ? (
+              <div className="flex w-full justify-center">
+                <Spin size="large" />
+              </div>
+            ) : isGrid ? (
+              <div className="grid grid-cols-fill-40 gap-x-6 gap-y-4">
                 {rawAllCourseList?.data.length ? (
                   rawAllCourseList.data.map((course) => (
                     <CourseCard course={course} key={course.id} />

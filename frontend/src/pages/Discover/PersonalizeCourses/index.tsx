@@ -15,7 +15,7 @@ function PersonalizeCourses({ course }: Props) {
           <p className="font-bold text-2xl lg:text-3xl text-primary mb-6">
             {t('Personalized Courses')}
           </p>
-          <div className="grid grid-cols-fill-40 gap-x-8 gap-y-6">
+          <div className="grid grid-cols-fill-40 gap-x-6 gap-y-4">
             <CourseCard course={course} key={course.id} />
           </div>
         </div>
