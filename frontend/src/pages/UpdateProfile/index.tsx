@@ -82,7 +82,7 @@ export const UpdateProfile = () => {
         openNotificationWithIcon('success', t('Change password successfully.'))
       }
     } catch (error) {
-      openNotificationWithIcon('error', t('Change password failed.'))
+      openNotificationWithIcon('error', t('Update profile failed.'))
       throw error
     }
   }

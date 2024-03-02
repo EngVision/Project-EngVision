@@ -24,12 +24,7 @@ export function cleanObject(obj: any) {
       const isCollection = _.isObject(value)
       const cleaned = isCollection ? internalClean(value) : value
 
-      if (
-        _.isNull(cleaned) ||
-        _.isUndefined(cleaned) ||
-        _.isNaN(cleaned) ||
-        cleaned === ''
-      ) {
+      if (_.isNull(cleaned) || _.isUndefined(cleaned) || _.isNaN(cleaned)) {
         return
       }
 

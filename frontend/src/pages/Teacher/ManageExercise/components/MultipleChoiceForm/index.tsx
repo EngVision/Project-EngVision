@@ -13,6 +13,7 @@ import ExerciseTagInput, {
 } from '../ExerciseTagInput'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import { useTranslation } from 'react-i18next'
 
 interface AnswerFormProps {
   index: number
@@ -56,6 +57,8 @@ interface QuestionFormProps {
 }
 
 const QuestionForm = ({ index, remove }: QuestionFormProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
+
   return (
     <>
       <div className="flex items-center justify-between gap-4">
@@ -66,7 +69,7 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
           </Button>
         )}
       </div>
-      <div className="flex">
+      <div className="flex flex-col">
         <Form.Item
           className="flex-1"
           label="Question"
@@ -74,6 +77,22 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
           rules={[{ required: true }]}
         >
           <ReactQuill className="bg-surface" placeholder="Question" />
+        </Form.Item>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <Form.Item
+          valuePropName="fileList"
+          label={t('Question image')}
+          name={[index, 'questionImage']}
+        >
+          <CustomUpload />
+        </Form.Item>
+        <Form.Item
+          valuePropName="fileList"
+          label={t('Question audio')}
+          name={[index, 'questionAudio']}
+        >
+          <CustomUpload accept="audio/*" />
         </Form.Item>
       </div>
       <Form.Item label="Explanation" name={[index, 'explanation']}>
@@ -130,6 +149,8 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
 
 interface QuestionFormSchema {
   questionText: string
+  questionAudio?: string
+  questionImage?: string
   questionTags: ExerciseTag[]
   questionLevel: CEFRLevel
   explanation?: string
@@ -147,6 +168,8 @@ interface AnswerFormSchema {
 interface MultipleChoicePayload extends QuestionPayload {
   question: {
     text: string
+    audio?: string
+    image?: string
     answers: {
       id: number
       text: string
@@ -173,6 +196,8 @@ const transformSubmitData = (exercise: any) => {
       level: question.questionLevel,
       question: {
         text: question.questionText,
+        audio: question.questionAudio,
+        image: question.questionImage,
         answers: question.answers.map((ans) => ({
           id: ans.id,
           text: ans.answerText,
@@ -198,6 +223,8 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
     const questionForm: QuestionFormSchema = {
       id: q.id,
       questionText: q.question.text,
+      questionAudio: q.question.audio,
+      questionImage: q.question.image,
       questionTags: transformToExerciseTagInputValue(q.tags),
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,

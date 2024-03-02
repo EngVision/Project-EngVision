@@ -1,13 +1,17 @@
-import { Button, Form } from 'antd'
+import { Button, Form, Image } from 'antd'
 import { useEffect } from 'react'
 import {
   QuestionPayload,
   SubmitAnswerResponse,
 } from '../../../../services/exerciseApi/types'
+import AudioPlayer from '../../../../components/Audio/AudioPlayer'
+import { getFileUrl } from '../../../../utils/common'
 
 interface MultipleChoiceProps extends QuestionPayload {
   question: {
     text: string
+    audio?: string
+    image?: string
     answers: {
       id: number
       text: string
@@ -57,6 +61,15 @@ function MultipleChoice(props: MultipleChoiceProps) {
         className="text-xl"
         dangerouslySetInnerHTML={{ __html: question.text }}
       />
+      <div className="flex items-center justify-center gap-6 flex-col md:flex-row">
+        {question.image && (
+          <img
+            className="min-h-[200px] max-h-[400px]"
+            src={getFileUrl(question.image)}
+          />
+        )}
+        {question.audio && <AudioPlayer url={getFileUrl(question.audio)} />}
+      </div>
       <Form.Item name="answer" initialValue={[]} noStyle>
         <div className="flex flex-row justify-between flex-wrap gap-5 mt-5">
           {question.answers.map((answer) => {
