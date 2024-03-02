@@ -4,6 +4,7 @@ import userLevelApi from '../../../../services/userLevelApi'
 import { setCurrentLevel } from '../../../../redux/app/slice'
 import { Progress } from 'antd'
 import { isNumber } from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 interface DoneExerciseProps {
   grade?: number
@@ -11,6 +12,7 @@ interface DoneExerciseProps {
 }
 
 function DoneExercise({ grade, isGrading }: DoneExerciseProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'DoExercise' })
   const dispatch = useAppDispatch()
   const currentLevel = useAppSelector((state) => state.app.currentLevel)
 
@@ -26,11 +28,11 @@ function DoneExercise({ grade, isGrading }: DoneExerciseProps) {
   return (
     <div className="h-full flex flex-col gap-4 justify-center text-center text-primary">
       {isGrading ? (
-        <p className="text-2xl font-semibold">Complete grading</p>
+        <p className="text-2xl font-semibold">{t('Complete grading')}</p>
       ) : isNumber(grade) ? (
         <>
           <p className="text-2xl font-semibold">
-            Your test result has completed with
+            {t('Your test result has completed with')}
           </p>
           <p className="text-4xl font-bold mb-3">
             {grade?.toFixed(2) || 0} / 10.00
@@ -52,7 +54,7 @@ function DoneExercise({ grade, isGrading }: DoneExerciseProps) {
         </>
       ) : (
         <p className="text-2xl font-semibold">
-          Your assignment is awaiting grading.
+          {t('Your assignment is awaiting grading.')}
         </p>
       )}
     </div>

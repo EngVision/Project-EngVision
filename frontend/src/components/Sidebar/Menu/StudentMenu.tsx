@@ -35,7 +35,7 @@ const StudentMenu = () => {
     {
       icon: <Cup />,
       path: STUDENT_ROUTES.achievement,
-      title: 'Achievement',
+      title: 'Achievements',
       id: 'achievement',
     },
     {

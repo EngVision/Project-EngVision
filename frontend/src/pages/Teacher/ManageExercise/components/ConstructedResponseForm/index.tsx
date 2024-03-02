@@ -14,6 +14,7 @@ import ExerciseTagInput, {
 } from '../ExerciseTagInput'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import { useTranslation } from 'react-i18next'
 
 interface QuestionFormProps {
   needGrade: boolean
@@ -22,28 +23,32 @@ interface QuestionFormProps {
 }
 
 const QuestionForm = ({ needGrade, index, remove }: QuestionFormProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
+
   return (
     <>
       <div className="flex items-center justify-between gap-4">
-        <p className="text-xl font-bold my-2">Question {index + 1}</p>
+        <p className="text-xl font-bold my-2">
+          {t('Question')} {index + 1}
+        </p>
         {remove && (
           <Button danger type="primary" onClick={() => remove(index)}>
-            Remove
+            {t('Remove')}
           </Button>
         )}
       </div>
       <Form.Item
         className="flex-1"
-        label="Question"
+        label={t('Question')}
         name={[index, 'questionText']}
         rules={[{ required: true }]}
       >
-        <ReactQuill className="bg-surface" placeholder="Question" />
+        <ReactQuill className="bg-surface" placeholder={t('Question')} />
       </Form.Item>
       <div className="flex gap-4 w-full">
         <div className="flex-1">
           <Form.Item
-            label="Question image"
+            label={t('Question image')}
             className="max-w-[200px]"
             name={[index, 'questionImage']}
             valuePropName="fileList"
@@ -53,7 +58,7 @@ const QuestionForm = ({ needGrade, index, remove }: QuestionFormProps) => {
         </div>
         <div className="flex-1">
           <Form.Item
-            label="Question audio"
+            label={t('Question audio')}
             className="max-w-[200px]"
             name={[index, 'questionAudio']}
             valuePropName="fileList"
@@ -64,41 +69,41 @@ const QuestionForm = ({ needGrade, index, remove }: QuestionFormProps) => {
       </div>
       <div className="flex-1 grid grid-cols-2 gap-4">
         <Form.Item
-          label="Tags"
+          label={t('Tags')}
           name={[index, 'questionTags']}
           rules={[{ required: true }]}
         >
           <ExerciseTagInput />
         </Form.Item>
         <Form.Item
-          label="Level"
+          label={t('Level')}
           name={[index, 'questionLevel']}
           rules={[{ required: true }]}
         >
           <Select
-            placeholder="Level"
+            placeholder={t('Level')}
             options={enumToSelectOptions(CEFRLevel)}
           />
         </Form.Item>
       </div>
       <div className="flex items-center gap-8 w-full">
         <Form.Item
-          label="Answer"
+          label={t('Answer')}
           name={[index, 'answer']}
           className="flex-1"
           rules={[{ required: !needGrade }]}
         >
           <TextArea
-            placeholder="Answer"
+            placeholder={t('Answer')}
             autoSize={{ minRows: 2, maxRows: 4 }}
             disabled={needGrade}
           />
         </Form.Item>
       </div>
-      <Form.Item label="Explanation" name={[index, 'explanation']}>
+      <Form.Item label={t('Explanation')} name={[index, 'explanation']}>
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 4 }}
-          placeholder="Explanation (optional)"
+          placeholder={t('Explanation (optional)')}
         />
       </Form.Item>
     </>
@@ -173,6 +178,7 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
 }
 
 function ConstructedResponseForm({ form }: { form: FormSubmit }) {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
   const needGrade = Form.useWatch('needGrade', form)
 
   form.transform = transformSubmitData
@@ -181,7 +187,7 @@ function ConstructedResponseForm({ form }: { form: FormSubmit }) {
   return (
     <>
       <Form.Item name="needGrade" valuePropName="checked">
-        <Checkbox>Need grade</Checkbox>
+        <Checkbox>{t('Need grade')}</Checkbox>
       </Form.Item>
       <Form.List name="content" initialValue={[{}]}>
         {(fields, { add, remove }) => {

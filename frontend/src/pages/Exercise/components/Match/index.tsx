@@ -11,6 +11,7 @@ import {
 import { getFileUrl } from '../../../../utils/common'
 import { ExerciseMatchType, LINE_COLOR } from '../../../../utils/constants'
 import AnswerLines from './AnswerLines'
+import { useTranslation } from 'react-i18next'
 
 interface MatchProps extends QuestionPayload {
   question: {
@@ -35,6 +36,7 @@ export type MatchAnswer = {
 } | null
 
 function Match(props: MatchProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
   const { question, result, setIsSubmittable } = props
   const form = Form.useFormInstance()
 
@@ -129,7 +131,9 @@ function Match(props: MatchProps) {
 
   return (
     <div id="match-exercise" className="relative">
-      <h3 className="text-primary">Match these card into the right order</h3>
+      <h3 className="text-primary">
+        {t('Match these card into the right order')}
+      </h3>
 
       <Form.Item name="answer" noStyle>
         <div className="flex justify-center">

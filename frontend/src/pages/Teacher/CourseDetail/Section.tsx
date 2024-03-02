@@ -29,6 +29,7 @@ import CustomInput from '../../../components/common/CustomInput'
 import authApi from '../../../services/authApi'
 import { lessonApi } from '../../../services/lessonApi'
 import AddLessonModel from './AddLessonModel'
+import { useTranslation } from 'react-i18next'
 
 const { Panel } = Collapse
 
@@ -37,6 +38,7 @@ interface SectionProps {
 }
 
 const Section = ({ form }: SectionProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'Course Details' })
   const { courseId = '' } = useParams()
   const isCurriculum = useWatch('isCurriculum', form)
   const [ref, { height }] = useMeasure()
@@ -159,7 +161,7 @@ const Section = ({ form }: SectionProps) => {
                                   className="mb-0 w-fit"
                                 >
                                   <CustomInput
-                                    placeholder="New section"
+                                    placeholder={t('New section')}
                                     disabled={isCurriculum}
                                   />
                                 </Form.Item>
@@ -188,7 +190,7 @@ const Section = ({ form }: SectionProps) => {
                                                 name={[subField.name, 'title']}
                                               >
                                                 <CustomInput
-                                                  placeholder="New lesson"
+                                                  placeholder={t('New lesson')}
                                                   autoFocus={autoFocus}
                                                 />
                                               </Form.Item>
@@ -196,7 +198,9 @@ const Section = ({ form }: SectionProps) => {
 
                                             <div className="flex gap-4">
                                               {lessonId ? (
-                                                <Tooltip title="Edit lesson">
+                                                <Tooltip
+                                                  title={t('Edit lesson')}
+                                                >
                                                   <Link
                                                     to={`lessons/${lessonId}`}
                                                   >
@@ -208,7 +212,11 @@ const Section = ({ form }: SectionProps) => {
                                                   </Link>
                                                 </Tooltip>
                                               ) : (
-                                                <Tooltip title="Please save the course to edit this lesson">
+                                                <Tooltip
+                                                  title={t(
+                                                    'Please save the course to edit this lesson',
+                                                  )}
+                                                >
                                                   <div className="flex">
                                                     <PencilLineIcon
                                                       className="opacity-40 hover:cursor-not-allowed"
@@ -218,7 +226,9 @@ const Section = ({ form }: SectionProps) => {
                                                   </div>
                                                 </Tooltip>
                                               )}
-                                              <Tooltip title="Delete lesson">
+                                              <Tooltip
+                                                title={t('Delete lesson')}
+                                              >
                                                 <div className="flex">
                                                   <TrashIcon
                                                     onClick={() => {
@@ -233,7 +243,9 @@ const Section = ({ form }: SectionProps) => {
                                                 </div>
                                               </Tooltip>
 
-                                              <Tooltip title="Export lesson">
+                                              <Tooltip
+                                                title={t('Export lesson')}
+                                              >
                                                 <div
                                                   className="flex"
                                                   onClick={() =>
@@ -264,7 +276,7 @@ const Section = ({ form }: SectionProps) => {
                                         )
                                       })}
                                       <div className="flex gap-4 absolute right-0 top-[-48px]">
-                                        <Tooltip title="Add lesson">
+                                        <Tooltip title={t('Add lesson')}>
                                           <Dropdown
                                             menu={{
                                               items: getAddLessonMenu(
@@ -293,7 +305,7 @@ const Section = ({ form }: SectionProps) => {
                                           />
                                         )}
                                         {!isCurriculum && (
-                                          <Tooltip title="Delete section">
+                                          <Tooltip title={t('Delete section')}>
                                             <div className="flex">
                                               <TrashIcon
                                                 onClick={() => {
@@ -323,7 +335,7 @@ const Section = ({ form }: SectionProps) => {
                                             }
                                           }}
                                         >
-                                          <Tooltip title="Import lesson">
+                                          <Tooltip title={t('Import lesson')}>
                                             <div className="flex">
                                               <ImportOutlined
                                                 className={
@@ -360,7 +372,7 @@ const Section = ({ form }: SectionProps) => {
             <Button
               onClick={() =>
                 add({
-                  title: 'New section',
+                  title: t('New section'),
                   lessons: [],
                 })
               }
@@ -368,7 +380,7 @@ const Section = ({ form }: SectionProps) => {
               className="mt-4 w-full h-10"
               disabled={isCurriculum}
             >
-              Add section
+              {t('Add section')}
             </Button>
           </Form.Item>
         </>

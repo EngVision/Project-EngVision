@@ -17,6 +17,7 @@ import ExerciseTagInput, {
   getTagList,
   transformToExerciseTagInputValue,
 } from '../ExerciseTagInput'
+import { useTranslation } from 'react-i18next'
 
 interface ContentFormProps {
   index: number
@@ -97,6 +98,8 @@ interface QuestionFormProps {
 }
 
 const QuestionForm = ({ index, remove }: QuestionFormProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
+
   const form = Form.useFormInstance()
   const content = Form.useWatch('content', form)
   const answers = content ? content[index].answers : []
@@ -106,37 +109,40 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
   return (
     <>
       <div className="flex items-center justify-between gap-4">
-        <p className="text-xl font-bold my-2">Question {index + 1}</p>
+        <p className="text-xl font-bold my-2">
+          {t('Question')} {index + 1}
+        </p>
         {remove && (
           <Button danger type="primary" onClick={() => remove(index)}>
-            Remove
+            {t('Remove')}
           </Button>
         )}
       </div>
       <div className="flex">
         <Form.Item
           className="flex-1"
-          label="Question"
+          label={t('Question')}
           name={[index, 'questionText']}
           rules={[{ required: true }]}
         >
           <Input.TextArea
             className="h-full"
             autoSize={{ minRows: 2, maxRows: 4 }}
-            placeholder="Question"
+            placeholder={t('Question')}
           />
         </Form.Item>
       </div>
 
       <p className="my-2 flex items-center gap-1">
-        <span className="text-[#ff4d4f] flex items-center h-1">*</span> Contents
+        <span className="text-[#ff4d4f] flex items-center h-1">*</span>
+        {t('Contents')}
       </p>
       <div
         className="flex justify-between mb-4 gap-10"
         style={{ marginRight: answers?.length > 1 ? 80 : 0 }}
       >
         <div className="flex justify-between gap-4 flex-1">
-          <b className="uppercase">Column A</b>
+          <b className="uppercase">{t('Column A')}</b>
           <div className="flex items-center gap-2">
             <Form.Item
               name={[index, 'firstColumnUseImage']}
@@ -145,12 +151,12 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             >
               <Switch size="small" />
             </Form.Item>
-            Use image
+            {t('Use image')}
           </div>
         </div>
 
         <div className="flex justify-between gap-4 flex-1">
-          <b className="uppercase">Column B</b>
+          <b className="uppercase">{t('Column B')}</b>
           <div className="flex items-center gap-2">
             <Form.Item
               name={[index, 'secondColumnUseImage']}
@@ -159,7 +165,7 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             >
               <Switch size="small" />
             </Form.Item>
-            Use image
+            {t('Use image')}
           </div>
         </div>
       </div>
@@ -179,35 +185,35 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             })}
             <Form.Item>
               <Button type="dashed" onClick={() => add()} block icon={'+'}>
-                Add content
+                {t('Add content')}
               </Button>
             </Form.Item>
           </>
         )}
       </Form.List>
 
-      <Form.Item label="Explanation" name={[index, 'explanation']}>
+      <Form.Item label={t('Explanation')} name={[index, 'explanation']}>
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 4 }}
-          placeholder="Explanation (optional)"
+          placeholder={t('Explanation (optional)')}
         />
       </Form.Item>
       <div className="flex gap-4">
         <div className="flex-1 grid grid-cols-2 gap-4">
           <Form.Item
-            label="Tags"
+            label={t('Tags')}
             name={[index, 'questionTags']}
             rules={[{ required: true }]}
           >
             <ExerciseTagInput />
           </Form.Item>
           <Form.Item
-            label="Level"
+            label={t('Level')}
             name={[index, 'questionLevel']}
             rules={[{ required: true }]}
           >
             <Select
-              placeholder="Level"
+              placeholder={t('Level')}
               options={enumToSelectOptions(CEFRLevel)}
             />
           </Form.Item>
