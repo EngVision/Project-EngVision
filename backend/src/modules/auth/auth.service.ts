@@ -78,14 +78,16 @@ export class AuthService {
     return { tokens, user };
   }
 
-  async refreshTokens(id: string): Promise<Tokens> {
+  async refreshTokens(
+    id: string,
+  ): Promise<{ tokens: Tokens; user: UserDocument }> {
     const user = await this.usersService.getById(id);
 
     if (!user) throw new ForbiddenException('Access denied');
 
     const tokens = await this.getTokens(user);
 
-    return tokens;
+    return { tokens, user };
   }
 
   async validateUser(email: string, password: string): Promise<UserDocument> {

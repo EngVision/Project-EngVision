@@ -69,7 +69,11 @@ export class AuthController {
   ) {
     const { tokens, user } = await this.authService.register(createUserDto);
 
-    this.authService.attachTokensCookie(res, tokens);
+    const {
+      data: { userId: chatUserId, authToken: chatToken },
+    } = await this.authService.accessChatService(user);
+
+    this.authService.attachTokensCookie(res, tokens, chatUserId, chatToken);
 
     return res
       .status(HttpStatus.CREATED)
@@ -83,9 +87,13 @@ export class AuthController {
     @CurrentUser() user: JwtPayloadWithRt,
     @Res() res: Response,
   ) {
-    const tokens = await this.authService.refreshTokens(user.sub);
+    const { tokens, user: u } = await this.authService.refreshTokens(user.sub);
 
-    this.authService.attachTokensCookie(res, tokens);
+    const {
+      data: { userId: chatUserId, authToken: chatToken },
+    } = await this.authService.accessChatService(u);
+
+    this.authService.attachTokensCookie(res, tokens, chatUserId, chatToken);
 
     return res.status(HttpStatus.OK).send(GetResponse({ data: tokens }));
   }
@@ -94,9 +102,13 @@ export class AuthController {
   @Get('google/login')
   @UseGuards(GoogleGuard)
   async googleLogin(@Req() req, @Res() res: Response) {
-    const { tokens } = await this.authService.singleSignOn(req);
+    const { tokens, user } = await this.authService.singleSignOn(req);
 
-    this.authService.attachTokensCookie(res, tokens);
+    const {
+      data: { userId: chatUserId, authToken: chatToken },
+    } = await this.authService.accessChatService(user);
+
+    this.authService.attachTokensCookie(res, tokens, chatUserId, chatToken);
 
     return res.redirect(`${process.env.CLIENT_URL}/sso-success`);
   }
@@ -104,9 +116,13 @@ export class AuthController {
   @Get('facebook/login')
   @UseGuards(FacebookGuard)
   async facebookLogin(@Req() req, @Res() res: Response) {
-    const { tokens } = await this.authService.singleSignOn(req);
+    const { tokens, user } = await this.authService.singleSignOn(req);
 
-    this.authService.attachTokensCookie(res, tokens);
+    const {
+      data: { userId: chatUserId, authToken: chatToken },
+    } = await this.authService.accessChatService(user);
+
+    this.authService.attachTokensCookie(res, tokens, chatUserId, chatToken);
 
     return res.redirect(`${process.env.CLIENT_URL}/sso-success`);
   }
