@@ -56,7 +56,7 @@ const Teacher = () => {
   rawCourseList.data.forEach((course) => {
     totalStudents += course.attendance
     totalRevenue += course.attendance * course.price
-    totalRating += course.avgStar ? course.avgStar : 0
+    totalRating += course.avgStar ? +course.avgStar : 0
   })
 
   return (

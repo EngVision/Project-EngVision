@@ -20,9 +20,26 @@ const SortDropDown = ({ onSort }: any) => {
       label: t('My Progress'),
       key: '2',
     },
+    {
+      label: t('Price Up'),
+      key: '3',
+    },
+    {
+      label: t('Price Down'),
+      key: '4',
+    },
+    {
+      label: t('Rating Up'),
+      key: '5',
+    },
+    {
+      label: t('Rating Down'),
+      key: '6',
+    },
   ]
   const menuProps = {
     items,
+    selectable: true,
     onClick: handleMenuClick,
   }
   return (

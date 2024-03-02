@@ -301,7 +301,7 @@ export class CoursesService {
           options: { sort: { createdAt: -1 } },
           populate: { path: 'user' },
         })
-        .populate('sections.lessons.exercises', 'id title')
+        .populate('sections.lessons.exercises', 'id title type')
         .populate('sections.lessons.materials');
 
       if (user.roles.includes(Role.Student)) {
