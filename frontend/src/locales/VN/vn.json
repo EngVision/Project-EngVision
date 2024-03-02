@@ -97,7 +97,16 @@
     "Rating Down": "Đánh giá giảm dần"
   },
   "Exercises": {
-    "exercises": "Bài tập"
+    "exercises": "Bài tập",
+    "MultipleChoice": "Trắc nghiệm",
+    "FillBlank": "Điền từ",
+    "ConstructedResponse": "Tự luận",
+    "MakeSentence": "Hoàn thành câu",
+    "Unscramble": "Sắp xếp câu",
+    "Speaking": "Nói",
+    "Match": "Nối từ",
+    "DragAndDrop": "Kéo và thả",
+    "WordSearch": "Tìm từ"
   },
   "MyHub": {
     "myHub": "Trung tâm của tôi",

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Button, Collapse, Image } from 'antd'
+import { Button, Collapse, Image, Tag } from 'antd'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Circle from '../../../components/Icons/Circle'
 import TickCircle from '../../../components/Icons/TickCircle'
@@ -15,6 +15,7 @@ import { useContext, useState } from 'react'
 import userViewsApi from '../../../services/userViewsApi'
 import { useTranslation } from 'react-i18next'
 import { NotificationContext } from '../../../contexts/notification'
+import ExerciseTypeTag from './ExerciseTypeTag'
 const { Panel } = Collapse
 
 const CourseContent = (course: CourseDetails) => {
@@ -231,9 +232,10 @@ const CourseContent = (course: CourseDetails) => {
                               <div className="hidden lg:block mr-2 font-bold text-lg">
                                 Exercise:
                               </div>
-                              <span className="font-bold text-lg">
+                              <span className="font-bold text-lg mr-2">
                                 {exercise.title}
                               </span>
+                              <ExerciseTypeTag type={exercise.type} />
                             </div>
                             <Button
                               onClick={() => {

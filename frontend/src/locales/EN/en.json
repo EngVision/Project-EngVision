@@ -98,7 +98,16 @@
     "Rating Down": "Rating Down"
   },
   "Exercises": {
-    "exercises": "Exercises"
+    "exercises": "Exercises",
+    "MultipleChoice": "Multiple choice",
+    "FillBlank": "Fill blank",
+    "ConstructedResponse": "Constructed response",
+    "MakeSentence": "Make sentence",
+    "Unscramble": "Unscramble",
+    "Speaking": "Speaking",
+    "Match": "Match",
+    "DragAndDrop": "Drag and drop",
+    "WordSearch": "WordSearch"
   },
   "MyHub": {
     "myHub": "My Hub",
