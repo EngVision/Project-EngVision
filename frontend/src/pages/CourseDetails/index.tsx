@@ -19,6 +19,7 @@ import { formatDate } from '../../utils/formatDate'
 import CourseContent from './CourseContent'
 import Overview from './Overview'
 import Reviews from './Reviews'
+import { formatCurrency } from '../../utils/currency'
 const { TabPane } = Tabs
 
 const CourseDetailsPage = () => {
@@ -158,7 +159,8 @@ const CourseDetailsPage = () => {
                   onClick={handleClickEnroll}
                   loading={enrollLoading || attendCourseMutation.isPending}
                 >
-                  {t('Course Details.Enroll with')} {courseDetail.price} VND
+                  {t('Course Details.Enroll with')}{' '}
+                  {formatCurrency(courseDetail.price)}
                 </Button>
               </div>
             )}

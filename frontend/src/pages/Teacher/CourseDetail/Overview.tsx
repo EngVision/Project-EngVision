@@ -3,6 +3,7 @@ import CustomUpload from '../../../components/CustomUpload'
 import { CEFRLevel } from '../../../utils/constants'
 import { useWatch } from 'antd/es/form/Form'
 import { useTranslation } from 'react-i18next'
+import { formatCurrency } from '../../../utils/currency'
 
 type FieldType = {
   title: string
@@ -83,7 +84,7 @@ const Overview = ({ handleChangeThumbnail }: OverviewProps) => {
           className="flex-1"
         >
           <Input
-            placeholder="0 VND"
+            placeholder={formatCurrency(0)}
             size="middle"
             className="rounded-[8px] h-[40px]"
             disabled={isAdminCurriculum}

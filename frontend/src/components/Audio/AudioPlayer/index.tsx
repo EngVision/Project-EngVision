@@ -16,9 +16,8 @@ const AudioPlayer = ({ url }: { url: string }) => {
   const playerRef = useRef<ReactPlayer>(null)
   const [blob, setBlob] = useState<Blob | null>(null)
   const initialState = {
-    url: url,
     pip: false,
-    playing: false,
+    playing: true,
     controls: false,
     light: false,
     volume: 0.8,
@@ -32,6 +31,17 @@ const AudioPlayer = ({ url }: { url: string }) => {
     seeking: false,
   }
   const [state, setState] = useState(initialState)
+
+  useEffect(() => {
+    setState((prev) => ({
+      ...prev,
+      played: 0,
+      playedSeconds: 0,
+      loaded: 0,
+      loadedSeconds: 0,
+    }))
+  }, [url])
+
   const handleSeekChange = (value: number) => {
     setState({ ...state, seeking: true, played: value })
   }
@@ -89,7 +99,7 @@ const AudioPlayer = ({ url }: { url: string }) => {
           ref={playerRef}
           width="100%"
           height="100%"
-          url={state.url}
+          url={url}
           pip={state.pip}
           playing={state.playing}
           controls={state.controls}

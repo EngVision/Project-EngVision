@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Form, Tabs, Tooltip } from 'antd'
 import { useWatch } from 'antd/es/form/Form'
 import { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import ConfirmDeleteModal from '../../../components/Modal/ConfirmDeleteModal'
 import AppLoading from '../../../components/common/AppLoading'
@@ -12,7 +13,6 @@ import { TEACHER_ROUTES } from '../../../utils/constants'
 import Overview from './Overview'
 import Preview from './Preview'
 import Section from './Section'
-import { useTranslation } from 'react-i18next'
 const { TabPane } = Tabs
 
 const TeacherCourseDetail = () => {
@@ -34,7 +34,7 @@ const TeacherCourseDetail = () => {
     const courseDetail = await coursesApi.getCourseDetails(courseId)
     const formattedCourseContent = {
       ...courseDetail,
-      price: courseDetail.price.toString(),
+      price: courseDetail.price,
     }
     form.setFieldsValue(formattedCourseContent)
     return formattedCourseContent
@@ -131,7 +131,7 @@ const TeacherCourseDetail = () => {
         onFieldsChange={() => handleChangeForm()}
         className="h-full flex flex-col gap-2"
       >
-        <Preview form={form} />
+        <Preview />
 
         <Tabs
           className="w-full flex-1 overflow-auto"

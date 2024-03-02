@@ -6,6 +6,7 @@ import { NotificationContext } from '../../../contexts/notification'
 import { useAppSelector } from '../../../hooks/redux'
 import coursesApi from '../../../services/coursesApi'
 import { CEFRLevel } from '../../../utils/constants'
+import { formatCurrency } from '../../../utils/currency'
 
 type FieldType = {
   title: string
@@ -116,7 +117,7 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
             ]}
           >
             <Input
-              placeholder="0 VND"
+              placeholder={formatCurrency(0)}
               size="middle"
               className="rounded-[8px] h-[40px]"
             />

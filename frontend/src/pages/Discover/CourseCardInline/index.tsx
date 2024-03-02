@@ -5,6 +5,7 @@ import type { CourseDetails } from '../../../services/coursesApi/types'
 import { LEVELS, UPLOAD_FILE_URL } from '../../../utils/constants'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import { formatCurrency } from '../../../utils/currency'
 interface CourseCardProps {
   course: CourseDetails
 }
@@ -56,7 +57,7 @@ export const CourseCardInLine = ({ course }: CourseCardProps) => {
         <div className="flex justify-between items-center text-xs w-[40rem]">
           <div className="flex">
             <p className="font-semibold text-2xl text-primary">
-              {course.price} VND
+              {formatCurrency(course.price)}
             </p>
           </div>
           <Button onClick={() => navigate(`./${course.id}`)}>
