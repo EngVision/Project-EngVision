@@ -60,7 +60,7 @@ function FillBlank(props: FillBlankProps) {
                       ref={key === 0 ? firstInput : null}
                       className={`font-bold text-xl ${
                         result
-                          ? result.isCorrect
+                          ? result.answer[key] === result.correctAnswer[key]
                             ? '!text-green-500'
                             : '!text-red-500'
                           : ''
