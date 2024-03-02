@@ -12,7 +12,6 @@ const RightComponent = ({
   previewChats,
   directChats,
   handleSendMessage,
-  formRef,
 }: any) => {
   if (selectedChat === undefined) {
     return null
@@ -21,6 +20,7 @@ const RightComponent = ({
   const dispatch = useAppDispatch()
   const emojiPickerRef = useRef<HTMLDivElement>(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [form] = Form.useForm()
 
   useEffect(() => {
     function handleClickOutside(event: { target: any }) {
@@ -44,6 +44,7 @@ const RightComponent = ({
   const onFinish = (values: any) => {
     // Gửi tin nhắn khi nút gửi được nhấn
     sendMessage(values.value)
+    form.resetFields()
   }
 
   const sendMessage = (message: string) => {
@@ -56,9 +57,9 @@ const RightComponent = ({
   }
 
   const handleEmojiSelect = (emoji: any) => {
-    const currentValue = formRef.current.getFieldValue('value')
+    const currentValue = form.getFieldValue('value')
 
-    formRef.current.setFieldsValue({
+    form.setFieldsValue({
       value: currentValue ? currentValue + emoji.emoji : emoji.emoji,
     })
   }
@@ -178,7 +179,7 @@ const RightComponent = ({
         onFinish={onFinish}
         autoComplete="off"
         style={{ width: '100%' }}
-        ref={formRef}
+        form={form}
       >
         <div className="flex items-center p-2 border-t border-gray-200 w-[100%]">
           <Form.Item
@@ -198,13 +199,12 @@ const RightComponent = ({
                   <Icon />
                 </Button>
               }
-              onClick={() => dispatch(setIsNewMessage(false))}
             />
           </Form.Item>
 
           <Button
             className="mb-6 p-1 bg-surface rounded h-12"
-            type="primary"
+            type="text"
             htmlType="submit"
           >
             <Send />

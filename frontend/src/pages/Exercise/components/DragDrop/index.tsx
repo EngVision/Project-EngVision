@@ -14,7 +14,6 @@ interface DragDropProps extends QuestionPayload {
       image?: string
     }[]
   }
-  result: any
   exerciseId?: string
   result?: any
   setIsSubmittable: (value: boolean) => void
@@ -23,8 +22,6 @@ interface DragDropProps extends QuestionPayload {
 const DragDrop = (props: DragDropProps) => {
   const questionTitle = props.question.text
   const result = props.result
-
-  console.log(result)
 
   const [list1, setList1] = useState<string[]>([])
   const [list2, setList2] = useState([

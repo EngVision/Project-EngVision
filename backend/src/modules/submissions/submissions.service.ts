@@ -134,7 +134,6 @@ export class SubmissionsService {
     if (roles?.includes(Role.Teacher)) {
       filterQuery = {
         ...filter,
-        teacher: userId,
         needGrade: true,
         $expr: { $eq: ['$totalDone', '$totalQuestion'] },
       };

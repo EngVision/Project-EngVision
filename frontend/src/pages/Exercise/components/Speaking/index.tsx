@@ -28,8 +28,6 @@ function Speaking(props: SpeakingProps) {
   const form = Form.useFormInstance()
   const [fileId, setFileId] = useState<string>('')
 
-  console.log(result)
-
   useEffect(() => {
     setFileId(result?.answer || '')
   }, [result])

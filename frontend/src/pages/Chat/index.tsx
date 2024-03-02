@@ -20,7 +20,6 @@ const Chat = () => {
   const isNewMessage = useAppSelector((state) => state.app.isNewMessage)
   const user = useAppSelector((state) => state.app.user)
   const newNotifyRoomId = useAppSelector((state) => state.app.newNotifyRoomId)
-  const formRef = useRef<any>(null)
 
   useEffect(() => {
     const socket = new WebSocket(import.meta.env.VITE_WS_URL as string)
@@ -210,12 +209,10 @@ const Chat = () => {
     }
     handleGetDirectChat(previewChats[selectedChat]?.usernames[oppositeIndex])
     handleChatClick(0)
-    if (formRef.current) {
-      formRef.current.resetFields()
-    }
   }
 
   const handleChatClick = (index: number) => {
+    dispatch(setIsNewMessage(false))
     setSelectedChat(index)
 
     for (let i = 0; i < newNotifyRoomId.length; i++) {
@@ -245,7 +242,6 @@ const Chat = () => {
           previewChats={previewChats}
           directChats={directChats}
           handleSendMessage={handleSendMessage}
-          formRef={formRef}
         />
       </div>
     </div>

@@ -16,7 +16,7 @@ import {
 } from 'src/common/config/cookie.config';
 import { User, UserDocument } from '../users/schemas/user.schema';
 import { CreateUserDto } from './../users/dto/create-user.dto';
-import { UsersService } from './../users/users.service';
+import { Account, UsersService } from './../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './types';
 import { Tokens } from './types/tokens.type';
@@ -24,10 +24,17 @@ import { Role, AccountStatus } from 'src/common/enums';
 
 @Injectable()
 export class AuthService {
+  private adminAccount: Account;
+
   constructor(
     private readonly usersService: UsersService,
     private jwtService: JwtService,
-  ) {}
+  ) {
+    this.adminAccount = {
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    };
+  }
 
   async login(
     loginDto: LoginDto,
@@ -235,12 +242,19 @@ export class AuthService {
     user: UserDocument,
   ): Promise<{ success: boolean; data?: any; error?: any }> {
     const url = process.env.CHAT_SERVICE_URL + '/api/v1/login';
+
     const credentials = {
-      user: sha256(user.email).toString(),
-      password: {
-        digest: sha256(user.email).toString(),
-        algorithm: 'sha-256',
-      },
+      user:
+        user.email === this.adminAccount.email
+          ? user.email
+          : sha256(user.email).toString(),
+      password:
+        user.email === this.adminAccount.email
+          ? this.adminAccount.password
+          : {
+              digest: sha256(user.email).toString(),
+              algorithm: 'sha-256',
+            },
     };
 
     try {

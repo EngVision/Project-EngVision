@@ -22,7 +22,13 @@ const Teacher = () => {
         className={`bg-[#41AB3F] flex flex-row px-5 justify-between rounded-xl items-center`}
       >
         <div className="basis-1/2 text-xl text-white">
-          {t('Hi')}, {user?.firstName + ' ' + user?.lastName}! <br />
+          {t('Hi')},{' '}
+          {user?.firstName
+            ? user?.firstName
+            : '' + ' ' + user?.lastName
+            ? user?.lastName
+            : ''}
+          ! <br />
           {t(
             'Thank you for choosing to share your knowledge and inspire others on our platform!',
           )}

@@ -138,13 +138,6 @@ const SignIn: React.FC = () => {
           label={t('Password')}
           rules={[
             { required: true, message: t('Please input your password!') },
-            {
-              async validator(_, value) {
-                return new Promise((resolve, reject) =>
-                  validatePassword(resolve, reject, value),
-                )
-              },
-            },
           ]}
         >
           <Input.Password
