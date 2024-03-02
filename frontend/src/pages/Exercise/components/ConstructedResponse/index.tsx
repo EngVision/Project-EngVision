@@ -6,6 +6,7 @@ import {
   QuestionPayload,
   SubmitAnswerResponse,
 } from '../../../../services/exerciseApi/types'
+import { useTranslation } from 'react-i18next'
 
 interface ConstructedResponseProps extends QuestionPayload {
   question: {
@@ -26,6 +27,7 @@ interface ConstructedResponseRes extends SubmitAnswerResponse {
 }
 
 export default function ConstructedResponse(props: ConstructedResponseProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'DoExercise' })
   const {
     question,
     result,
@@ -65,8 +67,8 @@ export default function ConstructedResponse(props: ConstructedResponseProps) {
         {result && (
           <ReactDiffViewer
             useDarkTheme={darkMode}
-            leftTitle={'Student answer'}
-            rightTitle={`Teacher's correction`}
+            leftTitle={t('Student answer')}
+            rightTitle={t(`Teacher's correction`)}
             oldValue={result.answer || ''}
             newValue={
               (isGrading ? teacherCorrection : result.teacherCorrection) || ''

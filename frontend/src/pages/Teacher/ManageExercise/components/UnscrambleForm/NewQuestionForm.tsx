@@ -7,12 +7,14 @@ import UnscrambleSettings from './UnscrambleSettings'
 import CustomUpload from '../../../../../components/CustomUpload'
 import { ExerciseCardType } from '../../../../../utils/constants'
 import { useMeasure } from '@uidotdev/usehooks'
+import { useTranslation } from 'react-i18next'
 
 type NewQuestionFormProps = {
   index: number
 }
 
 const NewQuestionForm = ({ index }: NewQuestionFormProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
   const [ref, { height }] = useMeasure()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -38,20 +40,24 @@ const NewQuestionForm = ({ index }: NewQuestionFormProps) => {
       >
         <div className="font-semibold text-primary hover:cursor-pointer">
           {items.length === 0
-            ? 'Add card'
-            : `Edit ${items.length} card${items.length > 1 ? 's' : ''}`}
+            ? t('Add card')
+            : `${t('Edit')} ${items.length} ${t('card')}`}
         </div>
       </div>
 
       <Modal
-        title={<h4 className="text-xl">Question {index + 1}</h4>}
+        title={
+          <h4 className="text-xl">
+            {t('Question')} {index + 1}
+          </h4>
+        }
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         className="min-w-[800px]"
         footer={() => (
           <>
             <Button type="primary" onClick={handleOk}>
-              Confirm
+              {t('Confirm')}
             </Button>
           </>
         )}
@@ -60,7 +66,9 @@ const NewQuestionForm = ({ index }: NewQuestionFormProps) => {
           <Form.List name={[index, 'items']}>
             {(fields, { add, move, remove }) => (
               <div className="flex-1 flex flex-col gap-2">
-                <h4 className="text-sm uppercase text-wolfGrey">Your card</h4>
+                <h4 className="text-sm uppercase text-wolfGrey">
+                  {t('Your card')}
+                </h4>
 
                 <>
                   <DragDropContext
@@ -143,7 +151,7 @@ const NewQuestionForm = ({ index }: NewQuestionFormProps) => {
                       className="w-full h-10 flex items-center justify-center"
                       icon={<PlusIcon width={16} height={16} />}
                     >
-                      <div className="mt-0.5">Add new card</div>
+                      <div className="mt-0.5">{t('Add new card')}</div>
                     </Button>
                   </Form.Item>
                 </>

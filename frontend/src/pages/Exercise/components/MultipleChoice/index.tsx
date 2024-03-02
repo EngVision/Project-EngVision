@@ -4,6 +4,7 @@ import {
   QuestionPayload,
   SubmitAnswerResponse,
 } from '../../../../services/exerciseApi/types'
+import { useTranslation } from 'react-i18next'
 
 interface MultipleChoiceProps extends QuestionPayload {
   question: {
@@ -24,6 +25,7 @@ interface MultipleChoiceResponse extends SubmitAnswerResponse {
 }
 
 function MultipleChoice(props: MultipleChoiceProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'DoExercise' })
   const { question, result, setIsSubmittable } = props
   const selectedAnswers = Form.useWatch('answer')
   const form = Form.useFormInstance()
@@ -50,7 +52,7 @@ function MultipleChoice(props: MultipleChoiceProps) {
   return (
     <div>
       <p className="mb-5 text-primary text-2xl font-semibold">
-        Multiple choice question
+        {t('Multiple choice question')}
         {question.multipleCorrectAnswers ? ' (Multiple correct choices)' : ''}
       </p>
       <p
