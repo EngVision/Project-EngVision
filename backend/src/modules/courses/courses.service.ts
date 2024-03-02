@@ -63,6 +63,7 @@ export class CoursesService {
         } else if (user.roles.includes(Role.Teacher)) {
           dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
         } else if (user.roles.includes(Role.Student)) {
+          dataFilter.isAdminCurriculum = { $ne: true };
           dataFilter.isPublished = { $eq: true };
         }
         break;

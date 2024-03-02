@@ -52,7 +52,9 @@ export class SubmissionsService {
     const avgGrade =
       submissionDto.detail.reduce(
         (prev, questionResult) =>
-          questionResult.isCorrect ? prev + 10 : prev + questionResult.grade,
+          questionResult.isCorrect
+            ? prev + 10
+            : prev + (questionResult.grade ?? 0),
         0,
       ) / submissionDto.detail.length;
 
