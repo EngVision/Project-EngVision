@@ -8,6 +8,7 @@ import {
 import { CEFRLevel, ExerciseTag } from '../../../../../utils/constants'
 import enumToSelectOptions from '../../../../../utils/enumsToSelectOptions'
 import ExerciseTagInput, { getTagList } from '../ExerciseTagInput'
+import { useTranslation } from 'react-i18next'
 
 interface ContentFormProps {
   index: number
@@ -49,27 +50,31 @@ interface QuestionFormProps {
 }
 
 const QuestionForm = ({ index, remove }: QuestionFormProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
+
   return (
     <>
       <div className="flex items-center justify-between gap-4">
-        <p className="text-xl font-bold my-2">Question {index + 1}</p>
+        <p className="text-xl font-bold my-2">
+          {t('Question')} {index + 1}
+        </p>
         {remove && (
           <Button danger type="primary" onClick={() => remove(index)}>
-            Remove
+            {t('Remove')}
           </Button>
         )}
       </div>
       <div className="flex">
         <Form.Item
           className="flex-1"
-          label="Question"
+          label={t('Question')}
           name={[index, 'questionText']}
           rules={[{ required: true }]}
         >
           <Input.TextArea
             className="h-full"
             autoSize={{ minRows: 2, maxRows: 4 }}
-            placeholder="Question"
+            placeholder={t('Question')}
           />
         </Form.Item>
       </div>
@@ -77,30 +82,30 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
       <div className="flex gap-4 justify-between">
         <Form.Item
           name={[index, 'num_col']}
-          label="Number of column"
+          label={t('Number of column')}
           className="flex-1"
         >
           <InputNumber
             className="w-full"
-            placeholder="Number of column (optional)"
+            placeholder={t('Number of column (optional)')}
           />
         </Form.Item>
 
         <Form.Item
           name={[index, 'num_row']}
-          label="Number of row"
+          label={t('Number of row')}
           className="flex-1"
         >
           <InputNumber
             className="w-full"
-            placeholder="Number of row (optional)"
+            placeholder={t('Number of row (optional)')}
           />
         </Form.Item>
       </div>
 
       <p className="my-2 flex items-center gap-1">
-        <span className="text-[#ff4d4f] flex items-center h-1">*</span> Words to
-        find
+        <span className="text-[#ff4d4f] flex items-center h-1">*</span>{' '}
+        {t('Words to find')}
       </p>
       <Form.List name={[index, 'answers']}>
         {(fields, { add, remove }) => (
@@ -116,35 +121,35 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             })}
             <Form.Item>
               <Button type="dashed" onClick={() => add()} block icon={'+'}>
-                Add word
+                {t('Add word')}
               </Button>
             </Form.Item>
           </>
         )}
       </Form.List>
 
-      <Form.Item label="Explanation" name={[index, 'explanation']}>
+      <Form.Item label={t('Explanation')} name={[index, 'explanation']}>
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 4 }}
-          placeholder="Explanation (optional)"
+          placeholder={t('Explanation (optional)')}
         />
       </Form.Item>
       <div className="flex gap-4">
         <div className="flex-1 grid grid-cols-2 gap-4">
           <Form.Item
-            label="Tags"
+            label={t('Tags')}
             name={[index, 'questionTags']}
             rules={[{ required: true }]}
           >
             <ExerciseTagInput />
           </Form.Item>
           <Form.Item
-            label="Level"
+            label={t('Level')}
             name={[index, 'questionLevel']}
             rules={[{ required: true }]}
           >
             <Select
-              placeholder="Level"
+              placeholder={t('Level')}
               options={enumToSelectOptions(CEFRLevel)}
             />
           </Form.Item>

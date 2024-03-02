@@ -18,6 +18,7 @@ import ExerciseTagInput, {
   transformToExerciseTagInputValue,
 } from '../ExerciseTagInput'
 import NewQuestionForm from './NewQuestionForm'
+import { useTranslation } from 'react-i18next'
 
 interface QuestionFormProps {
   index: number
@@ -25,6 +26,7 @@ interface QuestionFormProps {
 }
 
 const QuestionForm = ({ index, remove }: QuestionFormProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
   const form = Form.useFormInstance()
   const content = Form.useWatch('content', form)
   const exerciseType = content?.[index]?.exerciseType || ExerciseCardType.Text
@@ -33,10 +35,12 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
   return (
     <>
       <div className="flex items-center justify-between gap-4">
-        <p className="text-xl font-bold my-2">Question {index + 1}</p>
+        <p className="text-xl font-bold my-2">
+          {t('Question')} {index + 1}
+        </p>
         {remove && (
           <Button danger type="primary" onClick={() => remove(index)}>
-            Remove
+            {t('Remove')}
           </Button>
         )}
       </div>
@@ -69,28 +73,28 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
         }
       </Form.List>
 
-      <Form.Item label="Explanation" name={[index, 'explanation']}>
+      <Form.Item label={t('Explanation')} name={[index, 'explanation']}>
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 4 }}
-          placeholder="Explanation (optional)"
+          placeholder={t('Explanation (optional)')}
         />
       </Form.Item>
       <div className="flex gap-4">
         <div className="flex-1 grid grid-cols-2 gap-4">
           <Form.Item
-            label="Tags"
+            label={t('Tags')}
             name={[index, 'questionTags']}
             rules={[{ required: true }]}
           >
             <ExerciseTagInput />
           </Form.Item>
           <Form.Item
-            label="Level"
+            label={t('Level')}
             name={[index, 'questionLevel']}
             rules={[{ required: true }]}
           >
             <Select
-              placeholder="Level"
+              placeholder={t('Level')}
               options={enumToSelectOptions(CEFRLevel)}
             />
           </Form.Item>
@@ -101,7 +105,9 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
 }
 
 const Tutorial = () => {
-  return <p className="mb-5">Add cards to question</p>
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
+
+  return <p className="mb-5">{t('Add cards to question')}</p>
 }
 
 interface QuestionFormSchema {

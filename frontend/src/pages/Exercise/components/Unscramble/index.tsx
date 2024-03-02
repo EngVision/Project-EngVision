@@ -8,6 +8,7 @@ import {
   SubmitAnswerResponse,
 } from '../../../../services/exerciseApi/types'
 import { ExerciseCardType, UPLOAD_FILE_URL } from '../../../../utils/constants'
+import { useTranslation } from 'react-i18next'
 
 interface UnscrambleProps extends QuestionPayload {
   question: {
@@ -27,6 +28,7 @@ interface UnscrambleResponse extends SubmitAnswerResponse {
 }
 
 function Unscramble(props: UnscrambleProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
   const { question, result, setIsSubmittable } = props
   const exerciseType = question.isUnscrambleByText
     ? ExerciseCardType.Text
@@ -56,7 +58,7 @@ function Unscramble(props: UnscrambleProps) {
   return (
     <div>
       <h4 className="text-primary mb-5 text-lg">
-        Drag and drop to rearrange these work to form a correct sentence
+        {t('Drag and drop to rearrange these work to form a correct sentence')}
       </h4>
       <Form.List name="answer" initialValue={question.items}>
         {(fields, { move }) => (

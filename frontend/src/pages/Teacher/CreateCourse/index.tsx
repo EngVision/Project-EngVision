@@ -7,6 +7,7 @@ import { useAppSelector } from '../../../hooks/redux'
 import coursesApi from '../../../services/coursesApi'
 import { CEFRLevel } from '../../../utils/constants'
 import { formatCurrency } from '../../../utils/currency'
+import { useTranslation } from 'react-i18next'
 
 type FieldType = {
   title: string
@@ -23,6 +24,7 @@ interface TeacherCreateCourseProps {
 const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
   onClose,
 }) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'CreateCourse' })
   const status = useAppSelector((state) => state.course.status)
   const queryClient = useQueryClient()
   const apiNotification = useContext(NotificationContext)
@@ -42,7 +44,7 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
     }
     createTeacherCourseMutation.mutate(newCourse, {
       onSuccess: () => {
-        apiNotification.success({ message: 'Create successfully.' })
+        apiNotification.success({ message: t('Create successfully.') })
         onClose()
       },
     })
@@ -52,7 +54,7 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
     <div className="flex flex-col p-[1.5rem] rounded-md h-full">
       <div>
         <h4 className="text-primary text-2xl mb-4 font-semibold">
-          Create new course
+          {t('Create new course')}
         </h4>
 
         <Form
@@ -65,11 +67,13 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
         >
           <Form.Item<FieldType>
             name="title"
-            label="Title"
-            rules={[{ required: true, message: 'Please input title!' }]}
+            label={t('Title')}
+            rules={[{ required: true, message: t('Please input title!') }]}
           >
             <Input
-              placeholder="Public Speaking and Presentation Skills in English"
+              placeholder={t(
+                'Public Speaking and Presentation Skills in English',
+              )}
               size="middle"
               className="rounded-[8px] h-[40px]"
             />
@@ -77,11 +81,13 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
 
           <Form.Item<FieldType>
             name="about"
-            label="About"
-            rules={[{ required: true, message: 'Please input about!' }]}
+            label={t('About')}
+            rules={[{ required: true, message: t('Please input about!') }]}
           >
             <Input
-              placeholder="Boost your English public speaking and presentation skills with confidence."
+              placeholder={t(
+                'Boost your English public speaking and presentation skills with confidence.',
+              )}
               size="middle"
               className="rounded-[8px] h-[40px]"
             />
@@ -89,17 +95,17 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
 
           <Form.Item<FieldType>
             name="price"
-            label="Price"
+            label={t('Price')}
             rules={[
               { required: true, message: '' },
               {
                 async validator(_, value) {
-                  if (value.length === 0)
-                    return Promise.reject(new Error('Please input price!'))
+                  if (!value || value.length === 0)
+                    return Promise.reject(new Error(t('Please input price!')))
 
                   if (!/^[0-9.]+$/.test(value)) {
                     return Promise.reject(
-                      new Error('Price can only contain numbers.'),
+                      new Error(t('Price can only contain numbers.')),
                     )
                   }
 
@@ -109,7 +115,7 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
                   }
                   return Promise.reject(
                     new Error(
-                      'Price must be 0 for free or must be at least 2000!',
+                      t('Price must be 0 for free or must be at least 2000!'),
                     ),
                   )
                 },
@@ -125,11 +131,11 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
 
           <Form.Item<FieldType>
             name="level"
-            label="Level"
-            rules={[{ required: true, message: 'Please input level!' }]}
+            label={t('Level')}
+            rules={[{ required: true, message: t('Please input level!') }]}
           >
             <Select
-              placeholder="Select level"
+              placeholder={t('Select level')}
               options={Object.values(CEFRLevel).map((level) => ({
                 value: level,
                 label: level,
@@ -139,13 +145,13 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
             />
           </Form.Item>
 
-          <Form.Item name="thumbnail" label="Thumbnail">
+          <Form.Item name="thumbnail" label={t('Thumbnail')}>
             <CustomUpload type="picture" />
           </Form.Item>
 
           <div className="flex gap-4 mt-8 justify-end">
             <Button className="text-primary border-primary" onClick={onClose}>
-              Cancel
+              {t('Cancel')}
             </Button>
 
             <Form.Item>
@@ -154,7 +160,7 @@ const TeacherCreateCourse: React.FC<TeacherCreateCourseProps> = ({
                 htmlType="submit"
                 loading={createTeacherCourseMutation.isPending}
               >
-                Save
+                {t('Create')}
               </Button>
             </Form.Item>
           </div>

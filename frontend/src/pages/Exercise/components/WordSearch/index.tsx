@@ -5,6 +5,7 @@ import {
 } from '../../../../services/exerciseApi/types'
 import Grid from './Grid'
 import { Form } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 interface WordSearchProps extends QuestionPayload {
   question: {
@@ -70,6 +71,7 @@ function getTextFromMatrix(matrix: string[][], start: Position, end: Position) {
 }
 
 function WordSearch(props: WordSearchProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
   const { question, result, setIsSubmittable } = props
   const { words, rows, text } = question
 
@@ -145,7 +147,7 @@ function WordSearch(props: WordSearchProps) {
 
         <div className="border border-solid border-primary rounded-lg h-fit">
           <div className="text-white text-center text-base px-6 py-2 bg-primary rounded-t-md">
-            Find below words in the table
+            {t('Find below words in the table')}
           </div>
 
           <div className="mt-2">

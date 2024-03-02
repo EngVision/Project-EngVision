@@ -9,6 +9,7 @@ import ExerciseTagInput, {
   getTagList,
   transformToExerciseTagInputValue,
 } from '../ExerciseTagInput'
+import { useTranslation } from 'react-i18next'
 
 interface QuestionFormProps {
   index: number
@@ -16,52 +17,56 @@ interface QuestionFormProps {
 }
 
 const QuestionForm = ({ index, remove }: QuestionFormProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
+
   return (
     <>
       <div className="flex items-center justify-between gap-4">
-        <p className="text-xl font-bold my-2">Question {index + 1}</p>
+        <p className="text-xl font-bold my-2">
+          {t('Question')} {index + 1}
+        </p>
         {remove && (
           <Button danger type="primary" onClick={() => remove(index)}>
-            Remove
+            {t('Remove')}
           </Button>
         )}
       </div>
       <Form.Item
-        label="Question"
+        label={t('Question')}
         name={[index, 'questionText']}
         rules={[{ required: true }]}
       >
-        <ReactQuill className="bg-surface" placeholder="Question" />
+        <ReactQuill className="bg-surface" placeholder={t('Question')} />
       </Form.Item>
       <Form.Item
-        label="Answer"
+        label={t('Answer')}
         name={[index, 'answer']}
         rules={[{ required: true }]}
       >
         <Input />
       </Form.Item>
-      <Form.Item label="Explanation" name={[index, 'explanation']}>
+      <Form.Item label={t('Explanation')} name={[index, 'explanation']}>
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 4 }}
-          placeholder="Explanation (optional)"
+          placeholder={t('Explanation (optional)')}
         />
       </Form.Item>
       <div className="flex gap-4">
         <div className="flex-1 grid grid-cols-2 gap-4">
           <Form.Item
-            label="Tags"
+            label={t('Tags')}
             name={[index, 'questionTags']}
             rules={[{ required: true }]}
           >
             <ExerciseTagInput />
           </Form.Item>
           <Form.Item
-            label="Level"
+            label={t('Level')}
             name={[index, 'questionLevel']}
             rules={[{ required: true }]}
           >
             <Select
-              placeholder="Level"
+              placeholder={t('Level')}
               options={enumToSelectOptions(CEFRLevel)}
             />
           </Form.Item>
@@ -72,18 +77,20 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
 }
 
 const Tutorial = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
+
   return (
     <p className="mb-5">
-      You can use "<b>[]</b>" to help EngVision automatically create a blank
-      placeholder for you. If it is not provided, it will be default blank after
-      the question.
+      {t('You can use ')}"<b>[]</b>"
+      {t(
+        ' to help EngVision automatically create a blank placeholder for you. If it is not provided, it will be default blank after the question.',
+      )}
       <br />
-      Example:
+      {t('Example')}:
       <br />
-      "Have you <b>[]</b> a girlfriend?". Answer is <b>had</b>
+      "Have you <b>[]</b> a girlfriend?". {t('Answer is')}: <b>had</b>
       <br />
-      placeholder for you. Example: "BAN<b>[]</b>N<b>[]</b>". Answer is{' '}
-      <b>A,A</b>
+      "BAN<b>[]</b>N<b>[]</b>". {t('Answer is')} <b>A,A</b>
     </p>
   )
 }

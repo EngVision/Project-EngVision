@@ -4,6 +4,7 @@ import {
   QuestionPayload,
   SubmitAnswerResponse,
 } from '../../../../services/exerciseApi/types'
+import { useTranslation } from 'react-i18next'
 
 interface FillBlankProps extends QuestionPayload {
   question: { text: string; image?: string; limits: number[] }
@@ -17,6 +18,7 @@ interface FillBlankResponse extends SubmitAnswerResponse {
 }
 
 function FillBlank(props: FillBlankProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'DoExercise' })
   const { question, result, setIsSubmittable } = props
   const answer = Form.useWatch<string[]>('answer')
   const form = Form.useFormInstance()
@@ -40,7 +42,7 @@ function FillBlank(props: FillBlankProps) {
   return (
     <div>
       <p className="mb-5 text-primary text-2xl font-semibold">
-        Fill blank question
+        {t('Fill blank question')}
       </p>
       <Form.List
         name="answer"

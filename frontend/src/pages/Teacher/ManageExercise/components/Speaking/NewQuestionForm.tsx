@@ -4,12 +4,15 @@ import SpeakingSettings from './SpeakingSettings'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import { isEmpty } from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 type NewQuestionFormProps = {
   index: number
 }
 
 const NewQuestionForm = ({ index }: NewQuestionFormProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
+
   const form = Form.useFormInstance()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const content = Form.useWatch('content')?.[index]
@@ -28,26 +31,30 @@ const NewQuestionForm = ({ index }: NewQuestionFormProps) => {
           <div dangerouslySetInnerHTML={{ __html: content?.text }}></div>
         )}
         <div className="font-semibold text-primary hover:cursor-pointer">
-          Edit
+          {t('Edit')}
         </div>
       </div>
 
       <Modal
-        title={<h4 className="text-xl">Question {index + 1}</h4>}
+        title={
+          <h4 className="text-xl">
+            {t('Question')} {index + 1}
+          </h4>
+        }
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         className="min-w-[800px]"
         footer={() => (
           <>
             <Button type="primary" onClick={handleOk}>
-              Confirm
+              {t('Confirm')}
             </Button>
           </>
         )}
       >
         <div className="flex gap-4 mt-6 min-h-[400px]">
           <div className="w-[400px] flex flex-col gap-2">
-            <h4 className="text-sm uppercase text-wolfGrey">Contents</h4>
+            <h4 className="text-sm uppercase text-wolfGrey">{t('Contents')}</h4>
 
             <Form.Item name={[index, 'text']}>
               <CKEditor
