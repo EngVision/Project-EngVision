@@ -4,6 +4,8 @@ import { Button, Divider, Space, Tooltip } from 'antd'
 import { UPLOAD_FILE_URL } from '../../../utils/constants'
 import ArrowRight from '../../../components/Icons/ArrowRight'
 import ArrowLeft from '../../../components/Icons/ArrowLeft'
+import { getFileUrl } from '../../../utils/common'
+import AudioPlayer from '../../../components/Audio/AudioPlayer'
 
 export function TwoColumnLayout({
   children,
@@ -48,13 +50,17 @@ export function TwoColumnLayout({
             A
           </button>
         </Space>
-        {contentQuestion.image && (
-          <img
-            src={`${UPLOAD_FILE_URL}${contentQuestion.image}`}
-            alt=""
-            className="w-full rounded-sm"
-          />
-        )}
+        <div className="flex items-center justify-center gap-6 flex-col md:flex-row">
+          {contentQuestion.image && (
+            <img
+              className="min-h-[200px] max-h-[400px]"
+              src={getFileUrl(contentQuestion.image)}
+            />
+          )}
+          {contentQuestion.questionAudio && (
+            <AudioPlayer url={getFileUrl(contentQuestion.questionAudio)} />
+          )}
+        </div>
         <div
           style={{
             fontSize: fontSize,
