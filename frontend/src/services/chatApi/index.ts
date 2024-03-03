@@ -30,10 +30,10 @@ const chatApi = {
     }
   },
 
-  login: async (username: string, password: string): Promise<ResponseData> => {
+  login: async (user: string, password: string): Promise<ResponseData> => {
     try {
       const res: ResponseData = await axiosClient.post(`${PREFIX}login`, {
-        username,
+        user: user,
         password: {
           digest: sha256(password).toString(),
           algorithm: 'sha-256',
