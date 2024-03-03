@@ -1,13 +1,18 @@
-import { Button, Form } from 'antd'
+import { Button, Form, Image } from 'antd'
 import { useEffect } from 'react'
 import {
   QuestionPayload,
   SubmitAnswerResponse,
 } from '../../../../services/exerciseApi/types'
+import { useTranslation } from 'react-i18next'
+import AudioPlayer from '../../../../components/Audio/AudioPlayer'
+import { getFileUrl } from '../../../../utils/common'
 
 interface MultipleChoiceProps extends QuestionPayload {
   question: {
     text: string
+    audio?: string
+    image?: string
     answers: {
       id: number
       text: string
@@ -24,6 +29,7 @@ interface MultipleChoiceResponse extends SubmitAnswerResponse {
 }
 
 function MultipleChoice(props: MultipleChoiceProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'DoExercise' })
   const { question, result, setIsSubmittable } = props
   const selectedAnswers = Form.useWatch('answer')
   const form = Form.useFormInstance()
@@ -50,13 +56,22 @@ function MultipleChoice(props: MultipleChoiceProps) {
   return (
     <div>
       <p className="mb-5 text-primary text-2xl font-semibold">
-        Multiple choice question
+        {t('Multiple choice question')}
         {question.multipleCorrectAnswers ? ' (Multiple correct choices)' : ''}
       </p>
       <p
         className="text-xl"
         dangerouslySetInnerHTML={{ __html: question.text }}
       />
+      <div className="flex items-center justify-center gap-6 flex-col md:flex-row">
+        {question.image && (
+          <img
+            className="min-h-[200px] max-h-[400px]"
+            src={getFileUrl(question.image)}
+          />
+        )}
+        {question.audio && <AudioPlayer url={getFileUrl(question.audio)} />}
+      </div>
       <Form.Item name="answer" initialValue={[]} noStyle>
         <div className="flex flex-row justify-between flex-wrap gap-5 mt-5">
           {question.answers.map((answer) => {

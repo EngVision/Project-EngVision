@@ -7,7 +7,7 @@ import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import Logo from '../../components/Icons/Logo'
 import { NotificationContext } from '../../contexts/notification'
 import { useAppDispatch } from '../../hooks/redux'
-import { setUser } from '../../redux/app/slice'
+import { setUser, setUserChat } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignUpParams } from '../../services/authApi/types'
 import {
@@ -36,12 +36,33 @@ const SignUp: React.FC = () => {
     },
   })
 
+  const handleAuthChat = async () => {
+    function getCookieValue(cookieName: string) {
+      const cookies = document.cookie.split(';')
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim()
+        if (cookie.startsWith(cookieName + '=')) {
+          return cookie.substring(cookieName.length + 1)
+        }
+      }
+      return null
+    }
+
+    const chatUserId = getCookieValue('chat_user_id')
+    const chatToken = getCookieValue('chat_token')
+
+    if (chatUserId && chatToken) {
+      dispatch(setUserChat({ userId: chatUserId, authToken: chatToken }))
+    }
+  }
+
   const onFinish = async (values: SignUpParams) => {
     const newUser = {
       ...values,
       role: ROLES.student.value,
     }
     mutate(newUser)
+    handleAuthChat()
   }
 
   const fetchAuthUser = async () => {

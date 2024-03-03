@@ -63,6 +63,7 @@ export class CoursesService {
         } else if (user.roles.includes(Role.Teacher)) {
           dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
         } else if (user.roles.includes(Role.Student)) {
+          dataFilter.isAdminCurriculum = { $ne: true };
           dataFilter.isPublished = { $eq: true };
         }
         break;
@@ -78,7 +79,14 @@ export class CoursesService {
         break;
       case StatusCourseSearch.Published:
         dataFilter.isPublished = { $eq: true };
-        dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
+        if (user.roles.includes(Role.Admin)) {
+          dataFilter['$or'] = [
+            { isAdminCurriculum: true },
+            { 'teacher._id': new Types.ObjectId(user.sub) },
+          ];
+        } else {
+          dataFilter['teacher._id'] = { $eq: new Types.ObjectId(user.sub) };
+        }
         break;
     }
 
@@ -293,7 +301,7 @@ export class CoursesService {
           options: { sort: { createdAt: -1 } },
           populate: { path: 'user' },
         })
-        .populate('sections.lessons.exercises', 'id title')
+        .populate('sections.lessons.exercises', 'id title type')
         .populate('sections.lessons.materials');
 
       if (user.roles.includes(Role.Student)) {

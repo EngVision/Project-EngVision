@@ -46,6 +46,15 @@ export const STUDENT_ROUTES = {
   courseDetails: '/discover/:courseId',
 }
 
+export const STUDENT_ROUTES_MOBILE = {
+  // Menu
+  myHub: '/m/my-hub',
+  discover: '/m/discover',
+  achievement: '/m/achievement',
+  courses: '/m/discover',
+  courseDetails: '/m/discover/:courseId',
+}
+
 export const TEACHER_ROUTES = {
   // Menu
   courses: '/courses',
@@ -100,6 +109,14 @@ export enum ExerciseType {
   DragAndDrop = 'DragAndDrop',
   WordSearch = 'WordSearch',
 }
+
+export const MobileAvailableExerciseTypes = [
+  ExerciseType.MultipleChoice,
+  ExerciseType.FillBlank,
+  ExerciseType.ConstructedResponse,
+  ExerciseType.MakeSentence,
+  ExerciseType.Speaking,
+]
 
 export enum ExerciseTag {
   Grammar = 'Grammar',

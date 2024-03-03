@@ -5,6 +5,7 @@ import { LEVELS, STUDENT_ROUTES, UPLOAD_FILE_URL } from '../../utils/constants'
 import CustomImage from '../common/CustomImage'
 import { useTranslation } from 'react-i18next'
 import type { CourseDetails } from '../../services/coursesApi/types'
+import { formatCurrency } from '../../utils/currency'
 interface CourseCardProps {
   course: CourseDetails
 }
@@ -55,7 +56,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
           <div className="flex justify-between items-center text-xs ">
             <div className="flex items-center gap-2">
               <StarIcon className="text-secondary" />
-              <p className="font-semibold">{course.avgStar}</p>
+              <p className="font-semibold">{course.avgStar || 0}</p>
             </div>
             <div>
               <span className="font-bold">{course.attendance}</span>{' '}
@@ -66,7 +67,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
           <div className="flex justify-between items-center text-xs">
             <div className="flex">
               <p className="font-semibold text-2xl text-primary">
-                {course.price} VND
+                {formatCurrency(course.price)}
               </p>
             </div>
           </div>

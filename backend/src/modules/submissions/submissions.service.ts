@@ -52,7 +52,9 @@ export class SubmissionsService {
     const avgGrade =
       submissionDto.detail.reduce(
         (prev, questionResult) =>
-          questionResult.isCorrect ? prev + 10 : prev + questionResult.grade,
+          questionResult.isCorrect
+            ? prev + 10
+            : prev + (questionResult.grade ?? 0),
         0,
       ) / submissionDto.detail.length;
 
@@ -134,7 +136,6 @@ export class SubmissionsService {
     if (roles?.includes(Role.Teacher)) {
       filterQuery = {
         ...filter,
-        teacher: userId,
         needGrade: true,
         $expr: { $eq: ['$totalDone', '$totalQuestion'] },
       };

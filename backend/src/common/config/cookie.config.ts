@@ -9,10 +9,18 @@ const accessTokenConfig: CookieOptions = {
   sameSite: 'none',
   secure: true,
 };
+
 const refreshTokenConfig: CookieOptions = {
   maxAge: refreshTokenLife,
   httpOnly: false,
   sameSite: 'none',
   secure: true,
 };
-export { accessTokenConfig, refreshTokenConfig };
+
+const chatTokenConfig: CookieOptions = {
+  httpOnly: false,
+  sameSite: 'none',
+  secure: true,
+};
+
+export { accessTokenConfig, refreshTokenConfig, chatTokenConfig };

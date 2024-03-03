@@ -12,12 +12,11 @@ import {
 
 @Injectable()
 export class WhisperService {
-  constructor(
-    @InjectModel(SpeechToText.name)
-    private speechToTextModel: Model<SpeechToText>,
-    private readonly httpService: HttpService,
-    private readonly openAiService: OpenAiService,
-  ) {}
+  WHISPER_SERVICE_URL: string;
+
+  constructor(private readonly httpService: HttpService) {
+    this.WHISPER_SERVICE_URL = process.env.WHISPER_SERVICE_URL;
+  }
 
   async speechToText(
     topic: string,
@@ -25,7 +24,7 @@ export class WhisperService {
   ): Promise<SpeechToTextResponse> {
     try {
       const res = await this.httpService.axiosRef.post(
-        `http://localhost:8000/stt/${fileId}`,
+        `${this.WHISPER_SERVICE_URL}/stt/${fileId}`,
       );
 
       return res.data;
@@ -39,7 +38,7 @@ export class WhisperService {
   ): Promise<SpeechEvaluationResponse> {
     try {
       const res = await this.httpService.axiosRef.post(
-        `http://localhost:8000/speech-evaluation`,
+        `${this.WHISPER_SERVICE_URL}/speech-evaluation`,
         payload,
       );
 

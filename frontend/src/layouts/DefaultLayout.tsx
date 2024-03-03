@@ -45,10 +45,10 @@ const DefaultLayout = () => {
     <div className="flex flex-row bg-bgDefault h-screen text-textColor">
       <Sidebar />
       <div className="flex flex-1 flex-col min-w-[0px]">
-        <div className="px-8">
+        <div className="px-4">
           <Header />
         </div>
-        <div className="px-8 pb-8 flex-1  min-h-[0px] !overflow-y-auto">
+        <div className="px-4 py-6 flex-1  min-h-[0px] !overflow-y-auto">
           <Outlet />
         </div>
       </div>

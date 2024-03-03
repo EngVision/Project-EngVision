@@ -190,3 +190,15 @@ input[type='number']::-webkit-outer-spin-button {
 .ant-dropdown-menu {
   background-color: var(--bg-surface) !important;
 }
+
+@media screen and (max-width: 1024px) {
+  :where(.css-dev-only-do-not-override-1bvspzs).ant-tabs
+    .ant-tabs-tab
+    + .ant-tabs-tab {
+    margin-left: 12px !important;
+  }
+}
+
+.ant-collapse-content-box {
+  padding: 0 !important;
+}

@@ -1,17 +1,16 @@
 import { Form } from 'antd'
+import { useWatch } from 'antd/lib/form/Form'
+import { useTranslation } from 'react-i18next'
 import { StarIcon } from '../../../components/Icons'
-import PreviewInput from '../../../components/common/PreviewInput'
-import { FormInstance, useWatch } from 'antd/lib/form/Form'
 import CustomImage from '../../../components/common/CustomImage'
+import PreviewInput from '../../../components/common/PreviewInput'
 import { getFormattedDate } from '../../../utils/common'
 import { UPLOAD_FILE_URL } from '../../../utils/constants'
-import { useTranslation } from 'react-i18next'
-interface PreviewProps {
-  form: FormInstance
-}
+import { formatCurrency } from '../../../utils/currency'
 
-const Preview = ({ form }: PreviewProps) => {
+const Preview = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'common' })
+  const form = Form.useFormInstance()
   const thumbnail = useWatch('thumbnail', form)
   const price = useWatch('price', form)
   const reviews = useWatch('reviews', form)
@@ -59,15 +58,17 @@ const Preview = ({ form }: PreviewProps) => {
         </div>
 
         <div className="flex items-center gap-8">
-          <div className="flex flex-col items-center">
-            <PreviewInput
-              className="text-3xl text-primary text-center"
-              value={`${price} VND`}
-            />
-            <span className="text-xs text-textSubtle text-center">
-              {t('Course price')}
-            </span>
-          </div>
+          <Form.Item name="price" noStyle>
+            <div className="flex flex-col items-center">
+              <PreviewInput
+                className="text-3xl text-primary text-center"
+                value={formatCurrency(price)}
+              />
+              <span className="text-xs text-textSubtle text-center">
+                {t('Course price')}
+              </span>
+            </div>
+          </Form.Item>
 
           <div className="w-[2px] h-5 bg-slate-400"></div>
 
@@ -75,7 +76,7 @@ const Preview = ({ form }: PreviewProps) => {
             <div className="flex flex-col items-center">
               <PreviewInput
                 className="text-3xl text-primary text-center"
-                value={`${price * attendance} VND`}
+                value={formatCurrency(price * attendance)}
               />
               <span className="text-xs text-textSubtle text-center">
                 {t('Revenue')}

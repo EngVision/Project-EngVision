@@ -17,7 +17,7 @@ import { UserQueryDto } from './dto/user-query.dto';
 import { Order, AccountStatus, Role, Gender } from 'src/common/enums';
 import { ChecklistService } from '../checklist/checklist.service';
 
-interface Account {
+export interface Account {
   email: string;
   password: string;
 }
@@ -345,6 +345,20 @@ export class UsersService {
     const user = await this.userModel.findByIdAndUpdate(
       id,
       { showGuideTour: false },
+      { returnDocument: 'after' },
+    );
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  updateChatRegisteredStatus(id: string, chatRegistered: boolean) {
+    const user = this.userModel.findByIdAndUpdate(
+      id,
+      { chatRegistered },
       { returnDocument: 'after' },
     );
 

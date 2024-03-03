@@ -1,5 +1,5 @@
 import { Button } from 'antd'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ArrowLeft from '../../../components/Icons/ArrowLeft'
 import ArrowRight from '../../../components/Icons/ArrowRight'
 import CourseCard from './CourseCard'
@@ -19,22 +19,20 @@ const Grading = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'Grading' })
   const [disabledScrollLeft, setDisabledScrollLeft] = useState<boolean>(true)
   const [disabledScrollRight, setDisabledScrollRight] = useState<boolean>(true)
-  useEffect(() => {
-    initDisabledScrollRight()
-  }, [])
+  const ref = useRef<HTMLDivElement>(null)
 
-  const initDisabledScrollRight = () => {
-    const containerElement: HTMLElement | null =
-      document.getElementById('course-list')
-    if (!containerElement) return
-    return setDisabledScrollRight(
-      containerElement.scrollWidth === containerElement.offsetWidth,
-    )
-  }
+  useEffect(() => {
+    const containerElement = ref.current
+
+    if (containerElement) {
+      setDisabledScrollRight(
+        containerElement.scrollWidth === containerElement.offsetWidth,
+      )
+    }
+  }, [ref.current])
 
   const scroll = (direction: Direction) => {
-    const containerElement: HTMLElement | null =
-      document.getElementById('course-list')
+    const containerElement = ref.current
 
     if (containerElement) {
       if (direction === Direction.left) {
@@ -46,8 +44,7 @@ const Grading = () => {
   }
 
   const handleChangeScroll = () => {
-    const containerElement: HTMLElement | null =
-      document.getElementById('course-list')
+    const containerElement = ref.current
     if (!containerElement) return
 
     if (containerElement?.scrollLeft === 0) {
@@ -118,7 +115,7 @@ const Grading = () => {
           <AppLoading />
         ) : (
           <div
-            id="course-list"
+            ref={ref}
             className="flex gap-6 overflow-x-scroll scrollbar-hide scroll-smooth snap-mandatory snap-x"
             onScroll={handleChangeScroll}
           >

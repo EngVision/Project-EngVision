@@ -13,7 +13,7 @@ import {
   ROLES,
 } from '../utils/constants'
 import AdminRoutes from './AdminRoutes'
-import StudentRoutes from './StudentRoutes'
+import StudentRoutes, { studentRoutesMobile } from './StudentRoutes'
 import TeacherRoutes from './TeacherRoutes'
 import { showGetStarted } from '../redux/app/slice'
 import { useEffect } from 'react'
@@ -71,7 +71,7 @@ function PrivateRoutes() {
       routes = TeacherRoutes
       break
     case ROLES.student.value:
-      routes = StudentRoutes
+      routes = [...StudentRoutes, ...studentRoutesMobile]
       break
     default:
       routes = [...AdminRoutes, ...TeacherRoutes, ...StudentRoutes]

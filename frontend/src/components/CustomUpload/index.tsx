@@ -93,6 +93,9 @@ function CustomUpload({
         )
 
         message.success(`${file.name} uploaded.`)
+      } else if (status === 'removed') {
+        setCurrFileId(null)
+        onChange?.(null)
       } else if (status === 'error') {
         if (!multiple && currFileId) {
           newFileList.push({

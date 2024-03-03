@@ -8,7 +8,7 @@ import {
   TabsProps,
   notification,
 } from 'antd'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import CustomUpload from '../../components/CustomUpload'
@@ -21,12 +21,14 @@ import type {
 import { PRIVATE_ROUTES } from '../../utils/constants'
 import { setUser } from '../../redux/app/slice'
 import { useTranslation } from 'react-i18next'
+import { useForm } from 'antd/es/form/Form'
 type NotificationType = 'success' | 'info' | 'warning' | 'error'
 
 export const UpdateProfile = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'Account' })
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.app.user)
+  const [form] = useForm()
 
   const [keyCollapse, setKeyCollapse] = useState('' as any)
   const [api, contextHolder] = notification.useNotification()
@@ -36,6 +38,10 @@ export const UpdateProfile = () => {
     { value: 'Female', label: t('Female') },
     { value: 'Other', label: t('Other') },
   ]
+
+  useEffect(() => {
+    form.setFieldsValue(user)
+  }, [])
 
   const openNotificationWithIcon = (
     type: NotificationType,
@@ -76,7 +82,7 @@ export const UpdateProfile = () => {
         openNotificationWithIcon('success', t('Change password successfully.'))
       }
     } catch (error) {
-      openNotificationWithIcon('error', t('Change password failed.'))
+      openNotificationWithIcon('error', t('Update profile failed.'))
       throw error
     }
   }
@@ -108,7 +114,6 @@ export const UpdateProfile = () => {
                   className="flex-1"
                 >
                   <Input
-                    defaultValue={user.firstName}
                     size="large"
                     className="w-[100%] shadow-sm text-sm hover:border-slate-40 rounded-md"
                   />
@@ -119,7 +124,6 @@ export const UpdateProfile = () => {
                   className="flex-1"
                 >
                   <Input
-                    defaultValue={user.lastName}
                     size="large"
                     className="w-[100%] text-sm shadow-sm hover:border-slate-40 rounded-md"
                   />
@@ -135,46 +139,18 @@ export const UpdateProfile = () => {
                   <Select
                     className="text-sm shadow-sm"
                     size="large"
-                    defaultValue={user.gender}
                     options={gender}
                   />
                 </Form.Item>
                 <Form.Item<ProfileParams> label="Email" className="flex-1">
                   <Input
-                    defaultValue={user.email}
+                    value={user.email}
                     disabled
                     size="large"
                     className="text-sm w-[100%] shadow-sm hover:border-slate-40 rounded-md"
                   />
                 </Form.Item>
-                {/* {user.phone && (
-                  <Form.Item<ProfileParams> name="phone" label="Phone Number">
-                    <Input
-                      defaultValue={user.phone}
-                      size="large"
-                      className="w-[31rem] border-slate-300 hover:border-slate-40 rounded-md shadow-sm"
-                    />
-                  </Form.Item>
-                )} */}
               </div>
-
-              {/* <Space className="flex max-xl:flex-col justify-between">
-                <Form.Item<ProfileParams> name="email" label="Email">
-                  <Input
-                    defaultValue={user.email}
-                    size="large"
-                    className="w-[31rem] shadow-sm border-slate-300 hover:border-slate-40 rounded-md"
-                  />
-                </Form.Item>
-
-                <Form.Item<ProfileParams> name="country" label="Country">
-                  <Input
-                    defaultValue={user.country}
-                    size="large"
-                    className="w-[31rem] border-slate-300 hover:border-slate-40 rounded-md shadow-sm"
-                  />
-                </Form.Item>
-              </Space> */}
             </div>
           )}
         </p>
@@ -233,6 +209,7 @@ export const UpdateProfile = () => {
         autoComplete="off"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
+        form={form}
         className="h-full p-6 rounded-lg"
       >
         <Tabs

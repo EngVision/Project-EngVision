@@ -1,9 +1,8 @@
-import React from 'react'
-import VideoPlay from '../../../components/Icons/VideoPlay'
 import { Tag } from 'antd'
-import { LEVELS } from '../../../utils/constants'
-import type { CourseDetails, Section } from '../../../services/coursesApi/types'
 import { useTranslation } from 'react-i18next'
+import VideoPlay from '../../../components/Icons/VideoPlay'
+import type { CourseDetails, Section } from '../../../services/coursesApi/types'
+import { LEVELS } from '../../../utils/constants'
 const Overview = (course: CourseDetails) => {
   const { t } = useTranslation('translation', { keyPrefix: 'common' })
   return (

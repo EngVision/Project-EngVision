@@ -15,6 +15,7 @@ import {
   ExerciseType,
   UPLOAD_FILE_URL,
 } from '../../../../utils/constants'
+import { useTranslation } from 'react-i18next'
 
 interface ExplainProps {
   submission: SubmissionResponse | undefined
@@ -23,6 +24,7 @@ interface ExplainProps {
 }
 
 function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'DoExercise' })
   const question = submission?.detail[questionIndex]
   const hasGrade =
     !question?.hasOwnProperty('grade') || question?.grade !== null
@@ -36,7 +38,7 @@ function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
     if (submission?.exerciseType === ExerciseType.Unscramble) {
       return (
         <div className="flex gap-4">
-          <span>Correct answer: </span>
+          <span>{t('Correct answer')}: </span>
           {correctAnswer.map((answer: string) =>
             questionDetail?.question?.isUnscrambleByText ? (
               <span key={answer}>{answer}</span>
@@ -53,7 +55,7 @@ function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
     } else if (submission?.exerciseType === ExerciseType.Match) {
       return (
         <div className="flex gap-4">
-          <span>Correct answer is: </span>
+          <span>{t('Correct answer is')}: </span>
 
           <div className="flex flex-col gap-4">
             {correctAnswer?.map((answer: MatchPairSchema[], index: number) => (
@@ -85,7 +87,7 @@ function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
     } else if (submission?.exerciseType === ExerciseType.DragAndDrop) {
       return (
         <div className="flex gap-4">
-          <span>Correct answer is: </span>
+          <span>{t('Correct answer is')}: </span>
 
           <div className="flex flex-col gap-4">
             {correctAnswer?.map((answer: DragAndDropAnswer, index: number) => (
@@ -138,15 +140,17 @@ function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
         <div className="flex-1 text-primary flex flex-col gap-2 text-white">
           {
             <b className="text-[18px] leading-6">
-              {numberQuestionCorrect === numberQuestion ? 'Correct!' : 'Wrong!'}
+              {numberQuestionCorrect === numberQuestion
+                ? t('Correct!')
+                : t('Wrong!')}
             </b>
           }
 
           {numberQuestionCorrect === numberQuestion ? (
-            <span>You found all words</span>
+            <span>{t('You found all words')}</span>
           ) : (
             <span>
-              Your score: {numberQuestionCorrect}/{numberQuestion}
+              {t('Your score')}: {numberQuestionCorrect}/{numberQuestion}
             </span>
           )}
         </div>
@@ -165,7 +169,7 @@ function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
       <div className="flex-1 text-primary flex flex-col gap-2 text-white">
         {
           <b className="text-[18px] leading-6">
-            {isCorrect !== null && (isCorrect ? 'Correct!' : 'Wrong!')}
+            {isCorrect !== null && (isCorrect ? t('Correct!') : t('Wrong!'))}
           </b>
         }
 
@@ -178,8 +182,8 @@ function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
         (isCorrect ? <TickCircleWhiteIcon /> : <CloseCircleWhiteIcon />)}
       <div className="flex-1 text-primary flex flex-col gap-2 text-white">
         {explanation && <p>{explanation}</p>}
-        <b className="text-[18px] leading-6">Grading</b>
-        <p>Please wait for grading from teacher</p>
+        <b className="text-[18px] leading-6">{t('Grading')}</b>
+        <p>{t('Please wait for grading from teacher')}</p>
       </div>
     </div>
   )

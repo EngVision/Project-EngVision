@@ -1,6 +1,7 @@
 import React from 'react'
 import { ExerciseTag } from '../../../../../utils/constants'
 import { Cascader } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 interface Option {
   value: string | number
@@ -118,11 +119,13 @@ interface ExerciseTagInputProps {
 }
 
 function ExerciseTagInput({ onChange, value }: ExerciseTagInputProps) {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
+
   return (
     <Cascader
       value={value}
       onChange={onChange}
-      placeholder="Tags"
+      placeholder={t('Tags')}
       options={exerciseTagOptions}
       multiple
       maxTagCount="responsive"

@@ -5,6 +5,7 @@ import { CourseDetails } from '../../services/coursesApi/types'
 import CustomImage from '../common/CustomImage'
 import { LEVELS, UPLOAD_FILE_URL } from '../../utils/constants'
 import { useTranslation } from 'react-i18next'
+import { formatCurrency } from '../../utils/currency'
 interface CourseProps {
   course: CourseDetails
 }
@@ -55,7 +56,7 @@ const Course = ({ course }: CourseProps) => {
       </div>
 
       <span className="text-primary text-2xl font-semibold">
-        {course.price} VND
+        {formatCurrency(course.price)}
       </span>
     </Card>
   )

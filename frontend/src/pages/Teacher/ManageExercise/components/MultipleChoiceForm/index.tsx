@@ -13,6 +13,7 @@ import ExerciseTagInput, {
 } from '../ExerciseTagInput'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import { useTranslation } from 'react-i18next'
 
 interface AnswerFormProps {
   index: number
@@ -20,6 +21,8 @@ interface AnswerFormProps {
 }
 
 const AnswerForm = ({ index, remove }: AnswerFormProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
+
   return (
     <div className="flex gap-4">
       <div className="flex-1 flex gap-4">
@@ -28,7 +31,7 @@ const AnswerForm = ({ index, remove }: AnswerFormProps) => {
           name={[index, 'answerText']}
           rules={[{ required: true }]}
         >
-          <Input placeholder="Answer" />
+          <Input placeholder={t('Answer')} />
         </Form.Item>
         <Form.Item
           className="max-w-[100px]"
@@ -39,11 +42,11 @@ const AnswerForm = ({ index, remove }: AnswerFormProps) => {
         </Form.Item>
       </div>
       <Form.Item name={[index, 'correctAnswer']} valuePropName="checked">
-        <Checkbox>Correct answer</Checkbox>
+        <Checkbox>{t('Correct answer')}</Checkbox>
       </Form.Item>
       {remove && (
         <Button danger type="primary" onClick={() => remove(index)}>
-          Remove
+          {t('Remove')}
         </Button>
       )}
     </div>
@@ -56,54 +59,58 @@ interface QuestionFormProps {
 }
 
 const QuestionForm = ({ index, remove }: QuestionFormProps) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'ManageExercise' })
+
   return (
     <>
       <div className="flex items-center justify-between gap-4">
-        <p className="text-xl font-bold my-2">Question {index + 1}</p>
+        <p className="text-xl font-bold my-2">
+          {t('Question')} {index + 1}
+        </p>
         {remove && (
           <Button danger type="primary" onClick={() => remove(index)}>
-            Remove
+            {t('Remove')}
           </Button>
         )}
       </div>
-      <div className="flex">
+      <div className="flex flex-col">
         <Form.Item
           className="flex-1"
-          label="Question"
+          label={t('Question')}
           name={[index, 'questionText']}
           rules={[{ required: true }]}
         >
-          <ReactQuill className="bg-surface" placeholder="Question" />
+          <ReactQuill className="bg-surface" placeholder={t('Question')} />
         </Form.Item>
       </div>
       <Form.Item label="Explanation" name={[index, 'explanation']}>
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 4 }}
-          placeholder="Explanation (optional)"
+          placeholder={t('Explanation (optional)')}
         />
       </Form.Item>
       <div className="flex gap-4">
         <div className="flex-1 grid grid-cols-2 gap-4">
           <Form.Item
-            label="Tags"
+            label={t('Tags')}
             name={[index, 'questionTags']}
             rules={[{ required: true }]}
           >
             <ExerciseTagInput />
           </Form.Item>
           <Form.Item
-            label="Level"
+            label={t('Level')}
             name={[index, 'questionLevel']}
             rules={[{ required: true }]}
           >
             <Select
-              placeholder="Level"
+              placeholder={t('Level')}
               options={enumToSelectOptions(CEFRLevel)}
             />
           </Form.Item>
         </div>
       </div>
-      <p className="my-2">Answers</p>
+      <p className="my-2">{t('Answers')}</p>
       <Form.List name={[index, 'answers']} initialValue={[{}]}>
         {(fields, { add, remove }) => (
           <>
@@ -118,7 +125,7 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
             })}
             <Form.Item>
               <Button type="dashed" onClick={() => add()} block icon={'+'}>
-                Add answer
+                {t('Add answer')}
               </Button>
             </Form.Item>
           </>
@@ -130,6 +137,8 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
 
 interface QuestionFormSchema {
   questionText: string
+  questionAudio?: string
+  questionImage?: string
   questionTags: ExerciseTag[]
   questionLevel: CEFRLevel
   explanation?: string
@@ -147,6 +156,8 @@ interface AnswerFormSchema {
 interface MultipleChoicePayload extends QuestionPayload {
   question: {
     text: string
+    audio?: string
+    image?: string
     answers: {
       id: number
       text: string
@@ -173,6 +184,8 @@ const transformSubmitData = (exercise: any) => {
       level: question.questionLevel,
       question: {
         text: question.questionText,
+        audio: question.questionAudio,
+        image: question.questionImage,
         answers: question.answers.map((ans) => ({
           id: ans.id,
           text: ans.answerText,
@@ -198,6 +211,8 @@ function setInitialContent(this: FormSubmit, exercise: ExerciseSchema) {
     const questionForm: QuestionFormSchema = {
       id: q.id,
       questionText: q.question.text,
+      questionAudio: q.question.audio,
+      questionImage: q.question.image,
       questionTags: transformToExerciseTagInputValue(q.tags),
       questionLevel: q.level,
       explanation: q.correctAnswer?.explanation,
