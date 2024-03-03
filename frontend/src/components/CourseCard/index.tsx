@@ -1,7 +1,7 @@
 import { Card, Tooltip } from 'antd'
 import { StarIcon, VideoPlayIcon } from '../Icons'
 import { Link } from 'react-router-dom'
-import { LEVELS, STUDENT_ROUTES, UPLOAD_FILE_URL } from '../../utils/constants'
+import { LEVELS, UPLOAD_FILE_URL } from '../../utils/constants'
 import CustomImage from '../common/CustomImage'
 import { useTranslation } from 'react-i18next'
 import type { CourseDetails } from '../../services/coursesApi/types'
@@ -14,7 +14,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
   const { Meta } = Card
 
   return (
-    <Link to={STUDENT_ROUTES.discover + '/' + course.id}>
+    <Link to={course.id}>
       <Card
         bodyStyle={{ padding: '1rem' }}
         className="bg-surface"
