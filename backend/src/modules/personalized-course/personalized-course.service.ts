@@ -37,7 +37,7 @@ export class PersonalizedCourseService {
         'This course offers a comprehensive English language curriculum tailored to your level.',
       level: CEFRLevel.Any,
       isPublished: true,
-      teacher: admin.id,
+      teacher: admin?.id,
       sections: [
         {
           title: 'Level A1',
