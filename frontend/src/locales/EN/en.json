@@ -359,6 +359,7 @@
     "Number of row": "Number of row",
     "Number of row (optional)": "Number of row (optional)",
     "New card": "New card",
+    "Need grade": "Need grade",
     "Set the test countdown time in seconds. Minimum time is 15 seconds, and maximum is 600 seconds (10 minutes).": "Set the test countdown time in seconds. Minimum time is 15 seconds, and maximum is 600 seconds (10 minutes)."
   },
   "CreateCourse": {

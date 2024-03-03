@@ -12,7 +12,7 @@ const AssignmentTable = () => {
   const navigate = useNavigate()
   const params = useParams()
   const { data: rawSubmissionList, isLoading } = useQuery({
-    queryKey: ['submissions'],
+    queryKey: ['courseSubmissions'],
     queryFn: async () =>
       submissionApi.getSubmissionList({ course: params.courseID }),
   })
@@ -131,6 +131,7 @@ const AssignmentTable = () => {
               columns={columns}
               dataSource={rawSubmissionList.data}
               scroll={{ x: '80vw' }}
+              loading={isLoading}
             />
           )}
         </>
