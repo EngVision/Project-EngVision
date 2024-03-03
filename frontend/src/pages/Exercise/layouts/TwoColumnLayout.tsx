@@ -1,11 +1,10 @@
-import { useState } from 'react'
-import { TwoColumnLayoutProps } from './types'
 import { Button, Divider, Space, Tooltip } from 'antd'
-import { UPLOAD_FILE_URL } from '../../../utils/constants'
-import ArrowRight from '../../../components/Icons/ArrowRight'
-import ArrowLeft from '../../../components/Icons/ArrowLeft'
-import { getFileUrl } from '../../../utils/common'
+import { useState } from 'react'
 import AudioPlayer from '../../../components/Audio/AudioPlayer'
+import ArrowLeft from '../../../components/Icons/ArrowLeft'
+import ArrowRight from '../../../components/Icons/ArrowRight'
+import { getFileUrl } from '../../../utils/common'
+import { TwoColumnLayoutProps } from './types'
 
 export function TwoColumnLayout({
   children,
@@ -57,8 +56,8 @@ export function TwoColumnLayout({
               src={getFileUrl(contentQuestion.image)}
             />
           )}
-          {contentQuestion.questionAudio && (
-            <AudioPlayer url={getFileUrl(contentQuestion.questionAudio)} />
+          {contentQuestion.audio && (
+            <AudioPlayer url={getFileUrl(contentQuestion.audio)} />
           )}
         </div>
         <div
