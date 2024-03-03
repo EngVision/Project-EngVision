@@ -33,7 +33,7 @@ const chatApi = {
   login: async (user: string, password: string): Promise<ResponseData> => {
     try {
       const res: ResponseData = await axiosClient.post(`${PREFIX}login`, {
-        user,
+        user: user,
         password: {
           digest: sha256(password).toString(),
           algorithm: 'sha-256',
