@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Button, Collapse, Image, Tag } from 'antd'
+import { Button, Collapse, Image } from 'antd'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Circle from '../../../components/Icons/Circle'
 import TickCircle from '../../../components/Icons/TickCircle'
@@ -149,7 +149,7 @@ const CourseContent = (course: CourseDetails) => {
                   )}
 
                   <div className="hidden lg:block mr-2">
-                    Section {sectionIndex}:
+                    {t('Course Details.Section')} {sectionIndex + 1}:
                   </div>
                   <span>{section.title}</span>
                 </div>
@@ -188,7 +188,7 @@ const CourseContent = (course: CourseDetails) => {
                           <Circle className="mr-2" width={24} height={24} />
                         )}
                         <div className="hidden lg:block mr-2">
-                          Lesson {lessonIndex + 1}:
+                          {t('Course Details.Lesson')} {lessonIndex + 1}:
                         </div>
                         <span>{lesson.title}</span>
                       </div>
@@ -230,7 +230,7 @@ const CourseContent = (course: CourseDetails) => {
                                 />
                               )}
                               <div className="hidden lg:block mr-2 font-bold text-lg">
-                                Exercise:
+                                {t('Course Details.Exercise')}:
                               </div>
                               <span className="font-bold text-lg mr-2">
                                 {exercise.title}
@@ -266,7 +266,7 @@ const CourseContent = (course: CourseDetails) => {
                                     : 1,
                               }}
                             >
-                              Learn
+                              {t('Course Details.Learn')}
                             </Button>
                           </div>
                         </div>
@@ -292,8 +292,10 @@ const CourseContent = (course: CourseDetails) => {
                                 />
                               )}
                               <div className="flex items-center gap-2 flex-1 min-w-[0px]">
-                                <p className="font-bold text-lg">Material:</p>{' '}
-                                {material.url ? (
+                                <p className="font-bold text-lg">
+                                  {t('Course Details.Material')}:
+                                </p>{' '}
+                                {!material.mimetype ? (
                                   <p className="text-[18px] overflow-hidden overflow-ellipsis font-semibold">
                                     {material.url}
                                   </p>
@@ -315,7 +317,7 @@ const CourseContent = (course: CourseDetails) => {
                                   setImagePreview(UPLOAD_FILE_URL + material.id)
                                 }}
                               >
-                                View
+                                {t('Course Details.View')}
                               </Button>
                             ) : (
                               <a
@@ -328,7 +330,7 @@ const CourseContent = (course: CourseDetails) => {
                                   className="rounded-xl text-lg leading-5 px-6 h-full py-2"
                                   onClick={() => viewMaterial(material.id)}
                                 >
-                                  View
+                                  {t('Course Details.View')}
                                 </Button>
                               </a>
                             )}

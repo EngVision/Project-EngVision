@@ -203,7 +203,13 @@
     "New lesson": "Bài học mới",
     "New section": "Phần mới",
     "Export lesson": "Xuất bài học ra file",
-    "Please save the course to edit this lesson": "Vui lòng lưu khóa học để chỉnh sửa bài học này"
+    "Please save the course to edit this lesson": "Vui lòng lưu khóa học để chỉnh sửa bài học này",
+    "Material": "Tài liệu",
+    "Section": "Phần",
+    "Lesson": "Bài học",
+    "Exercise": "Bài tập",
+    "Learn": "Học",
+    "View": "Xem"
   },
   "Account": {
     "Male": "Nam",
