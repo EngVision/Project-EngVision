@@ -48,11 +48,17 @@ const QuickStart = ({
         </div>
       ),
       children: (
-        <div className="">
+        <div className="flex flex-col px-10 pb-4">
           <p className="mb-4">{item?.description}</p>
-          <Button type="primary" onClick={() => navigation(item.link)}>
-            Show me
-          </Button>
+          <div className="flex justify-end">
+            <Button
+              className="self-end "
+              type="primary"
+              onClick={() => navigation(item.link)}
+            >
+              Show me
+            </Button>
+          </div>
         </div>
       ),
     }
