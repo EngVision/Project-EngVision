@@ -57,11 +57,11 @@ function MakeSentence(props: MakeSentenceProps) {
               return (
                 <div key={key} className="inline">
                   <span
-                    className="text-xl"
+                    className="text-base lg:text-xl leading-[40px]"
                     dangerouslySetInnerHTML={{ __html: questionArr[key] }}
                   ></span>
                   <div className="inline-flex flex-col gap-3 align-middle mx-2 mb-4">
-                    {question.answers[key].map((answer, index) => {
+                    {question.answers[key]?.map((answer, index) => {
                       const isSubmitAnswer =
                         result && result.answer?.includes(answer)
 
