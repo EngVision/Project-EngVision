@@ -13,11 +13,11 @@ import { PersonalizedCourseService } from './personalized-course.service';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Course.name, schema: CourseSchema }]),
-    UsersModule,
     CoursesModule,
     UserLevelModule,
   ],
   controllers: [PersonalizedCourseController],
   providers: [PersonalizedCourseService],
+  exports: [PersonalizedCourseService],
 })
 export class PersonalizedCourseModule {}

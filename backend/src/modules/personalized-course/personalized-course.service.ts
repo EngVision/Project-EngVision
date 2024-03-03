@@ -8,6 +8,7 @@ import { JwtPayload } from '../auth/types';
 import { CoursesService } from '../courses/courses.service';
 import { CourseDetailDto } from '../courses/dto';
 import { UserLevelService } from '../user-level/user-level.service';
+import { UserDocument } from '../users/schemas/user.schema';
 
 @Injectable()
 export class PersonalizedCourseService {
@@ -15,17 +16,13 @@ export class PersonalizedCourseService {
 
   constructor(
     @InjectModel('Course') private readonly courseModel: Model<CourseDocument>,
-    private readonly usersService: UsersService,
     private readonly coursesService: CoursesService,
     private readonly userLevelService: UserLevelService,
   ) {
     this.adminEmail = process.env.ADMIN_EMAIL;
-
-    this.create();
   }
 
-  async create(): Promise<void> {
-    const admin = await this.usersService.getByEmail(this.adminEmail);
+  async create(admin: UserDocument): Promise<void> {
     const personalizedCourse = await this.courseModel.findOne({
       isAdminCurriculum: true,
     });
@@ -40,7 +37,7 @@ export class PersonalizedCourseService {
         'This course offers a comprehensive English language curriculum tailored to your level.',
       level: CEFRLevel.Any,
       isPublished: true,
-      teacher: admin.id,
+      teacher: admin?.id,
       sections: [
         {
           title: 'Level A1',
@@ -73,10 +70,6 @@ export class PersonalizedCourseService {
     const curriculum = await this.courseModel.findOne({
       isAdminCurriculum: true,
     });
-
-    if (!curriculum) {
-      await this.create();
-    }
 
     const course = await this.coursesService.getCourse(curriculum.id, user);
 

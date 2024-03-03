@@ -1,3 +1,4 @@
+import { PersonalizedCourseService } from './../personalized-course/personalized-course.service';
 import {
   BadRequestException,
   Injectable,
@@ -31,6 +32,7 @@ export class UsersService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly filesService: FilesService,
     private readonly checklistService: ChecklistService,
+    private readonly personalizedCourseService: PersonalizedCourseService,
   ) {
     this.adminAccount = {
       email: process.env.ADMIN_EMAIL,
@@ -86,6 +88,8 @@ export class UsersService {
     ).id;
 
     await newUser.save();
+
+    this.personalizedCourseService.create(newUser);
   }
 
   async createWithSSO(user: User): Promise<UserDocument> {
