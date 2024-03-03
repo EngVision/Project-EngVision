@@ -56,7 +56,7 @@ export default function ConstructedResponse(props: ConstructedResponseProps) {
   return (
     <div>
       <p className="mb-5 text-primary text-2xl font-semibold">
-        {exerciseTitle}
+        {t('Constructed response question')}
       </p>
       <p className="text-xl mb-10">{exerciseDescription}</p>
       <p

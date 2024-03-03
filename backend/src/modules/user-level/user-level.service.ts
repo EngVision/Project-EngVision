@@ -43,7 +43,7 @@ export class UserLevelService {
 
   async update(
     user: string,
-    result: QuestionResult,
+    result: Omit<QuestionResult, 'questionText'>,
     question: ExerciseQuestionDto,
   ) {
     let userLevel = await this.userLevelModel.findOne({ user });

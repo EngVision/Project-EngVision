@@ -166,7 +166,7 @@ export class ExercisesService {
       exercise.type,
     );
 
-    const result = await service.checkAnswer(questionId, answer);
+    const { ...result } = await service.checkAnswer(questionId, answer);
 
     const { id } = await this.submissionsService.update(userId, exercise.id, {
       user: userId,
@@ -177,16 +177,22 @@ export class ExercisesService {
       teacher: exercise.creator,
       needGrade: exercise.needGrade,
       course: exercise.course,
-      grade: result.grade ?? 0,
+      grade: result.grade,
     });
+
+    console.log(exercise.content);
 
     if (
       exercise.needGrade &&
       exercise.type === ExerciseType.ConstructedResponse
     ) {
+      const currentExercise: any = exercise.content.find(
+        (q: any) => q.id === questionId,
+      );
+
       this.openAiService
         .chat(
-          `Evaluate skill Grammar, Vocabulary, Organization, Coherence, Conciseness the writing with topic '${exercise.contentQuestion.text}': '${answer}'`,
+          `Evaluate skill Grammar, Vocabulary, Organization, Coherence, Conciseness the writing with topic '${currentExercise?.question?.text}': '${answer}'`,
         )
         .then(explanation => {
           result.explanation = explanation;
@@ -199,7 +205,7 @@ export class ExercisesService {
             teacher: exercise.creator,
             needGrade: exercise.needGrade,
             course: exercise.course,
-            grade: result.grade ?? 0,
+            grade: result.grade,
           });
         });
     }
