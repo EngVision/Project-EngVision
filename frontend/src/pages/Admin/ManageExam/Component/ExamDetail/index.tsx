@@ -313,7 +313,9 @@ const ExamDetail = () => {
 
   const handleMoreMenuClick = (e: any) => {
     if (e.key === 'addnew') {
-      navigate(ADMIN_ROUTES.createPart)
+      navigate(ADMIN_ROUTES.createPart, {
+        state: { parts: examData?.parts.map((part) => part.id) },
+      })
     }
     if (e.key === 'reuse') {
       showModalReuse()
