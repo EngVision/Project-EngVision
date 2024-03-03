@@ -70,7 +70,7 @@ const SignUp: React.FC = () => {
       role: ROLES.student.value,
     }
     mutate(newUser)
-    handleAuthChat()
+    await handleAuthChat()
   }
 
   const fetchAuthUser = async () => {
