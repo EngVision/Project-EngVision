@@ -125,14 +125,14 @@ const ContentQuestionForm = () => {
           label={t('Question image')}
           name={['contentQuestion', 'image']}
         >
-          <CustomUpload type="picture-card" />
+          <CustomUpload />
         </Form.Item>
         <Form.Item<ContentQuestion>
           valuePropName="fileList"
           label={t('Question audio')}
           name={['contentQuestion', 'audio']}
         >
-          <CustomUpload accept="audio/*" type="picture-card" />
+          <CustomUpload accept="audio/*" />
         </Form.Item>
       </div>
     </>

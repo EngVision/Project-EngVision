@@ -2,7 +2,7 @@ import axiosClient from '../axiosClient'
 import { SubmitAnswerResponse } from '../exerciseApi/types'
 import { ExamSubmissionResponse, ExamSubmitAnswer } from './type'
 
-const PREFIX = 'http://localhost:5000/api/exam-submissions'
+const PREFIX = 'exam-submissions'
 
 export const examSubmissionApi = {
   submitAnswer: async (
