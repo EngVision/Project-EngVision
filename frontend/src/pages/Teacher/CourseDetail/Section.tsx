@@ -8,7 +8,6 @@ import {
   Dropdown,
   Form,
   FormListOperation,
-  Space,
   Tooltip,
   Upload,
   message,
@@ -158,7 +157,7 @@ const Section = ({ form }: SectionProps) => {
                               header={
                                 <Form.Item
                                   name={[field.name, 'title']}
-                                  className="mb-0 w-fit"
+                                  className="mb-0"
                                 >
                                   <CustomInput
                                     placeholder={t('New section')}
@@ -179,9 +178,9 @@ const Section = ({ form }: SectionProps) => {
                                           ].lessons[subField.name].id
 
                                         return (
-                                          <Space
+                                          <div
                                             key={subField.key}
-                                            className="ml-8 flex justify-between"
+                                            className="flex-1 ml-8 mr-0 lg:mr-6 flex justify-between"
                                           >
                                             <div className="flex-1 flex items-center gap-2">
                                               <MenuIcon />
@@ -196,7 +195,7 @@ const Section = ({ form }: SectionProps) => {
                                               </Form.Item>
                                             </div>
 
-                                            <div className="flex gap-4">
+                                            <div className="flex gap-4 items-center">
                                               {lessonId ? (
                                                 <Tooltip
                                                   title={t('Edit lesson')}
@@ -272,10 +271,10 @@ const Section = ({ form }: SectionProps) => {
                                                 'exercises',
                                               ]}
                                             ></Form.Item>
-                                          </Space>
+                                          </div>
                                         )
                                       })}
-                                      <div className="flex gap-4 absolute right-0 top-[-48px]">
+                                      <div className="flex gap-4 absolute mr-0 lg:mr-2 right-0 lg:right-5 top-[-40px]">
                                         <Tooltip title={t('Add lesson')}>
                                           <Dropdown
                                             menu={{
