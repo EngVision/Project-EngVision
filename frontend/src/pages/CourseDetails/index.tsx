@@ -149,14 +149,14 @@ const CourseDetailsPage = () => {
             onClick={() => back()}
           />
         )}
-        <div className="flex flex-col lg:flex-row h-60 mb-8 gap-4 lg:gap-0">
-          <div className="h-full w-full lg:w-[18.75rem] mr-0 lg:mr-8 rounded-lg overflow-hidden">
+        <div className="flex flex-col lg:flex-row min-h-60 mb-8 gap-4 lg:gap-0">
+          <div className="h-[160px] lg:h-full w-full lg:w-[18.75rem] mr-0 lg:mr-8 rounded-lg overflow-hidden">
             <CustomImage
               className="object-cover w-full h-full"
               src={`${UPLOAD_FILE_URL}${courseDetail.thumbnail}`}
             ></CustomImage>
           </div>
-          <div className="flex flex-col h-fit lg:h-full gap-2 lg:gap-0 justify-between">
+          <div className="flex flex-col h-fit lg:h-full gap-2 justify-between">
             <div className="hidden lg:flex text-sm">
               {t('Course Details.Last Updated')}:{' '}
               <span className="font-bold">

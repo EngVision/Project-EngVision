@@ -6,37 +6,45 @@ import { useMutation } from '@tanstack/react-query'
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import Logo from '../../components/Icons/Logo'
 import { NotificationContext } from '../../contexts/notification'
-import { useAppDispatch } from '../../hooks/redux'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { setCurrentLevel, setUser, setUserChat } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
 import userLevelApi from '../../services/userLevelApi'
 import { getNewWindowPosition } from '../../utils/common'
 import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
+import chatApi from '../../services/chatApi'
 import { useTranslation } from 'react-i18next'
 const SignIn: React.FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'Auth' })
   const dispatch = useAppDispatch()
   const apiNotification = useContext(NotificationContext)
+  const user = useAppSelector((state) => state.app.user)
 
   const { mutate, isPending, error, reset } = useMutation({
     mutationFn: authApi.signIn,
   })
 
   const handleAuthChat = async () => {
-    function getCookieValue(cookieName: string) {
-      const cookies = document.cookie.split(';')
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim()
-        if (cookie.startsWith(cookieName + '=')) {
-          return cookie.substring(cookieName.length + 1)
-        }
-      }
-      return null
-    }
+    // function getCookieValue(cookieName: string) {
+    //   const cookies = document.cookie.split(';')
+    //   for (let i = 0; i < cookies.length; i++) {
+    //     const cookie = cookies[i].trim()
+    //     if (cookie.startsWith(cookieName + '=')) {
+    //       return cookie.substring(cookieName.length + 1)
+    //     }
+    //   }
+    //   return null
+    // }
 
-    const chatUserId = getCookieValue('chat_user_id')
-    const chatToken = getCookieValue('chat_token')
+    // const chatUserId = getCookieValue('chat_user_id')
+    // const chatToken = getCookieValue('chat_token')
+
+    if (!user) return
+    const userChat = await chatApi.login(user?.email, user?.email)
+
+    const chatUserId = userChat?.userId
+    const chatToken = userChat?.authToken
 
     if (chatUserId && chatToken) {
       dispatch(setUserChat({ userId: chatUserId, authToken: chatToken }))

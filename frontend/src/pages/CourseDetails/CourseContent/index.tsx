@@ -135,17 +135,17 @@ const CourseContent = (course: CourseDetails) => {
           {course?.sections?.map((section, sectionIndex) => (
             <Panel
               header={
-                <div className="flex items-center text-xl">
+                <div className="flex items-center text-lg lg:text-xl">
                   {section.completed &&
                   section.lessons?.length &&
                   course?.isAttended ? (
                     <TickCircle
-                      className="mr-2 text-primary"
-                      width={24}
-                      height={24}
+                      className="mr-2 shrink-0 text-primary "
+                      width={20}
+                      height={20}
                     />
                   ) : (
-                    <Circle className="mr-2" width={24} height={24} />
+                    <Circle className="mr-2 shrink-0" width={20} height={20} />
                   )}
 
                   <div className="hidden lg:block mr-2">
@@ -155,7 +155,7 @@ const CourseContent = (course: CourseDetails) => {
                 </div>
               }
               extra={
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-gray-500 min-w-[36px]">
                   {section?.totalLessonCompleted
                     ? section?.totalLessonCompleted
                     : '0'}{' '}
@@ -177,15 +177,15 @@ const CourseContent = (course: CourseDetails) => {
                   <Panel
                     collapsible={course?.isAttended ? undefined : 'disabled'}
                     header={
-                      <div className="flex items-center text-lg">
+                      <div className="flex items-center text-base lg:text-lg">
                         {lesson?.completed && lesson.exercises?.length ? (
                           <TickCircle
                             className="mr-2 text-primary"
-                            width={24}
-                            height={24}
+                            width={20}
+                            height={20}
                           />
                         ) : (
-                          <Circle className="mr-2" width={24} height={24} />
+                          <Circle className="mr-2" width={20} height={20} />
                         )}
                         <div className="hidden lg:block mr-2">
                           {t('Course Details.Lesson')} {lessonIndex + 1}:
@@ -196,7 +196,7 @@ const CourseContent = (course: CourseDetails) => {
                     extra={
                       course.isAttended &&
                       lesson.exercises?.length > 0 && (
-                        <div className="text-xs text-wolfGrey">
+                        <div className="text-xs text-wolfGrey min-w-[32px]">
                           {`${
                             lesson.totalExerciseCompleted
                               ? lesson.totalExerciseCompleted
@@ -215,26 +215,28 @@ const CourseContent = (course: CourseDetails) => {
                           className="pl-6 lg:pl-10 pr-4 lg:pr-24"
                         >
                           <div className="flex items-center justify-between mb-4 outline-none py-2 px-2 rounded-lg">
-                            <div className="flex items-center">
-                              {completedExerciseIds.includes(exercise.id) ? (
-                                <TickCircle
-                                  className="mr-2 text-primary"
-                                  width={24}
-                                  height={24}
-                                />
-                              ) : (
-                                <Circle
-                                  className="mr-2"
-                                  width={24}
-                                  height={24}
-                                />
-                              )}
-                              <div className="hidden lg:block mr-2 font-bold text-lg">
-                                {t('Course Details.Exercise')}:
+                            <div className="flex items-center gap-2 flex-col lg:flex-row">
+                              <div className="flex items-center">
+                                {completedExerciseIds.includes(exercise.id) ? (
+                                  <TickCircle
+                                    className="mr-2 text-primary shrink-0"
+                                    width={20}
+                                    height={20}
+                                  />
+                                ) : (
+                                  <Circle
+                                    className="mr-2 shrink-0"
+                                    width={20}
+                                    height={20}
+                                  />
+                                )}
+                                <div className="hidden lg:block mr-2 font-bold text-lg">
+                                  {t('Course Details.Exercise')}:
+                                </div>
+                                <span className="font-bold text-lg mr-2">
+                                  {exercise.title}
+                                </span>
                               </div>
-                              <span className="font-bold text-lg mr-2">
-                                {exercise.title}
-                              </span>
                               <ExerciseTypeTag type={exercise.type} />
                             </div>
                             <Button
@@ -281,14 +283,14 @@ const CourseContent = (course: CourseDetails) => {
                               ) ? (
                                 <TickCircle
                                   className="mr-2 text-primary"
-                                  width={24}
-                                  height={24}
+                                  width={20}
+                                  height={20}
                                 />
                               ) : (
                                 <Circle
                                   className="mr-2 text-primary"
-                                  width={24}
-                                  height={24}
+                                  width={20}
+                                  height={20}
                                 />
                               )}
                               <div className="flex items-center gap-2 flex-1 min-w-[0px]">

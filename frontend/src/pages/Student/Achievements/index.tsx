@@ -29,12 +29,13 @@ const Achievements = () => {
       <Card
         hoverable
         style={{
-          width: '15rem',
           transition: 'transform 0.5s ease-in-out',
           transform: isExpanded ? 'rotateY(180deg)' : 'none',
           overflow: 'hidden',
         }}
-        className={`${achievement.progress === 1 ? 'text-yellow-500' : ''}`}
+        className={`${
+          achievement.progress === 1 ? 'text-yellow-500' : ''
+        } w-full lg:w-[15rem] !ml-0`}
         key={achievement.title}
         onClick={() => handleCardClick(achievement.title)}
       >
@@ -79,7 +80,7 @@ const Achievements = () => {
   return (
     <div className="rounded-xl p-5">
       <h1 className="text-blue-700">{t('Achievements')}</h1>
-      <div className="flex flex-wrap mt-5 space-x-4">
+      <div className="flex flex-wrap gap-4 mt-5 space-x-4">
         {isLoading ? (
           <AppLoading />
         ) : (
