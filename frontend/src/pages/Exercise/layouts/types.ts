@@ -7,6 +7,6 @@ export interface TwoColumnLayoutProps extends OneColumnLayoutProps {
   contentQuestion: {
     text?: string
     image?: string
-    questionAudio?: string
+    audio?: string
   }
 }
