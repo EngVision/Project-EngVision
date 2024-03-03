@@ -5,6 +5,7 @@ import coursesApi from '../../../services/coursesApi'
 import { COURSE_STATUS } from '../../../utils/constants'
 import { useTranslation } from 'react-i18next'
 import AppLoading from '../../../components/common/AppLoading'
+import { formatCurrency } from '../../../utils/currency'
 
 const Teacher = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'Home' })
@@ -66,11 +67,14 @@ const Teacher = () => {
         <div className="grid grid-cols-fill-40 gap-x-6 gap-y-4">
           {DashboardCard(t('TOTAL YOUR COURSES'), rawCourseList.total)}
           {DashboardCard(t('TOTAL YOUR STUDENTS'), totalStudents)}
-          {DashboardCard(t('TOTAL YOUR REVENUE'), `${totalRevenue} VNĐ`)}
+          {DashboardCard(t('TOTAL YOUR REVENUE'), formatCurrency(totalRevenue))}
           {DashboardCard(
             t('AVERAGE RATING YOUR COURSES'),
-            totalRating /
-              rawCourseList.data.filter((course) => course.avgStar > 0).length,
+            totalRating ??
+              0 /
+                rawCourseList.data?.filter((course) => course.avgStar > 0)
+                  .length ??
+              1,
           )}
         </div>
       )}

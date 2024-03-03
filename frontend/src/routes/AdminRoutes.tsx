@@ -24,6 +24,19 @@ const adminRoutes: RouteObject[] = [
             path: '',
           },
           {
+            path: 'parts',
+            children: [
+              {
+                element: <ManageExercise />,
+                path: '',
+              },
+              {
+                element: <ManageExercise />,
+                path: ':exerciseId',
+              },
+            ],
+          },
+          {
             path: ':examId',
             children: [
               {
