@@ -12,7 +12,13 @@ import Volume from '../../Icons/Volume'
 import AppLoading from '../../common/AppLoading'
 import Duration from '../../common/Duration'
 
-const AudioPlayer = ({ url }: { url: string }) => {
+const AudioPlayer = ({
+  url,
+  columnButton,
+}: {
+  url: string
+  columnButton?: boolean
+}) => {
   const playerRef = useRef<ReactPlayer>(null)
   const [blob, setBlob] = useState<Blob | null>(null)
   const initialState = {
@@ -93,7 +99,7 @@ const AudioPlayer = ({ url }: { url: string }) => {
   if (isLoading || !url) return <AppLoading />
 
   return (
-    <div className="bg-surface rounded-lg p-4 lg:w-1/2 md:w-2/3 w-4/5 h-full max-w-[600px]">
+    <div className="bg-surface rounded-lg p-4 min-w-[300px] max-w-[750px]">
       <div className="hidden">
         <ReactPlayer
           ref={playerRef}
@@ -170,7 +176,11 @@ const AudioPlayer = ({ url }: { url: string }) => {
             icon={<Forward className="text-primary" />}
           ></Button>
         </div>
-        <div className="xl:absolute max-lg:self-center right-0 items-center flex gap-1">
+        <div
+          className={`xl:${
+            columnButton ? '' : 'absolute'
+          } max-lg:self-center right-0 items-center flex gap-1`}
+        >
           <Button
             type="text"
             className="cursor-pointer bg-transparent"
