@@ -11,7 +11,7 @@ import { setCurrentLevel, setUser, setUserChat } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignInParams } from '../../services/authApi/types'
 import userLevelApi from '../../services/userLevelApi'
-import { getNewWindowPosition, validatePassword } from '../../utils/common'
+import { getNewWindowPosition } from '../../utils/common'
 import { FACEBOOK_LOGIN, GOOGLE_LOGIN } from '../../utils/constants'
 import { useTranslation } from 'react-i18next'
 const SignIn: React.FC = () => {
@@ -149,7 +149,7 @@ const SignIn: React.FC = () => {
 
         {error && (
           <p className="text-secondary">
-            {t('Email or password is incorrect!')}
+            {t('Email or password is incorrect')}!
           </p>
         )}
         <div className="flex justify-end">

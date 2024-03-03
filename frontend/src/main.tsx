@@ -64,6 +64,15 @@ TRACKING_ID
     )
   : console.error('No GA4 tracking ID found')
 
+console.log('ENV', {
+  VITE_BASE_URL: import.meta.env.VITE_BASE_URL,
+  VITE_SERVER_FILES_URL: import.meta.env.VITE_SERVER_FILES_URL,
+  VITE_GA4_TRACKING_ID: import.meta.env.VITE_GA4_TRACKING_ID,
+  VITE_SENTRY_DSN: import.meta.env.VITE_SENTRY_DSN,
+  VITE_SERVER_CHAT_URL: import.meta.env.VITE_SERVER_CHAT_URL,
+  VITE_WS_URL: import.meta.env.VITE_WS_URL,
+})
+
 const ClientRenderer = () =>
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
