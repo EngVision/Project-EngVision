@@ -34,7 +34,8 @@
     "Teacher Sign Up": "Teacher Sign Up",
     "Welcome to EngVision": "Welcome to EngVision!",
     "Certificates": "Certificates",
-    "Please input your certificates!": "Please input your certificates!"
+    "Please input your certificates!": "Please input your certificates!",
+    "Email or password is incorrect": "Email or password is incorrect"
   },
   "Home": {
     "Completed Course": "Completed Course",

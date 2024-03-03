@@ -41,11 +41,9 @@ const Admin = () => {
       >
         <div className="basis-1/2 text-xl text-white">
           {t('Hi')},{' '}
-          {user?.firstName
-            ? user?.firstName
-            : '' + ' ' + user?.lastName
-            ? user?.lastName
-            : ''}
+          {`${user?.firstName ?? ''}${
+            user?.lastName ? ' ' + user?.lastName : ''
+          }`}
           ! <br />
           {t(
             'Thank you for choosing to share your knowledge and inspire others on our platform!',
