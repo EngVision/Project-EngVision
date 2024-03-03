@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import {
   setIsNewMessage,
@@ -23,7 +23,7 @@ const Chat = () => {
 
   useEffect(() => {
     const socket = new WebSocket(import.meta.env.VITE_WS_URL as string)
-
+    console.log('userChat', userChat)
     socket.onopen = () => {
       const connectRequest = {
         msg: 'connect',
@@ -90,7 +90,7 @@ const Chat = () => {
     socket.onerror = (error) => {
       console.error('WebSocket error:', error)
     }
-  }, [])
+  }, [userChat])
 
   const pushNewMessage = async (messageId: string) => {
     if (userChat) {
