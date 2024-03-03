@@ -1,13 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Document, Model } from 'mongoose';
-import { CEFRLevel, Role } from 'src/common/enums';
+import { CEFRLevel, ExerciseType, Role } from 'src/common/enums';
 import { ExerciseContentServiceFactory } from '../exercise-content/exercise-content-factory.service';
 import { QuestionResult } from '../submissions/schemas/submission.schema';
 import { SubmissionsService } from '../submissions/submissions.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise, ExerciseDocument } from './schemas/exercise.schema';
+import { OpenAiService } from '../open-ai/open-ai.service';
 
 @Injectable()
 export class ExercisesService {
@@ -15,6 +16,7 @@ export class ExercisesService {
     @InjectModel(Exercise.name) private exerciseModel: Model<Exercise>,
     private readonly exerciseContentServiceFactory: ExerciseContentServiceFactory,
     private readonly submissionsService: SubmissionsService,
+    private readonly openAiService: OpenAiService,
   ) {}
 
   async create(
@@ -164,7 +166,7 @@ export class ExercisesService {
       exercise.type,
     );
 
-    const result = await service.checkAnswer(questionId, answer);
+    const { ...result } = await service.checkAnswer(questionId, answer);
 
     const { id } = await this.submissionsService.update(userId, exercise.id, {
       user: userId,
@@ -175,8 +177,38 @@ export class ExercisesService {
       teacher: exercise.creator,
       needGrade: exercise.needGrade,
       course: exercise.course,
-      grade: result.grade ?? 0,
+      grade: result.grade,
     });
+
+    console.log(exercise.content);
+
+    if (
+      exercise.needGrade &&
+      exercise.type === ExerciseType.ConstructedResponse
+    ) {
+      const currentExercise: any = exercise.content.find(
+        (q: any) => q.id === questionId,
+      );
+
+      this.openAiService
+        .chat(
+          `Evaluate skill Grammar, Vocabulary, Organization, Coherence, Conciseness the writing with topic '${currentExercise?.question?.text}': '${answer}'`,
+        )
+        .then(explanation => {
+          result.explanation = explanation;
+          this.submissionsService.update(userId, exercise.id, {
+            user: userId,
+            exercise: exerciseId,
+            exerciseType: exercise.type,
+            totalQuestion: exercise.content.length,
+            detail: [result],
+            teacher: exercise.creator,
+            needGrade: exercise.needGrade,
+            course: exercise.course,
+            grade: result.grade,
+          });
+        });
+    }
 
     return { ...result, id };
   }

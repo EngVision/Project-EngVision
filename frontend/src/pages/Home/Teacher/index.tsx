@@ -23,11 +23,9 @@ const Teacher = () => {
       >
         <div className="basis-1/2 text-xl text-white">
           {t('Hi')},{' '}
-          {user?.firstName
-            ? user?.firstName
-            : '' + ' ' + user?.lastName
-            ? user?.lastName
-            : ''}
+          {`${user?.firstName ?? ''}${
+            user?.lastName ? ' ' + user?.lastName : ''
+          }`}
           ! <br />
           {t(
             'Thank you for choosing to share your knowledge and inspire others on our platform!',
@@ -53,7 +51,7 @@ const Teacher = () => {
   let totalStudents = 0
   let totalRevenue = 0
   let totalRating = 0
-  rawCourseList.data.forEach((course) => {
+  rawCourseList.data?.forEach((course) => {
     totalStudents += course.attendance
     totalRevenue += course.attendance * course.price
     totalRating += course.avgStar ? +course.avgStar : 0

@@ -34,7 +34,8 @@
     "Teacher Sign Up": "Teacher Sign Up",
     "Welcome to EngVision": "Welcome to EngVision!",
     "Certificates": "Certificates",
-    "Please input your certificates!": "Please input your certificates!"
+    "Please input your certificates!": "Please input your certificates!",
+    "Email or password is incorrect": "Email or password is incorrect"
   },
   "Home": {
     "Completed Course": "Completed Course",
@@ -270,6 +271,8 @@
     "Your assignment is awaiting grading.": "Your assignment is awaiting grading.",
     "Multiple choice question": "Multiple choice question",
     "Fill blank question": "Fill blank question",
+    "Speaking question": "Speaking question",
+    "Constructed response question": "Constructed response question",
     "Correct!": "Correct!",
     "Wrong!": "Wrong!",
     "Correct answer is": "Correct answer is",
@@ -356,6 +359,7 @@
     "Number of row": "Number of row",
     "Number of row (optional)": "Number of row (optional)",
     "New card": "New card",
+    "Need grade": "Need grade",
     "Set the test countdown time in seconds. Minimum time is 15 seconds, and maximum is 600 seconds (10 minutes).": "Set the test countdown time in seconds. Minimum time is 15 seconds, and maximum is 600 seconds (10 minutes)."
   },
   "CreateCourse": {

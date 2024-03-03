@@ -146,7 +146,7 @@ const NewQuestionForm = ({ index }: NewQuestionFormProps) => {
 
                   <Form.Item>
                     <Button
-                      onClick={() => add('New card')}
+                      onClick={() => add('')}
                       type="primary"
                       className="w-full h-10 flex items-center justify-center"
                       icon={<PlusIcon width={16} height={16} />}

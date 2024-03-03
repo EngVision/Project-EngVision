@@ -54,8 +54,8 @@ export class ExamsService {
 
   async findAll(queryDto: QueryDto): Promise<[ExamDocument[], number]> {
     const exams = await this.examModel.find({}, null, {
-      skip: queryDto.page * queryDto.limit,
-      limit: queryDto.limit,
+      skip: queryDto.limit !== -1 ? queryDto.page * queryDto.limit : null,
+      limit: queryDto.limit !== -1 ? queryDto.limit : null,
     });
     const total = await this.examModel.countDocuments({});
 

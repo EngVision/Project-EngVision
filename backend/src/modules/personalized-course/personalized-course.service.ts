@@ -35,8 +35,9 @@ export class PersonalizedCourseService {
     }
 
     const newCourse = new this.courseModel({
-      title: 'Curriculum by EngVision',
-      about: 'This is a curriculum',
+      title: 'Personalized course by EngVision',
+      about:
+        'This course offers a comprehensive English language curriculum tailored to your level.',
       level: CEFRLevel.Any,
       isPublished: true,
       teacher: admin.id,

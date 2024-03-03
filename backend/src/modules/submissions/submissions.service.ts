@@ -152,7 +152,8 @@ export class SubmissionsService {
       .populate('exercise', 'title tags')
       .populate('user', 'firstName lastName avatar')
       .populate('course', 'title sections thumbnail')
-      .populate('teacher', 'firstName lastName');
+      .populate('teacher', 'firstName lastName')
+      .sort({ createdAt: -1 });
     const total = await this.submissionModel.countDocuments(filterQuery);
 
     const res: SubmissionDto[] = submissions.map(submission =>

@@ -34,7 +34,8 @@
     "Teacher Sign Up": "Đăng ký giáo viên",
     "Welcome to EngVision": "Chào mừng bạn đến với EngVision!",
     "Certificates": "Chứng chỉ",
-    "Please input your certificates!": "Vui lòng nhập chứng chỉ của bạn!"
+    "Please input your certificates!": "Vui lòng nhập chứng chỉ của bạn!",
+    "Email or password is incorrect": "Email hoặc mật khẩu không đúng"
   },
   "Home": {
     "Completed Course": "Khóa học đã hoàn thành",
@@ -268,6 +269,8 @@
     "Your assignment is awaiting grading.": "Bài nộp của bạn đang chờ chấm điểm.",
     "Multiple choice question": "Câu hỏi chọn đáp án đúng",
     "Fill blank question": "Câu hỏi điền vào chỗ trống",
+    "Speaking question": "Câu hỏi nói",
+    "Constructed response question": "Câu hỏi tự luận",
     "Correct!": "Chính xác!",
     "Wrong!": "Sai!",
     "Correct answer is": "Đáp án đúng là",

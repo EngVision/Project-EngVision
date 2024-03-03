@@ -6,7 +6,7 @@ const PREFIX = 'exams'
 
 export const examApi = {
   getExam: async () => {
-    const res: ResponseData = await axiosClient.get(PREFIX)
+    const res: ResponseData = await axiosClient.get(`${PREFIX}?limit=-1`)
     return res.data
   },
 

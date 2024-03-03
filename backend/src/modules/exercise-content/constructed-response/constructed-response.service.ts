@@ -75,11 +75,11 @@ export class ConstructedResponseService extends ExerciseContentService {
     const correctAnswer = exercise.correctAnswer;
     let { detail, explanation } = correctAnswer;
 
-    if (!detail) {
-      explanation = await this.openAiService.chat(
-        `Evaluate skill Grammar, Vocabulary, Organization, Coherence, Conciseness the writing with topic '${exercise.question.text}': '${answer}'`,
-      );
-    }
+    // if (!detail) {
+    //   explanation = await this.openAiService.chat(
+    //     `Evaluate skill Grammar, Vocabulary, Organization, Coherence, Conciseness the writing with topic '${exercise.question.text}': '${answer}'`,
+    //   );
+    // }
 
     const submission = {
       question: id,

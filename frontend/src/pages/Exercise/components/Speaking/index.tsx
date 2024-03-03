@@ -40,9 +40,7 @@ function Speaking(props: SpeakingProps) {
 
   return (
     <div>
-      <h3 className="text-2xl text-primary mb-4">
-        {t('This is a speaking exercise')}
-      </h3>
+      <h3 className="text-2xl text-primary mb-4">{t('Speaking question')}</h3>
 
       <div
         className="text-lg mb-20"
