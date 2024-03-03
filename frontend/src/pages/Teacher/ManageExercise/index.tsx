@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { Button, Form, FormInstance, Input, Select, message } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
 import { useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import coursesApi from '../../../services/coursesApi'
 import exerciseApi from '../../../services/exerciseApi'
 import { ExerciseSchema } from '../../../services/exerciseApi/types'
@@ -26,6 +26,7 @@ import DragAndDropForm from './components/DragAndDropForm'
 import { useTranslation } from 'react-i18next'
 import WordSearchForm from './components/WordSearchForm'
 import ReactQuill from 'react-quill'
+import { examApi } from '../../../services/examApi'
 
 interface GeneralInfo {
   type: ExerciseType
@@ -186,7 +187,8 @@ function ManageExercise() {
 
   const navigate = useNavigate()
 
-  const { lessonId = '', exerciseId = '' } = useParams()
+  const { lessonId = '', exerciseId = '', examId } = useParams()
+  const { state } = useLocation()
 
   const addExerciseMutation = useMutation({
     mutationFn: (exerciseId: string) =>
@@ -260,7 +262,7 @@ function ManageExercise() {
       })
     } else {
       createExerciseMutation.mutate(values, {
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
           if (lessonId && data.id) {
             addExerciseMutation.mutate(data.id, {
               onSuccess: () => {
@@ -278,6 +280,17 @@ function ManageExercise() {
                   type: 'error',
                 })
               },
+            })
+          } else {
+            await examApi.updateExam(
+              examId as string,
+              { parts: [...state.parts, data.id] } as any,
+            )
+            navigate('..', { relative: 'path' })
+            message.open({
+              key: 'submitMessage',
+              content: 'Created',
+              type: 'success',
             })
           }
         },

@@ -79,8 +79,8 @@ export const ADMIN_ROUTES = {
   grading: '/grading',
   examDetail: '/exams/:examId',
   createExam: '/exams/new',
-  partDetail: '/exams/parts',
-  createPart: '/exams/parts',
+  partDetail: './parts',
+  createPart: './parts',
 }
 
 export const ROLES = {
