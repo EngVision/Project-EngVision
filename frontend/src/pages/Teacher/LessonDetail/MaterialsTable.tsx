@@ -93,7 +93,7 @@ const MaterialsTable = ({ materials }: MaterialsTableProps) => {
       key: 'material',
       className: '!px-6 !py-6',
       render: (_, file) => {
-        if (file.url) {
+        if (!file.mimetype) {
           return (
             <a
               className="underline text-base"

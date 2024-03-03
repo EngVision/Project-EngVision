@@ -204,7 +204,13 @@
     "New lesson": "New lesson",
     "New section": "New section",
     "Export lesson": "Export lesson",
-    "Please save the course to edit this lesson": "Please save the course to edit this lesson"
+    "Please save the course to edit this lesson": "Please save the course to edit this lesson",
+    "Material": "Material",
+    "Section": "Section",
+    "Lesson": "Lesson",
+    "Exercise": "Exercise",
+    "Learn": "Learn",
+    "View": "View"
   },
   "Account": {
     "Male": "Male",
