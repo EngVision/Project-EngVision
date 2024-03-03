@@ -83,6 +83,22 @@ const QuestionForm = ({ index, remove }: QuestionFormProps) => {
           <ReactQuill className="bg-surface" placeholder={t('Question')} />
         </Form.Item>
       </div>
+      <div className="grid grid-cols-2 gap-4">
+        <Form.Item
+          valuePropName="fileList"
+          label={t('Question image')}
+          name={[index, 'questionImage']}
+        >
+          <CustomUpload />
+        </Form.Item>
+        <Form.Item
+          valuePropName="fileList"
+          label={t('Question audio')}
+          name={[index, 'questionAudio']}
+        >
+          <CustomUpload accept="audio/*" />
+        </Form.Item>
+      </div>
       <Form.Item label="Explanation" name={[index, 'explanation']}>
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 4 }}

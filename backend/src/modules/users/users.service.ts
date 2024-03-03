@@ -81,6 +81,7 @@ export class UsersService {
       firstName: 'Admin',
       role: Role.Admin,
       gender: Gender.Other,
+      chatRegistered: true,
     });
 
     newUser.avatar = (

@@ -202,7 +202,7 @@ const ManageExam = () => {
           </div>
         </div>
         <div>
-          <h1 className="text-2xl font-bold mb-2">Exam</h1>
+          <h1 className="text-2xl font-bold mt-4 mb-2">Exam</h1>
           <div>
             <Table
               columns={columnsExam}
