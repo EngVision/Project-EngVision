@@ -39,7 +39,7 @@ const chatApi = {
           algorithm: 'sha-256',
         },
       })
-      return res.data
+      return res.data.data
     } catch (error) {
       console.error('Error post file details:', error)
       throw error
