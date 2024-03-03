@@ -5,6 +5,7 @@ import { SubmissionsModule } from '../submissions/submissions.module';
 import { ExercisesController } from './exercises.controller';
 import { ExercisesService } from './exercises.service';
 import { Exercise, ExerciseSchema } from './schemas/exercise.schema';
+import { OpenAiModule } from '../open-ai/open-ai.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { Exercise, ExerciseSchema } from './schemas/exercise.schema';
     ]),
     ExerciseContentModule,
     SubmissionsModule,
+    OpenAiModule,
   ],
   controllers: [ExercisesController],
   providers: [ExercisesService],

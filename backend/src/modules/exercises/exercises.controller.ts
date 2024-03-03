@@ -67,8 +67,8 @@ export class ExercisesController {
       GetResponseList({
         dataType: ExerciseDto,
         data: exercises,
-        limit: 0,
-        offset: 0,
+        limit: null,
+        offset: null,
         total: exercises.length,
       }),
     );

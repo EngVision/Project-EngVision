@@ -181,7 +181,7 @@ function Explain({ submission, questionDetail, questionIndex }: ExplainProps) {
       {isCorrect !== null &&
         (isCorrect ? <TickCircleWhiteIcon /> : <CloseCircleWhiteIcon />)}
       <div className="flex-1 text-primary flex flex-col gap-2 text-white">
-        {explanation && <p>{explanation}</p>}
+        {explanation && hasGrade && <p>{explanation}</p>}
         <b className="text-[18px] leading-6">{t('Grading')}</b>
         <p>{t('Please wait for grading from teacher')}</p>
       </div>

@@ -63,7 +63,7 @@ const ExamDetail = () => {
       }
     }
     fetchExercises()
-  }, [])
+  }, [examData])
 
   const openNotificationWithIcon = (
     type: NotificationType,
