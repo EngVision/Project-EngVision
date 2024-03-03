@@ -23,8 +23,36 @@ const Chat = () => {
   const user = useAppSelector((state) => state.app.user)
   const newNotifyRoomId = useAppSelector((state) => state.app.newNotifyRoomId)
 
+  const handleAuthChat = async () => {
+    // function getCookieValue(cookieName: string) {
+    //   const cookies = document.cookie.split(';')
+    //   for (let i = 0; i < cookies.length; i++) {
+    //     const cookie = cookies[i].trim()
+    //     if (cookie.startsWith(cookieName + '=')) {
+    //       return cookie.substring(cookieName.length + 1)
+    //     }
+    //   }
+    //   return null
+    // }
+
+    // const chatUserId = getCookieValue('chat_user_id')
+    // const chatToken = getCookieValue('chat_token')
+
+    if (!user) return
+    const userChat = await chatApi.login(user?.email, user?.email)
+
+    const chatUserId = userChat?.userId
+    const chatToken = userChat?.authToken
+
+    if (chatUserId && chatToken) {
+      setAuthChat({ userId: chatUserId, authToken: chatToken })
+      dispatch(setUserChat({ userId: chatUserId, authToken: chatToken }))
+    }
+  }
+
   useEffect(() => {
     const socket = new WebSocket(import.meta.env.VITE_WS_URL as string)
+    handleAuthChat()
     console.log('userChat', authChat)
     socket.onopen = () => {
       const connectRequest = {
