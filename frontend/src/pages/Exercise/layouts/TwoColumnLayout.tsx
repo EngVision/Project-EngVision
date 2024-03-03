@@ -49,7 +49,7 @@ export function TwoColumnLayout({
             A
           </button>
         </Space>
-        <div className="flex items-center justify-center gap-6 flex-col md:flex-row">
+        <div className="flex flex-col items-center justify-center gap-6">
           {contentQuestion.image && (
             <img
               className="min-h-[200px] max-h-[400px]"
@@ -57,7 +57,10 @@ export function TwoColumnLayout({
             />
           )}
           {contentQuestion.audio && (
-            <AudioPlayer url={getFileUrl(contentQuestion.audio)} />
+            <AudioPlayer
+              url={getFileUrl(contentQuestion.audio)}
+              columnButton={true}
+            />
           )}
         </div>
         <div
