@@ -1,6 +1,6 @@
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../hooks/redux'
 import Joyride, { CallBackProps, STATUS, Step } from 'react-joyride'
 import {
@@ -18,6 +18,7 @@ const DefaultLayout = () => {
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.app.user)
   const showGetStarted = useAppSelector((state) => state.app.showingGetStarted)
+  const { pathname } = useLocation()
 
   useEffect(() => {
     const timerId = setTimeout(() => {
@@ -43,7 +44,7 @@ const DefaultLayout = () => {
 
   return (
     <div className="flex flex-row bg-bgDefault h-screen text-textColor">
-      <Sidebar />
+      {!pathname.includes('/m/') && <Sidebar />}
       <div className="flex flex-1 flex-col min-w-[0px]">
         <div className="px-4">
           <Header />
