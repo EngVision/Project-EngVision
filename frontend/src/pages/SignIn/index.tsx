@@ -47,6 +47,7 @@ const SignIn: React.FC = () => {
     const chatToken = userChat?.authToken
 
     if (chatUserId && chatToken) {
+      console.log('chatUserId: ', chatUserId, 'chatToken: ', chatToken)
       dispatch(setUserChat({ userId: chatUserId, authToken: chatToken }))
     }
   }
