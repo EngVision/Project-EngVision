@@ -38,31 +38,31 @@ const SignUp: React.FC = () => {
     },
   })
 
-  const handleAuthChat = async () => {
-    // function getCookieValue(cookieName: string) {
-    //   const cookies = document.cookie.split(';')
-    //   for (let i = 0; i < cookies.length; i++) {
-    //     const cookie = cookies[i].trim()
-    //     if (cookie.startsWith(cookieName + '=')) {
-    //       return cookie.substring(cookieName.length + 1)
-    //     }
-    //   }
-    //   return null
-    // }
+  // const handleAuthChat = async () => {
+  //   // function getCookieValue(cookieName: string) {
+  //   //   const cookies = document.cookie.split(';')
+  //   //   for (let i = 0; i < cookies.length; i++) {
+  //   //     const cookie = cookies[i].trim()
+  //   //     if (cookie.startsWith(cookieName + '=')) {
+  //   //       return cookie.substring(cookieName.length + 1)
+  //   //     }
+  //   //   }
+  //   //   return null
+  //   // }
 
-    // const chatUserId = getCookieValue('chat_user_id')
-    // const chatToken = getCookieValue('chat_token')
+  //   // const chatUserId = getCookieValue('chat_user_id')
+  //   // const chatToken = getCookieValue('chat_token')
 
-    if (!user) return
-    const userChat = await chatApi.login(user?.email, user?.email)
+  //   if (!user) return
+  //   const userChat = await chatApi.login(user?.email, user?.email)
 
-    const chatUserId = userChat?.userId
-    const chatToken = userChat?.authToken
+  //   const chatUserId = userChat?.userId
+  //   const chatToken = userChat?.authToken
 
-    if (chatUserId && chatToken) {
-      dispatch(setUserChat({ userId: chatUserId, authToken: chatToken }))
-    }
-  }
+  //   if (chatUserId && chatToken) {
+  //     dispatch(setUserChat({ userId: chatUserId, authToken: chatToken }))
+  //   }
+  // }
 
   const onFinish = async (values: SignUpParams) => {
     const newUser = {
@@ -70,7 +70,7 @@ const SignUp: React.FC = () => {
       role: ROLES.student.value,
     }
     mutate(newUser)
-    await handleAuthChat()
+    // await handleAuthChat()
   }
 
   const fetchAuthUser = async () => {
