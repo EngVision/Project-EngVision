@@ -55,7 +55,7 @@ const SignIn: React.FC = () => {
     mutate(values, {
       onSuccess: () => {
         fetchAuthUser()
-        handleAuthChat()
+
         apiNotification.success({
           message: t('signInSuccess'),
         })
@@ -71,7 +71,7 @@ const SignIn: React.FC = () => {
         const level = await userLevelApi.getUserLevel()
         dispatch(setCurrentLevel(level))
       }
-
+      handleAuthChat()
       dispatch(setUser(data))
     } catch (error) {
       console.log('error: ', error)
