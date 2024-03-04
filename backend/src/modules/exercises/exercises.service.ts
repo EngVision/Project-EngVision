@@ -180,8 +180,6 @@ export class ExercisesService {
       grade: result.grade,
     });
 
-    console.log(exercise.content);
-
     if (
       exercise.needGrade &&
       exercise.type === ExerciseType.ConstructedResponse

@@ -3,13 +3,15 @@ import React, { useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 import { useMutation } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { FacebookIcon, GoogleIcon } from '../../components/Icons'
 import Logo from '../../components/Icons/Logo'
 import { NotificationContext } from '../../contexts/notification'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
-import { setUser, setUserChat } from '../../redux/app/slice'
+import { setUser } from '../../redux/app/slice'
 import authApi from '../../services/authApi'
 import type { SignUpParams } from '../../services/authApi/types'
+import { getNewWindowPosition, validatePassword } from '../../utils/common'
 import {
   FACEBOOK_LOGIN,
   GOOGLE_LOGIN,
@@ -18,15 +20,11 @@ import {
   ROLES,
 } from '../../utils/constants'
 import enumToSelectOptions from '../../utils/enumsToSelectOptions'
-import { getNewWindowPosition, validatePassword } from '../../utils/common'
-import { useTranslation } from 'react-i18next'
-import chatApi from '../../services/chatApi'
 const SignUp: React.FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'Auth' })
   const dispatch = useAppDispatch()
   const apiNotification = useContext(NotificationContext)
   const [form] = Form.useForm<SignUpParams>()
-  const user = useAppSelector((state) => state.app.user)
 
   const { mutate, isPending, error, reset } = useMutation({
     mutationFn: authApi.signUp,
@@ -37,32 +35,6 @@ const SignUp: React.FC = () => {
       })
     },
   })
-
-  // const handleAuthChat = async () => {
-  //   // function getCookieValue(cookieName: string) {
-  //   //   const cookies = document.cookie.split(';')
-  //   //   for (let i = 0; i < cookies.length; i++) {
-  //   //     const cookie = cookies[i].trim()
-  //   //     if (cookie.startsWith(cookieName + '=')) {
-  //   //       return cookie.substring(cookieName.length + 1)
-  //   //     }
-  //   //   }
-  //   //   return null
-  //   // }
-
-  //   // const chatUserId = getCookieValue('chat_user_id')
-  //   // const chatToken = getCookieValue('chat_token')
-
-  //   if (!user) return
-  //   const userChat = await chatApi.login(user?.email, user?.email)
-
-  //   const chatUserId = userChat?.userId
-  //   const chatToken = userChat?.authToken
-
-  //   if (chatUserId && chatToken) {
-  //     dispatch(setUserChat({ userId: chatUserId, authToken: chatToken }))
-  //   }
-  // }
 
   const onFinish = async (values: SignUpParams) => {
     const newUser = {

@@ -6,15 +6,12 @@ import { ExerciseContentService } from '../base-exercise-content.service';
 import { ExerciseQuestionDto } from '../dto/exercise-content.dto';
 import { CreateConstructedResponseDto } from './dto/create-constructed-response.dto';
 import { ConstructedResponse } from './schemas/constructed-response.schema';
-import { OpenAiService } from 'src/modules/open-ai/open-ai.service';
-import { SubmissionsService } from 'src/modules/submissions/submissions.service';
 
 @Injectable()
 export class ConstructedResponseService extends ExerciseContentService {
   constructor(
     @InjectModel(ConstructedResponse.name)
     private constructedResponseModel: Model<ConstructedResponse>,
-    private readonly openAiService: OpenAiService,
   ) {
     super();
   }
@@ -75,12 +72,6 @@ export class ConstructedResponseService extends ExerciseContentService {
     const correctAnswer = exercise.correctAnswer;
     let { detail, explanation } = correctAnswer;
 
-    // if (!detail) {
-    //   explanation = await this.openAiService.chat(
-    //     `Evaluate skill Grammar, Vocabulary, Organization, Coherence, Conciseness the writing with topic '${exercise.question.text}': '${answer}'`,
-    //   );
-    // }
-
     const submission = {
       question: id,
       answer,
@@ -91,6 +82,10 @@ export class ConstructedResponseService extends ExerciseContentService {
     const isCorrect = detail
       ? answer.toLowerCase() === detail.toLowerCase()
       : null;
+
+    if (detail) {
+      submission.teacherCorrection = detail;
+    }
 
     return {
       ...submission,
