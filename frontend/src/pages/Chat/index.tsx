@@ -51,75 +51,80 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    const socket = new WebSocket(import.meta.env.VITE_WS_URL as string)
-    handleAuthChat()
+    const fetchData = async () => {
+      await handleAuthChat()
+      const socket = new WebSocket(import.meta.env.VITE_WS_URL as string)
 
-    socket.onopen = () => {
-      const connectRequest = {
-        msg: 'connect',
-        version: '1',
-        support: ['1'],
-      }
-      socket.send(JSON.stringify(connectRequest))
+      socket.onopen = () => {
+        const connectRequest = {
+          msg: 'connect',
+          version: '1',
+          support: ['1'],
+        }
+        socket.send(JSON.stringify(connectRequest))
 
-      socket.send(
-        JSON.stringify({
-          msg: 'method',
-          method: 'login',
-          id: '1',
-          params: [{ resume: userChat?.authToken }],
-        }),
-      )
-
-      socket.send(
-        JSON.stringify({
-          msg: 'sub',
-          id: 'IkY4pZ8FRyoegcXGk',
-          name: 'stream-notify-user',
-          params: [`${userChat?.userId}/notification`, false],
-        }),
-      )
-
-      socket.send(
-        JSON.stringify({
-          msg: 'sub',
-          id: 'KkY4pZ8FRyoegcXGk',
-          name: 'stream-notify-user',
-          params: [`${userChat?.userId}/subscriptions-changed`, false],
-        }),
-      )
-
-      socket.send(
-        JSON.stringify({
-          msg: 'sub',
-          id: 'JkY4pZ8FRyoegcXGk',
-          name: 'stream-notify-user',
-          params: [`${userChat?.userId}/rooms-changed`, false],
-        }),
-      )
-    }
-
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data)
-      if (data.msg === 'ping') {
         socket.send(
           JSON.stringify({
-            msg: 'pong',
+            msg: 'method',
+            method: 'login',
+            id: '1',
+            params: [{ resume: userChat?.authToken }],
           }),
         )
-      } else if (data.fields.eventName === `${userChat?.userId}/notification`) {
-        pushNewMessage(data.fields.args[0].payload._id)
-        dispatch(setNewNotifyRoomId(data.fields.args[0].payload.rid))
-      } else if (
-        data.fields.eventName === `${userChat?.userId}/rooms-changed`
-      ) {
-        dispatch(setNewNotifyRoomId(data.fields.args[0].payload.rid))
+
+        socket.send(
+          JSON.stringify({
+            msg: 'sub',
+            id: 'IkY4pZ8FRyoegcXGk',
+            name: 'stream-notify-user',
+            params: [`${userChat?.userId}/notification`, false],
+          }),
+        )
+
+        socket.send(
+          JSON.stringify({
+            msg: 'sub',
+            id: 'KkY4pZ8FRyoegcXGk',
+            name: 'stream-notify-user',
+            params: [`${userChat?.userId}/subscriptions-changed`, false],
+          }),
+        )
+
+        socket.send(
+          JSON.stringify({
+            msg: 'sub',
+            id: 'JkY4pZ8FRyoegcXGk',
+            name: 'stream-notify-user',
+            params: [`${userChat?.userId}/rooms-changed`, false],
+          }),
+        )
+      }
+
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data)
+        if (data.msg === 'ping') {
+          socket.send(
+            JSON.stringify({
+              msg: 'pong',
+            }),
+          )
+        } else if (
+          data.fields.eventName === `${userChat?.userId}/notification`
+        ) {
+          pushNewMessage(data.fields.args[0].payload._id)
+          dispatch(setNewNotifyRoomId(data.fields.args[0].payload.rid))
+        } else if (
+          data.fields.eventName === `${userChat?.userId}/rooms-changed`
+        ) {
+          dispatch(setNewNotifyRoomId(data.fields.args[0].payload.rid))
+        }
+      }
+
+      socket.onerror = (error) => {
+        console.error('WebSocket error:', error)
       }
     }
-
-    socket.onerror = (error) => {
-      console.error('WebSocket error:', error)
-    }
+    fetchData()
   }, [])
 
   const pushNewMessage = async (messageId: string) => {
