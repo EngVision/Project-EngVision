@@ -25,33 +25,6 @@ const SignIn: React.FC = () => {
     mutationFn: authApi.signIn,
   })
 
-  // const handleAuthChat = async () => {
-  //   // function getCookieValue(cookieName: string) {
-  //   //   const cookies = document.cookie.split(';')
-  //   //   for (let i = 0; i < cookies.length; i++) {
-  //   //     const cookie = cookies[i].trim()
-  //   //     if (cookie.startsWith(cookieName + '=')) {
-  //   //       return cookie.substring(cookieName.length + 1)
-  //   //     }
-  //   //   }
-  //   //   return null
-  //   // }
-
-  //   // const chatUserId = getCookieValue('chat_user_id')
-  //   // const chatToken = getCookieValue('chat_token')
-
-  //   if (!user) return
-  //   const userChat = await chatApi.login(user?.email, user?.email)
-
-  //   const chatUserId = userChat?.userId
-  //   const chatToken = userChat?.authToken
-
-  //   if (chatUserId && chatToken) {
-  //     console.log('chatUserId: ', chatUserId, 'chatToken: ', chatToken)
-  //     dispatch(setUserChat({ userId: chatUserId, authToken: chatToken }))
-  //   }
-  // }
-
   const onFinish = async (values: SignInParams) => {
     mutate(values, {
       onSuccess: () => {
