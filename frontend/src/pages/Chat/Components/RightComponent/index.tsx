@@ -1,12 +1,12 @@
 import { Button, Form, Input } from 'antd'
-import Send from '../../../../components/Icons/Send'
-import { useAppDispatch } from '../../../../hooks/redux'
-import { setIsNewMessage } from '../../../../redux/app/slice'
 import EmojiPicker from 'emoji-picker-react'
 import { useEffect, useRef, useState } from 'react'
 import Icon from '../../../../components/Icons/Icon'
+import Send from '../../../../components/Icons/Send'
+import { useAppDispatch } from '../../../../hooks/redux'
 
 const RightComponent = ({
+  myUserName,
   oppositeIndex,
   selectedChat,
   previewChats,
@@ -17,10 +17,13 @@ const RightComponent = ({
     return null
   }
 
-  const dispatch = useAppDispatch()
   const emojiPickerRef = useRef<HTMLDivElement>(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [form] = Form.useForm()
+
+  if (previewChats[selectedChat].usernames[oppositeIndex] === myUserName) {
+    oppositeIndex = 1 - oppositeIndex
+  }
 
   useEffect(() => {
     function handleClickOutside(event: { target: any }) {
