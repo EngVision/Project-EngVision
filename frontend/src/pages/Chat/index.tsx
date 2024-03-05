@@ -4,7 +4,6 @@ import {
   setIsNewMessage,
   setNewNotifyRoomId,
   setRemoveNotifyRoomId,
-  setUserChat,
 } from '../../redux/app/slice'
 import chatApi from '../../services/chatApi'
 import { SendMessageParams } from '../../services/chatApi/types'
@@ -14,41 +13,12 @@ import RightComponent from './Components/RightComponent'
 const Chat = () => {
   const dispatch = useAppDispatch()
   const userChat = useAppSelector((state) => state.app.userChat)
-  const [authChat, setAuthChat] = useState<any>()
   const [selectedChat, setSelectedChat] = useState<number | undefined>()
   const [previewChats, setPreviewChats] = useState<any[]>([])
   const [directChats, setDirectChats] = useState<any[]>([])
+  const [myUserName, setMyUserName] = useState<string>('')
   const [oppositeIndex, setOppositeIndex] = useState<number>(0)
-  const isNewMessage = useAppSelector((state) => state.app.isNewMessage)
-  const user = useAppSelector((state) => state.app.user)
   const newNotifyRoomId = useAppSelector((state) => state.app.newNotifyRoomId)
-
-  // const handleAuthChat = async () => {
-  //   // function getCookieValue(cookieName: string) {
-  //   //   const cookies = document.cookie.split(';')
-  //   //   for (let i = 0; i < cookies.length; i++) {
-  //   //     const cookie = cookies[i].trim()
-  //   //     if (cookie.startsWith(cookieName + '=')) {
-  //   //       return cookie.substring(cookieName.length + 1)
-  //   //     }
-  //   //   }
-  //   //   return null
-  //   // }
-
-  //   // const chatUserId = getCookieValue('chat_user_id')
-  //   // const chatToken = getCookieValue('chat_token')
-
-  //   if (!user) return
-  //   const userChat = await chatApi.login(user?.email, user?.email)
-
-  //   const chatUserId = userChat?.userId
-  //   const chatToken = userChat?.authToken
-
-  //   if (chatUserId && chatToken) {
-  //     setAuthChat({ userId: chatUserId, authToken: chatToken })
-  //     dispatch(setUserChat({ userId: chatUserId, authToken: chatToken }))
-  //   }
-  // }
 
   useEffect(() => {
     const socket = new WebSocket(import.meta.env.VITE_WS_URL as string)
@@ -160,17 +130,27 @@ const Chat = () => {
         )
 
         const myUserName = userName.user.username
+        setMyUserName(myUserName)
 
         const index = filteredChats[0].usernames[0] === myUserName ? 1 : 0
         setOppositeIndex(index)
 
         for (const chat of filteredChats) {
-          const opposite = await chatApi.getName(
-            userChat.userId,
-            userChat.authToken,
-            chat.usernames[index],
-          )
-          chat.oppositeName = opposite.user.name
+          if (chat.usernames[index] !== myUserName) {
+            const opposite = await chatApi.getName(
+              userChat.userId,
+              userChat.authToken,
+              chat.usernames[index],
+            )
+            chat.oppositeName = opposite.user.name
+          } else if (chat.usernames[index] === myUserName) {
+            const opposite = await chatApi.getName(
+              userChat.userId,
+              userChat.authToken,
+              chat.usernames[1 - index],
+            )
+            chat.oppositeName = opposite.user.name
+          }
         }
 
         setPreviewChats(filteredChats)
@@ -193,8 +173,18 @@ const Chat = () => {
   }, [userChat, oppositeIndex])
 
   useEffect(() => {
-    if (selectedChat !== undefined) {
+    if (
+      selectedChat !== undefined &&
+      previewChats[selectedChat]?.usernames[oppositeIndex] !== myUserName
+    ) {
       handleGetDirectChat(previewChats[selectedChat]?.usernames[oppositeIndex])
+    } else if (
+      selectedChat !== undefined &&
+      previewChats[selectedChat]?.usernames[oppositeIndex] === myUserName
+    ) {
+      handleGetDirectChat(
+        previewChats[selectedChat]?.usernames[1 - oppositeIndex],
+      )
     }
   }, [selectedChat])
 
@@ -236,7 +226,19 @@ const Chat = () => {
           sendMessageParams,
         ))
     }
-    handleGetDirectChat(previewChats[selectedChat]?.usernames[oppositeIndex])
+    if (
+      selectedChat !== undefined &&
+      previewChats[selectedChat]?.usernames[oppositeIndex] !== myUserName
+    ) {
+      handleGetDirectChat(previewChats[selectedChat]?.usernames[oppositeIndex])
+    } else if (
+      selectedChat !== undefined &&
+      previewChats[selectedChat]?.usernames[oppositeIndex] === myUserName
+    ) {
+      handleGetDirectChat(
+        previewChats[selectedChat]?.usernames[1 - oppositeIndex],
+      )
+    }
     handleChatClick(0)
   }
 
@@ -266,6 +268,7 @@ const Chat = () => {
         />
 
         <RightComponent
+          myUserName={myUserName}
           oppositeIndex={oppositeIndex}
           selectedChat={selectedChat}
           previewChats={previewChats}
