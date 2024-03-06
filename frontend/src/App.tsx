@@ -12,6 +12,9 @@ const App: React.FC = () => {
 
   const locales = useAppSelector((state) => state.app.locales)
   const darkMode = useAppSelector((state) => state.app.darkMode)
+  const showingGetStarted = useAppSelector(
+    (state) => state.app.showingGetStarted,
+  )
 
   useEffect(() => {
     i18n.changeLanguage(locales)
@@ -36,7 +39,7 @@ const App: React.FC = () => {
       <NotificationContext.Provider value={apiNotification}>
         {contextHolder}
         <AppRoutes />
-        <GetStartedModal />
+        {showingGetStarted && <GetStartedModal />}
       </NotificationContext.Provider>
     </ConfigProvider>
   )

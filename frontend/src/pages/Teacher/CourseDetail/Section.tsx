@@ -25,7 +25,6 @@ import {
   TrashIcon,
 } from '../../../components/Icons'
 import CustomInput from '../../../components/common/CustomInput'
-import authApi from '../../../services/authApi'
 import { lessonApi } from '../../../services/lessonApi'
 import AddLessonModel from './AddLessonModel'
 import { useTranslation } from 'react-i18next'
@@ -111,7 +110,6 @@ const Section = ({ form }: SectionProps) => {
   }
 
   const exportLesson = async (lessonId: string) => {
-    await authApi.refreshToken()
     window.open(
       `${import.meta.env.VITE_BASE_URL}lessons/${lessonId}/export`,
       '_self',
