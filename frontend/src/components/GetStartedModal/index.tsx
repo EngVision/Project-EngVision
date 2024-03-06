@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { Alert, Button, Checkbox, Modal } from 'antd'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { hideGetStarted, setUser } from '../../redux/app/slice'
 import accountApi from '../../services/accountApi'
@@ -34,7 +34,6 @@ function GetStartedModal() {
   const showingGetStarted = useAppSelector(
     (state) => state.app.showingGetStarted,
   )
-  console.log('🚀 ~ GetStartedModal ~ showingGetStarted:', showingGetStarted)
 
   const [checked, setChecked] = useState(false)
 
@@ -48,11 +47,6 @@ function GetStartedModal() {
   const handleChangeCheckbox = (e: CheckboxChangeEvent) => {
     setChecked(e.target.checked)
   }
-
-  useEffect(() => {
-    console.log('GET STARTED MOUNT')
-    return () => console.log('GET STARTED UNMOUNT')
-  })
 
   return (
     <div>

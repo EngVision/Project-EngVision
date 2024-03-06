@@ -77,15 +77,13 @@ const Achievements = () => {
     )
   }
 
+  if (isLoading) return <AppLoading />
+
   return (
     <div className="rounded-xl p-5">
       <h1 className="text-blue-700">{t('Achievements')}</h1>
       <div className="flex flex-wrap gap-4 mt-5 space-x-4">
-        {isLoading ? (
-          <AppLoading />
-        ) : (
-          achievement?.items.map((item) => achievementsCard(item))
-        )}
+        {achievement?.items.map((item) => achievementsCard(item))}
       </div>
     </div>
   )

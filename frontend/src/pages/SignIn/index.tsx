@@ -19,7 +19,6 @@ const SignIn: React.FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'Auth' })
   const dispatch = useAppDispatch()
   const apiNotification = useContext(NotificationContext)
-  const user = useAppSelector((state) => state.app.user)
 
   const { mutate, isPending, error, reset } = useMutation({
     mutationFn: authApi.signIn,
