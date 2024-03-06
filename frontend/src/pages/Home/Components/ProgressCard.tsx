@@ -33,7 +33,7 @@ const ProgressCard = ({ course }: ProgressCardProps) => {
       </div>
       <div className="mx-auto">
         <Button
-          className="bg-green-500 text-white rounded-xl"
+          className="bg-green-500 !text-white rounded-xl hover:!text-white"
           onClick={() => navigate(`./my-hub/${course.id}`)}
         >
           {t('Continue')}
