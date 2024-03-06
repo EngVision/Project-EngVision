@@ -41,7 +41,10 @@ const privateRoutes: RouteObject[] = [
   {
     element: <DefaultLayout />,
     children: [
-      ...['home', ''].map((path) => ({ element: <Home />, path })),
+      {
+        element: <Home />,
+        path: PRIVATE_ROUTES.home,
+      },
       {
         element: <Chat />,
         path: PRIVATE_ROUTES.chat,

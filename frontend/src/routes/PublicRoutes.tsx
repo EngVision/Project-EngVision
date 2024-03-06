@@ -17,7 +17,7 @@ const publicRoutes: RouteObject[] = [
   },
   {
     element: <LandingPage />,
-    path: '/homepage',
+    path: '/',
   },
   {
     element: <AuthLayout />,

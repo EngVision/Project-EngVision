@@ -11,7 +11,7 @@ export const PUBLIC_ROUTES = {
 
 export const PRIVATE_ROUTES = {
   // Menu
-  home: '/',
+  home: '/home',
   statistic: '/statistic',
   chat: '/chat',
   settings: '/settings',
