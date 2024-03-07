@@ -67,7 +67,7 @@ const QuickStart = ({
     checkListItems = (await checkListApi.dismiss())?.items ?? []
   }
   return (
-    <div className="fixed bottom-14 right-14 w-[20rem] transition-all z-50">
+    <div className="fixed bottom-[6.5rem] right-[2rem] w-[20rem] transition-all z-50">
       <div
         className={`${
           isHidden ? 'hidden' : ''
