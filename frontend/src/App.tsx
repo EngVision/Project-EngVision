@@ -5,6 +5,8 @@ import GetStartedModal from './components/GetStartedModal'
 import { NotificationContext } from './contexts/notification'
 import { useAppSelector } from './hooks/redux'
 import AppRoutes from './routes'
+import MessengerCustomerChat from 'react-messenger-customer-chat'
+import { FACEBOOK_APP_ID, FACEBOOK_PAGE_ID } from './utils/constants'
 
 const App: React.FC = () => {
   const { i18n } = useTranslation()
@@ -40,6 +42,10 @@ const App: React.FC = () => {
         {contextHolder}
         <AppRoutes />
         {showingGetStarted && <GetStartedModal />}
+        <MessengerCustomerChat
+          pageId={FACEBOOK_PAGE_ID}
+          appId={FACEBOOK_APP_ID}
+        />
       </NotificationContext.Provider>
     </ConfigProvider>
   )

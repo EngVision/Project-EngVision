@@ -5,6 +5,7 @@ import DarkModeButton from '../../components/Header/DarkModeButton'
 import LocalesButton from '../../components/Header/LocalesButton'
 import { PUBLIC_ROUTES } from '../../utils/constants'
 import { useAppSelector } from '../../hooks/redux'
+import { Button } from 'antd'
 
 export default function HomePage() {
   const { t } = useTranslation('translation', { keyPrefix: 'Homepage' })
@@ -12,18 +13,36 @@ export default function HomePage() {
   const navigate = useNavigate()
 
   return (
-    <div className={`items-center bg-white flex flex-col mb-24 gap-36`}>
-      <div className="bg-blue-600 flex w-full px-12 py-8 justify-between">
+    <div className={`items-center bg-white flex flex-col gap-36`}>
+      <div className="bg-white fixed flex w-full px-12 py-6 justify-between z-10 shadow-lg">
         <img loading="lazy" src="/assets/homepage/homepage-logo.svg" />
         <div className="flex gap-4 items-center">
-          {/* <button>Sign in</button> */}
           <LocalesButton />
+
+          <Button
+            type="primary"
+            className="px-8 h-[44px] text-lg ml-4 rounded-[20px]"
+            onClick={() => {
+              navigate(PUBLIC_ROUTES.signUp)
+            }}
+          >
+            Sign up
+          </Button>
+          <Button
+            type="primary"
+            className="px-8 h-[44px] text-lg rounded-[20px]"
+            onClick={() => {
+              navigate(PUBLIC_ROUTES.signIn)
+            }}
+          >
+            Sign in
+          </Button>
           {/* <DarkModeButton /> */}
         </div>
       </div>
-      <div className="flex flex-col mx-16 gap-32">
+      <div className="flex flex-col mx-16 gap-32 mt-[160px]">
         <div className="flex w-full max-w-[1080px] justify-between gap-5 max-md:flex-col">
-          <div className="flex grow basis-[0%] flex-col gap-2 justify-between">
+          <div className="flex grow basis-[0%] flex-col gap-2">
             <div>
               <div className="text-black text-4xl font-bold leading-[72px]">
                 {t('As a Student')}
@@ -35,7 +54,7 @@ export default function HomePage() {
               </div>
             </div>
             <button
-              className="text-white text-l font-bold leading-8 whitespace-nowrap bg-blue-600 items-center px-5 py-3 rounded-xl max-w-fit"
+              className="text-white text-lg font-bold leading-8 whitespace-nowrap bg-blue-600 items-center px-5 py-3 rounded-xl max-w-fit"
               onClick={() => {
                 navigate(PUBLIC_ROUTES.signUp)
               }}
@@ -121,7 +140,7 @@ export default function HomePage() {
           </div>
           <div className="w-full center flex justify-center">
             <button
-              className="text-white text-center text-l font-bold leading-8 whitespace-nowrap bg-blue-600 w-fit px-5 py-4 rounded-xl max-md:mb-10"
+              className="text-white text-center text-lg font-bold leading-8 whitespace-nowrap bg-blue-600 w-fit px-5 py-4 rounded-xl max-md:mb-10"
               onClick={() => {
                 navigate(PUBLIC_ROUTES.signUpTeacher)
               }}
@@ -131,6 +150,17 @@ export default function HomePage() {
             </button>
           </div>
         </div>
+      </div>
+      <div className="w-full text-center flex flex-col items-center gap-1 bg-[#f5f5f5] py-5">
+        <h4 className="text-2xl font-semibold">ENGVISION</h4>
+        <p>{t('Ho Chi Minh University of Science')}</p>
+        <p>
+          Email:{' '}
+          <a href="mailto:engvision.dev@gmail.com" className="text-primary">
+            engvision.dev@gmail.com
+          </a>
+        </p>
+        <p>{t('Copyright © 2024 EngVision')}</p>
       </div>
     </div>
   )

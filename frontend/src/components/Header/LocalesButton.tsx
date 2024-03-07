@@ -4,7 +4,11 @@ import { useTranslation } from 'react-i18next'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { toggleLocales } from '../../redux/app/slice'
 
-const LocalesButton = () => {
+interface LocalesButtonProps {
+  className?: string
+}
+
+const LocalesButton = ({ className }: LocalesButtonProps) => {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'Header' })
   const dispatch = useAppDispatch()
   const defaultValue = useAppSelector((state) => state.app.locales)
@@ -24,7 +28,7 @@ const LocalesButton = () => {
   return (
     <Dropdown
       menu={{ items, onClick }}
-      className="text-textColor hover:cursor-pointer hover:text-primary rounded-[12px]"
+      className={`text-textColor hover:cursor-pointer hover:text-primary rounded-[12px] ${className}`}
       placement="bottomRight"
     >
       <span id="locales" role="presentation">
