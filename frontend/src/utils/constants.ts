@@ -175,6 +175,8 @@ export const BASE_URL = import.meta.env.VITE_BASE_URL
 export const UPLOAD_FILE_URL = import.meta.env.VITE_SERVER_FILES_URL
 export const GOOGLE_LOGIN = `${BASE_URL}auth/google/login`
 export const FACEBOOK_LOGIN = `${BASE_URL}auth/facebook/login`
+export const FACEBOOK_PAGE_ID = '116589884880948'
+export const FACEBOOK_APP_ID = '575211114649130'
 
 export enum COURSE_STATUS {
   draft = 'Draft',
