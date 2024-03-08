@@ -67,6 +67,7 @@ export function TwoColumnLayout({
           style={{
             fontSize: fontSize,
             transition: 'font-size 0.5s ease-in-out',
+            marginTop: 16,
           }}
           dangerouslySetInnerHTML={{ __html: contentQuestion.text || '' }}
         ></div>

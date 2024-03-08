@@ -7,7 +7,7 @@ import SignIn from '../pages/SignIn'
 import SSOSuccess from '../pages/SignIn/components/SSOSuccess'
 import SignUp from '../pages/SignUp'
 import TeacherSignUp from '../pages/SignUp/TeacherSignUp'
-import HomePage from '../pages/test'
+import LandingPage from '../pages/LandingPage'
 import { PUBLIC_ROUTES } from '../utils/constants'
 
 const publicRoutes: RouteObject[] = [
@@ -16,8 +16,8 @@ const publicRoutes: RouteObject[] = [
     path: '*',
   },
   {
-    element: <HomePage />,
-    path: '/homepage',
+    element: <LandingPage />,
+    path: '/',
   },
   {
     element: <AuthLayout />,

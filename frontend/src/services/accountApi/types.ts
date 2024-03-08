@@ -28,6 +28,8 @@ export interface ProfileParams {
   password?: string
   retypePassword?: string
   showGetStarted?: boolean
+  bankName?: string
+  bankNumber?: string
 }
 
 export interface ChangePassword {

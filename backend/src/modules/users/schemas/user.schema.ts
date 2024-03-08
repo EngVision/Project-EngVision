@@ -56,6 +56,12 @@ export class User {
   @Prop({ default: false })
   chatRegistered?: boolean;
 
+  @Prop({ type: String, default: null })
+  bankName?: string;
+
+  @Prop({ type: String, default: null })
+  bankNumber?: string;
+
   validatePassword?: (password: string) => Promise<boolean>;
   validateRefreshToken?: (refreshToken: string) => Promise<boolean>;
   preSave?: () => Promise<void>;

@@ -80,7 +80,6 @@ const Discover = () => {
     queryKey: ['courses', getAllCoursesParams],
     queryFn: () => coursesApi.getCourses(getAllCoursesParams),
   })
-  console.log('🚀 ~ Discover ~ rawAllCourseList:', rawAllCourseList)
   return (
     <>
       <>
