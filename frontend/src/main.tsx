@@ -71,6 +71,7 @@ console.log('ENV', {
   VITE_SENTRY_DSN: import.meta.env.VITE_SENTRY_DSN,
   VITE_SERVER_CHAT_URL: import.meta.env.VITE_SERVER_CHAT_URL,
   VITE_WS_URL: import.meta.env.VITE_WS_URL,
+  VITE_WHISPER_URL: import.meta.env.VITE_WHISPER_URL,
 })
 
 const ClientRenderer = () =>
