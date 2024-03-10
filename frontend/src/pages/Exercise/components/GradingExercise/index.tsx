@@ -3,6 +3,8 @@ import { SubmissionResponse } from '../../../../services/submissionApi/types'
 import { ExerciseSchema } from '../../../../services/exerciseApi/types'
 import { Button, Form, Input } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
+import { ExerciseType } from '../../../../utils/constants'
+import whisperApi from '../../../../services/whisperApi'
 
 interface GradingExerciseProps {
   exercise?: ExerciseSchema
@@ -21,6 +23,19 @@ function GradingExercise({
 }: GradingExerciseProps) {
   const [grade, setGrade] = useState<number>(-1)
   const form = Form.useFormInstance()
+
+  useEffect(() => {
+    if (
+      submission?.exerciseType === ExerciseType.Speaking &&
+      exercise?.needGrade
+    ) {
+      whisperApi
+        .speechToText(submission.detail[questionIndex].answer)
+        .then((res) => {
+          form.setFieldValue('explanation', res.text)
+        })
+    }
+  }, [questionIndex, submission, exercise])
 
   useEffect(() => {
     form.setFieldValue('grade', submission?.detail[questionIndex]?.grade)
