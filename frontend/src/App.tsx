@@ -1,17 +1,13 @@
 import { ConfigProvider, notification, theme as themeAntd } from 'antd'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import MessengerCustomerChat from 'react-messenger-customer-chat'
+import { useLocation } from 'react-router'
 import GetStartedModal from './components/GetStartedModal'
 import { NotificationContext } from './contexts/notification'
 import { useAppSelector } from './hooks/redux'
 import AppRoutes from './routes'
-import MessengerCustomerChat from 'react-messenger-customer-chat'
-import {
-  FACEBOOK_APP_ID,
-  FACEBOOK_PAGE_ID,
-  PUBLIC_ROUTES,
-} from './utils/constants'
-import { useLocation } from 'react-router'
+import { FACEBOOK_APP_ID, FACEBOOK_PAGE_ID } from './utils/constants'
 
 const App: React.FC = () => {
   const { i18n } = useTranslation()
@@ -48,7 +44,7 @@ const App: React.FC = () => {
         {contextHolder}
         <AppRoutes />
         {showingGetStarted && <GetStartedModal />}
-        {!Object.values(PUBLIC_ROUTES).includes(pathname) && (
+        {pathname === '/' && (
           <MessengerCustomerChat
             pageId={FACEBOOK_PAGE_ID}
             appId={FACEBOOK_APP_ID}
