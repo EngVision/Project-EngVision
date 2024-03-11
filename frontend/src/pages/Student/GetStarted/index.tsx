@@ -111,7 +111,7 @@ const GetStarted = () => {
                 placeholder="Select a level"
                 optionFilterProp="children"
                 onChange={onChange}
-                options={items}
+                options={items.reverse()}
               />
 
               <Button

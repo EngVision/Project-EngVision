@@ -1,4 +1,4 @@
-import { Navigate, Outlet, RouteObject } from 'react-router-dom'
+import { Navigate, Outlet, RouteObject, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../hooks/redux'
 import DefaultLayout from '../layouts/DefaultLayout'
 import BlockScreen from '../pages/BlockScreen'
@@ -21,6 +21,7 @@ import { useEffect } from 'react'
 const ProtectedLayout = () => {
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.app.user)
+  const { pathname } = useLocation()
 
   useEffect(() => {
     if (user?.showGetStarted) {
@@ -41,10 +42,7 @@ const privateRoutes: RouteObject[] = [
   {
     element: <DefaultLayout />,
     children: [
-      {
-        element: <Home />,
-        path: PRIVATE_ROUTES.home,
-      },
+      ...[PRIVATE_ROUTES.home, ''].map((path) => ({ element: <Home />, path })),
       {
         element: <Chat />,
         path: PRIVATE_ROUTES.chat,
