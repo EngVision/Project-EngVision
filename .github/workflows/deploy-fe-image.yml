@@ -23,7 +23,7 @@ env:
   STG_VITE_GA4_TRACKING_ID: ${{ secrets.VITE_GA4_TRACKING_ID }}
   STG_VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
   STG_VITE_WS_URL: ${{ secrets.STG_VITE_WS_URL }}
-  STG_VITE_WHISPER_URL: ${{ secrets.STG_VITE_WHISPER_URL }}
+  STG_VITE_WHISPER_URL: ${{ secrets.VITE_WHISPER_URL }}
 
 jobs:
   build-and-push-image:

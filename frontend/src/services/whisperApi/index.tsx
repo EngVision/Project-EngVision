@@ -5,7 +5,10 @@ const WHISPER_URL = import.meta.env.VITE_WHISPER_URL
 
 const whisperApi = {
   speechToText: async (fileId: string): Promise<SpeechToTextResponse> => {
-    const res = await axios.get(`${WHISPER_URL}/stt/${fileId}`)
+    // Todo: replace with WHISPER_URL
+    const res = await axios.get(
+      `https://whisper.engvision.edu.vn/stt/${fileId}`,
+    )
     return res.data
   },
 }
