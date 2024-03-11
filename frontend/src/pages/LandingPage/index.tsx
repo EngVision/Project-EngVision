@@ -1,15 +1,16 @@
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-
-import DarkModeButton from '../../components/Header/DarkModeButton'
+import MessengerCustomerChat from 'react-messenger-customer-chat'
 import LocalesButton from '../../components/Header/LocalesButton'
-import { PUBLIC_ROUTES } from '../../utils/constants'
-import { useAppSelector } from '../../hooks/redux'
+import {
+  FACEBOOK_APP_ID,
+  FACEBOOK_PAGE_ID,
+  PUBLIC_ROUTES,
+} from '../../utils/constants'
 import { Button } from 'antd'
 
 export default function HomePage() {
   const { t } = useTranslation('translation', { keyPrefix: 'Homepage' })
-  const isDarkMode = useAppSelector((state) => state.app.darkMode)
   const navigate = useNavigate()
 
   return (
@@ -162,6 +163,11 @@ export default function HomePage() {
         </p>
         <p>{t('Copyright © 2024 EngVision')}</p>
       </div>
+
+      <MessengerCustomerChat
+        pageId={FACEBOOK_PAGE_ID}
+        appId={FACEBOOK_APP_ID}
+      />
     </div>
   )
 }
