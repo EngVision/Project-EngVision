@@ -153,7 +153,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="w-full text-center flex flex-col items-center gap-1 bg-[#f5f5f5] py-5">
+        <div className="w-full text-center flex flex-col items-center gap-1 bg-[#f5f5f5] text-[#313134] py-5">
           <h4 className="text-2xl font-semibold">ENGVISION</h4>
           <p>{t('Ho Chi Minh University of Science')}</p>
           <p>
@@ -165,6 +165,7 @@ export default function HomePage() {
           <p>{t('Copyright © 2024 EngVision')}</p>
         </div>
       </div>
+
       <MessengerCustomerChat
         pageId={FACEBOOK_PAGE_ID}
         appId={FACEBOOK_APP_ID}
