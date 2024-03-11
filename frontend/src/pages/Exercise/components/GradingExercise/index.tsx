@@ -27,7 +27,8 @@ function GradingExercise({
   useEffect(() => {
     if (
       submission?.exerciseType === ExerciseType.Speaking &&
-      exercise?.needGrade
+      exercise?.needGrade &&
+      submission?.detail[questionIndex]?.answer
     ) {
       whisperApi
         .speechToText(submission.detail[questionIndex].answer)

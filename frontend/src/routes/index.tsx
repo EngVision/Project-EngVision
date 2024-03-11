@@ -1,6 +1,6 @@
-import { useRoutes } from 'react-router-dom'
-import PrivateRoutes from './PrivateRoutes'
-import PublicRoutes from './PublicRoutes'
+import { remove } from 'lodash'
+import { useEffect } from 'react'
+import { useLocation, useRoutes } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../hooks/redux'
 import {
   setCurrentLevel,
@@ -8,15 +8,20 @@ import {
   setUserChat,
   showGetStarted,
 } from '../redux/app/slice'
-import { useEffect } from 'react'
 import authApi from '../services/authApi'
+import chatApi from '../services/chatApi'
 import userLevelApi from '../services/userLevelApi'
 import { Role } from '../utils/constants'
-import chatApi from '../services/chatApi'
+import PrivateRoutes from './PrivateRoutes'
+import {
+  default as PublicRoutes,
+  default as publicRoutes,
+} from './PublicRoutes'
 
 const AppRoutes = () => {
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.app.user)
+  const { pathname } = useLocation()
 
   const fetchAuthUser = async () => {
     try {
@@ -55,6 +60,10 @@ const AppRoutes = () => {
   useEffect(() => {
     handleAuthChat()
   }, [user])
+
+  if (pathname === '/' && user) {
+    remove(publicRoutes, (route) => route.path === '/')
+  }
 
   const element = useRoutes([...PublicRoutes, ...PrivateRoutes()])
 
